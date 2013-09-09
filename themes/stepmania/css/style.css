@@ -1,0 +1,107 @@
+@import url(http://fonts.googleapis.com/css?family=Open+Sans:400,600,700,400italic,300);
+/* http://meyerweb.com/eric/tools/css/reset/ 
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline; }
+
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section {
+  display: block; }
+
+body {
+  line-height: 1; }
+
+ol, ul {
+  list-style: none; }
+
+blockquote, q {
+  quotes: none; }
+
+blockquote:before, blockquote:after,
+q:before, q:after {
+  content: '';
+  content: none; }
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0; }
+
+/* for mixins and stuff */
+.limit-width {
+  width: 960px;
+  margin: 0 auto; }
+
+body {
+  background: #f0d01f;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 10pt; }
+
+header {
+  background: #21201f;
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.125); }
+  header nav {
+    color: white;
+    font-size: 1.15rem;
+    overflow: auto; }
+    header nav ul li {
+      float: left; }
+      header nav ul li a {
+        padding: 14px;
+        display: inline-block;
+        text-decoration: none;
+        color: white;
+        background: #21201f;
+        transition: background-color 0.5s linear; }
+        header nav ul li a:hover {
+          transition: background-color 0.125s linear;
+          background: #4d440f; }
+
+#container {
+  background: white;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+  overflow: auto;
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.125); }
+  #container .banner {
+    background: #21201f;
+    color: white; }
+    #container .banner p, #container .banner h1 {
+      padding: 14px; }
+    #container .banner h1 {
+      font-size: 1.2rem;
+      color: #f0d01f;
+      font-weight: 600; }
+  #container article {
+    padding: 14px;
+    margin-bottom: 14px; }
+    #container article:last-child {
+      margin-bottom: 0; }
+    #container article header {
+      color: #333;
+      background: none;
+      box-shadow: none;
+      margin-bottom: 14px; }
+
+footer p {
+  padding: 14px;
+  color: #3c3407; }

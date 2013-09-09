@@ -1,0 +1,210 @@
+[
+    {
+        "name": "composer/installers",
+        "version": "dev-master",
+        "version_normalized": "9999999-dev",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/composer/installers.git",
+            "reference": "v1.0.2"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/composer/installers/zipball/v1.0.2",
+            "reference": "v1.0.2",
+            "shasum": ""
+        },
+        "replace": {
+            "shama/baton": "*"
+        },
+        "require-dev": {
+            "composer/composer": "1.0.*@dev",
+            "phpunit/phpunit": "3.7.*"
+        },
+        "time": "2013-02-18 00:51:06",
+        "type": "composer-installer",
+        "extra": {
+            "class": "Composer\\Installers\\Installer",
+            "branch-alias": {
+                "dev-master": "1.0-dev"
+            }
+        },
+        "installation-source": "source",
+        "autoload": {
+            "psr-0": {
+                "Composer\\Installers\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Kyle Robinson Young",
+                "email": "kyle@dontkry.com",
+                "homepage": "https://github.com/shama",
+                "role": "Developer"
+            }
+        ],
+        "description": "A multi-framework Composer library installer",
+        "homepage": "http://composer.github.com/installers/",
+        "keywords": [
+            "symfony",
+            "installer",
+            "zend",
+            "wordpress",
+            "cakephp",
+            "codeigniter",
+            "fuelphp",
+            "drupal",
+            "lithium",
+            "li3",
+            "joomla",
+            "laravel",
+            "phpbb",
+            "ppi",
+            "silverstripe",
+            "kohana",
+            "mako",
+            "TYPO3 Flow",
+            "TYPO3 Neos",
+            "agl"
+        ]
+    },
+    {
+        "name": "silverstripe/framework",
+        "version": "3.0.x-dev",
+        "version_normalized": "3.0.9999999.9999999-dev",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/silverstripe/sapphire.git",
+            "reference": "29de6431fd4455b8b9cf3611fe873282c4f7c69d"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/silverstripe/sapphire/zipball/29de6431fd4455b8b9cf3611fe873282c4f7c69d",
+            "reference": "29de6431fd4455b8b9cf3611fe873282c4f7c69d",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.3.2",
+            "composer/installers": "*"
+        },
+        "time": "2013-02-19 01:48:58",
+        "type": "silverstripe-module",
+        "installation-source": "source",
+        "autoload": {
+            "classmap": [
+                "tests/behat/features/bootstrap"
+            ]
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "BSD-3-Clause"
+        ],
+        "authors": [
+            {
+                "name": "SilverStripe",
+                "homepage": "http://silverstripe.com"
+            },
+            {
+                "name": "The SilverStripe Community",
+                "homepage": "http://silverstripe.org"
+            }
+        ],
+        "description": "The SilverStripe framework",
+        "homepage": "http://silverstripe.org",
+        "keywords": [
+            "framework",
+            "silverstripe"
+        ]
+    },
+    {
+        "name": "silverstripe-themes/simple",
+        "version": "dev-master",
+        "version_normalized": "9999999-dev",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/silverstripe-themes/silverstripe-simple",
+            "reference": "bba8ebfac59dbdda671d8ebd4fb6649839343c6b"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/silverstripe-themes/silverstripe-simple/zipball/bba8ebfac59dbdda671d8ebd4fb6649839343c6b",
+            "reference": "bba8ebfac59dbdda671d8ebd4fb6649839343c6b",
+            "shasum": ""
+        },
+        "require": {
+            "composer/installers": "*",
+            "silverstripe/framework": ">=3.0"
+        },
+        "time": "2013-01-22 22:56:46",
+        "type": "silverstripe-theme",
+        "installation-source": "source",
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "BSD-3-Clause"
+        ],
+        "authors": [
+            {
+                "name": "Sara Tušar (Innovaif)",
+                "homepage": "http://www.saratusar.com"
+            }
+        ],
+        "description": "The SilverStripe simple theme (default SilverStripe 3 theme)",
+        "keywords": [
+            "theme",
+            "silverstripe"
+        ]
+    },
+    {
+        "name": "silverstripe/cms",
+        "version": "3.0.x-dev",
+        "version_normalized": "3.0.9999999.9999999-dev",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/silverstripe/silverstripe-cms.git",
+            "reference": "1ef155fc188acfad6c08799f1498b860ed0ea8cf"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/silverstripe/silverstripe-cms/zipball/1ef155fc188acfad6c08799f1498b860ed0ea8cf",
+            "reference": "1ef155fc188acfad6c08799f1498b860ed0ea8cf",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.3.2",
+            "composer/installers": "*",
+            "silverstripe/framework": "3.0.*"
+        },
+        "time": "2013-02-18 13:13:24",
+        "type": "silverstripe-module",
+        "installation-source": "source",
+        "autoload": {
+            "classmap": [
+                "tests/behat/"
+            ]
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "BSD-3-Clause"
+        ],
+        "authors": [
+            {
+                "name": "SilverStripe",
+                "homepage": "http://silverstripe.com"
+            },
+            {
+                "name": "The SilverStripe Community",
+                "homepage": "http://silverstripe.org"
+            }
+        ],
+        "description": "The SilverStripe Content Management System",
+        "homepage": "http://silverstripe.org",
+        "keywords": [
+            "cms",
+            "silverstripe"
+        ]
+    }
+]

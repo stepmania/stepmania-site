@@ -1,0 +1,35 @@
+---
+Name: rootroutes
+Before: '*'
+---
+Director:
+  rules:
+    '': 'Controller'
+---
+Name: coreroutes
+Before: '*'
+After:
+  - '#rootroutes'
+  - '#modelascontrollerroutes'
+---
+Director:
+  rules:
+    'Security//$Action/$ID/$OtherID': 'Security'
+    '$Controller//$Action/$ID/$OtherID':  '*'
+    'api/v1/live': 'VersionedRestfulServer'
+    'api/v1': 'RestfulServer'
+    'soap/v1': 'SOAPModelAccess'
+    'dev': 'DevelopmentAdmin'
+    'interactive': 'SapphireREPL'
+---
+Name: adminroutes
+Before: '*'
+After:
+  - '#rootroutes'
+  - '#coreroutes'
+  - '#modelascontrollerroutes'
+---
+Director:
+  rules:
+    'admin': 'AdminRootController'
+    'dev/buildcache/$Action': 'RebuildStaticCacheTask'

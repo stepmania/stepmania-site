@@ -1,0 +1,89 @@
+@import "reset";
+@import "helpers";
+
+$primary: #f0d01f;
+$secondary: adjust-color(#21201f, $lightness: 0%);
+$spacing: 14px;
+$rounding: 5px;
+$shadow: 0 2px 0 rgba(0, 0, 0, 0.125);
+
+@import url(http://fonts.googleapis.com/css?family=Open+Sans:400,600,700,400italic,300);
+
+.limit-width {
+	width: 960px;
+	margin: 0 auto;
+}
+
+body {
+	background: $primary;
+	font-family: 'Open Sans', sans-serif;
+	font-size: 10pt;
+}
+
+header {
+	background: $secondary;
+	box-shadow: $shadow;
+	nav {
+		color: white;
+		font-size: 1.15rem;
+		overflow: auto;
+		ul li {
+			float: left;
+			a {
+				padding: $spacing;
+				display: inline-block;
+				text-decoration: none;
+				color: white;
+				background: $secondary;
+				transition: background-color 0.5s linear;
+				&:hover {
+					transition: background-color 0.125s linear;
+					background: adjust-color($primary,
+						$saturation: -20%,
+						$lightness: -35%
+					);
+				}
+			}
+		}
+	}
+}
+
+#container {
+	background: white;
+	border-bottom-left-radius: $rounding;
+	border-bottom-right-radius: $rounding;
+	overflow: auto;
+	box-shadow: $shadow;
+	.banner {
+		background: $secondary;
+		color: white;
+		p, h1 {
+			padding: $spacing;
+		}
+		h1 {
+			font-size: 1.2rem;
+			color: $primary;
+			font-weight: 600;
+		}
+	}
+	article {
+		padding: $spacing;
+		margin-bottom: $spacing;
+		&:last-child {
+			margin-bottom: 0;
+		}
+		header {
+			color: #333;
+			background: none;
+			box-shadow: none;
+			margin-bottom: $spacing;
+		}
+	}
+}
+
+footer {
+	p {
+		padding: $spacing;
+		color: mix($primary, #000, 25%);
+	}
+}

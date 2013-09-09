@@ -1,0 +1,16 @@
+---
+Name: modelascontrollerroutes
+Before: '*'
+After: '#rootroutes'
+---
+Director:
+  rules:
+    '': 'RootURLController'
+    '$URLSegment//$Action/$ID/$OtherID': 'ModelAsController'
+---
+Name: legacycmsroutes
+After: '#adminroutes'
+---
+Director:
+  rules:
+    'admin/cms': '->admin/pages'

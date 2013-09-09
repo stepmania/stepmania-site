@@ -1,0 +1,222 @@
+@import 'themes/default';
+@import 'ieShared';
+
+html {
+	overflow: hidden;
+}
+ 
+.field {
+	input.text, 
+	textarea,
+	.TreeDropdownField {
+		// Left/right padding conflicts with 100% width on the element unless box-sizing is respected, so disable padding for IE
+		padding-left: 0;
+		padding-right: 0;
+	}
+}
+
+.ss-uploadfield-item-name {
+	display:block;
+}
+
+.ss-uploadfield-edit-iframe{
+	.field {
+		&.treedropdown{
+			height:150px !important;				
+		}
+		.TreeDropdownField {
+			ul{
+				min-height:100px;
+				height:auto;
+				max-height:150px;
+			}
+		}
+	}
+}
+
+//fix for add one button not positioning properly
+.ss-ui-button.cms-page-add-button {
+	float:left;
+}
+
+
+
+
+//fix for the tree view modes not displaying inline
+.cms-tree-view-modes {
+	div {
+		float:left;
+	}
+	span {
+		float:left;
+		padding-top:5px;
+	}
+}
+.cms-panel-content .cms-tree{
+ 	li{
+ 		width:200px;
+ 		overflow:hidden;
+ 		float:left;
+ 		display:inline;
+ 	}
+}
+
+//add line below the cms-content-toolbar
+.cms-content-toolbar {
+	padding-bottom:5px;
+}
+
+.cms-menu-list{
+	li{
+		list-style-type: none;      
+	    width: 100%;
+	    float: left;    
+	    margin: 0px;
+	    padding: 0px;  
+	}
+}
+
+
+
+
+// fix jstree themeroller plugin bug: tree disappear in IE7
+.jstree li a .ui-icon {
+	text-indent: 0px !important;
+}
+
+.cms table.ss-gridfield-table {
+	tbody td {
+		// Overrule width: 100% setting to trigger "shrink fit"
+		// of button row, which IE7 doesn't support
+		width: auto;
+	}
+	tr th.extra span input {
+		//fix for filter and reset icons on datagrid 
+		height:23px;
+	}
+}
+
+.ss-gridfield-button-filter.ss-ui-button {
+	margin: -1px -5px;
+}
+
+.ss-gridfield-button-reset.ss-ui-button {
+	margin: -1px -5px;
+}
+
+
+
+//fix for edit and delete icons
+.cms .ss-gridfield table.ss-gridfield-table tbody {
+	td {
+		button {
+			width:40px;
+			&.gridfield-button-delete {
+				display:block;
+				float:left;
+			}
+			&.gridfield-button-unlink {
+				display:block;
+				float:left;
+			}
+		}
+		a.edit-link {
+			display:block;
+			float:left;
+		}
+	}
+}
+
+//fix for wrong alignment of label on parent groups field in users groups and fix for width of parent group dropdown field
+.cms .cms-content .cms-content-fields {
+	.field.dropdown .middleColumn {
+		max-width:512px;
+	}	
+}
+
+//fix for input on datagrid pagination
+.pagination-page-number {
+	position:relative;
+	bottom:10px;
+	right:10px;
+	input {
+		width:45px;
+		padding:0px;
+		position:relative;
+		bottom:2px;
+	}
+}
+
+input {
+	&.ss-gridfield-sort {
+		padding-top:0 !important;
+		padding-bottom:0 !important;
+	}
+}
+
+//fix for wrong height on users groups gridfield table header
+table.ss-gridfield-table tr.title th h2 {
+	float:left;
+}
+
+//fix for alternate colors on rows in datagrid
+table.ss-gridfield-table {
+	tr {
+		&.ss-gridfield-item.odd {
+			background: white;
+		}
+		&.ss-gridfield-item.even {
+			background: #F0F4F7;
+		}
+	}	
+}	
+
+//fix for model admin filter styling 
+.ModelAdmin .cms-content-fields .cms-content-tools .cms-panel-content {
+	.cms-search-form {
+		overflow:hidden;
+		input {
+			width:160px;
+		}
+	}
+}
+.cms .cms-content-tools {
+	// Visual aid for IE as there are no box-shadows
+	border-right: 1px solid #CCC;
+}
+
+//fix for view children arrow in pages list view 
+.cms .ss-gridfield table.ss-gridfield-table tbody {
+	td {
+		&.col-listChildrenLink {
+			width:16px;
+			.list-children-link {
+				background: transparent url(../images/sitetree_ss_default_icons.png) no-repeat 4px -4px;
+				display:block;
+			}
+		}
+	}
+}	
+
+// CMS Content header & tab fix
+.cms-content-header {
+	h2 {
+		float: left;	
+		.section-icon {
+			display: none;
+		}
+	}
+	.cms-content-header-tabs {
+		position: absolute;
+		right: 0;
+	}	
+}
+
+
+.ss-ui-button{
+	&.ss-gridfield-button-filter{		
+			border:none !important;
+	}
+}	
+
+@include IEVerticalPanelText;
