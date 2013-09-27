@@ -116,31 +116,33 @@ footer p {
   padding: 14px;
   color: #3c3407; }
 
-form .field {
-  margin-bottom: 14px; }
-  form .field .left {
-    display: inline-block;
-    width: 100px;
-    font-size: 1.0rem;
-    text-align: right; }
-  form .field .middleColumn {
-    display: inline-block;
-    padding: 0 14px; }
-    form .field .middleColumn input {
-      width: 250px; }
-  form .field input {
-    padding: 3.5px;
-    background: white;
-    box-shadow: 0 -2px 0 #f0d01f inset;
-    border: 1px solid #aaa;
-    border: none;
-    border-radius: 3px;
+form {
+  padding-top: 14px; }
+  form .field {
+    margin-bottom: 14px; }
+    form .field .left {
+      display: inline-block;
+      width: 100px;
+      font-size: 1.0rem;
+      text-align: right; }
+    form .field .middleColumn {
+      display: inline-block;
+      padding: 0 14px; }
+      form .field .middleColumn input {
+        width: 250px; }
+    form .field input {
+      padding: 3.5px;
+      background: white;
+      box-shadow: 0 -2px 0 #f0d01f inset;
+      border: 1px solid #aaa;
+      border: none;
+      border-radius: 3px;
+      display: inline-block; }
+  form .Actions .action {
     display: inline-block; }
-form .Actions .action {
-  display: inline-block; }
-form .Actions #ForgotPassword {
-  margin-left: 14px;
-  display: inline-block; }
+  form .Actions #ForgotPassword {
+    margin-left: 14px;
+    display: inline-block; }
 
 #SilverStripeNavigator {
   background: #21201f !important;
