@@ -27,20 +27,36 @@ header {
 		color: white;
 		font-size: 1.15rem;
 		overflow: auto;
+		img {
+			float: left;
+			padding: 7px;
+		}
 		ul li {
 			float: left;
 			a {
 				padding: $spacing;
+				padding-bottom: $spacing - 4px;
+				border-bottom: 4px solid $secondary;
 				display: inline-block;
 				text-decoration: none;
 				color: white;
 				background: $secondary;
 				transition: background-color 0.5s linear;
+				&.current {
+					border-bottom: 4px solid $primary;
+				}
 				&:hover {
 					transition: background-color 0.125s linear;
+					&.current {
+						border-bottom: 4px solid $primary;
+					}
+					border-bottom-color: adjust-color($primary,
+						$saturation: -20%,
+						$lightness: -40%
+					);
 					background: adjust-color($primary,
 						$saturation: -20%,
-						$lightness: -35%
+						$lightness: -40%
 					);
 				}
 			}
@@ -87,3 +103,6 @@ footer {
 		color: mix($primary, #000, 25%);
 	}
 }
+
+@import "form";
+@import "silverstripe";

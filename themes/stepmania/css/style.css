@@ -63,18 +63,28 @@ header {
     color: white;
     font-size: 1.15rem;
     overflow: auto; }
+    header nav img {
+      float: left;
+      padding: 7px; }
     header nav ul li {
       float: left; }
       header nav ul li a {
         padding: 14px;
+        padding-bottom: 10px;
+        border-bottom: 4px solid #21201f;
         display: inline-block;
         text-decoration: none;
         color: white;
         background: #21201f;
         transition: background-color 0.5s linear; }
+        header nav ul li a.current {
+          border-bottom: 4px solid #f0d01f; }
         header nav ul li a:hover {
           transition: background-color 0.125s linear;
-          background: #4d440f; }
+          border-bottom-color: #38310b;
+          background: #38310b; }
+          header nav ul li a:hover.current {
+            border-bottom: 4px solid #f0d01f; }
 
 #container {
   background: white;
@@ -105,3 +115,58 @@ header {
 footer p {
   padding: 14px;
   color: #3c3407; }
+
+form .field {
+  margin-bottom: 14px; }
+  form .field .left {
+    display: inline-block;
+    width: 100px;
+    font-size: 1.0rem;
+    text-align: right; }
+  form .field .middleColumn {
+    display: inline-block;
+    padding: 0 14px; }
+    form .field .middleColumn input {
+      width: 250px; }
+  form .field input {
+    padding: 3.5px;
+    background: white;
+    box-shadow: 0 -2px 0 #f0d01f inset;
+    border: 1px solid #aaa;
+    border: none;
+    border-radius: 3px;
+    display: inline-block; }
+form .Actions .action {
+  display: inline-block; }
+form .Actions #ForgotPassword {
+  margin-left: 14px;
+  display: inline-block; }
+
+#SilverStripeNavigator {
+  background: #21201f !important;
+  border-top: 4px solid #9e880b !important;
+  outline: none !important;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.25);
+  height: 2em !important;
+  width: 100% !important; }
+  #SilverStripeNavigator .holder {
+    border: none !important;
+    padding: 10px !important;
+    padding-bottom: 0;
+    min-width: 500px; }
+  #SilverStripeNavigator .bottomTabs, #SilverStripeNavigator #logInStatus {
+    font-size: 130% !important; }
+  #SilverStripeNavigator a {
+    font-size: 100% !important;
+    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.125); }
+
+#SilverStripeNavigatorMessage {
+  box-shadow: 0 1px 0px rgba(255, 255, 255, 0.25);
+  border-radius: 3px;
+  background: #21201f !important;
+  border-width: 2px !important;
+  border-color: #9e880b !important;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.25);
+  position: absolute !important;
+  top: 5px !important;
+  right: 5px !important; }

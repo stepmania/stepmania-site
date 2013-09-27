@@ -1,0 +1,36 @@
+form {
+	.field {
+		margin-bottom: $spacing;
+		.left {
+			display: inline-block;
+			width: 100px;
+			font-size: 1.0rem;
+			text-align: right;
+		}
+		.middleColumn {
+			display: inline-block;
+			padding: 0 $spacing;
+			input {
+				width: 250px;
+			}
+		}
+		input {
+			padding: $spacing/4;
+			background: white;
+			box-shadow: 0 -2px 0 $primary inset;
+			border: 1px solid #aaa;
+			border: none;
+			border-radius: 3px;
+			display: inline-block;
+		}
+	}
+	.Actions {
+		.action {
+			display: inline-block;
+		}
+		#ForgotPassword {
+			margin-left: $spacing;
+			display: inline-block;
+		}
+	}
+}
