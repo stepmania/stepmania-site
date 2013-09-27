@@ -1,0 +1,23 @@
+{
+	"folders":
+	[
+		{
+			"path": ".",
+			"name": "StepMania",
+			"folder_exclude_patterns": [
+				// ignore default stuff, we don't touch it
+				"mysite",
+				"assets",
+				"cms",
+				"framework",
+				// ignore modules, too
+				"sqlite3"
+			],
+			"file_exclude_patterns": [
+				"*.sublime-*",
+				"*.ico"
+			]
+		}
+	],
+	"settings": {}
+}
