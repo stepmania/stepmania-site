@@ -6,3 +6,5 @@
 web.config
 *.sublime-workspace
 _combinedfiles
+_resampled
+/mysite
