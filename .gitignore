@@ -1,1 +1,6 @@
 .sass-cache
+/assets/.db/
+/assets/error-*.html
+/.htaccess
+web.config
+web.config

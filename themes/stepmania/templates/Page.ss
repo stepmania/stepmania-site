@@ -2,32 +2,31 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title>StepMania</title>
-	<link rel="stylesheet" href="css/style.css">
+	<title>$SiteConfig.Title</title>
+	<link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+	<% base_tag %>
+	<% require themedCSS(style) %>
 </head>
 <body>
 	<header>
 		<nav class="limit-width">
 			<ul>
+				<% loop Menu(1) %>
+				<li><a href="$Link">$MenuTitle</a></li>
+				<% end_loop %>
+				<!--
 				<li><a href="#">SM Micro</a></li>
 				<li><a href="#">Download</a></li>
 				<li><a href="#">Find Content</a></li>
 				<li><a href="#">Wiki</a></li>
 				<li><a href="#">Forums</a></li>
 				<li><a href="#">Help</a></li>
+				-->
 			</ul>
 		</nav>
 	</header>
 	<div id="container" class="limit-width">
-		<div class="banner">
-			<h1>Thingy</h1>
-		</div>
-		<article class="post">
-			<header>
-				<p>Posted at 1:40AM by <a href="#">shakesoda</a>.</p>
-			</header>
-			<p>This is a test post thingy</p>
-		</article>
+		$Layout
 	</div>
 	<footer class="limit-width">
 		<p>StepMania is open source software released under the MIT License</p>
