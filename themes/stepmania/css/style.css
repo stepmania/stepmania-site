@@ -81,7 +81,7 @@ header {
           border-bottom: 4px solid #f0d01f; }
         header nav ul li a:hover {
           transition: background-color 0.125s linear;
-          border-bottom-color: #38310b;
+          border-bottom-color: #635713;
           background: #38310b; }
           header nav ul li a:hover.current {
             border-bottom: 4px solid #f0d01f; }

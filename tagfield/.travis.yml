@@ -1,0 +1,25 @@
+language: php 
+php: 
+ - 5.3
+ - 5.4
+
+env:
+ - DB=MYSQL CORE_RELEASE=3.1
+ - DB=MYSQL CORE_RELEASE=master
+ - DB=PGSQL CORE_RELEASE=3.1
+
+matrix:
+  exclude:
+    - php: 5.4
+      env: DB=PGSQL CORE_RELEASE=3.1
+    - php: 5.4
+      env: DB=MYSQL CORE_RELEASE=3.1
+
+before_script:
+ - phpenv rehash
+ - git clone git://github.com/silverstripe-labs/silverstripe-travis-support.git ~/travis-support
+ - php ~/travis-support/travis_setup.php --source `pwd` --target ~/builds/ss
+ - cd ~/builds/ss
+
+script: 
+ - phpunit tagfield/tests/
