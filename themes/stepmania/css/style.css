@@ -111,6 +111,8 @@ header {
       background: none;
       box-shadow: none;
       margin-bottom: 14px; }
+      #container article header p, #container article header h1 {
+        padding: 0; }
 
 footer p {
   padding: 14px;
