@@ -70,7 +70,7 @@ header {
 	border-bottom-right-radius: $rounding;
 	overflow: auto;
 	box-shadow: $shadow;
-	.banner {
+	.banner, header {
 		background: $secondary;
 		color: white;
 		p, h1 {

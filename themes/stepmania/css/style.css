@@ -92,12 +92,12 @@ header {
   border-bottom-right-radius: 5px;
   overflow: auto;
   box-shadow: 0 2px 0 rgba(0, 0, 0, 0.125); }
-  #container .banner {
+  #container .banner, #container header {
     background: #21201f;
     color: white; }
-    #container .banner p, #container .banner h1 {
+    #container .banner p, #container .banner h1, #container header p, #container header h1 {
       padding: 14px; }
-    #container .banner h1 {
+    #container .banner h1, #container header h1 {
       font-size: 1.2rem;
       color: #f0d01f;
       font-weight: 600; }
