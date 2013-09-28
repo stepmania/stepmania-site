@@ -113,10 +113,16 @@ header {
       margin-bottom: 14px; }
       #container article header p, #container article header h1 {
         padding: 0; }
+    #container article p {
+      margin-bottom: 1em; }
 
 footer p {
   padding: 14px;
   color: #3c3407; }
+
+article.wiki li {
+  list-style-type: disc;
+  margin-left: 15px; }
 
 form {
   padding-top: 14px; }

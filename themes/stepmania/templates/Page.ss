@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title>$SiteConfig.Title</title>
+	<title>$Title - $SiteConfig.Title</title>
 	<link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
 	<% base_tag %>
 	<% require themedCSS(style) %>
@@ -15,14 +15,6 @@
 				<% loop Menu(1) %>
 				<li><a href="$Link" class="$LinkingMode">$MenuTitle</a></li>
 				<% end_loop %>
-				<!--
-				<li><a href="#">SM Micro</a></li>
-				<li><a href="#">Download</a></li>
-				<li><a href="#">Find Content</a></li>
-				<li><a href="#">Wiki</a></li>
-				<li><a href="#">Forums</a></li>
-				<li><a href="#">Help</a></li>
-				-->
 			</ul>
 		</nav>
 	</header>

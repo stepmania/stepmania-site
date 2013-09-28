@@ -97,6 +97,9 @@ header {
 			box-shadow: none;
 			margin-bottom: $spacing;
 		}
+		p {
+			margin-bottom: 1em;
+		}
 	}
 }
 
@@ -107,5 +110,6 @@ footer {
 	}
 }
 
+@import "wiki";
 @import "form";
 @import "silverstripe";
