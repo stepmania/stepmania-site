@@ -120,6 +120,13 @@ footer p {
   padding: 14px;
   color: #3c3407; }
 
+ul.subforums li {
+  border-bottom: 2px solid #f0d01f;
+  padding: 14px; }
+  ul.subforums li a {
+    font-size: 120%;
+    text-decoration: none; }
+
 article.wiki li {
   list-style-type: disc;
   margin-left: 15px; }
