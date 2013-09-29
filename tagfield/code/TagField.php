@@ -38,7 +38,7 @@ class TagField extends TextField {
 	/**
 	 * @var array
 	 */
-	private static $allowed_actions = array(
+	public static $allowed_actions = array(
 		'suggest'
 	);
 	

@@ -1,10 +1,5 @@
-ul.subforums {
-	li {
-		a {
-			font-size: 120%;
-			text-decoration: none;
-		}
+.forum {
+	tr {
 		border-bottom: 2px solid $primary;
-		padding: $spacing;
 	}
 }
