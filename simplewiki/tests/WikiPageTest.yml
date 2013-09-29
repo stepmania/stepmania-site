@@ -1,0 +1,11 @@
+WikiPage:
+    wikipage:
+        Title: Wiki
+    wiki2:
+        Title: More page
+    wiki3:
+        Title: 3rd page
+        Parent: =>WikiPage.wikipage
+    wiki4:
+        Title: 4th page
+        Parent: =>WikiPage.wiki3

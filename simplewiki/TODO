@@ -1,0 +1,7 @@
+* Auto save functionality
+* Improve the wiki rendering engine to support more complete wikimedia syntax
+* Frontend user signup / management module for letting public users sign up
+* Allow non-logged in users to edit pages
+* Integrate some form of spam detection for page edits
+* Page DIFF and version rollback
+* Automatic upload of images/files

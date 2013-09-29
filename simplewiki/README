@@ -1,0 +1,82 @@
+###############################################
+Example Module
+###############################################
+
+Maintainer Contact
+-----------------------------------------------
+Marcus Nyeholt
+
+<marcus (at) silverstripe (dot) com (dot) au>
+
+Requirements
+-----------------------------------------------
+SilverStripe 2.4.x
+
+Documentation
+-----------------------------------------------
+
+To install, extract the module to your silverstripe root directory and run
+/dev/build. 
+
+Within your site, create a top level page of type Wiki Page via the CMS. 
+From then on, you can edit the page from the frontend of the website whenever
+you are logged in. 
+
+To edit a page, click the "Edit" button when viewing a wiki page; if you are
+not logged in, you will be presented a login form. 
+
+Wiki Pages support HTML based wysiwyg editing, or WikiMedia style syntax. This
+is configurable per page on the "Behaviour" tab for the page in the CMS, and 
+is inherited by sub-pages. 
+
+See http://wiki.github.com/nyeholt/silverstripe-simplewiki/ for further details
+
+
+Quick Usage Overview
+-----------------------------------------------
+
+* Login to the CMS
+* Create a page of type Wiki Page in the site root called "Wiki"
+* Navigate to the page on the frontend and click "Edit Page"
+* Enter content and click "Save" (which continues editing) or "Finished" 
+  which will return you to the rendered content
+
+API
+-----------------------------------------------
+
+There are a few configuration variables to be aware of
+
+* WikiPage::$show_edit_button = true; Whether to show the "Edit Page" button to
+  users who aren't logged in (thus triggering the login process)
+* WikiPage::$auto_publish = true; Whether pages are automatically published 
+  whenever they are saved. If this is NOT true, then page edits only affect the
+  'Stage' view of the site, and must be explicitly published (a button is
+  available for this from the frontend). Note also that it means that newly
+  created pages are only available in the 'Stage' view of the site too, even
+  though the published content might refer to them. By default, pages are
+  automatically published as per normal wiki behaviour. 
+* WikiPage::$lock_time = 60; How many seconds pages should be locked for at any
+  time.
+* WikiPage::$purify_output = true; Whether content should be run through
+  HTMLPurify before being output. Defaults to true. 
+
+
+You can register your own formatters now by calling
+
+	WikiPage::register_formatter($formatter)
+
+with an object that implements SimpleWikiFormatter. See the MarkdownFormatter as an example
+
+Troubleshooting
+-----------------------------------------------
+
+* After creating a link to a new page, when I click on the link it says 
+  "Page Not Found"
+  - This is probably caused by the page being created, but only in the 'Stage'
+    view of the site. You need to make sure you're in the stage view, navigate
+    to the page being linked to, and make sure it is 'Published'. 
+
+* My wiki page formatting is all wrong!
+  - The wiki parser being used at the moment only supports a subset of wiki
+    syntax. A better more complete parser will be looked at in a future 
+    release.
