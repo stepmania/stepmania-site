@@ -3,6 +3,7 @@ form {
 	.field {
 		margin-bottom: $spacing;
 		.left {
+			vertical-align: top;
 			display: inline-block;
 			width: 150px;
 			font-size: 1.0rem;

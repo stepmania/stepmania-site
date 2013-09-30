@@ -228,6 +228,7 @@ form {
   form .field {
     margin-bottom: 14px; }
     form .field .left {
+      vertical-align: top;
       display: inline-block;
       width: 150px;
       font-size: 1.0rem;
