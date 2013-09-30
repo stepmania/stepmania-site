@@ -46,7 +46,7 @@ class ForumRole extends DataExtension {
 		'Company' => 'Varchar',
 		'City' => 'Varchar',
 		'Country' => 'Varchar',
-		'Nickname' => 'Varchar',
+		'Nickname' => 'Varchar(255)',
 		'FirstNamePublic' => 'Boolean',
 		'SurnamePublic' => 'Boolean',
 		'OccupationPublic' => 'Boolean',
