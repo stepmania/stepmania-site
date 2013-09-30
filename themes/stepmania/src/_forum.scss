@@ -22,6 +22,22 @@
 		font-weight: 600;
 	}
 }
+.forum-topic {
+	$top: adjust-color($primary, $lightness: 50, $saturation: -35);
+	$bottom: adjust-color($primary, $lightness: 40, $saturation: -35);
+	background: $bottom;
+	background: -moz-linear-gradient(top, $top, $bottom 50px);
+	background: -webkit-linear-gradient(top, $top, $bottom 50px);
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.25);
+	padding: $spacing;
+	p:last-child {
+		margin-bottom: 0 !important;
+	}
+	.topic-title {
+		font-size: 120%;
+		font-weight: 600;
+	}
+}
 .forum-post {
 	padding: $spacing;
 	margin-bottom: $spacing / 4;
