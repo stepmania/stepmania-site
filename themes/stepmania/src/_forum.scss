@@ -115,6 +115,9 @@
 			display: block;
 		}
 		.post-modifiers {
+			a {
+				margin-right: $spacing;
+			}
 			float: right;
 		}
 		.quick-reply {

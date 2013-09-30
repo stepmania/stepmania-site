@@ -9,6 +9,32 @@
 	background: adjust-color(#f00, $lightness: 45);
 }
 
+#Form_PostMessageForm {
+	padding: $spacing;
+	#Form_PostMessageForm_Title {
+		font-size: 120%;
+		font-weight: 600;
+	}
+	.textarea {
+		min-width: 100%;
+		max-width: 100%;
+		min-height: 15em;
+		resize: vertical;
+	}
+	.left {
+		text-align: left;
+		display: block;
+		margin: 0;
+	}
+	.middleColumn {
+		margin: $spacing 0 0 0;
+		display: block;
+	}
+	.BBCodeHint {
+		margin-top: $spacing; // ???
+		display: block;
+	}
+}
 form {
 	.field {
 		margin-bottom: $spacing;

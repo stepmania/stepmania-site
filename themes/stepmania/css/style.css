@@ -238,6 +238,8 @@ footer p {
       display: block; }
     .forum-post .user-content .post-modifiers {
       float: right; }
+      .forum-post .user-content .post-modifiers a {
+        margin-right: 14px; }
     .forum-post .user-content .quick-reply {
       float: right;
       margin-left: 14px; }
@@ -258,6 +260,27 @@ article.wiki li {
 .bad {
   border: 1px solid #ffb3b3;
   background: #ffe5e5; }
+
+#Form_PostMessageForm {
+  padding: 14px; }
+  #Form_PostMessageForm #Form_PostMessageForm_Title {
+    font-size: 120%;
+    font-weight: 600; }
+  #Form_PostMessageForm .textarea {
+    min-width: 100%;
+    max-width: 100%;
+    min-height: 15em;
+    resize: vertical; }
+  #Form_PostMessageForm .left {
+    text-align: left;
+    display: block;
+    margin: 0; }
+  #Form_PostMessageForm .middleColumn {
+    margin: 14px 0 0 0;
+    display: block; }
+  #Form_PostMessageForm .BBCodeHint {
+    margin-top: 14px;
+    display: block; }
 
 form .field {
   margin-bottom: 14px; }
