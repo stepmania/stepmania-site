@@ -83,12 +83,6 @@ class ForumRole extends DataExtension {
 		'SuspendedUntil' => "Suspend this member from writing on forums until the specified date"
 	);
 
-	function onBeforeWrite() {
-		$this->Nickname = substr($this->Nickname, 0, 255);
-
-    	parent::onBeforeWrite();
-	}
-
 	function ForumRank() {
 		$moderatedForums = $this->owner->ModeratedForums();
 		if($moderatedForums && $moderatedForums->Count() > 0) return _t('MODERATOR','Forum Moderator');
@@ -290,7 +284,8 @@ class ForumRole extends DataExtension {
 	 * User" if that's not set)
 	 */
 	function Nickname() {
-		if($this->owner->Nickname) return $this->owner->Nickname;
+		$name = substr($this->owner->Nickname, 0, 255);
+		if($name) return $name;
 		elseif($this->owner->FirstNamePublic && $this->owner->FirstName) return $this->owner->FirstName;
 		else return _t('ForumRole.ANONYMOUS','Anonymous user');
 	}
