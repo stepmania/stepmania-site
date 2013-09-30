@@ -284,7 +284,7 @@ class ForumRole extends DataExtension {
 	 * User" if that's not set)
 	 */
 	function Nickname() {
-		$name = substr($this->owner->Nickname, 0, 255);
+		$name = substr($this->owner->Nickname, 0, 80);
 		if($name) return $name;
 		elseif($this->owner->FirstNamePublic && $this->owner->FirstName) return $this->owner->FirstName;
 		else return _t('ForumRole.ANONYMOUS','Anonymous user');
