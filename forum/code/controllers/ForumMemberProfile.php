@@ -54,7 +54,7 @@ class ForumMemberProfile extends Page_Controller {
 	function init() {
 		Requirements::themedCSS('forum','forum','all');
 		$member = $this->Member() ? $this->Member() : null;
-		$nicknameText = ($member) ? ($member->Nickname . '\'s ') : '';
+		$nicknameText = ($member) ? (substr($member->Nickname, 0, 32) . '\'s ') : '';
 		
 		//$this->Title = DBField::create('HTMLText',Convert::raw2xml($nicknameText) . _t('ForumMemberProfile.USERPROFILE', 'User Profile'));
 		$this->Title = DBField::create_field('HTMLText', Convert::raw2xml($nicknameText) . _t('ForumMemberProfile.USERPROFILE', 'User Profile'));
