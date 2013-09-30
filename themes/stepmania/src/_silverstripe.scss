@@ -32,3 +32,12 @@
 	top: 5px !important;
 	right: 5px !important;
 }
+
+.warning {
+	border: 1px solid #fcc;
+	border-radius: 3px;
+	background: url('../images/warning.jpg') no-repeat;
+	background-size: 100%;
+	background-position: 0 -20px;
+	padding: $spacing;
+}
