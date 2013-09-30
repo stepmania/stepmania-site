@@ -1,6 +1,7 @@
 @import "reset";
 @import "helpers";
 
+//$primary: #aa66cc;
 $primary: #f0d01f;
 $secondary: adjust-color(#21201f, $lightness: 0%);
 $spacing: 14px;
@@ -37,6 +38,12 @@ a:hover {
 	);
 	text-decoration: underline;
 	transition: color ease-out 0.125s;
+}
+
+h2 {
+	font-size: 120%;
+	font-weight: 600;
+	margin-bottom: $spacing;
 }
 
 header {

@@ -4,13 +4,13 @@ form {
 		margin-bottom: $spacing;
 		.left {
 			display: inline-block;
-			width: 100px;
+			width: 150px;
 			font-size: 1.0rem;
 			text-align: right;
+			margin: 0 $spacing;
 		}
 		.middleColumn {
 			display: inline-block;
-			padding: 0 $spacing;
 			input {
 				width: 250px;
 			}

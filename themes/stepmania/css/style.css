@@ -67,6 +67,11 @@ a:hover {
   text-decoration: underline;
   transition: color ease-out 0.125s; }
 
+h2 {
+  font-size: 120%;
+  font-weight: 600;
+  margin-bottom: 14px; }
+
 header {
   background: #21201f;
   box-shadow: 0 2px 0 rgba(0, 0, 0, 0.125); }
@@ -187,16 +192,16 @@ footer p {
     background: -moz-linear-gradient(top, #f9f7ec, #f1ecd1 50px);
     background: -webkit-linear-gradient(top, #f9f7ec, #f1ecd1 50px); }
   .forum-post .user-info {
-    flex: 0 1 auto;
+    flex: 0 0 auto;
     vertical-align: top;
-    width: 188px;
-    margin-right: 14px;
-    padding-right: 14px; }
+    width: 164px;
+    max-width: 164px; }
     .forum-post .user-info .author-link {
       font-weight: 600;
       font-size: 110%; }
     .forum-post .user-info .avatar {
-      margin: 13px 0; }
+      margin: 13px 0;
+      max-width: 100%; }
   .forum-post .user-content {
     flex: 1 1 auto;
     vertical-align: top;
@@ -224,12 +229,12 @@ form {
     margin-bottom: 14px; }
     form .field .left {
       display: inline-block;
-      width: 100px;
+      width: 150px;
       font-size: 1.0rem;
-      text-align: right; }
+      text-align: right;
+      margin: 0 14px; }
     form .field .middleColumn {
-      display: inline-block;
-      padding: 0 14px; }
+      display: inline-block; }
       form .field .middleColumn input {
         width: 250px; }
     form .field input {

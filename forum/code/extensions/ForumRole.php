@@ -160,16 +160,16 @@ class ForumRole extends DataExtension {
 		$personalDetailsFields = new CompositeField(
 			new HeaderField("PersonalDetails", _t('ForumRole.PERSONAL','Personal Details')),
 	
-			new LiteralField("Blurb","<p id=\"helpful\">" . _t('ForumRole.TICK', 'Tick the fields to show in public profile') . "</p>"),
+			//new LiteralField("Blurb","<p id=\"helpful\">" . _t('ForumRole.TICK', 'Tick the fields to show in public profile') . "</p>"),
 	
 			new TextField("Nickname", _t('ForumRole.NICKNAME','Nickname')),
-			new CheckableOption("FirstNamePublic", new TextField("FirstName", _t('ForumRole.FIRSTNAME','First name'))),
-			new CheckableOption("SurnamePublic", new TextField("Surname", _t('ForumRole.SURNAME','Surname'))),
-			new CheckableOption("OccupationPublic", new TextField("Occupation", _t('ForumRole.OCCUPATION','Occupation')), true),
-			new CheckableOption('CompanyPublic', new TextField('Company', _t('ForumRole.COMPANY', 'Company')), true),
-			new CheckableOption('CityPublic', new TextField('City', _t('ForumRole.CITY', 'City')), true),
-			new CheckableOption("CountryPublic", new ForumCountryDropdownField("Country", _t('ForumRole.COUNTRY','Country')), true),
-			new CheckableOption("EmailPublic", new EmailField("Email", _t('ForumRole.EMAIL','Email'))),
+			//new CheckableOption("FirstNamePublic", new TextField("FirstName", _t('ForumRole.FIRSTNAME','First name'))),
+			//new CheckableOption("SurnamePublic", new TextField("Surname", _t('ForumRole.SURNAME','Surname'))),
+			//new CheckableOption("OccupationPublic", new TextField("Occupation", _t('ForumRole.OCCUPATION','Occupation')), true),
+			//new CheckableOption('CompanyPublic', new TextField('Company', _t('ForumRole.COMPANY', 'Company')), true),
+			//new CheckableOption('CityPublic', new TextField('City', _t('ForumRole.CITY', 'City')), true),
+			//new CheckableOption("CountryPublic", new ForumCountryDropdownField("Country", _t('ForumRole.COUNTRY','Country')), true),
+			new EmailField("Email", _t('ForumRole.EMAIL','Email')),
 			new ConfirmedPasswordField("Password", _t('ForumRole.PASSWORD','Password')),
 			//new SimpleImageField("Avatar", _t('ForumRole.AVATAR','Upload avatar ') .' '. $gravatarText)
 			$avatarField

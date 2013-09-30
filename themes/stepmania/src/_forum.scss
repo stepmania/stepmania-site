@@ -57,16 +57,18 @@
 	}
 	border-radius: 2px;
 	.user-info {
-		flex: 0 1 auto;
+		flex: 0 0 auto;
 		vertical-align: top;
-		width: 160px + $spacing * 2;
-		margin-right: $spacing;
-		padding-right: $spacing;
+		width: 150px + $spacing;
+		max-width: 150px + $spacing;
 		.author-link {
 			font-weight: 600;
 			font-size: 110%;
 		}
-		.avatar { margin: $spacing - 1px 0; }
+		.avatar {
+			margin: $spacing - 1px 0;
+			max-width: 100%;
+		}
 		.forum-rank {}
 		.post-count {}
 	}
