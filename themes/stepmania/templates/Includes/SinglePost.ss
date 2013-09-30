@@ -9,28 +9,30 @@
 	</div><!-- user-info. -->
 
 	<div class="user-content">
-		<p class="post-date"><a href="$Link" rel="permalink" title="Permalink to this post">#$ID</a> on $Created.Long at $Created.Time
-		<span class="quick-reply">
-			<% if Thread.canPost %>
-			$Top.ReplyLink
-			<% end_if %>
-		</span>
-		<% if EditLink || DeleteLink %>
-			<span class="post-modifiers">
-				<% if EditLink %>
-					$EditLink
-				<% end_if %>
-				
-				<% if DeleteLink %>
-					$DeleteLink
-				<% end_if %>
-				
-				<% if MarkAsSpamLink %>
-					$MarkAsSpamLink
+		<header>
+			<p class="post-date"><a href="$Link" rel="permalink" title="Permalink to this post">#$ID</a> on $Created.Long at $Created.Time
+			<span class="quick-reply">
+				<% if Thread.canPost %>
+				$Top.ReplyLink
 				<% end_if %>
 			</span>
-		<% end_if %>
-		</p>
+			<% if EditLink || DeleteLink %>
+				<span class="post-modifiers">
+					<% if EditLink %>
+						$EditLink
+					<% end_if %>
+					
+					<% if DeleteLink %>
+						$DeleteLink
+					<% end_if %>
+					
+					<% if MarkAsSpamLink %>
+						$MarkAsSpamLink
+					<% end_if %>
+				</span>
+			<% end_if %>
+			</p>
+		</header>
 		<div class="post-type">
 			$Content.Parse(BBCodeParser)
 		</div>
