@@ -8,6 +8,15 @@
 }
 .forum-news {
 	margin: $spacing 0;
+	.forum-post {
+		display: block;
+	}
+	footer {
+		p {
+			padding: $spacing 0 0 0;
+			color: black;
+		}
+	}
 }
 .forum-subforum {
 	$top: adjust-color($primary, $lightness: 50, $saturation: -35);
@@ -60,6 +69,7 @@
 	}
 	border-radius: 2px;
 	.user-info {
+		overflow: hidden;
 		flex: 0 0 auto;
 		vertical-align: top;
 		width: 150px + $spacing;
@@ -76,6 +86,8 @@
 		.post-count {}
 	}
 	.user-content {
+		overflow: hidden; // damn you, Jousway!
+		padding-bottom: 1ex;
 		flex: 1 1 auto;
 		vertical-align: top;
 		overflow: hidden;

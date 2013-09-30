@@ -156,6 +156,11 @@ footer p {
 
 .forum-news {
   margin: 14px 0; }
+  .forum-news .forum-post {
+    display: block; }
+  .forum-news footer p {
+    padding: 14px 0 0 0;
+    color: black; }
 
 .forum-subforum {
   background: #f7f4e4;
@@ -197,6 +202,7 @@ footer p {
     background: -moz-linear-gradient(top, #f9f7ec, #f1ecd1 50px);
     background: -webkit-linear-gradient(top, #f9f7ec, #f1ecd1 50px); }
   .forum-post .user-info {
+    overflow: hidden;
     flex: 0 0 auto;
     vertical-align: top;
     width: 164px;
@@ -208,6 +214,8 @@ footer p {
       margin: 13px 0;
       max-width: 100%; }
   .forum-post .user-content {
+    overflow: hidden;
+    padding-bottom: 1ex;
     flex: 1 1 auto;
     vertical-align: top;
     overflow: hidden; }
