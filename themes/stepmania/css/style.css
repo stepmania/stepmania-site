@@ -161,6 +161,8 @@ footer p {
   .forum-news footer p {
     padding: 14px 0 0 0;
     color: black; }
+  .forum-news footer .post-modifiers {
+    float: right; }
 
 .forum-subforum {
   background: #f7f4e4;
