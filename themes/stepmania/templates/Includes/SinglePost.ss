@@ -2,6 +2,7 @@
 	<div class="user-info">
 		<% with Author %>
 			<a class="author-link" href="$Link" title="<% _t('SinglePost_ss.GOTOPROFILE','Go to this User&rsquo;s Profile') %>">$Nickname</a><br />
+			<span class="custom-title">$CustomTitle.LimitCharacters(32)</span>
 			<img class="avatar" src="$FormattedAvatar" alt="Avatar" /><br />
 			<% if ForumRank %><span class="forum-rank">$ForumRank</span><br /><% end_if %>
 			<% if NumPosts %><span class="post-count">Posts: $NumPosts </span><% end_if %>

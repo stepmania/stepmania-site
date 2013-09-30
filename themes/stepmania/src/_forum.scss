@@ -95,14 +95,18 @@
 			font-weight: 600;
 			font-size: 110%;
 		}
+		.custom-title {
+			display: block;
+		}
 		.avatar {
-			margin: $spacing - 1px 0; // wtf!
+			margin: $spacing 0;
 			max-width: 100%;
 		}
 		.forum-rank {}
 		.post-count {}
 	}
 	.user-content {
+		line-height: 1.4em;
 		overflow: hidden; // damn you, Jousway!
 		padding-bottom: 1ex;
 		flex: 1 1 auto;

@@ -223,10 +223,13 @@ footer p {
     .forum-post .user-info .author-link {
       font-weight: 600;
       font-size: 110%; }
+    .forum-post .user-info .custom-title {
+      display: block; }
     .forum-post .user-info .avatar {
-      margin: 13px 0;
+      margin: 14px 0;
       max-width: 100%; }
   .forum-post .user-content {
+    line-height: 1.4em;
     overflow: hidden;
     padding-bottom: 1ex;
     flex: 1 1 auto;

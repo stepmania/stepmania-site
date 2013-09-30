@@ -47,6 +47,7 @@ class ForumRole extends DataExtension {
 		'City' => 'Varchar',
 		'Country' => 'Varchar',
 		'Nickname' => 'Varchar(255)',
+		'CustomTitle' => 'Varchar(255)',
 		'FirstNamePublic' => 'Boolean',
 		'SurnamePublic' => 'Boolean',
 		'OccupationPublic' => 'Boolean',
@@ -178,6 +179,10 @@ class ForumRole extends DataExtension {
 		if(!$addmode) {
 			$personalDetailsFields->push(
 				new ReadonlyField("ForumRank", _t('ForumRole.RATING','User rating'))
+			);
+			$personalDetailsFields->insertAfter(
+				new TextField("CustomTitle", _t('ForumRole.CUSTOMTITLE','Custom Title')),
+				"Nickname"
 			);
 		}
 		$personalDetailsFields->setID('PersonalDetailsFields');
