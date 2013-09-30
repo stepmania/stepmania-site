@@ -48,13 +48,23 @@ table {
 
 /* for mixins and stuff */
 .limit-width {
-  width: 960px;
+  max-width: 960px;
   margin: 0 auto; }
 
 body {
   background: #f0d01f;
   font-family: 'Open Sans', sans-serif;
   font-size: 10pt; }
+
+a {
+  color: #9d201f;
+  text-decoration: none;
+  transition: color ease-in 0.25s; }
+
+a:hover {
+  color: #54201f;
+  text-decoration: underline;
+  transition: color ease-out 0.125s; }
 
 header {
   background: #21201f;
@@ -77,13 +87,13 @@ header {
         color: white;
         background: #21201f;
         transition: background-color 0.5s linear; }
-        header nav ul li a.current {
+        header nav ul li a.current, header nav ul li a.section {
           border-bottom: 4px solid #f0d01f; }
         header nav ul li a:hover {
           transition: background-color 0.125s linear;
           border-bottom-color: #635713;
           background: #38310b; }
-          header nav ul li a:hover.current {
+          header nav ul li a:hover.current, header nav ul li a:hover.section {
             border-bottom: 4px solid #f0d01f; }
 
 #container {
@@ -128,7 +138,7 @@ footer p {
   color: #3c3407; }
 
 .forum-footer {
-  margin: 14px; }
+  margin-top: 14px; }
 
 .forum-search-bar {
   display: inline-block;
@@ -136,19 +146,27 @@ footer p {
   margin-right: 14px; }
 
 .forum-post {
-  margin: 14px;
+  padding: 14px;
+  margin-bottom: 3.5px;
   vertical-align: top;
-  display: flex; }
+  display: flex;
+  background: white;
+  background: -moz-linear-gradient(top, white, #f7f4e4 40px);
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.25);
+  border-radius: 2px; }
+  .forum-post:nth-child(even) {
+    background: -moz-linear-gradient(top, #f9f7ec, #f1ecd1 50px); }
   .forum-post .user-info {
     flex: 0 1 auto;
     vertical-align: top;
     width: 200px;
     margin-right: 14px;
-    padding-right: 14px;
-    border-right: 2px solid #f0d01f; }
+    padding-right: 14px; }
     .forum-post .user-info .author-link {
       font-weight: 600;
       font-size: 110%; }
+    .forum-post .user-info .avatar {
+      margin: 14px 0; }
   .forum-post .user-content {
     flex: 1 1 auto;
     vertical-align: top;

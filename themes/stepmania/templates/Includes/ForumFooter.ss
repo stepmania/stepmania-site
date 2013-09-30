@@ -22,5 +22,17 @@
 				<% end_loop %>
 			<% end_if %>
 		</p>
-	</div><!-- forum-footer. -->
+		<% loop ForumHolder %>
+		<div class="forum-header-forms">
+			<% if NumPosts %>
+				<p class="forumStats">
+					$NumPosts 
+					<strong><% _t('ForumHeader_ss.POSTS','Posts') %></strong> 
+					<% _t('ForumHeader_ss.IN','in') %> $NumTopics <strong><% _t('ForumHeader_ss.TOPICS','Topics') %></strong> 
+					<% _t('ForumHeader_ss.BY','by') %> $NumAuthors <strong><% _t('ForumHeader_ss.MEMBERS','members') %></strong>
+				</p>
+			<% end_if %>
+		</div><%-- forum-header-forms. --%>
+		<% end_loop %>
+	</div><%-- forum-footer. --%>
 <% end_with %>

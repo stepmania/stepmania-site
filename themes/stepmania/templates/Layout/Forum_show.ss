@@ -29,9 +29,6 @@
 			</td>
 		</tr>
 		<tr class="author">
-			<td class="name">
-				<span><% _t('Forum_show_ss.AUTHOR','Author') %></span>
-			</td>
 			<td class="topic">
 				<span><strong><% _t('Forum_show_ss.TOPIC','Topic:') %></strong> $ForumThread.Title</span>
 			</td>
@@ -47,8 +44,6 @@
 
 	<table class="forum-topics">
 		<tr class="author">
-			<td class="author">&nbsp;</td>
-			<td class="topic">&nbsp;</td>
 			<td class="views">
 				<span><strong>$ForumThread.NumViews <% _t('Forum_show_ss.VIEWS','Views') %></strong></span>
 			</td>
@@ -60,9 +55,6 @@
 						<a class="prev" href="$Posts.PrevLink" title="<% _t('Forum_show_ss.PREVTITLE','View the previous page') %>"><% _t('Forum_show_ss.PREVLINK','Prev') %></a>
 					<% end_if %>
 				<% end_if %>
-			</td>
-			<td class="gotoButtonTop" >
-				<a href="#Header" title="<% _t('Forum_show_ss.CLICKGOTOTOP','Click here to go the top of this post') %>"><% _t('Forum_show_ss.GOTOTOP','Go to Top') %></a>
 			</td>
 			<td class="replyButton">
 				<% if ForumThread.canCreate %>

@@ -9,7 +9,7 @@
 	</div><!-- user-info. -->
 
 	<div class="user-content">
-		<p class="post-date"><a href="$Link">#$ID <img src="forum/images/right.png" alt="Link to this post" title="Link to this post" /></a> on $Created.Long at $Created.Time
+		<p class="post-date"><a href="$Link" rel="permalink" title="Permalink to this post">#$ID</a> on $Created.Long at $Created.Time
 		<% if Updated %>
 			<strong><% _t('SinglePost_ss.LASTEDITED','Last edited:') %> $Updated.Long <% _t('SinglePost_ss.AT') %> $Updated.Time</strong>
 		<% end_if %>

@@ -1,5 +1,5 @@
 .forum-footer {
-	margin: $spacing;
+	margin-top: $spacing;
 }
 .forum-search-bar {
 	display: inline-block;
@@ -7,23 +7,34 @@
 	margin-right: $spacing;
 }
 .forum-post {
-	margin: $spacing;
+	padding: $spacing;
+	margin-bottom: $spacing / 4;
 	vertical-align: top;
 	display: flex;
+	background: white;
+	$top: adjust-color($primary, $lightness: 50, $saturation: -35);
+	$bottom: adjust-color($primary, $lightness: 40, $saturation: -35);
+	background: -moz-linear-gradient(top, $top, $bottom 40px);
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.25);
+	&:nth-child(even) {
+//		background: adjust-color($primary, $lightness: 35, $saturation: -50);
+		background: -moz-linear-gradient(top, darken($top, 5%), darken($bottom, 5%) 50px);
+	}
+	border-radius: 2px;
 	.user-info {
 		flex: 0 1 auto;
 		vertical-align: top;
 		width: 200px;
 		margin-right: $spacing;
 		padding-right: $spacing;
+		//border-right: 2px solid $primary;
 		.author-link {
 			font-weight: 600;
 			font-size: 110%;
 		}
-		.avatar {}
+		.avatar { margin: $spacing 0; }
 		.forum-rank {}
 		.post-count {}
-		border-right: 2px solid $primary;
 	}
 	.user-content {
 		flex: 1 1 auto;
@@ -44,3 +55,5 @@
 		.attachments {}
 	}
 }
+
+.forum-stats {}
