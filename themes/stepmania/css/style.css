@@ -115,13 +115,45 @@ header {
         padding: 0; }
     #container article p {
       margin-bottom: 1em; }
+  #container .login {
+    background: #21201f;
+    padding: 14px; }
+    #container .login a {
+      color: white;
+      text-decoration: none; }
 
 footer p {
   padding: 14px;
   color: #3c3407; }
 
-.forum tr {
-  border-bottom: 2px solid #f0d01f; }
+.forum-footer {
+  margin: 14px; }
+
+.forum-post {
+  margin: 14px;
+  vertical-align: top;
+  display: flex; }
+  .forum-post .user-info {
+    flex: 0 1 auto;
+    vertical-align: top;
+    width: 200px;
+    margin-right: 14px;
+    padding-right: 14px;
+    border-right: 2px solid #f0d01f; }
+    .forum-post .user-info .author-link {
+      font-weight: 600;
+      font-size: 110%; }
+  .forum-post .user-content {
+    flex: 1 1 auto;
+    vertical-align: top;
+    overflow: hidden; }
+    .forum-post .user-content .post-date {
+      display: block; }
+    .forum-post .user-content .post-modifiers {
+      float: right; }
+    .forum-post .user-content .quick-reply {
+      float: right;
+      margin-left: 14px; }
 
 article.wiki li {
   list-style-type: disc;

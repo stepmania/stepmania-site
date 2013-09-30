@@ -1,5 +1,42 @@
-.forum {
-	tr {
-		border-bottom: 2px solid $primary;
+.forum-footer {
+	margin: $spacing;
+}
+
+.forum-post {
+	margin: $spacing;
+	vertical-align: top;
+	display: flex;
+	.user-info {
+		flex: 0 1 auto;
+		vertical-align: top;
+		width: 200px;
+		margin-right: $spacing;
+		padding-right: $spacing;
+		.author-link {
+			font-weight: 600;
+			font-size: 110%;
+		}
+		.avatar {}
+		.forum-rank {}
+		.post-count {}
+		border-right: 2px solid $primary;
+	}
+	.user-content {
+		flex: 1 1 auto;
+		vertical-align: top;
+		overflow: hidden;
+		.post-date {
+			display: block;
+		}
+		.post-modifiers {
+			float: right;
+		}
+		.quick-reply {
+			float: right;
+			margin-left: $spacing;
+		}
+		.post-type {}
+		.signature {}
+		.attachments {}
 	}
 }

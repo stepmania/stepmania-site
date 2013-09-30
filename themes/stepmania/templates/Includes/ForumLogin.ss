@@ -1,7 +1,7 @@
-<div id="RegisterLogin">
+<div id="RegisterLogin" class="login">
 	<% if CurrentMember %>
 		<p>
-			<% _t('ForumLogin_ss.LOGGEDINAS','You\'re logged in as') %> <% if CurrentMember.Nickname %>$CurrentMember.Nickname<% else %><% _t('ForumLogin_ss.ANONYMOUS','Anonymous') %><% end_if %> | 
+			<% _t('ForumLogin_ss.LOGGEDINAS',"You're logged in as") %> <% if CurrentMember.Nickname %>$CurrentMember.Nickname<% else %><% _t('ForumLogin_ss.ANONYMOUS','Anonymous') %><% end_if %> | 
 			<a href="$ForumHolder.Link(logout)" title="<% _t('ForumLogin_ss.LOGOUTEXPLICATION','Click here to log out') %>"><% _t('ForumLogin_ss.LOGOUT','Log Out') %></a> | <a href="ForumMemberProfile/edit" title="<% _t('ForumLogin_ss.PROFILEEXPLICATION','Click here to edit your profile') %>"><% _t('ForumLogin_ss.PROFILE','Profile') %></a></p>
 	<% else %>
 		<p>
@@ -13,6 +13,7 @@
 				(<a href="#" id="ShowOpenIDdesc"><% _t('ForumLogin_ss.WHATOPENID','What is OpenID?') %></a>)
 			<% end_if %>
 		</p>
+		<!--
 		<div id="OpenIDDescription">
 	  		<span><a href="#" id="HideOpenIDdesc">X</a></span>
 			<h2><% _t('ForumLogin_ss.WHATOPENIDUPPER','What is OpenID?') %></h2>
@@ -20,5 +21,6 @@
 			<p><% _t('ForumLogin_ss.OPENIDDESC2','With OpenID, your ID becomes a URL (e.g. http://<strong>username</strong>.myopenid.com/). You can get a free OpenID for example from <a href="http://www.myopenid.com">myopenid.com</a>.') %></p>
 			<p><% _t('ForumLogin_ss.OPENIDDESC3','For more information visit the <a href="http://openid.net">official OpenID site.') %></a></p>
 		</div>
+		-->
 	<% end_if %>
 </div>

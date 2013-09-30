@@ -101,6 +101,14 @@ header {
 			margin-bottom: 1em;
 		}
 	}
+	.login {
+		background: $secondary;
+		padding: $spacing;
+		a {
+			color: white;
+			text-decoration: none;
+		}
+	}
 }
 
 footer {

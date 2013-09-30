@@ -11,10 +11,12 @@
 				"cms",
 				"framework",
 				// ignore modules, too
-				"sqlite3"
+				"sqlite3",
+				// caches/misc
+				".sass-cache"
 			],
 			"file_exclude_patterns": [
-				"*.sublime-*",
+				"*.sublime-workspace",
 				"*.ico"
 			]
 		}

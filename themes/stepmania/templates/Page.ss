@@ -20,6 +20,7 @@
 	</header>
 	<div id="container" class="limit-width">
 		$Layout
+		<% include ForumLogin %>
 	</div>
 	<footer class="limit-width">
 		<p>StepMania is open source software released under the MIT License</p>
