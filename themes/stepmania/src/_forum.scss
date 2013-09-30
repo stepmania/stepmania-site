@@ -6,6 +6,20 @@
 	float: right;
 	margin-right: $spacing;
 }
+.logged-in {
+	color: #aaa;
+}
+.user-profile {
+	.left {
+		display: inline-block;
+		width: 150px + $spacing;
+		float: left;
+	}
+	.middleColumn {
+		display: inline-block;
+		float: left;
+	}
+}
 .forum-news {
 	margin: $spacing 0;
 	.forum-post {

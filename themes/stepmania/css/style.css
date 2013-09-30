@@ -154,6 +154,17 @@ footer p {
   float: right;
   margin-right: 14px; }
 
+.logged-in {
+  color: #aaa; }
+
+.user-profile .left {
+  display: inline-block;
+  width: 164px;
+  float: left; }
+.user-profile .middleColumn {
+  display: inline-block;
+  float: left; }
+
 .forum-news {
   margin: 14px 0; }
   .forum-news .forum-post {
