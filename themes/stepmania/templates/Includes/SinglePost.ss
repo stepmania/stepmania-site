@@ -10,9 +10,6 @@
 
 	<div class="user-content">
 		<p class="post-date"><a href="$Link" rel="permalink" title="Permalink to this post">#$ID</a> on $Created.Long at $Created.Time
-		<% if Updated %>
-			<strong><% _t('SinglePost_ss.LASTEDITED','Last edited:') %> $Updated.Long <% _t('SinglePost_ss.AT') %> $Updated.Time</strong>
-		<% end_if %>
 		<span class="quick-reply">
 			<% if Thread.canPost %>
 			$Top.ReplyLink
@@ -37,6 +34,10 @@
 		<div class="post-type">
 			$Content.Parse(BBCodeParser)
 		</div>
+
+		<% if Updated %>
+			<p class="post-edited"><% _t('SinglePost_ss.LASTEDITED','Last edited:') %> $Updated.Long <% _t('SinglePost_ss.AT') %> $Updated.Time</p>
+		<% end_if %>
 		
 		<% if Thread.DisplaySignatures %>
 			<% with Author %>

@@ -189,18 +189,20 @@ footer p {
   .forum-post .user-info {
     flex: 0 1 auto;
     vertical-align: top;
-    width: 200px;
+    width: 188px;
     margin-right: 14px;
     padding-right: 14px; }
     .forum-post .user-info .author-link {
       font-weight: 600;
       font-size: 110%; }
     .forum-post .user-info .avatar {
-      margin: 14px 0; }
+      margin: 13px 0; }
   .forum-post .user-content {
     flex: 1 1 auto;
     vertical-align: top;
     overflow: hidden; }
+    .forum-post .user-content img {
+      max-width: 100%; }
     .forum-post .user-content .post-date {
       display: block; }
     .forum-post .user-content .post-modifiers {
@@ -208,6 +210,9 @@ footer p {
     .forum-post .user-content .quick-reply {
       float: right;
       margin-left: 14px; }
+    .forum-post .user-content .post-edited {
+      color: #555;
+      font-style: italic; }
 
 article.wiki li {
   list-style-type: disc;

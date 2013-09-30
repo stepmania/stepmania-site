@@ -10,5 +10,4 @@
 			<% end_loop %>
 		</p>
 	<% end_if %>
-
-</div><!-- forum-header. -->
+</div>

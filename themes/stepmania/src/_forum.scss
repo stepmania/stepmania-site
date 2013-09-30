@@ -59,14 +59,14 @@
 	.user-info {
 		flex: 0 1 auto;
 		vertical-align: top;
-		width: 200px;
+		width: 160px + $spacing * 2;
 		margin-right: $spacing;
 		padding-right: $spacing;
 		.author-link {
 			font-weight: 600;
 			font-size: 110%;
 		}
-		.avatar { margin: $spacing 0; }
+		.avatar { margin: $spacing - 1px 0; }
 		.forum-rank {}
 		.post-count {}
 	}
@@ -74,6 +74,9 @@
 		flex: 1 1 auto;
 		vertical-align: top;
 		overflow: hidden;
+		img {
+			max-width: 100%;
+		}
 		.post-date {
 			display: block;
 		}
@@ -83,6 +86,10 @@
 		.quick-reply {
 			float: right;
 			margin-left: $spacing;
+		}
+		.post-edited {
+			color: #555;
+			font-style: italic;
 		}
 		.post-type {}
 		.signature {}

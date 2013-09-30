@@ -1,7 +1,7 @@
 <% include ForumBanner %>
 <article>
 	<% include ForumHeader %>
-	<table class="forum-topics">
+	<div class="forum-topics">
 		<div class="category">
 			<div class="page-numbers">
 				<span><strong><% _t('Forum_show_ss.PAGE','Page:') %></strong></span>
@@ -14,24 +14,8 @@
 					<% if not Last %>,<% end_if %>
 				<% end_loop %>
 			</div>
-			<div class="replyButton">
-				<% if ForumThread.canCreate %>
-					<a href="$ReplyLink" title="<% _t('Forum_show_ss.CLICKREPLY','Click here to reply to this topic') %>"><% _t('Forum_show_ss.REPLY','Reply') %></a>
-				<% end_if %>
-				<% if CurrentMember %>
-					<% include ForumThreadSubscribe %>
-				<% end_if %>
-			</div>
 		</div>
-		<div class="author">
-			<div class="topic">
-				<span><strong><% _t('Forum_show_ss.TOPIC','Topic:') %></strong> $ForumThread.Title</span>
-			</div>
-			<div class="views">
-				<span><strong>$ForumThread.NumViews <% _t('Forum_show_ss.VIEWS','Views') %></strong></span>
-			</div>
-		</div>
-	</table>
+ 	</div>
 	<% loop Posts %>
 		<% include SinglePost %>
 	<% end_loop %>

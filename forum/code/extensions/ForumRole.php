@@ -306,7 +306,7 @@ class ForumRole extends DataExtension {
 			$avatar = DataObject::get_by_id("Image", $this->owner->AvatarID);
 			if(!$avatar) return $default;
 			
-			$resizedAvatar = $avatar->SetWidth(80);
+			$resizedAvatar = $avatar->SetWidth(150);
 			if(!$resizedAvatar) return $default;
 			
 			return $resizedAvatar->URL;
