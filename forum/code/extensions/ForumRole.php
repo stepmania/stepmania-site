@@ -315,7 +315,7 @@ class ForumRole extends DataExtension {
 
 		if($holder = DataObject::get_one("ForumHolder", "\"AllowGravatars\" = 1")) {
 			// ok. no image but can we find a gravatar. Will return the default image as defined above if not.
-			return "http://www.gravatar.com/avatar/".md5($this->owner->Email)."?default=".urlencode($default)."&amp;size=80";
+			return "http://www.gravatar.com/avatar/".md5($this->owner->Email)."?default=".urlencode($default)."&amp;size=150";
 		}
 
 		return $default;
