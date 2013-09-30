@@ -223,34 +223,42 @@ article.wiki li {
   list-style-type: disc;
   margin-left: 15px; }
 
-form {
-  padding-top: 14px; }
-  form .field {
-    margin-bottom: 14px; }
-    form .field .left {
-      vertical-align: top;
-      display: inline-block;
-      width: 150px;
-      font-size: 1.0rem;
-      text-align: right;
-      margin: 0 14px; }
-    form .field .middleColumn {
-      display: inline-block; }
-      form .field .middleColumn input {
-        width: 250px; }
-    form .field input {
-      padding: 3.5px;
-      background: white;
-      box-shadow: 0 -2px 0 #f0d01f inset;
-      border: 1px solid #aaa;
-      border: none;
-      border-radius: 3px;
-      display: inline-block; }
-  form .Actions .action {
+.message {
+  border-radius: 3px;
+  border: 1px solid #00cc00;
+  background: #ccffcc;
+  padding: 14px; }
+
+.bad {
+  border: 1px solid #ffb3b3;
+  background: #ffe5e5; }
+
+form .field {
+  margin-bottom: 14px; }
+  form .field .left {
+    vertical-align: top;
+    display: inline-block;
+    width: 150px;
+    font-size: 1.0rem;
+    text-align: right;
+    margin: 0 14px; }
+  form .field .middleColumn {
     display: inline-block; }
-  form .Actions #ForgotPassword {
-    margin-left: 14px;
+    form .field .middleColumn input {
+      width: 250px; }
+  form .field input {
+    padding: 3.5px;
+    background: white;
+    box-shadow: 0 -2px 0 #f0d01f inset;
+    border: 1px solid #aaa;
+    border: none;
+    border-radius: 3px;
     display: inline-block; }
+form .Actions .action {
+  display: inline-block; }
+form .Actions #ForgotPassword {
+  margin-left: 14px;
+  display: inline-block; }
 
 #SilverStripeNavigator {
   background: #21201f !important;

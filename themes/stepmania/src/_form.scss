@@ -1,5 +1,15 @@
+.message {
+	border-radius: 3px;
+	border: 1px solid adjust-color(#0f0, $lightness: -10);
+	background: adjust-color(#0f0, $lightness: 40);
+	padding: $spacing;
+}
+.bad {
+	border: 1px solid adjust-color(#f00, $lightness: 35);
+	background: adjust-color(#f00, $lightness: 45);
+}
+
 form {
-	padding-top: $spacing;
 	.field {
 		margin-bottom: $spacing;
 		.left {
