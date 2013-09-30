@@ -4,14 +4,14 @@
 //$primary: #aa66cc;
 $primary: #f0d01f;
 $secondary: adjust-color(#21201f, $lightness: 0%);
-$spacing: 14px;
+$spacing: 12px;
 $rounding: 5px;
 $shadow: 0 2px 0 rgba(0, 0, 0, 0.125);
 
 @import url(http://fonts.googleapis.com/css?family=Open+Sans:400,600,700,400italic,300);
 
 .limit-width {
-	width: 95%;
+	width: 98%;
 	max-width: 960px;
 	margin: 0 auto;
 }

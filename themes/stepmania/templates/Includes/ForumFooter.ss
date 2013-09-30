@@ -22,6 +22,7 @@
 				<% end_loop %>
 			<% end_if %>
 		</p>
+		<!--
 		<% loop ForumHolder %>
 		<div class="forum-header-forms">
 			<% if NumPosts %>
@@ -34,5 +35,6 @@
 			<% end_if %>
 		</div><%-- forum-header-forms. --%>
 		<% end_loop %>
+	-->
 	</div><%-- forum-footer. --%>
 <% end_with %>
