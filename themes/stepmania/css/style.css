@@ -90,6 +90,8 @@ header {
         header nav ul li a.current, header nav ul li a.section {
           border-bottom: 4px solid #f0d01f; }
         header nav ul li a:hover {
+          color: white;
+          text-decoration: none;
           transition: background-color 0.125s linear;
           border-bottom-color: #635713;
           background: #38310b; }

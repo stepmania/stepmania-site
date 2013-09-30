@@ -64,6 +64,8 @@ header {
 					border-bottom: 4px solid $primary;
 				}
 				&:hover {
+					color: white;
+					text-decoration: none;
 					transition: background-color 0.125s linear;
 					&.current, &.section {
 						border-bottom: 4px solid $primary;
