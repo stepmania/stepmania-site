@@ -1,6 +1,7 @@
-<% include ForumHeader %>
+<% include ForumBanner %>
+<article>
+	<% include ForumHeader %>
 	$PostMessageForm
-	
 	<div id="PreviousPosts">
 		<ul id="Posts">
 			<% loop Posts(DESC) %>
@@ -11,5 +12,5 @@
 		</ul>
 		<div class="clear"><!-- --></div>
 	</div>
-	
-<% include ForumFooter %>
+	<% include ForumFooter %>
+</article>

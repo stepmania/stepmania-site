@@ -133,6 +133,8 @@ header {
         padding: 0; }
     #container article p {
       margin-bottom: 1em; }
+      #container article p:last-child {
+        margin-bottom: 0; }
   #container .login {
     background: #21201f;
     padding: 14px; }
@@ -151,6 +153,9 @@ footer p {
   display: inline-block;
   float: right;
   margin-right: 14px; }
+
+.forum-news {
+  margin: 14px 0; }
 
 .forum-subforum {
   background: #f7f4e4;

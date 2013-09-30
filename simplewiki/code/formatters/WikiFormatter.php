@@ -20,7 +20,7 @@ class WikiFormatter extends SimpleWikiFormatter {
 	public function formatRaw($string) {
 		
 		include_once SIMPLEWIKI_DIR . '/thirdparty/wikiparser-1.0/class_WikiParser.php';
-		$parser = &new WikiParser();
+		$parser = new WikiParser();
 		$parser->emphasis = array();
 		$parser->preformat = false;
 		

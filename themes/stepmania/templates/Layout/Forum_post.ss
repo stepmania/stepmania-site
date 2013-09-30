@@ -1,3 +1,4 @@
+<% include ForumBanner %>
 <article>
 	<div id="Content">
 		<div class="TopicList">

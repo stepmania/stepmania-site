@@ -9,7 +9,7 @@
 			<% include ForumHolder_List %>
 		<% end_loop %>
 	<% end_if %>
-
+	$Content
 	<% if ShowInCategories %>
 		<% loop Forums %>
 			<!--<li class="category">$Title</li>

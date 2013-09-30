@@ -1,5 +1,6 @@
-<% include ForumHeader %>
+<% include ForumBanner %>
 <article>
+	<% include ForumHeader %>
 	$EditForm
+	<% include ForumFooter %>
 </article>	
-<% include ForumFooter %>

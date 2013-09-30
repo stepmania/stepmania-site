@@ -19,7 +19,7 @@
 		<% if getStickyTopics(0) %>
 			<div class="forum-sticky-topics" class="topicList" summary="List of sticky topics in this forum">
 				<tr class="category">
-					<div colspan="3"><% _t('Forum_ss.ANNOUNCEMENTS', 'Announcements') %></div>
+					<div><% _t('Forum_ss.ANNOUNCEMENTS', 'Announcements') %></div>
 				</tr>
 				<% loop getStickyTopics(0) %>
 					<% include TopicListing %>
@@ -29,7 +29,7 @@
 		<div class="forum-topics" summary="List of topics in this forum">
 			<!--
 			<div class="category">
-				<div colspan="4"><% _t('Forum_ss.THREADS', 'Threads') %></div>
+				<div><% _t('Forum_ss.THREADS', 'Threads') %></div>
 			</div>
 			<div>
 				<div class="odd"><% _t('Forum_ss.TOPIC','Topic') %></div>
@@ -43,7 +43,7 @@
 				<% end_loop %>
 			<% else %>
 				<div>
-					<div colspan="3" class="forumCategory"><% _t('Forum_ss.NOTOPICS','There are no topics in this forum, ') %><a href="{$Link}starttopic" title="<% _t('Forum_ss.NEWTOPIC') %>"><% _t('Forum_ss.NEWTOPICTEXT','click here to start a new topic') %>.</a></div>
+					<div class="forumCategory"><% _t('Forum_ss.NOTOPICS','There are no topics in this forum, ') %><a href="{$Link}starttopic" title="<% _t('Forum_ss.NEWTOPIC') %>"><% _t('Forum_ss.NEWTOPICTEXT','click here to start a new topic') %>.</a></div>
 				</div>
 			<% end_if %>
 		</div>

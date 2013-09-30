@@ -6,6 +6,9 @@
 	float: right;
 	margin-right: $spacing;
 }
+.forum-news {
+	margin: $spacing 0;
+}
 .forum-subforum {
 	$top: adjust-color($primary, $lightness: 50, $saturation: -35);
 	$bottom: adjust-color($primary, $lightness: 40, $saturation: -35);

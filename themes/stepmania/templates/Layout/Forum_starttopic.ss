@@ -1,7 +1,10 @@
-<% include ForumHeader %>
-<div id="TopicTree">
-	<div id="Root">
-		$PostMessageForm(true)
+<% include ForumBanner %>
+<article>
+	<% include ForumHeader %>
+	<div id="TopicTree">
+		<div id="Root">
+			$PostMessageForm(true)
+		</div>
 	</div>
-</div>
-<% include ForumFooter %>
+	<% include ForumFooter %>
+</article>
