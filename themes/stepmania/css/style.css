@@ -70,7 +70,7 @@ a:hover {
 h2 {
   font-size: 120%;
   font-weight: 600;
-  margin-bottom: 12px; }
+  margin-bottom: 14px; }
 
 header {
   background: #21201f;
@@ -85,8 +85,8 @@ header {
     header nav ul li {
       float: left; }
       header nav ul li a {
-        padding: 12px;
-        padding-bottom: 8px;
+        padding: 14px;
+        padding-bottom: 10px;
         border-bottom: 4px solid #21201f;
         display: inline-block;
         text-decoration: none;
@@ -114,21 +114,21 @@ header {
     background: #21201f;
     color: white; }
     #container .banner p, #container .banner h1, #container header p, #container header h1 {
-      padding: 12px; }
+      padding: 14px; }
     #container .banner h1, #container header h1 {
       display: inline-block;
       font-size: 1.2rem;
       color: #f0d01f;
       font-weight: 600; }
   #container article {
-    padding: 12px; }
+    padding: 14px; }
     #container article:last-child {
       margin-bottom: 0; }
     #container article header {
       color: #333;
       background: none;
       box-shadow: none;
-      margin-bottom: 12px; }
+      margin-bottom: 14px; }
       #container article header p, #container article header h1 {
         padding: 0; }
     #container article p {
@@ -137,40 +137,40 @@ header {
         margin-bottom: 0; }
   #container .login {
     background: #21201f;
-    padding: 12px; }
+    padding: 14px; }
     #container .login a {
       color: white;
       text-decoration: none; }
 
 footer p {
-  padding: 12px;
+  padding: 14px;
   color: #3c3407; }
 
 .forum-footer {
-  margin-top: 12px; }
+  margin-top: 14px; }
 
 .forum-search-bar {
   display: inline-block;
   float: right;
-  margin-right: 12px; }
+  margin-right: 14px; }
 
 .logged-in {
   color: #aaa; }
 
 .user-profile .left {
   display: inline-block;
-  width: 162px;
+  width: 164px;
   float: left; }
 .user-profile .middleColumn {
   display: inline-block;
   float: left; }
 
 .forum-news {
-  margin: 12px 0; }
+  margin: 14px 0; }
   .forum-news .forum-post {
     display: block; }
   .forum-news footer p {
-    padding: 12px 0 0 0;
+    padding: 14px 0 0 0;
     color: black; }
   .forum-news footer .post-modifiers {
     float: right; }
@@ -180,7 +180,7 @@ footer p {
   background: -moz-linear-gradient(top, white, #f7f4e4 50px);
   background: -webkit-linear-gradient(top, white, #f7f4e4 50px);
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.25);
-  padding: 12px; }
+  padding: 14px; }
   .forum-subforum p:last-child {
     margin-bottom: 0 !important; }
   .forum-subforum .topic-title {
@@ -192,7 +192,7 @@ footer p {
   background: -moz-linear-gradient(top, white, #f7f4e4 50px);
   background: -webkit-linear-gradient(top, white, #f7f4e4 50px);
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.25);
-  padding: 12px; }
+  padding: 14px; }
   .forum-topic p:last-child {
     margin-bottom: 0 !important; }
   .forum-topic .topic-title {
@@ -200,8 +200,8 @@ footer p {
     font-weight: 600; }
 
 .forum-post {
-  padding: 12px;
-  margin-bottom: 3px;
+  padding: 14px;
+  margin-bottom: 3.5px;
   vertical-align: top;
   display: flex;
   display: -webkit-flex;
@@ -218,13 +218,13 @@ footer p {
     overflow: hidden;
     flex: 0 0 auto;
     vertical-align: top;
-    width: 162px;
-    max-width: 162px; }
+    width: 164px;
+    max-width: 164px; }
     .forum-post .user-info .author-link {
       font-weight: 600;
       font-size: 110%; }
     .forum-post .user-info .avatar {
-      margin: 11px 0;
+      margin: 13px 0;
       max-width: 100%; }
   .forum-post .user-content {
     overflow: hidden;
@@ -240,7 +240,7 @@ footer p {
       float: right; }
     .forum-post .user-content .quick-reply {
       float: right;
-      margin-left: 12px; }
+      margin-left: 14px; }
     .forum-post .user-content .post-edited {
       color: #555;
       font-style: italic; }
@@ -253,27 +253,27 @@ article.wiki li {
   border-radius: 3px;
   border: 1px solid #00cc00;
   background: #ccffcc;
-  padding: 12px; }
+  padding: 14px; }
 
 .bad {
   border: 1px solid #ffb3b3;
   background: #ffe5e5; }
 
 form .field {
-  margin-bottom: 12px; }
+  margin-bottom: 14px; }
   form .field .left {
     vertical-align: top;
     display: inline-block;
     width: 150px;
     font-size: 1.0rem;
     text-align: right;
-    margin: 0 12px; }
+    margin: 0 14px; }
   form .field .middleColumn {
     display: inline-block; }
     form .field .middleColumn input {
       width: 250px; }
   form .field input {
-    padding: 3px;
+    padding: 3.5px;
     background: white;
     box-shadow: 0 -2px 0 #f0d01f inset;
     border: 1px solid #aaa;
@@ -283,7 +283,7 @@ form .field {
 form .Actions .action {
   display: inline-block; }
 form .Actions #ForgotPassword {
-  margin-left: 12px;
+  margin-left: 14px;
   display: inline-block; }
 
 #SilverStripeNavigator {
@@ -321,4 +321,4 @@ form .Actions #ForgotPassword {
   background: url("../images/warning.jpg") no-repeat;
   background-size: 100%;
   background-position: 0 -20px;
-  padding: 12px; }
+  padding: 14px; }
