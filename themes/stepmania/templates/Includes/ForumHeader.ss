@@ -1,7 +1,6 @@
 <div class="forum-header">
 	<p class="forum-breadcrumbs">$Breadcrumbs</p>
 	<!--<p class="forum-abstract">$ForumHolder.HolderAbstract</p>-->
-		
 	<% if Moderators %>
 		<p>
 			Moderators: 

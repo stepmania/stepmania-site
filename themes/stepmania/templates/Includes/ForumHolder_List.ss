@@ -1,24 +1,23 @@
-<tr>
-	<td>
-		<a class="topic-title" href="$Link">$Title</a>
-		<% if Content || Moderators %>
-			<div class="summary">
-				<p>$Content.LimitCharacters(80)</p>
-			<% if Moderators %>
-				<p>Moderators: <% loop Moderators %>
-				<a href="$Link">$Nickname</a>
-				<% if not Last %>, <% end_if %><% end_loop %></p>
-			<% end_if %>
-			</div>
+<div class="forum-subforum">
+	<a class="topic-title" href="$Link">$Title</a>
+	<% if Content || Moderators %>
+		<div class="summary">
+			<p>$Content.LimitCharacters(80)</p>
+		<% if Moderators %>
+			<p>Moderators: <% loop Moderators %>
+			<a href="$Link">$Nickname</a>
+			<% if not Last %>, <% end_if %><% end_loop %></p>
 		<% end_if %>
-	</td>
-	<td class="count">
+		</div>
+	<% end_if %>
+	<!--
+	<div class="count">
 		$NumTopics
-	</td>
-	<td class="count">
+	</div>
+	<div class="count">
 		$NumPosts
-	</td>
-	<td class="">
+	</div>
+	<div class="">
 		<% if LatestPost %>
 			<% with LatestPost %>
 				<p class="post-date">$Created.Ago</p>
@@ -27,5 +26,6 @@
 				<% end_with %>
 			<% end_with %>
 		<% end_if %>
-	</td>
-</tr>
+	</div>
+-->
+</div>

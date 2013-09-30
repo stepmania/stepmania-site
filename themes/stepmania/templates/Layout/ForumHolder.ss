@@ -12,24 +12,24 @@
 
 	<% if ShowInCategories %>
 		<% loop Forums %>
-			<li class="category">$Title</li>
+			<!--<li class="category">$Title</li>
 			<ul class="category">
 				<li><% if Count = 1 %><% _t('ForumHolder_ss.FORUM','Forum') %><% else %><% _t('ForumHolder_ss.FORUMS', 'Forums') %><% end_if %></li>
 				<li><% _t('ForumHolder_ss.THREADS','Threads') %></li>
 				<li><% _t('ForumHolder_ss.POSTS','Posts') %></li>
 				<li><% _t('ForumHolder_ss.LASTPOST','Last Post') %></li>
-			</ul>
+			</ul>-->
 			<% loop CategoryForums %>
 				<% include ForumHolder_List %>
 			<% end_loop %>
 		<% end_loop %>
 	<% else %>
-		<ul class="category">
+		<!--<ul class="category">
 			<li><% _t('ForumHolder_ss.FORUM','Forum') %></li>
 			<li><% _t('ForumHolder_ss.THREADS','Threads') %></li>
 			<li><% _t('ForumHolder_ss.POSTS','Posts') %></li>
 			<li><% _t('ForumHolders_s.LASTPOST','Last Post') %></li>
-		</ul>
+		</ul>-->
 		<% loop Forums %>
 			<% include ForumHolder_List %>
 		<% end_loop %>

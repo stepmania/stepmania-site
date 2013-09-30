@@ -146,13 +146,24 @@ footer p {
   float: right;
   margin-right: 14px; }
 
+.forum-subforum {
+  background: #f7f4e4;
+  background: -moz-linear-gradient(top, white, #f7f4e4 50px);
+  background: -webkit-linear-gradient(top, white, #f7f4e4 50px);
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.25);
+  padding: 14px; }
+  .forum-subforum p:last-child {
+    margin-bottom: 0 !important; }
+  .forum-subforum .topic-title {
+    font-size: 120%;
+    font-weight: 600; }
+
 .forum-post {
   padding: 14px;
   margin-bottom: 3.5px;
   vertical-align: top;
   display: flex;
   display: -webkit-flex;
-  background: white;
   background: #f7f4e4;
   background: -moz-linear-gradient(top, white, #f7f4e4 50px);
   background: -webkit-linear-gradient(top, white, #f7f4e4 50px);
