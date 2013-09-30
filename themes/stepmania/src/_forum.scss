@@ -1,7 +1,11 @@
 .forum-footer {
 	margin: $spacing;
 }
-
+.forum-search-bar {
+	display: inline-block;
+	float: right;
+	margin-right: $spacing;
+}
 .forum-post {
 	margin: $spacing;
 	vertical-align: top;

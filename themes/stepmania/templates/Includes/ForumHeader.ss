@@ -1,19 +1,6 @@
 <div class="forum-header">
-
 	<% loop ForumHolder %>
 		<div class="forum-header-forms">
-
-			<span class="forum-search-dropdown-icon"></span>
-			<div class="forum-search-bar">
-				<form class="forum-search" action="$Link(search)" method="get">
-					<fieldset>
-						<label for="search-text"><% _t('ForumHeader_ss.SEARCHBUTTON','Search') %></label>
-						<input id="search-text" class="text active" type="text" name="Search" value="$Query.ATT" />
-						<input class="submit action" type="submit" value="<% _t('ForumHeader_ss.SEARCHBUTTON','Search') %>"/>
-					</fieldset>	
-				</form>
-			</div>
-
 			<% if NumPosts %>
 				<p class="forumStats">
 					$NumPosts 
@@ -22,7 +9,6 @@
 					<% _t('ForumHeader_ss.BY','by') %> $NumAuthors <strong><% _t('ForumHeader_ss.MEMBERS','members') %></strong>
 				</p>
 			<% end_if %>
-
 		</div><!-- forum-header-forms. -->
 	<% end_loop %>
 

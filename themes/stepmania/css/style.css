@@ -98,6 +98,7 @@ header {
     #container .banner p, #container .banner h1, #container header p, #container header h1 {
       padding: 14px; }
     #container .banner h1, #container header h1 {
+      display: inline-block;
       font-size: 1.2rem;
       color: #f0d01f;
       font-weight: 600; }
@@ -128,6 +129,11 @@ footer p {
 
 .forum-footer {
   margin: 14px; }
+
+.forum-search-bar {
+  display: inline-block;
+  float: right;
+  margin-right: 14px; }
 
 .forum-post {
   margin: 14px;

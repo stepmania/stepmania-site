@@ -1,3 +1,4 @@
+<% include ForumBanner %>
 <article class="forum">
 	<% include ForumHeader %>
 	<% if GlobalAnnouncements %>
@@ -27,7 +28,7 @@
 			<li><% _t('ForumHolder_ss.FORUM','Forum') %></li>
 			<li><% _t('ForumHolder_ss.THREADS','Threads') %></li>
 			<li><% _t('ForumHolder_ss.POSTS','Posts') %></li>
-			<li><% _t('ForumHolder_ss.LASTPOST','Last Post') %></li>
+			<li><% _t('ForumHolders_s.LASTPOST','Last Post') %></li>
 		</ul>
 		<% loop Forums %>
 			<% include ForumHolder_List %>

@@ -77,6 +77,7 @@ header {
 			padding: $spacing;
 		}
 		h1 {
+			display: inline-block;
 			font-size: 1.2rem;
 			color: $primary;
 			font-weight: 600;
