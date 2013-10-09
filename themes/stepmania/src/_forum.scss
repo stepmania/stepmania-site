@@ -88,6 +88,7 @@
 	.user-info {
 		overflow: hidden;
 		flex: 0 0 auto;
+		-webkit-flex: 0 0 auto;
 		vertical-align: top;
 		width: 150px + $spacing;
 		max-width: 150px + $spacing;
@@ -110,6 +111,7 @@
 		overflow: hidden; // damn you, Jousway!
 		padding-bottom: 1ex;
 		flex: 1 1 auto;
+		-webkit-flex: 1 1 auto;
 		vertical-align: top;
 		overflow: hidden;
 		img {

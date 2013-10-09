@@ -217,6 +217,7 @@ footer p {
   .forum-post .user-info {
     overflow: hidden;
     flex: 0 0 auto;
+    -webkit-flex: 0 0 auto;
     vertical-align: top;
     width: 164px;
     max-width: 164px; }
@@ -233,6 +234,7 @@ footer p {
     overflow: hidden;
     padding-bottom: 1ex;
     flex: 1 1 auto;
+    -webkit-flex: 1 1 auto;
     vertical-align: top;
     overflow: hidden; }
     .forum-post .user-content img {
@@ -264,24 +266,24 @@ article.wiki li {
   border: 1px solid #ffb3b3;
   background: #ffe5e5; }
 
-#Form_PostMessageForm {
+#Form_PostMessageForm, #Form_EditForm {
   padding: 14px; }
-  #Form_PostMessageForm #Form_PostMessageForm_Title {
+  #Form_PostMessageForm #Form_PostMessageForm_Title, #Form_EditForm #Form_PostMessageForm_Title {
     font-size: 120%;
     font-weight: 600; }
-  #Form_PostMessageForm .textarea {
+  #Form_PostMessageForm .textarea, #Form_EditForm .textarea {
     min-width: 100%;
     max-width: 100%;
     min-height: 15em;
     resize: vertical; }
-  #Form_PostMessageForm .left {
+  #Form_PostMessageForm .left, #Form_EditForm .left {
     text-align: left;
     display: block;
     margin: 0; }
-  #Form_PostMessageForm .middleColumn {
+  #Form_PostMessageForm .middleColumn, #Form_EditForm .middleColumn {
     margin: 14px 0 0 0;
     display: block; }
-  #Form_PostMessageForm .BBCodeHint {
+  #Form_PostMessageForm .BBCodeHint, #Form_EditForm .BBCodeHint {
     margin-top: 14px;
     display: block; }
 

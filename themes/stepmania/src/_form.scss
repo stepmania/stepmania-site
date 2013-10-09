@@ -9,7 +9,7 @@
 	background: adjust-color(#f00, $lightness: 45);
 }
 
-#Form_PostMessageForm {
+#Form_PostMessageForm, #Form_EditForm {
 	padding: $spacing;
 	#Form_PostMessageForm_Title {
 		font-size: 120%;
