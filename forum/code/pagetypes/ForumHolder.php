@@ -224,11 +224,13 @@ class ForumHolder extends Page {
 			$groupIDs[] = $adminGroup->ID;
 		}
 
-		return Member::get()
+		$online = Member::get()
 			->leftJoin('Group_Members', 'Member.ID = Group_Members.MemberID')
 			->filter('GroupID', $groupIDs)
-			->filter("LastViewed:GreaterThan", DB::getConn()->datetimeIntervalClause('NOW', '-15 MINUTE'))
-			->sort('Member.FirstName, Member.Surname');
+			->filter("LastViewed:GreaterThan", date('Y-m-d H:i:s', time() - 900))
+			->sort('Member.Nickname, Member.FirstName, Member.Surname');
+
+		return $online;
 	}
 	
 	/**
