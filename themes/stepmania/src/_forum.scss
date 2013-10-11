@@ -125,6 +125,10 @@
 			margin-left: $spacing;
 			list-style-type: disc;
 		}
+		.codesnippet {
+			font-family: monospace;
+			white-space: pre;
+		}
 		.post-date {
 			display: block;
 		}
