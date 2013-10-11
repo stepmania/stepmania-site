@@ -8,7 +8,7 @@ $spacing: 14px;
 $rounding: 5px;
 $shadow: 0 2px 0 rgba(0, 0, 0, 0.125);
 
-@import url(http://fonts.googleapis.com/css?family=Open+Sans:400,600,700,400italic,300);
+@import url(http://fonts.googleapis.com/css?family=Open+Sans:400,600,400italic,300);
 
 .limit-width {
 	width: 98%;
@@ -44,6 +44,30 @@ h2 {
 	font-size: 120%;
 	font-weight: 600;
 	margin-bottom: $spacing;
+}
+
+.banner {
+	p {
+		margin-top: 0;
+		padding-top: 0 !important;
+		text-align: justify;
+	}
+	table {
+		td {
+			padding: $spacing;
+			padding-right: 0;
+			&:last-child {
+				padding-right: $spacing;
+			}
+			vertical-align: top;
+		}
+	}
+}
+
+.banner, article {
+	.left {
+		float: left;
+	}
 }
 
 header {
@@ -101,10 +125,8 @@ header {
 	.banner, header {
 		background: $secondary;
 		color: white;
-		p, h1 {
-			padding: $spacing;
-		}
 		h1 {
+			padding: $spacing;
 			display: inline-block;
 			font-size: 1.2rem;
 			color: $primary;
@@ -149,6 +171,7 @@ footer {
 	}
 }
 
+@import "home";
 @import "forum";
 @import "wiki";
 @import "form";

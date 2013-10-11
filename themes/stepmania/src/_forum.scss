@@ -32,6 +32,9 @@
 		}
 		.post-modifiers {
 			float: right;
+			a {
+				margin: $spacing / 2;
+			}
 		}
 	}
 }

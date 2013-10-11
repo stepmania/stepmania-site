@@ -1,4 +1,4 @@
-@import url(http://fonts.googleapis.com/css?family=Open+Sans:400,600,700,400italic,300);
+@import url(http://fonts.googleapis.com/css?family=Open+Sans:400,600,400italic,300);
 /* http://meyerweb.com/eric/tools/css/reset/ 
    v2.0 | 20110126
    License: none (public domain)
@@ -72,6 +72,20 @@ h2 {
   font-weight: 600;
   margin-bottom: 14px; }
 
+.banner p {
+  margin-top: 0;
+  padding-top: 0 !important;
+  text-align: justify; }
+.banner table td {
+  padding: 14px;
+  padding-right: 0;
+  vertical-align: top; }
+  .banner table td:last-child {
+    padding-right: 14px; }
+
+.banner .left, article .left {
+  float: left; }
+
 header {
   background: #21201f;
   box-shadow: 0 2px 0 rgba(0, 0, 0, 0.125); }
@@ -113,9 +127,8 @@ header {
   #container .banner, #container header {
     background: #21201f;
     color: white; }
-    #container .banner p, #container .banner h1, #container header p, #container header h1 {
-      padding: 14px; }
     #container .banner h1, #container header h1 {
+      padding: 14px;
       display: inline-block;
       font-size: 1.2rem;
       color: #f0d01f;
@@ -146,6 +159,30 @@ footer p {
   padding: 14px;
   color: #3c3407; }
 
+.HomePage-banner table h1 {
+  padding: 3.5px 0 !important; }
+.HomePage-banner p {
+  margin-bottom: 7px; }
+  .HomePage-banner p:last-child {
+    margin-bottom: 0; }
+.HomePage-banner a {
+  color: #f0d01f; }
+
+.HomePage-article h1 {
+  display: inline-block;
+  font-size: 1.2rem;
+  color: #6e594e;
+  text-shadow: 0 1px 0 #b9a69c;
+  font-weight: 600; }
+.HomePage-article .news-post {
+  margin-bottom: 14px; }
+  .HomePage-article .news-post footer {
+    font-size: 90%;
+    padding: 14px 0; }
+    .HomePage-article .news-post footer p {
+      padding-top: 0;
+      color: #444; }
+
 .forum-footer {
   margin-top: 14px; }
 
@@ -174,6 +211,8 @@ footer p {
     color: black; }
   .forum-news footer .post-modifiers {
     float: right; }
+    .forum-news footer .post-modifiers a {
+      margin: 7px; }
 
 .forum-subforum {
   background: #f7f4e4;
@@ -252,7 +291,7 @@ footer p {
       color: #555;
       font-style: italic; }
 
-article.wiki li {
+.WikiPage-article li {
   list-style-type: disc;
   margin-left: 15px; }
 

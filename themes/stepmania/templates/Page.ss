@@ -20,7 +20,12 @@
 		</nav>
 	</header>
 	<div id="container" class="limit-width">
-		$Layout
+		<div class="$ClassName-banner banner">
+		<% if BannerContent %>$BannerContent<% else %><h1>$Title</h1><% end_if %>
+		</div>
+		<article class="$ClassName-article">
+			$Layout
+		</article>
 		<% include ForumLogin %>
 	</div>
 	<footer class="limit-width">

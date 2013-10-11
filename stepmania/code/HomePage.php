@@ -1,9 +1,9 @@
 <?php
-class HomePage extends SiteTree {
+class HomePage extends Page {
 	function getCMSFields() {
 		$fields = parent::getCMSFields();
 
-		$fields->addFieldToTab('Root.Link', new TreeDropdownField("NewsForumID", "Forum to pull content from", "SiteTree"));
+		$fields->addFieldToTab('Root.Special', new TreeDropdownField("NewsForumID", "Forum to pull content from", "SiteTree"));
 
 		return $fields;
 	}

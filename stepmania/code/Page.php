@@ -1,5 +1,15 @@
 <?php
 class Page extends SiteTree {
+	function getCMSFields() {
+		$fields = parent::getCMSFields();
+
+		$fields->addFieldToTab('Root.Special', new HTMLEditorField("BannerContent", "Banner Content"));
+
+		return $fields;
+	}
+	static $db = array(
+		"BannerContent" => "HTMLText"
+	);
 }
 class Page_Controller extends ContentController {
 
@@ -27,10 +37,7 @@ class Page_Controller extends ContentController {
 		// Note: you should use SS template require tags inside your templates 
 		// instead of putting Requirements calls here.  However these are 
 		// included so that our older themes still work
-		Requirements::themedCSS('reset');
-		Requirements::themedCSS('layout'); 
-		Requirements::themedCSS('typography'); 
-		Requirements::themedCSS('form'); 
+		Requirements::clear();
 	}
 
 }
