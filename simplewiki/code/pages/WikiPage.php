@@ -256,7 +256,7 @@ class WikiPage extends Page {
 	 */
 	public function LinkPickerForm()
 	{
-		$fields = new FieldSet(
+		$fields = new FieldList(
 			new OptionsetField(
 		    	$name = "Type",
 		    	$title = "Link to a",
@@ -272,7 +272,7 @@ class WikiPage extends Page {
 			
 		);
 		
-		$actions = new FieldSet(
+		$actions = new FieldList(
             //new FormAction('Submit', 'Submit')
         );
         
@@ -285,7 +285,7 @@ class WikiPage extends Page {
 	 */
 	public function ImagePickerForm()
 	{
-		$fields = new FieldSet(
+		$fields = new FieldList(
 			new OptionsetField(
 		    	$name = "Type",
 		    	$title = "Image source",
@@ -303,7 +303,7 @@ class WikiPage extends Page {
 		
 		$ff->getValidator()->setAllowedMaxFileSize(3145728); // 3mb
 		
-		$actions = new FieldSet(
+		$actions = new FieldList(
             //new FormAction('Submit', 'Submit')
         );
         
@@ -416,7 +416,7 @@ class WikiPage_Controller extends Page_Controller implements PermissionProvider 
 		$helpLink = $formatter->getHelpUrl();
 
 
-		$fields = new FieldSet(
+		$fields = new FieldList(
 						new LiteralField('Preview', '<div data-url="'.$this->Link('livepreview').'" id="editorPreview"></div>'),
 						new LiteralField('DialogContent', '<div id="dialogContent" style="display:none;"></div>'),
 						$editorField,
@@ -432,13 +432,13 @@ class WikiPage_Controller extends Page_Controller implements PermissionProvider 
 
 		$actions = null;
 		if (!WikiPage::$auto_publish) {
-			$actions = new FieldSet(
+			$actions = new FieldList(
 							new FormAction('save', _t('WikiPage.SAVE', 'Save')),
 							new FormAction('done', _t('WikiPage.DONE', 'Done (Draft)')),
 							new FormAction('publish', _t('WikiPage.PUBLISH', 'Publish'))
 			);
 		} else {
-			$actions = new FieldSet(
+			$actions = new FieldList(
 							new FormAction('save', _t('WikiPage.SAVE', 'Save')),
 							new FormAction('publish', _t('WikiPage.FINISHED', 'Finished'))
 			);
@@ -472,13 +472,13 @@ class WikiPage_Controller extends Page_Controller implements PermissionProvider 
 		$pageTree = new TreeDropdownField('CreateContext', _t('WikiPage.CREATE_CONTEXT', 'Select an existing page'), 'WikiPage');
 		$pageTree->setValue($this->ID);
 		$pageTree->setTreeBaseID($this->data()->getWikiRoot()->ID);
-		$fields = new FieldSet(
+		$fields = new FieldList(
 						new TextField('NewPageName', _t('WikiPage.NEW_PAGE_NAME', 'New Page Name')),
 						$pageTree,
 						new OptionsetField('CreateType', _t('WikiPage.CREATE_OPTIONS', 'and create the new page '), $createOptions, 'child')
 		);
 
-		$actions = new FieldSet(new FormAction('addpage', _t('WikiPage.ADD_PAGE', 'Create')));
+		$actions = new FieldList(new FormAction('addpage', _t('WikiPage.ADD_PAGE', 'Create')));
 
 		return new Form($this, 'CreatePageForm', $fields, $actions);
 	}
@@ -708,13 +708,13 @@ class WikiPage_Controller extends Page_Controller implements PermissionProvider 
 		$existing = $this->getEditingLocks($this->owner);
 
 		if ($existing && $existing['user'] != Member::currentUser()->Email) {
-			$fields = new FieldSet(
-							new ReadonlyField('ExistingEditor', '', _t('WikiPage.EXISTINGEDITOR', 'This page is currently locked for editing by ' . $existing['user'] . ' until ' . $existing['expires']))
+			$fields = new FieldList(
+				new ReadonlyField('ExistingEditor', '', _t('WikiPage.EXISTINGEDITOR', 'This page is currently locked for editing by ' . $existing['user'] . ' until ' . $existing['expires']))
 			);
-			$actions = new FieldSet();
+			$actions = new FieldList();
 		} else {
-			$fields = new FieldSet();
-			$actions = new FieldSet(
+			$fields = new FieldList();
+			$actions = new FieldList(
 							new FormAction('startediting', _t('WikiPage.STARTEDIT', 'Edit Page'))
 			);
 		}
@@ -819,12 +819,12 @@ class WikiPage_Controller extends Page_Controller implements PermissionProvider 
 	public function LinkSelectForm() {
 		$type = isset($_GET['type']) ? $_GET['type'] : 'href';
 
-		$fields = new FieldSet(
+		$fields = new FieldList(
 						new TreeDropdownField('TargetPage', _t('WikiPage.TARGETPAGE', 'Select Page'), 'SiteTree'),
 						new TreeDropdownField('TargetFile', _t('WikiPage.TARGETIMAGE', 'Select Image'), 'File')
 		);
 
-		$actions = new FieldSet(
+		$actions = new FieldList(
 						new FormAction('insert', _t('WikiPage.INSERTLINK', 'Insert'))
 		);
 
