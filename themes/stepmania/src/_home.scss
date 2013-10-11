@@ -29,6 +29,15 @@
 	}
 	.news-post {
 		margin-bottom: $spacing;
+		ul {
+			margin-left: $spacing;
+			list-style-type: disc;
+		}
+		.post-edited {
+			color: #444;
+			margin-top: 1em;
+			font-style: italic;
+		}
 		footer {
 			font-size: 90%;
 			p {

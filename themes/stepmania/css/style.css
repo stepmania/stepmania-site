@@ -176,6 +176,13 @@ footer p {
   font-weight: 600; }
 .HomePage-article .news-post {
   margin-bottom: 14px; }
+  .HomePage-article .news-post ul {
+    margin-left: 14px;
+    list-style-type: disc; }
+  .HomePage-article .news-post .post-edited {
+    color: #444;
+    margin-top: 1em;
+    font-style: italic; }
   .HomePage-article .news-post footer {
     font-size: 90%;
     padding: 14px 0; }
