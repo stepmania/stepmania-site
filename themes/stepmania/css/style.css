@@ -292,6 +292,8 @@ footer p {
     .forum-post .user-content .codesnippet {
       font-family: monospace;
       white-space: pre; }
+      .forum-post .user-content .codesnippet br {
+        display: none; }
     .forum-post .user-content .post-date {
       display: block; }
     .forum-post .user-content .post-modifiers {
