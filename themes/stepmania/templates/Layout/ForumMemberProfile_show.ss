@@ -1,5 +1,3 @@
-<% include ForumBanner %>
-<article>
 <% include ForumHeader %>
 	<% loop Member %>
 		<div class="user-profile">
@@ -42,4 +40,3 @@
 		</div>
 	<% end_if %>
 <% include ForumFooter %>
-</article>
