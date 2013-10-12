@@ -1,4 +1,4 @@
-@import url(http://fonts.googleapis.com/css?family=Open+Sans:400,600,400italic,300);
+@import url(http://fonts.googleapis.com/css?family=Open+Sans:400,600,400italic,600italic);
 /* http://meyerweb.com/eric/tools/css/reset/ 
    v2.0 | 20110126
    License: none (public domain)
@@ -51,6 +51,12 @@ table {
   width: 98%;
   max-width: 960px;
   margin: 0 auto; }
+
+strong, b {
+  font-weight: 600; }
+
+em, i {
+  font-style: italic; }
 
 body {
   background: #f0d01f;
