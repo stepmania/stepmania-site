@@ -11,7 +11,7 @@
 	<p class="message error"><% _t('Forum_ss.READONLYFORUM', 'This Forum is read only. You cannot post replies or start new threads') %></p>
 <% end_if %>
 <% if canPost %>
-	<p><a href="{$Link}starttopic" title="<% _t('Forum_ss.NEWTOPIC','Click here to start a new topic') %>"><% _t('Forum_ss.NEWTOPICIMAGE','Start new topic') %></a></p>
+	<p class="new-topic button"><a href="{$Link}starttopic" title="<% _t('Forum_ss.NEWTOPIC','Click here to start a new topic') %>"><% _t('Forum_ss.NEWTOPICIMAGE','Start new topic') %></a></p>
 <% end_if %>
 <div class="forum-features">
 	<% if getStickyTopics(0) %>
