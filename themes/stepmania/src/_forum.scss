@@ -99,31 +99,15 @@
 }
 .forum-header {
 	margin-bottom: $spacing;
-	.page-numbers {
-		.topic-page {
-			&.current, a {
-				display: inline-block;
-				padding: $spacing / 2 $spacing;
-				border-radius: $spacing / 4;
-			}
-			&.current {
-				background: adjust-color(mix($primary, $secondary, 25%),
-					$lightness: 25, $saturation: -30);
-				color: adjust-color($primary, $lightness: -50);
-			}
-			a {
-				background: adjust-color($secondary, $lightness: 15);
-				color: $primary;
-				font-weight: 600;
-			}
-		}
-		margin-bottom: $spacing;
-	}
 }
 .topic-footer {
 	margin-top: $spacing;
 	.topic-stats {
 		margin-top: $spacing;
+	}
+	.current {
+		display: inline-block;
+		padding: $spacing;
 	}
 }
 .forum-topic {
@@ -155,14 +139,30 @@
 		font-weight: 600;
 	}
 }
-.button a {
+.button a, .page-numbers .current, .page-numbers .label {
 	display: inline-block;
 	padding: $spacing / 2 $spacing;
-	$top: adjust-color($secondary, $lightness: 20, $saturation: -40);
+	$top: adjust-color($secondary, $lightness: 15, $saturation: -40);
 	$bottom: adjust-color($secondary, $lightness: 5, $saturation: -40);
 	background: $bottom;
 	background: -moz-linear-gradient(top, $top, $bottom 50px);
 	background: -webkit-linear-gradient(top, $top, $bottom 50px);
+	&.current {
+		$top: adjust-color($secondary, $lightness: 30, $saturation: -40);
+		$bottom: adjust-color($secondary, $lightness: 15, $saturation: -40);
+		background: $top;
+		background: -moz-linear-gradient(top, $bottom, $top 50px);
+		color: white;
+		background: -webkit-linear-gradient(top, $bottom, $top 50px);
+	}
+	&.label {
+		$top: adjust-color($secondary, $lightness: 10, $saturation: -40);
+		$bottom: adjust-color($secondary, $lightness: 10, $saturation: -40);
+		background: $top;
+		background: -moz-linear-gradient(top, $bottom, $top 50px);
+		color: white;
+		background: -webkit-linear-gradient(top, $bottom, $top 50px);
+	}
 	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.25);
 	border-radius: $spacing / 4;
 	color: $primary;
@@ -179,7 +179,12 @@
 }
 .forum-admin-features {
 	margin-top: $spacing;
+	padding-bottom: $spacing / 2;
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.25);
+	border-radius: $spacing / 4;
 	h3 {
+		border-top-left-radius: $spacing / 4;
+		border-top-right-radius: $spacing / 4;
 		background: $secondary;
 		color: $primary;
 		font-size: 120%;

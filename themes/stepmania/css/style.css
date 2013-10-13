@@ -95,6 +95,15 @@ small {
 .banner .left, article .left {
   float: left; }
 
+.float-left {
+  float: left; }
+
+.float-right {
+  float: right; }
+
+.clear {
+  clear: both; }
+
 header {
   background: #21201f;
   box-shadow: 0 2px 0 rgba(0, 0, 0, 0.125); }
@@ -278,24 +287,14 @@ footer p {
 
 .forum-header {
   margin-bottom: 14px; }
-  .forum-header .page-numbers {
-    margin-bottom: 14px; }
-    .forum-header .page-numbers .topic-page.current, .forum-header .page-numbers .topic-page a {
-      display: inline-block;
-      padding: 7px 14px;
-      border-radius: 3.5px; }
-    .forum-header .page-numbers .topic-page.current {
-      background: #8d8766;
-      color: #0f0d01; }
-    .forum-header .page-numbers .topic-page a {
-      background: #484644;
-      color: #f0d01f;
-      font-weight: 600; }
 
 .topic-footer {
   margin-top: 14px; }
   .topic-footer .topic-stats {
     margin-top: 14px; }
+  .topic-footer .current {
+    display: inline-block;
+    padding: 14px; }
 
 .forum-topic {
   background: #efebd2;
@@ -317,16 +316,26 @@ footer p {
     font-size: 120%;
     font-weight: 600; }
 
-.button a {
+.button a, .page-numbers .current, .page-numbers .label {
   display: inline-block;
   padding: 7px 14px;
   background: #2d2d2d;
-  background: -moz-linear-gradient(top, #535353, #2d2d2d 50px);
-  background: -webkit-linear-gradient(top, #535353, #2d2d2d 50px);
+  background: -moz-linear-gradient(top, #464646, #2d2d2d 50px);
+  background: -webkit-linear-gradient(top, #464646, #2d2d2d 50px);
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.25);
   border-radius: 3.5px;
   color: #f0d01f;
   font-weight: 600; }
+  .button a.current, .page-numbers .current.current, .page-numbers .label.current {
+    background: #6d6d6d;
+    background: -moz-linear-gradient(top, #464646, #6d6d6d 50px);
+    color: white;
+    background: -webkit-linear-gradient(top, #464646, #6d6d6d 50px); }
+  .button a.label, .page-numbers .current.label, .page-numbers .label.label {
+    background: #393939;
+    background: -moz-linear-gradient(top, #393939, #393939 50px);
+    color: white;
+    background: -webkit-linear-gradient(top, #393939, #393939 50px); }
 
 .category {
   border-top-left-radius: 3.5px;
@@ -338,8 +347,13 @@ footer p {
   color: #f0d01f; }
 
 .forum-admin-features {
-  margin-top: 14px; }
+  margin-top: 14px;
+  padding-bottom: 7px;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.25);
+  border-radius: 3.5px; }
   .forum-admin-features h3 {
+    border-top-left-radius: 3.5px;
+    border-top-right-radius: 3.5px;
     background: #21201f;
     color: #f0d01f;
     font-size: 120%;
