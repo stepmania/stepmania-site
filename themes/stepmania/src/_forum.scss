@@ -1,3 +1,8 @@
+// This file is a fucking MESS. It's partially (okay, mostly) my fault and
+// partially because the original HTML used in this module was really nasty.
+// 
+// I'd like to get it fixed up, but that will have to wait until it's more
+// or less fully functional and in prod. -Colby
 .forum-footer {
 	margin-top: $spacing;
 }
@@ -76,6 +81,31 @@
 	flex: 1 0 auto;
 	max-width: 250px;
 }
+.forum-topics {
+	.page-numbers {
+		.topic-page {
+			&.current, a {
+				display: inline-block;
+				padding: $spacing / 2 $spacing;
+				border-radius: $spacing / 4;
+			}
+			&.current {
+				background: adjust-color(mix($primary, $secondary, 25%),
+					$lightness: 25, $saturation: -30);
+				color: adjust-color($primary, $lightness: -50);
+			}
+			a {
+				background: adjust-color($secondary, $lightness: 15);
+				color: $primary;
+				font-weight: 600;
+			}
+		}
+		margin-bottom: $spacing;
+	}
+}
+.forum-header {
+	margin-bottom: $spacing;
+}
 .forum-topic {
 	$top: adjust-color($primary, $lightness: 40, $saturation: -40);
 	$bottom: adjust-color($primary, $lightness: 35, $saturation: -40);
@@ -97,7 +127,6 @@
 	}
 }
 .button {
-	margin-top: $spacing;
 	display: inline-block;
 	padding: $spacing / 2 $spacing;
 
@@ -119,16 +148,16 @@
 	vertical-align: top;
 	display: flex;
 	display: -webkit-flex;
-	$top: adjust-color($primary, $lightness: 50, $saturation: -35);
+	$top: adjust-color($primary, $lightness: 40, $saturation: -35);
 	$bottom: adjust-color($primary, $lightness: 40, $saturation: -35);
 	background: $bottom;
-	background: -moz-linear-gradient(top, $top, $bottom 50px);
-	background: -webkit-linear-gradient(top, $top, $bottom 50px);
+//	background: -moz-linear-gradient(top, $top, $bottom 50px);
+//	background: -webkit-linear-gradient(top, $top, $bottom 50px);
 	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.25);
 	&:nth-child(even) {
 		background: darken($bottom, 5%);
-		background: -moz-linear-gradient(top, darken($top, 5%), darken($bottom, 5%) 50px);
-		background: -webkit-linear-gradient(top, darken($top, 5%), darken($bottom, 5%) 50px);
+//		background: -moz-linear-gradient(top, darken($top, 5%), darken($bottom, 5%) 50px);
+//		background: -webkit-linear-gradient(top, darken($top, 5%), darken($bottom, 5%) 50px);
 	}
 	border-radius: 2px;
 	.user-info {
@@ -190,7 +219,10 @@
 			color: #555;
 			font-style: italic;
 		}
-		.post-type {}
+		.post-type {
+			display: block;
+			//border-radius: $spacing / 4;
+		}
 		.signature {}
 		.attachments {}
 	}

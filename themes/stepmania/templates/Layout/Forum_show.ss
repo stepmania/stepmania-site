@@ -5,11 +5,11 @@
 			<span><strong><% _t('Forum_show_ss.PAGE','Page:') %></strong></span>
 			<% loop Posts.Pages %>
 				<% if CurrentBool %>
-					<span><strong>$PageNum</strong></span>
+					<span class="topic-page current"><strong>$PageNum</strong></span>
 				<% else %>
-					<a href="$Link">$PageNum</a>
+					<span class="topic-page"><a href="$Link">$PageNum</a></span>
 				<% end_if %>
-				<% if not Last %>,<% end_if %>
+				<%--<% if not Last %>,<% end_if %>--%>
 			<% end_loop %>
 		</div>
 	</div>

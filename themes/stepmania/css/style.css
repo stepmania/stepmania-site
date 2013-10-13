@@ -262,6 +262,23 @@ footer p {
   flex: 1 0 auto;
   max-width: 250px; }
 
+.forum-topics .page-numbers {
+  margin-bottom: 14px; }
+  .forum-topics .page-numbers .topic-page.current, .forum-topics .page-numbers .topic-page a {
+    display: inline-block;
+    padding: 7px 14px;
+    border-radius: 3.5px; }
+  .forum-topics .page-numbers .topic-page.current {
+    background: #8d8766;
+    color: #0f0d01; }
+  .forum-topics .page-numbers .topic-page a {
+    background: #484644;
+    color: #f0d01f;
+    font-weight: 600; }
+
+.forum-header {
+  margin-bottom: 14px; }
+
 .forum-topic {
   background: #efebd2;
   background: -moz-linear-gradient(top, #f6f3e5, #efebd2 50px);
@@ -278,7 +295,6 @@ footer p {
     font-weight: 600; }
 
 .button {
-  margin-top: 14px;
   display: inline-block;
   padding: 7px 14px;
   background: #2d2d2d;
@@ -297,14 +313,10 @@ footer p {
   display: flex;
   display: -webkit-flex;
   background: #f7f4e4;
-  background: -moz-linear-gradient(top, white, #f7f4e4 50px);
-  background: -webkit-linear-gradient(top, white, #f7f4e4 50px);
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.25);
   border-radius: 2px; }
   .forum-post:nth-child(even) {
-    background: #f1ecd1;
-    background: -moz-linear-gradient(top, #f9f7ec, #f1ecd1 50px);
-    background: -webkit-linear-gradient(top, #f9f7ec, #f1ecd1 50px); }
+    background: #f1ecd1; }
   .forum-post .user-info {
     overflow: hidden;
     flex: 0 0 auto;
@@ -351,6 +363,8 @@ footer p {
     .forum-post .user-content .post-edited {
       color: #555;
       font-style: italic; }
+    .forum-post .user-content .post-type {
+      display: block; }
 
 .WikiPage-article li {
   list-style-type: disc;
