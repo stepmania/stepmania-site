@@ -150,25 +150,26 @@
 	border-radius: $spacing / 4;
 	$top: adjust-color($primary, $lightness: 45, $saturation: -35);
 	$bottom: adjust-color($primary, $lightness: 40, $saturation: -35);
-	box-shadow: 0 2px 0px rgba(0, 0, 0, 0.25);
-	.post-body {
+	box-shadow: 0 2px 1px rgba(0, 0, 0, 0.25);
+	.user-info {
 		padding: $spacing;
 		background: $bottom;
-		background: -moz-linear-gradient(top, $top, $bottom 50px);
-		background: -webkit-linear-gradient(top, $top, $bottom 50px);
+		border-right: 1px solid darken($bottom, 10%);
+		//background: -moz-linear-gradient(top, $top, $bottom 50px);
+		//background: -webkit-linear-gradient(top, $top, $bottom 50px);
 	}
-	&:nth-child(even) .post-body {
+	&:nth-child(even) .user-info {
 		background: darken($bottom, 5%);
-		background: -moz-linear-gradient(top, darken($top, 5%), darken($bottom, 5%) 50px);
-		background: -webkit-linear-gradient(top, darken($top, 5%), darken($bottom, 5%) 50px);
+		//background: -moz-linear-gradient(top, darken($top, 5%), darken($bottom, 5%) 50px);
+		//background: -webkit-linear-gradient(top, darken($top, 5%), darken($bottom, 5%) 50px);
 	}
 	.user-info {
 		overflow: hidden;
 		flex: 0 0 auto;
 		-webkit-flex: 0 0 auto;
 		vertical-align: top;
-		width: 150px + $spacing;
-		max-width: 150px + $spacing;
+		width: 150px;
+		max-width: 150px;
 		.author-link {
 			font-weight: 600;
 			font-size: 110%;
@@ -184,6 +185,7 @@
 		.post-count {}
 	}
 	.user-content {
+		padding: $spacing;
 		line-height: 1.4em;
 		overflow: hidden; // damn you, Jousway!
 		vertical-align: top;
@@ -193,7 +195,7 @@
 		}
 		ul {
 			margin-top: -1em;
-			margin-left: $spacing;
+			margin-left: $spacing * 2;
 			list-style-type: disc;
 		}
 		.codesnippet {

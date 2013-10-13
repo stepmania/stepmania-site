@@ -312,23 +312,20 @@ footer p {
   margin-bottom: 3.5px;
   vertical-align: top;
   border-radius: 3.5px;
-  box-shadow: 0 2px 0px rgba(0, 0, 0, 0.25); }
-  .forum-post .post-body {
+  box-shadow: 0 2px 1px rgba(0, 0, 0, 0.25); }
+  .forum-post .user-info {
     padding: 14px;
     background: #f7f4e4;
-    background: -moz-linear-gradient(top, #fdfcf8, #f7f4e4 50px);
-    background: -webkit-linear-gradient(top, #fdfcf8, #f7f4e4 50px); }
-  .forum-post:nth-child(even) .post-body {
-    background: #f1ecd1;
-    background: -moz-linear-gradient(top, #f7f4e4, #f1ecd1 50px);
-    background: -webkit-linear-gradient(top, #f7f4e4, #f1ecd1 50px); }
+    border-right: 1px solid #ebe4bd; }
+  .forum-post:nth-child(even) .user-info {
+    background: #f1ecd1; }
   .forum-post .user-info {
     overflow: hidden;
     flex: 0 0 auto;
     -webkit-flex: 0 0 auto;
     vertical-align: top;
-    width: 164px;
-    max-width: 164px; }
+    width: 150px;
+    max-width: 150px; }
     .forum-post .user-info .author-link {
       font-weight: 600;
       font-size: 110%; }
@@ -338,6 +335,7 @@ footer p {
       margin: 14px 0;
       max-width: 100%; }
   .forum-post .user-content {
+    padding: 14px;
     line-height: 1.4em;
     overflow: hidden;
     vertical-align: top;
@@ -346,7 +344,7 @@ footer p {
       max-width: 100%; }
     .forum-post .user-content ul {
       margin-top: -1em;
-      margin-left: 14px;
+      margin-left: 28px;
       list-style-type: disc; }
     .forum-post .user-content .codesnippet {
       font-family: monospace;
