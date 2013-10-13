@@ -19,7 +19,7 @@
 	<div class="forum-flex-right subforum-latest">
 		<% if LatestPost %>
 			<% with LatestPost %>
-				<p class="post-title">$Title <% with Author %>by <% if Link %><a href="$Link"><% if Nickname %>$Nickname<% else %>Anon<% end_if %></a><% else %><span>Anon</span><% end_if %><% end_with %></p>
+				<p class="post-title"><a href="$Link">$Title</a> <% with Author %>by <% if Link %><a href="$Link"><% if Nickname %>$Nickname<% else %>Anon<% end_if %></a><% else %><span>Anon</span><% end_if %><% end_with %></p>
 				<p class="post-date">$Created.Ago</p>
 			<% end_with %>
 		<% end_if %>
