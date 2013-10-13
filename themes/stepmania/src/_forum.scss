@@ -144,6 +144,23 @@
 		font-weight: 600;
 	}
 }
+.forum-admin-features {
+	margin-top: $spacing;
+	h3 {
+		background: $secondary;
+		color: $primary;
+		font-size: 120%;
+		font-weight: 600;
+		padding: $spacing;
+		margin-bottom: $spacing;
+	}
+	#ForumID {
+		.left {
+			width: auto;
+			font-size: 100%;
+		}
+	}
+}
 .forum-post {
 	margin-bottom: $spacing / 4;
 	vertical-align: top;
@@ -204,12 +221,12 @@
 			br { display: none; }
 		}
 		.post-edited {
+			margin-top: 1em;
 			color: #555;
 			font-style: italic;
 		}
 		.post-type {
 			display: block;
-			//border-radius: $spacing / 4;
 		}
 		.signature {}
 		.attachments {}

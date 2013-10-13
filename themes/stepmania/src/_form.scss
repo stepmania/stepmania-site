@@ -8,7 +8,10 @@
 	border: 1px solid adjust-color(#f00, $lightness: 35);
 	background: adjust-color(#f00, $lightness: 45);
 }
-#Form_PostMessageForm, #Form_EditForm, #Form_AdminFeatures {
+#Form_AdminFormFeatures {
+	margin: $spacing / 1.5;
+}
+#Form_PostMessageForm, #Form_EditForm {
 	padding: 0 $spacing $spacing * 2 $spacing;
 	#Form_PostMessageForm_Title {
 		font-size: 120%;

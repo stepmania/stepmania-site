@@ -308,6 +308,19 @@ footer p {
     color: #f0d01f;
     font-weight: 600; }
 
+.forum-admin-features {
+  margin-top: 14px; }
+  .forum-admin-features h3 {
+    background: #21201f;
+    color: #f0d01f;
+    font-size: 120%;
+    font-weight: 600;
+    padding: 14px;
+    margin-bottom: 14px; }
+  .forum-admin-features #ForumID .left {
+    width: auto;
+    font-size: 100%; }
+
 .forum-post {
   margin-bottom: 3.5px;
   vertical-align: top;
@@ -352,6 +365,7 @@ footer p {
       .forum-post .user-content .codesnippet br {
         display: none; }
     .forum-post .user-content .post-edited {
+      margin-top: 1em;
       color: #555;
       font-style: italic; }
     .forum-post .user-content .post-type {
@@ -396,26 +410,29 @@ footer p {
   border: 1px solid #ffb3b3;
   background: #ffe5e5; }
 
-#Form_PostMessageForm, #Form_EditForm, #Form_AdminFeatures {
+#Form_AdminFormFeatures {
+  margin: 9.33333px; }
+
+#Form_PostMessageForm, #Form_EditForm {
   padding: 0 14px 28px 14px; }
-  #Form_PostMessageForm #Form_PostMessageForm_Title, #Form_EditForm #Form_PostMessageForm_Title, #Form_AdminFeatures #Form_PostMessageForm_Title {
+  #Form_PostMessageForm #Form_PostMessageForm_Title, #Form_EditForm #Form_PostMessageForm_Title {
     font-size: 120%;
     font-weight: 600; }
-  #Form_PostMessageForm .BBCodeHint, #Form_EditForm .BBCodeHint, #Form_AdminFeatures .BBCodeHint {
+  #Form_PostMessageForm .BBCodeHint, #Form_EditForm .BBCodeHint {
     margin-bottom: 14px; }
-  #Form_PostMessageForm .textarea, #Form_EditForm .textarea, #Form_AdminFeatures .textarea {
+  #Form_PostMessageForm .textarea, #Form_EditForm .textarea {
     min-width: 100%;
     max-width: 100%;
     min-height: 15em;
     resize: vertical; }
-  #Form_PostMessageForm .left, #Form_EditForm .left, #Form_AdminFeatures .left {
+  #Form_PostMessageForm .left, #Form_EditForm .left {
     text-align: left;
     display: block;
     margin: 0; }
-  #Form_PostMessageForm .middleColumn, #Form_EditForm .middleColumn, #Form_AdminFeatures .middleColumn {
+  #Form_PostMessageForm .middleColumn, #Form_EditForm .middleColumn {
     margin: 14px 0 0 0;
     display: block; }
-  #Form_PostMessageForm .BBCodeHint, #Form_EditForm .BBCodeHint, #Form_AdminFeatures .BBCodeHint {
+  #Form_PostMessageForm .BBCodeHint, #Form_EditForm .BBCodeHint {
     margin-top: 14px;
     display: block; }
 
