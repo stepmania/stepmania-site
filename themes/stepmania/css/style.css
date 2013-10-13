@@ -230,15 +230,21 @@ footer p {
     .forum-news footer .post-modifiers a {
       margin: 7px; }
 
+.subforums {
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.25);
+  border-radius: 3.5px; }
+
 .forum-subforum {
   background: #efebd2;
   background: -moz-linear-gradient(top, #f6f3e5, #efebd2 50px);
   background: -webkit-linear-gradient(top, #f6f3e5, #efebd2 50px);
-  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.25);
   height: 3em;
   padding: 14px;
   display: flex;
   display: -webkit-flex; }
+  .forum-subforum:last-child {
+    border-bottom-left-radius: 3.5px;
+    border-bottom-right-radius: 3.5px; }
   .forum-subforum p:last-child {
     margin-bottom: 0 !important; }
   .forum-subforum .topic-title {
@@ -307,6 +313,16 @@ footer p {
   .button a {
     color: #f0d01f;
     font-weight: 600; }
+
+.category {
+  margin-top: 14px;
+  border-top-left-radius: 3.5px;
+  border-top-right-radius: 3.5px;
+  font-size: 110%;
+  font-weight: bold;
+  padding: 14px;
+  background: #21201f;
+  color: #f0d01f; }
 
 .forum-admin-features {
   margin-top: 14px; }

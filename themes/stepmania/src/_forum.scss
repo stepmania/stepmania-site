@@ -43,13 +43,20 @@
 		}
 	}
 }
+.subforums {
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.25);
+	border-radius: $spacing / 4;
+}
 .forum-subforum {
 	$top: adjust-color($primary, $lightness: 40, $saturation: -40);
 	$bottom: adjust-color($primary, $lightness: 35, $saturation: -40);
 	background: $bottom;
 	background: -moz-linear-gradient(top, $top, $bottom 50px);
 	background: -webkit-linear-gradient(top, $top, $bottom 50px);
-	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.25);
+	&:last-child {
+		border-bottom-left-radius: $spacing / 4;
+		border-bottom-right-radius: $spacing / 4;
+	}
 	height: 3em;
 	padding: $spacing;
 	display: flex;
@@ -131,7 +138,6 @@
 .button {
 	display: inline-block;
 	padding: $spacing / 2 $spacing;
-
 	$top: adjust-color($secondary, $lightness: 20, $saturation: -40);
 	$bottom: adjust-color($secondary, $lightness: 5, $saturation: -40);
 	background: $bottom;
@@ -143,6 +149,16 @@
 		color: $primary;
 		font-weight: 600;
 	}
+}
+.category {
+	margin-top: $spacing;
+	border-top-left-radius: $spacing / 4;
+	border-top-right-radius: $spacing / 4;
+	font-size: 110%;
+	font-weight: bold;
+	padding: $spacing;
+	background: $secondary;
+	color: $primary;
 }
 .forum-admin-features {
 	margin-top: $spacing;

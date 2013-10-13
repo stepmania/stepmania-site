@@ -1,6 +1,6 @@
 <% include ForumHeader %>
 <div class="forum-topics">
-	<div class="category">
+	<div class="forum-footer">
 		<div class="page-numbers">
 			<span><strong><% _t('Forum_show_ss.PAGE','Page:') %></strong></span>
 			<% loop Posts.Pages %>
@@ -23,7 +23,7 @@
 			<span><strong>$ForumThread.NumViews <% _t('Forum_show_ss.VIEWS','Views') %></strong></span>
 		</div>
 	</div>
-	<div class="category">
+	<div class="topic-footer">
 		<div class="page-numbers">
 			<% if Posts.MoreThanOnePage %>
 				<% if Posts.NotFirstPage %>
