@@ -43,7 +43,7 @@
 		}
 	}
 }
-.subforums {
+.subforums, .forum-topics {
 	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.25);
 	border-radius: $spacing / 4;
 }
@@ -121,9 +121,18 @@
 	background: $bottom;
 	background: -moz-linear-gradient(top, $top, $bottom 50px);
 	background: -webkit-linear-gradient(top, $top, $bottom 50px);
-	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.25);
 	padding: $spacing;
 	height: 3em;
+	&.sticky {
+		$top: adjust-color($primary, $lightness: 35, $saturation: -25);
+		$bottom: adjust-color($primary, $lightness: 25, $saturation: -25);
+		background: $bottom;
+		background: -moz-linear-gradient(top, $top, $bottom 50px);
+		background: -webkit-linear-gradient(top, $top, $bottom 50px);
+	}
+	&.sticky .sticky {
+		font-size: 120%;
+	}
 	p:last-child {
 		margin-bottom: 0 !important;
 	}
@@ -135,7 +144,7 @@
 		font-weight: 600;
 	}
 }
-.button {
+.button a {
 	display: inline-block;
 	padding: $spacing / 2 $spacing;
 	$top: adjust-color($secondary, $lightness: 20, $saturation: -40);
@@ -144,11 +153,9 @@
 	background: -moz-linear-gradient(top, $top, $bottom 50px);
 	background: -webkit-linear-gradient(top, $top, $bottom 50px);
 	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.25);
-	border-radius: 50px;
-	a {
-		color: $primary;
-		font-weight: 600;
-	}
+	border-radius: $spacing / 4;
+	color: $primary;
+	font-weight: 600;
 }
 .category {
 	margin-top: $spacing;
@@ -188,13 +195,9 @@
 		padding: $spacing;
 		background: $bottom;
 		border-right: 1px solid darken($bottom, 10%);
-		//background: -moz-linear-gradient(top, $top, $bottom 50px);
-		//background: -webkit-linear-gradient(top, $top, $bottom 50px);
 	}
 	&:nth-child(even) .user-info {
 		background: darken($bottom, 5%);
-		//background: -moz-linear-gradient(top, darken($top, 5%), darken($bottom, 5%) 50px);
-		//background: -webkit-linear-gradient(top, darken($top, 5%), darken($bottom, 5%) 50px);
 	}
 	.user-info {
 		overflow: hidden;
