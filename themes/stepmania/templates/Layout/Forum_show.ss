@@ -1,9 +1,7 @@
 <% include ForumHeader %>
 <div class="forum-header">
 	<div class="float-left replyButton button">
-		<% if ForumThread.canCreate %>
-			<a href="$ReplyLink" title="<% _t('Forum_show_ss.CLICKREPLY', 'Click to Reply') %>"><% _t('Forum_show_ss.REPLY', 'Reply') %></a>
-		<% end_if %>
+		<a href="$ReplyLink" title="<% _t('Forum_show_ss.CLICKREPLY', 'Click to Reply') %>"><% _t('Forum_show_ss.REPLY', 'Reply') %></a>
 	</div>
 	<div class="float-right">
 		<div class="page-numbers button">
@@ -33,9 +31,7 @@
 <% end_loop %>
 <div class="topic-footer">
 	<div class="float-left replyButton button">
-		<% if ForumThread.canCreate %>
-			<a href="$ReplyLink" title="<% _t('Forum_show_ss.CLICKREPLY', 'Click to Reply') %>"><% _t('Forum_show_ss.REPLY', 'Reply') %></a>
-		<% end_if %>
+		<a href="$ReplyLink" title="<% _t('Forum_show_ss.CLICKREPLY', 'Click to Reply') %>"><% _t('Forum_show_ss.REPLY', 'Reply') %></a>
 	</div>
 	<div class="float-right">
 		<div class="page-numbers button">

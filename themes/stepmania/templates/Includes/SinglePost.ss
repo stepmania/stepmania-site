@@ -50,9 +50,7 @@
 	</div>
 	<footer>
 		<span class="quick-reply">
-			<% if Thread.canPost %>
 			$Top.ReplyLink
-			<% end_if %>
 		</span>
 		<% if EditLink || DeleteLink %>
 			<span class="post-modifiers">

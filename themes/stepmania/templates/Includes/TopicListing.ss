@@ -1,6 +1,6 @@
-<div class="forum-topic forum-flex <% if IsSticky || IsGlobalSticky %>sticky<% end_if %> <% if IsGlobalSticky %>global-sticky<% end_if %>">
+<div class="forum-topic forum-flex <% if IsSticky || IsGlobalSticky %>sticky<% end_if %> <% if IsGlobalSticky %>global-sticky<% end_if %><% if IsReadOnly %> locked<% end_if %>">
 	<div class="forum-flex-left">
-		<% if IsSticky || IsGlobalSticky %><span class="sticky">Sticky: </span><% end_if %><a class="topic-title" href="$Link">$Title</a>
+		<% if IsSticky || IsGlobalSticky %><span class="sticky">Sticky: </span><% end_if %><a class="topic-title" href="$Link">$Title</a><% if IsReadOnly %><span class="locked"> (locked)</span><% end_if %>
 		<% if Content || Moderators %>
 			<div class="summary">
 				<p>$Content.LimitCharacters(80)</p>

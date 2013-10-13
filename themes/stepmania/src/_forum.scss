@@ -128,6 +128,16 @@
 	&.sticky .sticky {
 		font-size: 120%;
 	}
+	&.locked {
+		$top: adjust-color($primary, $lightness: 30, $saturation: -45, $hue: -20);
+		$bottom: adjust-color($primary, $lightness: 25, $saturation: -45, $hue: -20);
+		background: $bottom;
+		background: -moz-linear-gradient(top, $top, $bottom 50px);
+		background: -webkit-linear-gradient(top, $top, $bottom 50px);
+	}
+	&.locked .locked {
+		font-size: 120%;
+	}
 	p:last-child {
 		margin-bottom: 0 !important;
 	}
@@ -139,7 +149,7 @@
 		font-weight: 600;
 	}
 }
-.button a, .page-numbers .current, .page-numbers .label {
+.button a, .page-numbers .current, .page-numbers .label, .button .locked {
 	display: inline-block;
 	padding: $spacing / 2 $spacing;
 	$top: adjust-color($secondary, $lightness: 15, $saturation: -40);
@@ -147,6 +157,9 @@
 	background: $bottom;
 	background: -moz-linear-gradient(top, $top, $bottom 50px);
 	background: -webkit-linear-gradient(top, $top, $bottom 50px);
+	&.locked {
+		color: desaturate($primary, 65%);
+	}
 	&.current {
 		$top: adjust-color($secondary, $lightness: 30, $saturation: -40);
 		$bottom: adjust-color($secondary, $lightness: 15, $saturation: -40);
