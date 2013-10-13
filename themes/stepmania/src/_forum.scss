@@ -93,6 +93,12 @@
 }
 .forum-topics {
 	overflow: auto;
+	.message {
+		margin: $spacing;
+	}
+}
+.forum-header {
+	margin-bottom: $spacing;
 	.page-numbers {
 		.topic-page {
 			&.current, a {
@@ -113,12 +119,12 @@
 		}
 		margin-bottom: $spacing;
 	}
-	.message {
-		margin: $spacing;
-	}
 }
-.forum-header {
-	margin-bottom: $spacing;
+.topic-footer {
+	margin-top: $spacing;
+	.topic-stats {
+		margin-top: $spacing;
+	}
 }
 .forum-topic {
 	$top: adjust-color($primary, $lightness: 40, $saturation: -40);

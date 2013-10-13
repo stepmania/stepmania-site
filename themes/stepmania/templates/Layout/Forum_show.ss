@@ -1,45 +1,39 @@
 <% include ForumHeader %>
-<div class="forum-topics">
-	<div class="forum-footer">
-		<div class="page-numbers">
-			<span><strong><% _t('Forum_show_ss.PAGE','Page:') %></strong></span>
-			<% loop Posts.Pages %>
-				<% if CurrentBool %>
-					<span class="topic-page current"><strong>$PageNum</strong></span>
-				<% else %>
-					<span class="topic-page"><a href="$Link">$PageNum</a></span>
-				<% end_if %>
-			<% end_loop %>
-		</div>
+<div class="forum-header">
+	<div class="page-numbers">
+		<span><strong><% _t('Forum_show_ss.PAGE','Page:') %></strong></span>
+		<% loop Posts.Pages %>
+			<% if CurrentBool %>
+				<span class="topic-page current"><strong>$PageNum</strong></span>
+			<% else %>
+				<span class="topic-page"><a href="$Link">$PageNum</a></span>
+			<% end_if %>
+		<% end_loop %>
 	</div>
-	</div>
+</div>
 <% loop Posts %>
 	<% include SinglePost %>
 <% end_loop %>
-<div class="forum-topics">
-	<div class="author">
-		<div class="views">
-			<span><strong>$ForumThread.NumViews <% _t('Forum_show_ss.VIEWS','Views') %></strong></span>
-		</div>
+<div class="topic-footer">
+	<div class="page-numbers">
+		<% if Posts.MoreThanOnePage %>
+			<% if Posts.NotFirstPage %>
+				<a class="prev" href="$Posts.PrevLink" title="<% _t('Forum_show_ss.PREVTITLE','View the previous page') %>"><% _t('Forum_show_ss.PREVLINK','Prev') %></a>
+			<% end_if %>
+		<% end_if %>
 	</div>
-	<div class="topic-footer">
-		<div class="page-numbers">
-			<% if Posts.MoreThanOnePage %>
-				<% if Posts.NotFirstPage %>
-					<a class="prev" href="$Posts.PrevLink" title="<% _t('Forum_show_ss.PREVTITLE','View the previous page') %>"><% _t('Forum_show_ss.PREVLINK','Prev') %></a>
-				<% end_if %>
+	<div class="replyButton button">
+		<% if ForumThread.canCreate %>
+			<a href="$ReplyLink" title="<% _t('Forum_show_ss.CLICKREPLY', 'Click to Reply') %>"><% _t('Forum_show_ss.REPLY', 'Reply') %></a>
+		<% end_if %>
+		<% if Posts.MoreThanOnePage %>
+			<% if Posts.NotLastPage %>
+				<a class="next" href="$Posts.NextLink" title="<% _t('Forum_show_ss.NEXTTITLE','View the next page') %>"><% _t('Forum_show_ss.NEXTLINK','Next') %> &gt;</a>
 			<% end_if %>
-		</div>
-		<div class="replyButton button">
-			<% if ForumThread.canCreate %>
-				<a href="$ReplyLink" title="<% _t('Forum_show_ss.CLICKREPLY', 'Click to Reply') %>"><% _t('Forum_show_ss.REPLY', 'Reply') %></a>
-			<% end_if %>
-			<% if Posts.MoreThanOnePage %>
-				<% if Posts.NotLastPage %>
-					<a class="next" href="$Posts.NextLink" title="<% _t('Forum_show_ss.NEXTTITLE','View the next page') %>"><% _t('Forum_show_ss.NEXTLINK','Next') %> &gt;</a>
-				<% end_if %>
-			<% end_if %>
-		</div>
+		<% end_if %>
+	</div>
+	<div class="topic-stats">
+		<strong>$ForumThread.NumViews <% _t('Forum_show_ss.VIEWS','Views') %></strong>
 	</div>
 </div>
 <% if AdminFormFeatures %>
