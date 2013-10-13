@@ -288,16 +288,25 @@
 		background: $bottom;
 		background: -moz-linear-gradient(top, $top, $bottom);
 		background: -webkit-linear-gradient(top, $top, $bottom);
-		padding: $spacing;
 		overflow: auto;
-		.post-modifiers {
-			a {
-				margin-right: $spacing;
+		.post-modifiers a, .quick-reply a, .deleteLink {
+			&.deleteLink {
+				background: mix(#f00, $bottom, 10%);
 			}
+			&:hover {
+				&.deleteLink {
+					background: mix(#f00, $bottom, 20%);
+				}
+				background: $bottom;
+				text-decoration: none;
+			}
+			border-left: 1px solid darken($bottom, 5%);
+			padding: $spacing;
+			font-weight: 600;
 			float: right;
+			color: darken($bottom, 65%);
 		}
 		.quick-reply {
-			float: right;
 			margin-left: $spacing;
 		}
 	}

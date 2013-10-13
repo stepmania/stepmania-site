@@ -429,14 +429,21 @@ footer p {
     background: #d4d3d1;
     background: -moz-linear-gradient(top, #e0dfde, #d4d3d1);
     background: -webkit-linear-gradient(top, #e0dfde, #d4d3d1);
-    padding: 14px;
     overflow: auto; }
-    .forum-post footer .post-modifiers {
-      float: right; }
-      .forum-post footer .post-modifiers a {
-        margin-right: 14px; }
-    .forum-post footer .quick-reply {
+    .forum-post footer .post-modifiers a, .forum-post footer .quick-reply a, .forum-post footer .deleteLink {
+      border-left: 1px solid #c8c6c4;
+      padding: 14px;
+      font-weight: 600;
       float: right;
+      color: #2e2d2b; }
+      .forum-post footer .post-modifiers a.deleteLink, .forum-post footer .quick-reply a.deleteLink, .forum-post footer .deleteLink.deleteLink {
+        background: #d8bdbc; }
+      .forum-post footer .post-modifiers a:hover, .forum-post footer .quick-reply a:hover, .forum-post footer .deleteLink:hover {
+        background: #d4d3d1;
+        text-decoration: none; }
+        .forum-post footer .post-modifiers a:hover.deleteLink, .forum-post footer .quick-reply a:hover.deleteLink, .forum-post footer .deleteLink:hover.deleteLink {
+          background: #dca8a7; }
+    .forum-post footer .quick-reply {
       margin-left: 14px; }
 
 .WikiPage-article li {
