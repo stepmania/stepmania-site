@@ -237,7 +237,8 @@ footer p {
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.25);
   height: 3em;
   padding: 14px;
-  display: flex; }
+  display: flex;
+  display: -webkit-flex; }
   .forum-subforum p:last-child {
     margin-bottom: 0 !important; }
   .forum-subforum .topic-title {
@@ -249,7 +250,8 @@ footer p {
     padding: 0 14px; }
 
 .forum-flex {
-  display: flex; }
+  display: flex;
+  display: -webkit-flex; }
 
 .forum-flex-left {
   flex: 1 0 auto; }
@@ -307,16 +309,19 @@ footer p {
     font-weight: 600; }
 
 .forum-post {
-  padding: 14px;
   margin-bottom: 3.5px;
   vertical-align: top;
-  display: flex;
-  display: -webkit-flex;
-  background: #f7f4e4;
-  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.25);
-  border-radius: 2px; }
-  .forum-post:nth-child(even) {
-    background: #f1ecd1; }
+  border-radius: 3.5px;
+  box-shadow: 0 2px 0px rgba(0, 0, 0, 0.25); }
+  .forum-post .post-body {
+    padding: 14px;
+    background: #f7f4e4;
+    background: -moz-linear-gradient(top, #fdfcf8, #f7f4e4 50px);
+    background: -webkit-linear-gradient(top, #fdfcf8, #f7f4e4 50px); }
+  .forum-post:nth-child(even) .post-body {
+    background: #f1ecd1;
+    background: -moz-linear-gradient(top, #f7f4e4, #f1ecd1 50px);
+    background: -webkit-linear-gradient(top, #f7f4e4, #f1ecd1 50px); }
   .forum-post .user-info {
     overflow: hidden;
     flex: 0 0 auto;
@@ -335,9 +340,6 @@ footer p {
   .forum-post .user-content {
     line-height: 1.4em;
     overflow: hidden;
-    padding-bottom: 1ex;
-    flex: 1 1 auto;
-    -webkit-flex: 1 1 auto;
     vertical-align: top;
     overflow: hidden; }
     .forum-post .user-content img {
@@ -351,20 +353,36 @@ footer p {
       white-space: pre; }
       .forum-post .user-content .codesnippet br {
         display: none; }
-    .forum-post .user-content .post-date {
-      display: block; }
-    .forum-post .user-content .post-modifiers {
-      float: right; }
-      .forum-post .user-content .post-modifiers a {
-        margin-right: 14px; }
-    .forum-post .user-content .quick-reply {
-      float: right;
-      margin-left: 14px; }
     .forum-post .user-content .post-edited {
       color: #555;
       font-style: italic; }
     .forum-post .user-content .post-type {
       display: block; }
+  .forum-post header {
+    background: #f0d01f !important;
+    background: -moz-linear-gradient(top, #f2d537, #f0d01f) !important;
+    background: -webkit-linear-gradient(top, #f2d537, #f0d01f) !important;
+    border-top-left-radius: 3.5px;
+    border-top-right-radius: 3.5px;
+    padding: 14px;
+    margin-bottom: 0 !important; }
+    .forum-post header .post-date {
+      display: block; }
+  .forum-post footer {
+    border-bottom-left-radius: 3.5px;
+    border-bottom-right-radius: 3.5px;
+    background: #d4d3d1;
+    background: -moz-linear-gradient(top, #e0dfde, #d4d3d1);
+    background: -webkit-linear-gradient(top, #e0dfde, #d4d3d1);
+    padding: 14px;
+    overflow: auto; }
+    .forum-post footer .post-modifiers {
+      float: right; }
+      .forum-post footer .post-modifiers a {
+        margin-right: 14px; }
+    .forum-post footer .quick-reply {
+      float: right;
+      margin-left: 14px; }
 
 .WikiPage-article li {
   list-style-type: disc;
@@ -380,24 +398,26 @@ footer p {
   border: 1px solid #ffb3b3;
   background: #ffe5e5; }
 
-#Form_PostMessageForm, #Form_EditForm {
-  padding: 14px; }
-  #Form_PostMessageForm #Form_PostMessageForm_Title, #Form_EditForm #Form_PostMessageForm_Title {
+#Form_PostMessageForm, #Form_EditForm, #Form_AdminFeatures {
+  padding: 0 14px 28px 14px; }
+  #Form_PostMessageForm #Form_PostMessageForm_Title, #Form_EditForm #Form_PostMessageForm_Title, #Form_AdminFeatures #Form_PostMessageForm_Title {
     font-size: 120%;
     font-weight: 600; }
-  #Form_PostMessageForm .textarea, #Form_EditForm .textarea {
+  #Form_PostMessageForm .BBCodeHint, #Form_EditForm .BBCodeHint, #Form_AdminFeatures .BBCodeHint {
+    margin-bottom: 14px; }
+  #Form_PostMessageForm .textarea, #Form_EditForm .textarea, #Form_AdminFeatures .textarea {
     min-width: 100%;
     max-width: 100%;
     min-height: 15em;
     resize: vertical; }
-  #Form_PostMessageForm .left, #Form_EditForm .left {
+  #Form_PostMessageForm .left, #Form_EditForm .left, #Form_AdminFeatures .left {
     text-align: left;
     display: block;
     margin: 0; }
-  #Form_PostMessageForm .middleColumn, #Form_EditForm .middleColumn {
+  #Form_PostMessageForm .middleColumn, #Form_EditForm .middleColumn, #Form_AdminFeatures .middleColumn {
     margin: 14px 0 0 0;
     display: block; }
-  #Form_PostMessageForm .BBCodeHint, #Form_EditForm .BBCodeHint {
+  #Form_PostMessageForm .BBCodeHint, #Form_EditForm .BBCodeHint, #Form_AdminFeatures .BBCodeHint {
     margin-top: 14px;
     display: block; }
 

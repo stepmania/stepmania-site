@@ -53,6 +53,7 @@
 	height: 3em;
 	padding: $spacing;
 	display: flex;
+	display: -webkit-flex;
 	p:last-child {
 		margin-bottom: 0 !important;
 	}
@@ -69,6 +70,7 @@
 }
 .forum-flex {
 	display: flex;
+	display: -webkit-flex;
 }
 .forum-flex-left {
 	flex: 1 0 auto;
@@ -143,23 +145,23 @@
 	}
 }
 .forum-post {
-	padding: $spacing;
 	margin-bottom: $spacing / 4;
 	vertical-align: top;
-	display: flex;
-	display: -webkit-flex;
-	$top: adjust-color($primary, $lightness: 40, $saturation: -35);
+	border-radius: $spacing / 4;
+	$top: adjust-color($primary, $lightness: 45, $saturation: -35);
 	$bottom: adjust-color($primary, $lightness: 40, $saturation: -35);
-	background: $bottom;
-//	background: -moz-linear-gradient(top, $top, $bottom 50px);
-//	background: -webkit-linear-gradient(top, $top, $bottom 50px);
-	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.25);
-	&:nth-child(even) {
-		background: darken($bottom, 5%);
-//		background: -moz-linear-gradient(top, darken($top, 5%), darken($bottom, 5%) 50px);
-//		background: -webkit-linear-gradient(top, darken($top, 5%), darken($bottom, 5%) 50px);
+	box-shadow: 0 2px 0px rgba(0, 0, 0, 0.25);
+	.post-body {
+		padding: $spacing;
+		background: $bottom;
+		background: -moz-linear-gradient(top, $top, $bottom 50px);
+		background: -webkit-linear-gradient(top, $top, $bottom 50px);
 	}
-	border-radius: 2px;
+	&:nth-child(even) .post-body {
+		background: darken($bottom, 5%);
+		background: -moz-linear-gradient(top, darken($top, 5%), darken($bottom, 5%) 50px);
+		background: -webkit-linear-gradient(top, darken($top, 5%), darken($bottom, 5%) 50px);
+	}
 	.user-info {
 		overflow: hidden;
 		flex: 0 0 auto;
@@ -184,9 +186,6 @@
 	.user-content {
 		line-height: 1.4em;
 		overflow: hidden; // damn you, Jousway!
-		padding-bottom: 1ex;
-		flex: 1 1 auto;
-		-webkit-flex: 1 1 auto;
 		vertical-align: top;
 		overflow: hidden;
 		img {
@@ -202,19 +201,6 @@
 			white-space: pre;
 			br { display: none; }
 		}
-		.post-date {
-			display: block;
-		}
-		.post-modifiers {
-			a {
-				margin-right: $spacing;
-			}
-			float: right;
-		}
-		.quick-reply {
-			float: right;
-			margin-left: $spacing;
-		}
 		.post-edited {
 			color: #555;
 			font-style: italic;
@@ -225,6 +211,42 @@
 		}
 		.signature {}
 		.attachments {}
+	}
+	header {
+		// note to self: use better selectors. -Colby
+		$top: lighten($primary, 5%);
+		$bottom: $primary;
+		background: $bottom !important;
+		background: -moz-linear-gradient(top, $top, $bottom)  !important;
+		background: -webkit-linear-gradient(top, $top, $bottom)  !important;
+		border-top-left-radius: $spacing / 4;
+		border-top-right-radius: $spacing / 4;
+		padding: $spacing;
+		margin-bottom: 0 !important;
+		.post-date {
+			display: block;
+		}
+	}
+	footer {
+		border-bottom-left-radius: $spacing / 4;
+		border-bottom-right-radius: $spacing / 4;
+		$top: lighten($secondary, 75%);
+		$bottom: darken($top, 5%);
+		background: $bottom;
+		background: -moz-linear-gradient(top, $top, $bottom);
+		background: -webkit-linear-gradient(top, $top, $bottom);
+		padding: $spacing;
+		overflow: auto;
+		.post-modifiers {
+			a {
+				margin-right: $spacing;
+			}
+			float: right;
+		}
+		.quick-reply {
+			float: right;
+			margin-left: $spacing;
+		}
 	}
 }
 
