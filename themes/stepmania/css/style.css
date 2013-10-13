@@ -231,6 +231,7 @@ footer p {
       margin: 7px; }
 
 .subforums, .forum-topics {
+  margin-bottom: 14px;
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.25);
   border-radius: 3.5px; }
 
@@ -270,19 +271,23 @@ footer p {
   flex: 1 0 auto;
   max-width: 250px; }
 
-.forum-topics .page-numbers {
-  margin-bottom: 14px; }
-  .forum-topics .page-numbers .topic-page.current, .forum-topics .page-numbers .topic-page a {
-    display: inline-block;
-    padding: 7px 14px;
-    border-radius: 3.5px; }
-  .forum-topics .page-numbers .topic-page.current {
-    background: #8d8766;
-    color: #0f0d01; }
-  .forum-topics .page-numbers .topic-page a {
-    background: #484644;
-    color: #f0d01f;
-    font-weight: 600; }
+.forum-topics {
+  overflow: auto; }
+  .forum-topics .page-numbers {
+    margin-bottom: 14px; }
+    .forum-topics .page-numbers .topic-page.current, .forum-topics .page-numbers .topic-page a {
+      display: inline-block;
+      padding: 7px 14px;
+      border-radius: 3.5px; }
+    .forum-topics .page-numbers .topic-page.current {
+      background: #8d8766;
+      color: #0f0d01; }
+    .forum-topics .page-numbers .topic-page a {
+      background: #484644;
+      color: #f0d01f;
+      font-weight: 600; }
+  .forum-topics .message {
+    margin: 14px; }
 
 .forum-header {
   margin-bottom: 14px; }
@@ -319,7 +324,6 @@ footer p {
   font-weight: 600; }
 
 .category {
-  margin-top: 14px;
   border-top-left-radius: 3.5px;
   border-top-right-radius: 3.5px;
   font-size: 110%;

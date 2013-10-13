@@ -44,6 +44,7 @@
 	}
 }
 .subforums, .forum-topics {
+	margin-bottom: $spacing;
 	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.25);
 	border-radius: $spacing / 4;
 }
@@ -91,6 +92,7 @@
 	max-width: 250px;
 }
 .forum-topics {
+	overflow: auto;
 	.page-numbers {
 		.topic-page {
 			&.current, a {
@@ -110,6 +112,9 @@
 			}
 		}
 		margin-bottom: $spacing;
+	}
+	.message {
+		margin: $spacing;
 	}
 }
 .forum-header {
@@ -158,7 +163,6 @@
 	font-weight: 600;
 }
 .category {
-	margin-top: $spacing;
 	border-top-left-radius: $spacing / 4;
 	border-top-right-radius: $spacing / 4;
 	font-size: 110%;

@@ -45,5 +45,5 @@
 			<% end_loop %>
 		</p>
 	<% end_if %>
-</div><!-- forum-features. -->
+</div>
 <% include ForumFooter %>
