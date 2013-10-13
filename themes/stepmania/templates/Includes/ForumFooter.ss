@@ -11,7 +11,7 @@
 			<% end_if %>
 		</p>
 		<p>
-			<strong><% _t('ForumFooter_ss.LATESTMEMBER','Welcome to our latest member:') %></strong>			
+			<strong><% _t('ForumFooter_ss.LATESTMEMBER','Welcome to our latest member:') %></strong>
 			<% if LatestMembers(1) %>
 				<% loop LatestMembers(1) %>
 					<% if Link %>
@@ -22,19 +22,12 @@
 				<% end_loop %>
 			<% end_if %>
 		</p>
-		<!--
 		<% loop ForumHolder %>
 		<div class="forum-header-forms">
 			<% if NumPosts %>
-				<p class="forumStats">
-					$NumPosts 
-					<strong><% _t('ForumHeader_ss.POSTS','Posts') %></strong> 
-					<% _t('ForumHeader_ss.IN','in') %> $NumTopics <strong><% _t('ForumHeader_ss.TOPICS','Topics') %></strong> 
-					<% _t('ForumHeader_ss.BY','by') %> $NumAuthors <strong><% _t('ForumHeader_ss.MEMBERS','members') %></strong>
-				</p>
+				<p class="forum-stats"><span class="forum-post-count">$NumPosts</span> <% _t('ForumHeader_ss.POSTS','Posts') %> <% _t('ForumHeader_ss.IN','in') %> <span class="forum-topic-count">$NumTopics</span> <% _t('ForumHeader_ss.TOPICS','Topics') %> <% _t('ForumHeader_ss.BY','by') %> <span class="forum-author-count">$NumAuthors</span> <% _t('ForumHeader_ss.MEMBERS','members') %></p>
 			<% end_if %>
-		</div><%-- forum-header-forms. --%>
+		</div>
 		<% end_loop %>
-	-->
-	</div><%-- forum-footer. --%>
+	</div>
 <% end_with %>

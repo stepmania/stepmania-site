@@ -9,7 +9,6 @@
 				<% else %>
 					<span class="topic-page"><a href="$Link">$PageNum</a></span>
 				<% end_if %>
-				<%--<% if not Last %>,<% end_if %>--%>
 			<% end_loop %>
 		</div>
 	</div>
