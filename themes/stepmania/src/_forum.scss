@@ -262,6 +262,8 @@
 			list-style-type: disc;
 		}
 		.codesnippet {
+			overflow: auto;
+//			margin-bottom: $spacing;
 			font-family: monospace;
 			white-space: pre;
 			br { display: none; }
