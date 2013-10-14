@@ -356,7 +356,8 @@
 			height: 70px - $spacing * 2;
 			.avatar {
 				float: right;
-				width: 70px;
+				width: auto;
+				height: 70px;
 				top: -$spacing;
 				right: 0;
 				position: absolute;

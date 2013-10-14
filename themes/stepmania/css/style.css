@@ -479,7 +479,8 @@ footer p {
       height: 42px; }
       .post-body .user-info .avatar {
         float: right;
-        width: 70px;
+        width: auto;
+        height: 70px;
         top: -14px;
         right: 0;
         position: absolute; }
