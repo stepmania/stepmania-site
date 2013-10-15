@@ -5,7 +5,11 @@
 			<a href="$ForumHolder.Link(logout)" title="<% _t('ForumLogin_ss.LOGOUTEXPLICATION','Click here to log out') %>"><% _t('ForumLogin_ss.LOGOUT','Log Out') %></a> | <a href="ForumMemberProfile/edit" title="<% _t('ForumLogin_ss.PROFILEEXPLICATION','Click here to edit your profile') %>"><% _t('ForumLogin_ss.PROFILE','Profile') %></a></p>
 	<% else %>
 		<p>
-			<a href="$ForumHolder.Link(login)" title="<% _t('ForumLogin_ss.LOGINEXPLICATION','Click here to login') %>"><% _t('ForumLogin_ss.LOGIN','Login') %></a> |
+			<% if ForumHolder.Link(login) %>
+			<a href="$ForumHolder.Link(login)" title="<% _t('ForumLogin_ss.LOGINEXPLICATION','Click here to login') %>"><% _t('ForumLogin_ss.LOGIN','Login') %></a>
+			<% else %>
+			<a href="Security/login?BackURL=$Link" title="<% _t('ForumLogin_ss.LOGINEXPLICATION','Click here to login') %>"><% _t('ForumLogin_ss.LOGIN','Login') %></a>
+			<% end_if %> |
 			<a href="Security/lostpassword" title="<% _t('ForumLogin_ss.LOSTPASSEXPLICATION','Click here to retrieve your password') %>"><% _t('ForumLogin_ss.LOSTPASS','Forgot password') %></a> |
 			<a href="ForumMemberProfile/register" title="<% _t('ForumLogin_ss.REGEXPLICATION','Click here to register') %>"><% _t('ForumLogin_ss.REGISTER','Register') %></a>
 			<% if OpenIDAvailable %> |
