@@ -31,6 +31,9 @@
 	<footer class="limit-width">
 		<p>StepMania is open source software released under the MIT License</p>
 	</footer>
+	<% if CurrentMember %>
+	<%-- Go away! Really! --%>
 	$SilverStripeNavigator
+	<% end_if %>
 </body>
 </html>
