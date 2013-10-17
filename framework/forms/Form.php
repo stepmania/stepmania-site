@@ -65,6 +65,11 @@ class Form extends RequestHandler {
 	protected $validator;
 	
 	protected $formMethod = "post";
+
+	/**
+	 * @var boolean
+	 */
+	protected $strictFormMethodCheck = false;
 	
 	protected static $current_action;
 	
@@ -144,6 +149,16 @@ class Form extends RequestHandler {
 	 */
 	protected $attributes = array();
 
+	private static $allowed_actions = array(
+		'handleField', 
+		'httpSubmission',
+		'forTemplate',
+	);
+
+	private static $casting = array(
+		'Message' => 'Text'
+	);
+
 	/**
 	 * Create a new form, with the given fields an action buttons.
 	 * 
@@ -161,10 +176,10 @@ class Form extends RequestHandler {
 			throw new InvalidArgumentException('$fields must be a valid FieldList instance');
 		}
 		if(!$actions instanceof FieldList) {
-			throw new InvalidArgumentException('$fields must be a valid FieldList instance');
+			throw new InvalidArgumentException('$actions must be a valid FieldList instance');
 		}
 		if($validator && !$validator instanceof Validator) {
-			throw new InvalidArgumentException('$validator must be a Valdidator instance');
+			throw new InvalidArgumentException('$validator must be a Validator instance');
 		}
 
 		$fields->setForm($this);
@@ -197,13 +212,13 @@ class Form extends RequestHandler {
 		$this->securityToken = ($securityEnabled) ? new SecurityToken() : new NullSecurityToken();
 	}
 	
-	static $url_handlers = array(
+	private static $url_handlers = array(
 		'field/$FieldName!' => 'handleField',
 		'POST ' => 'httpSubmission',
 		'GET ' => 'httpSubmission',
 		'HEAD ' => 'httpSubmission',
 	);
-	
+
 	/**
 	 * Set up current form errors in session to
 	 * the current form if appropriate.
@@ -239,9 +254,20 @@ class Form extends RequestHandler {
 	 * if the form is valid.
 	 */
 	public function httpSubmission($request) {
-		$vars = $request->requestVars();
-		if(isset($funcName)) {
-			Form::set_current_action($funcName);
+		// Strict method check
+		if($this->strictFormMethodCheck) {
+			
+			// Throws an error if the method is bad...
+			if($this->formMethod != strtolower($request->httpMethod())) {
+				$response = Controller::curr()->getResponse();
+				$response->addHeader('Allow', $this->formMethod);
+				$this->httpError(405, _t("Form.BAD_METHOD", "This form requires a ".$this->formMethod." submission"));
+			}
+
+			// ...and only uses the vairables corresponding to that method type
+			$vars = $this->formMethod == 'get' ? $request->getVars() : $request->postVars();
+		} else {
+			$vars = $request->requestVars();
 		}
 		
 		// Populate the form
@@ -279,9 +305,10 @@ class Form extends RequestHandler {
 		}
 			
 		if(isset($funcName)) {
+			Form::set_current_action($funcName);
 			$this->setButtonClicked($funcName);
 		}
-		
+
 		// Permission checks (first on controller, then falling back to form)
 		if(
 			// Ensure that the action is actually a button or method on the form,
@@ -327,9 +354,49 @@ class Form extends RequestHandler {
 		
 		// Validate the form
 		if(!$this->validate()) {
-			if(Director::is_ajax()) {
-				// Special case for legacy Validator.js implementation (assumes eval'ed javascript collected through
-				// FormResponse)
+			return $this->getValidationErrorResponse();
+		}
+		
+		// First, try a handler method on the controller (has been checked for allowed_actions above already)
+		if($this->controller->hasMethod($funcName)) {
+			return $this->controller->$funcName($vars, $this, $request);
+		// Otherwise, try a handler method on the form object.
+		} elseif($this->hasMethod($funcName)) {
+			return $this->$funcName($vars, $this, $request);
+		} elseif($field = $this->checkFieldsForAction($this->Fields(), $funcName)) {
+			return $field->$funcName($vars, $this, $request);
+		}
+		
+		return $this->httpError(404);
+	}
+
+	public function checkAccessAction($action) {
+		return (
+			parent::checkAccessAction($action)
+			// Always allow actions which map to buttons. See httpSubmission() for further access checks.
+			|| $this->actions->dataFieldByName('action_' . $action)
+			// Always allow actions on fields
+			|| (
+				$field = $this->checkFieldsForAction($this->Fields(), $action)
+				&& $field->checkAccessAction($action)
+			)
+		);
+	}
+
+	/**
+	 * Returns the appropriate response up the controller chain
+	 * if {@link validate()} fails (which is checked prior to executing any form actions).
+	 * By default, returns different views for ajax/non-ajax request, and
+	 * handles 'appliction/json' requests with a JSON object containing the error messages.
+	 * Behaviour can be influenced by setting {@link $redirectToFormOnValidationError}.
+	 * 
+	 * @return SS_HTTPResponse|string
+	 */
+	protected function getValidationErrorResponse() {
+		$request = $this->getRequest();
+		if($request->isAjax()) {
+				// Special case for legacy Validator.js implementation 
+				// (assumes eval'ed javascript collected through FormResponse)
 				$acceptType = $request->getHeader('Accept');
 				if(strpos($acceptType, 'application/json') !== FALSE) {
 					// Send validation errors back as JSON with a flag at the start
@@ -355,19 +422,6 @@ class Form extends RequestHandler {
 				}
 				return $this->controller->redirectBack();
 			}
-		}
-		
-		// First, try a handler method on the controller (has been checked for allowed_actions above already)
-		if($this->controller->hasMethod($funcName)) {
-			return $this->controller->$funcName($vars, $this, $request);
-		// Otherwise, try a handler method on the form object.
-		} elseif($this->hasMethod($funcName)) {
-			return $this->$funcName($vars, $this, $request);
-		} elseif($field = $this->checkFieldsForAction($this->Fields(), $funcName)) {
-			return $field->$funcName($vars, $this, $request);
-		}
-		
-		return $this->httpError(404);
 	}
 	
 	/**
@@ -381,7 +435,7 @@ class Form extends RequestHandler {
 				if($field = $this->checkFieldsForAction($field->FieldList(), $funcName)) {
 					return $field;
 				}
-			} elseif ($field->hasMethod($funcName)) {
+			} elseif ($field->hasMethod($funcName) && $field->checkAccessAction($funcName)) {
 				return $field;
 			}
 		}
@@ -439,7 +493,7 @@ class Form extends RequestHandler {
 	}
 
 	/**
-	 * Add an error message to a field on this form.  It will be saved into the session
+	 * Add a plain text error message to a field on this form.  It will be saved into the session
 	 * and used the next time this form is displayed.
 	 */
 	public function addErrorMessage($fieldName, $message, $messageType) {
@@ -556,7 +610,7 @@ class Form extends RequestHandler {
 	 * @return FieldList
 	 */
 	public function HiddenFields() {
-		return $this->fields->HiddenFields();
+		return $this->Fields()->HiddenFields();
 	}
 
 	/**
@@ -564,7 +618,7 @@ class Form extends RequestHandler {
 	 * Useful when making your own simplified form layouts.
 	 */
 	public function VisibleFields() {
-		return $this->fields->VisibleFields();
+		return $this->Fields()->VisibleFields();
 	}
 	
 	/**
@@ -577,24 +631,6 @@ class Form extends RequestHandler {
 		return $this;
 	}
 	
-	/**
-	 * Get a named field from this form's fields.
-	 * It will traverse into composite fields for you, to find the field you want.
-	 * It will only return a data field.
-	 * 
-	 * @deprecated 3.0 Use Fields() and FieldList API instead
-	 * @return FormField
-	 */
-	public function dataFieldByName($name) {
-		Deprecation::notice('3.0', 'Use Fields() and FieldList API instead');
-
-		foreach($this->getExtraFields() as $field) {
-			if(!$this->fields->dataFieldByName($field->getName())) $this->fields->push($field);
-		}
-		
-		return $this->fields->dataFieldByName($name);
-	}
-
 	/**
 	 * Return the form's action buttons - used by the templates
 	 * 
@@ -620,18 +656,6 @@ class Form extends RequestHandler {
 	public function unsetAllActions(){
 		$this->actions = new FieldList();
 		return $this;
-	}
-
-	/**
-	 * Unset the form's action button by its name.
-	 * 
-	 * @deprecated 3.0 Use Actions() and FieldList API instead
-	 * @param string $name
-	 */
-	public function unsetActionByName($name) {
-		Deprecation::notice('3.0', 'Use Actions() and FieldList API instead');
-
-		$this->actions->removeByName($name);
 	}
 
 	/**
@@ -670,34 +694,6 @@ class Form extends RequestHandler {
 	}
 
 	/**
-	 * Unset the form's dataField by its name
-	 *
-	 * @deprecated 3.0 Use Fields() and FieldList API instead
-	 */
-	public function unsetDataFieldByName($fieldName){
-		Deprecation::notice('3.0', 'Use Fields() and FieldList API instead');
-
-		foreach($this->Fields()->dataFields() as $child) {
-			if(is_object($child) && ($child->getName() == $fieldName || $child->Title() == $fieldName)) {
-				$child = null;
-			}
-		}
-	}
-	
-	/**
-	 * Remove a field from the given tab.
-	 *
-	 * @deprecated 3.0 Use Fields() and FieldList API instead
-	 */
-	public function unsetFieldFromTab($tabName, $fieldName) {
-		Deprecation::notice('3.0', 'Use Fields() and FieldList API instead');
-
-		// Find the tab
-		$tab = $this->Fields()->findOrMakeTab($tabName);
-		$tab->removeByName($fieldName);
-	}
-
-	/**
 	 * Return the attributes of the form tag - used by the templates.
 	 * 
 	 * @param Array Custom attributes to process. Falls back to {@link getAttributes()}.
@@ -715,7 +711,9 @@ class Form extends RequestHandler {
 		$needsCacheDisabled = false;
 		if ($this->getSecurityToken()->isEnabled()) $needsCacheDisabled = true;
 		if ($this->FormMethod() != 'get') $needsCacheDisabled = true;
-		if (!($this->validator instanceof RequiredFields) || count($this->validator->getRequired())) $needsCacheDisabled = true;
+		if (!($this->validator instanceof RequiredFields) || count($this->validator->getRequired())) {
+			$needsCacheDisabled = true;
+		}
 
 		// If we need to disable cache, do it
 		if ($needsCacheDisabled) HTTP::set_cache_age(0);
@@ -817,14 +815,6 @@ class Form extends RequestHandler {
 	}
 
 	/**
-	 * @deprecated 3.0 Please use {@link getEncType}.
-	 */
-	public function FormEncType() {
-		Deprecation::notice('3.0', 'Please use Form->getEncType() instead.');
-		return $this->getEncType();
-	}
-
-	/**
 	 * Returns the real HTTP method for the form:
 	 * GET, POST, PUT, DELETE or HEAD.
 	 * As most browsers only support GET and POST in
@@ -858,10 +848,36 @@ class Form extends RequestHandler {
 	 * Set the form method: GET, POST, PUT, DELETE.
 	 * 
 	 * @param $method string
+	 * @param $strict If non-null, pass value to {@link setStrictFormMethodCheck()}.
 	 */
-	public function setFormMethod($method) {
+	public function setFormMethod($method, $strict = null) {
 		$this->formMethod = strtolower($method);
+		if($strict !== null) $this->setStrictFormMethodCheck($strict);
 		return $this;
+	}
+
+	/**
+	 * If set to true, enforce the matching of the form method.
+	 *
+	 * This will mean two things:
+	 *  - GET vars will be ignored by a POST form, and vice versa
+	 *  - A submission where the HTTP method used doesn't match the form will return a 400 error.
+	 *
+	 * If set to false (the default), then the form method is only used to construct the default
+	 * form.
+	 *
+	 * @param $bool boolean
+	 */
+	public function setStrictFormMethodCheck($bool) {
+		$this->strictFormMethodCheck = (bool)$bool;
+		return $this;
+	}
+
+	/**
+	 * @return boolean
+	 */
+	public function getStrictFormMethodCheck() {
+		return $this->strictFormMethodCheck;
 	}
 	
 	/**
@@ -912,6 +928,7 @@ class Form extends RequestHandler {
 	 */
 	public function setHTMLID($id) {
 		$this->htmlID = $id;
+		return $this;
 	}
 	
 	/**
@@ -938,14 +955,6 @@ class Form extends RequestHandler {
 	public function setController($controller) {
 		$this->controller = $controller;
 		return $this;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function Name() {
-		Deprecation::notice('3.0', 'Use getName() instead.');
-		return $this->getName();
 	}
 
 	/**
@@ -1265,25 +1274,6 @@ class Form extends RequestHandler {
 	}
 
 	/**
-	 * Resets a specific field to its passed default value.
-	 * Does NOT clear out all submitted data in the form.
-	 *
-	 * @deprecated 3.0 Use Fields() and FieldList API instead
-	 * @param string $fieldName
-	 * @param mixed $fieldValue
-	 */
-	public function resetField($fieldName, $fieldValue = null) {
-		Deprecation::notice('3.0', 'Use Fields() and FieldList API instead');
-
-		$dataFields = $this->fields->dataFields();
-		if($dataFields) foreach($dataFields as $field) {
-			if($field->getName()==$fieldName) {
-				$field = $field->setValue($fieldValue);
-			}
-		}
-	}
-	
-	/**
 	 * Call the given method on the given field.
 	 * This is used by Ajax-savvy form fields.  By putting '&action=callfieldmethod' to the end
 	 * of the form action, they can access server-side data.
@@ -1318,7 +1308,7 @@ class Form extends RequestHandler {
 	 * Return a rendered version of this form.
 	 * 
 	 * This is returned when you access a form as $FormObject rather
-	 * than <% control FormObject %>
+	 * than <% with FormObject %>
 	 */
 	public function forTemplate() {
 		$return = $this->renderWith(array_merge(
@@ -1431,34 +1421,6 @@ class Form extends RequestHandler {
 	public function enableSecurityToken() {
 		$this->securityToken = new SecurityToken();
 		return $this;
-	}
-	
-	/**
-	 * Disable security tokens for every form.
-	 * Note that this doesn't apply to {@link SecurityToken}
-	 * instances outside of the Form class, nor applies
-	 * to existing form instances.
-	 * 
-	 * See {@link enable_all_security_tokens()}.
-	 * 
-	 * @deprecated 2.5 Use SecurityToken::disable()
-	 */
-	public static function disable_all_security_tokens() {
-		Deprecation::notice('2.5', 'Use SecurityToken::disable() instead.');
-		SecurityToken::disable();
-	}
-	
-	/**
-	 * Returns true if security is enabled - that is if the security token
-	 * should be included and checked on this form.
-	 * 
-	 * @deprecated 2.5 Use Form->getSecurityToken()->isEnabled()
-	 *
-	 * @return bool
-	 */
-	public function securityTokenEnabled() {
-		Deprecation::notice('2.5', 'Use Form->getSecurityToken()->isEnabled() instead.');
-		return $this->securityToken->isEnabled();
 	}
 	
 	/**

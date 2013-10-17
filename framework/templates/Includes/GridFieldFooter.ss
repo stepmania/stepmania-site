@@ -3,11 +3,11 @@
 		<span class="pagination-records-number">
 			$FirstShownRecord - 
 			$LastShownRecord
-			<% _t('TableListField_PageControls.ss.OF', 'of', 'Example: View 1 of 2') %>
+			<% _t('TableListField_PageControls_ss.OF', 'of', 'Example: View 1 of 2') %>
 			$NumRecords
 		</span>
 
-		<% if Message %>
+		<% if $Message %>
 		<div class="datagrid-footer-message">$Message</div>
 		<% end_if %>
 	</td>

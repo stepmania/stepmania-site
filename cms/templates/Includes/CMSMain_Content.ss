@@ -2,13 +2,11 @@
 
 	<div class="cms-content-header north">
 		<div class="cms-content-header-info">
-			<h2>
-				<% include CMSBreadcrumbs %>
-			</h2>
+			<% include CMSBreadcrumbs %>
 		</div>
-	
+
 		<div class="cms-content-header-tabs">
-			<ul>
+			<ul class="cms-tabset-nav-primary">
 				<li class="content-treeview<% if class == 'CMSPageEditController' %> ui-tabs-active<% end_if %>">
 					<a href="$LinkPageEdit" class="cms-panel-link" title="Form_EditForm" data-href="$LinkPageEdit">
 						<% _t('CMSMain.TabContent', 'Content') %>
@@ -31,5 +29,5 @@
 	$Tools
 
 	$EditForm
-	
+
 </div>

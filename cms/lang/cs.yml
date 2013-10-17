@@ -11,30 +11,30 @@ cs:
     BackToFolder: 'Zpět na složku'
     CREATED: Datum
     CurrentFolderOnly: 'Omezit na aktuální složku?'
-    DetailsView: Detaily
+    DetailsView: Podrobnosti
     FILES: Soubory
     FILESYSTEMSYNC: 'Synchronizovat soubory'
     FILESYSTEMSYNCTITLE: 'Aktualizace záznamů souborů databáze CMS na souborovém systému. Užitečné, když byly nové soubory nahrány mimo CMS, např. přes FTP.'
     FROMTHEINTERNET: 'Z internetu'
     FROMYOURCOMPUTER: 'Z vašeho počítače'
     Filetype: 'Typ souboru'
-    ListView: Seznam
-    MENUTITLE: Soubory
-    NEWFOLDER: 'Nová složka'
+    ListView: 'Seznam'
+    NEWFOLDER: Nová složka
     SIZE: Velikost
     THUMBSDELETED: '{count} nepoužitých miniatur bylo smazáno'
     TreeView: 'Zobrazit strom'
     Upload: Nahrát
+    MENUTITLE: Soubory
   AssetAdmin_DeleteBatchAction:
     TITLE: 'Smazat složky'
   AssetAdmin_Tools:
     FILTER: Filtr
-  AssetAdmin_left.ss:
+  AssetAdmin_left_ss:
     GO: Proveď
   AssetTableField:
     BACKLINKCOUNT: 'Použito na:'
     PAGES: stránka(y)
-  BackLink_Button.ss:
+  BackLink_Button_ss:
     Back: Zpět
   BrokenLinksReport:
     Any: Jakékoliv
@@ -69,8 +69,6 @@ cs:
     PUBLISH_PAGES: Zveřejnit
     UNPUBLISHED_PAGES: 'Nezveřejněných %d stránek'
     UNPUBLISH_PAGES: Nezveřejnit
-  CMSFileAddController:
-    MENUTITLE: Soubory
   CMSMain:
     ACCESS: 'Přístup k ''{title}'' sekci'
     ACCESS_HELP: 'Povolit prohlížení sekce obsahující strukturu a obsah webu. Oprávnění na prohlížení a úpravu mohou být nastavena skrze menu pro samostatnou stránku, také jako jednotlivé oprávnění pro obsah.'
@@ -80,12 +78,13 @@ cs:
     ChoosePageType: 'Vyberte typ stránky'
     Create: Vytvořit
     DELETE: 'Smazat koncept'
-    DELETEFP: 'Smazat z publikovaných stránek'
+    DELETEFP: Smazat z publikovaných stránek
     DESCREMOVED: 'a {count} potomků'
-    EMAIL: Email
-    EditTree: 'Editovat strom'
+    DUPLICATED: 'Duplikováno ''{title}'' úspěšně'
+    DUPLICATEDWITHCHILDREN: 'Duplikováno ''{title}'' a potomci úspěšně'
+    EMAIL: E-mail
+    EditTree: 'Upravit strom'
     ListFiltered: 'Filtrovaný seznam.'
-    MENUTITLE: 'Editovat stránku'
     NEWPAGE: 'Nová {pagetype}'
     PAGENOTEXISTS: 'Tato stránka neexistuje'
     PAGES: Stránky
@@ -93,17 +92,17 @@ cs:
     PAGETYPEOPT: 'Typ stránky'
     PUBALLCONFIRM: 'Prosím zveřejněte veškeré stránky z úschovny'
     PUBALLFUN: 'Funkce "Publikovat vše"'
-    PUBALLFUN2: 'Stisknutí tohoto tlačítka se rovná zveřejnění každé jednotlivé stránky. Toto tlačítko má být použito, pokud se vyskytly rozsáhlé úpravy obsahu, jako např. když poprvé sestavujete stránky.'
+    PUBALLFUN2: "Stisknutí tohoto tlačítka se rovná zveřejnění každé jednotlivé stránky. Toto tlačítko má být použito, pokud se vyskytly rozsáhlé úpravy obsahu, jako např. když poprvé sestavujete stránky."
     PUBPAGES: 'Hotovo: Zveřejněno {count} stránek'
     PageAdded: 'Stránka vytvořena úspěšně'
-    REMOVED: 'Smazán ''%s''%s ze živé stránky'
+    REMOVED: 'Smazáno ''{title}''{description} z webu'
     REMOVEDPAGE: 'Odstraněno ''{title}'' ze zveřejněného webu'
     REMOVEDPAGEFROMDRAFT: 'Odstraněno ''%s'' z konceptu webu'
     RESTORE: Obnovit
     RESTORED: 'Obnoveno ''{title}'' úspěšně'
     ROLLBACK: 'Vrátit se zpět na tuto verzi'
-    ROLLEDBACKPUB: 'Vrací se zpět na zveřejněnou verzi. Číslo nové verze je #{version}'
-    ROLLEDBACKVERSION: 'Vracím se zpět na verzi #%d. Číslo nové verze je #%d'
+    ROLLEDBACKPUBv2: 'Vráceno zpět na zveřejněnou verzi.'
+    ROLLEDBACKVERSIONv2: 'Vráceno zpět na verzi #%d.'
     SAVE: Uložit
     SAVEDRAFT: 'Uložit koncept'
     TabContent: Obsah
@@ -111,50 +110,47 @@ cs:
     TabSettings: Nastavení
     TreeFiltered: 'Filtrovaný strom.'
     TreeFilteredClear: 'Vyčistit filtr'
-  CMSMain_left.ss:
-    'APPLY FILTER': 'Použít filtr'
+    MENUTITLE: 'Upravit stránku'
+    AddPageRestriction: 'Poznámka: Některé typy stránek nejsou povoleny při tomto výběru'
+  CMSMain_left_ss:
+    APPLY_FILTER: 'Použít filtr'
     RESET: Resetovat
   CMSPageAddController:
-    MENUTITLE: 'Přidat stránku'
     ParentMode_child: 'Pod jinou stránku'
     ParentMode_top: 'Nejvyšší úroveň'
-  CMSPageEditController:
-    MENUTITLE: 'Editovat stránku'
+    MENUTITLE: 'Přidat stránku'
   CMSPageHistoryController:
-    COMPAREMODE: 'Mód porovnání (vyberte dva)'
+    COMPAREMODE: 'Porovnávací mód (vyberte dva)'
     COMPAREVERSIONS: 'Porovnat verze'
     COMPARINGVERSION: 'Porovnání verzí {version1} a {version2}.'
-    MENUTITLE: Historie
     REVERTTOTHISVERSION: 'Zpět na tuto verzi'
     SHOWUNPUBLISHED: 'Zobrazit nezveřejněné verze'
     SHOWVERSION: 'Zobrazit verzi'
     VIEW: zobrazit
-    VIEWINGVERSION: 'Právě prohlížíte verzi {version}.'
-  CMSPageHistoryController_versions.ss:
+    VIEWINGVERSION: 'Právě prohlížíte verzi číslo {version}.'
+    MENUTITLE: Historie
+    VIEWINGLATEST: 'Právě se zobrazuje poslední verze.'
+  CMSPageHistoryController_versions_ss:
     AUTHOR: Autor
-    NOTPUBLISHED: Nezveřejněno
+    NOTPUBLISHED: 'Nezveřejněno'
     PUBLISHER: Vydavatel
     UNKNOWN: Neznámý
     WHEN: Když
-  CMSPageSettingsController:
-    MENUTITLE: 'Editovat stránku'
   CMSPagesController:
-    GalleryView: Galerie
-    ListView: Seznam
+    GalleryView: 'Pohled galerie'
+    ListView: 'Pohled seznam'
     MENUTITLE: Stránky
-    TreeView: Strom
-  CMSPagesController_ContentToolbar.ss:
+    TreeView: 'Pohled strom'
+  CMSPagesController_ContentToolbar_ss:
     ENABLEDRAGGING: 'Táhni a pusť'
-    MULTISELECT: 'Multi výběr'
-  CMSPagesController_Tools.ss:
+    MULTISELECT: Multi výběr
+  CMSPagesController_Tools_ss:
     FILTER: Filtr
   CMSSearch:
     FILTERDATEFROM: Od
     FILTERDATEHEADING: Datum
     FILTERDATETO: Do
     FILTERLABELTEXT: Obsah
-  CMSSettingsController:
-    MENUTITLE: Možnosti
   CMSSiteTreeFilter_ChangedPages:
     Title: 'Změněné stránky'
   CMSSiteTreeFilter_DeletedPages:
@@ -169,31 +165,24 @@ cs:
     CMS: CMS
     DRAFTSITE: 'Koncept webu'
     DRAFT_SITE_ACCESS_RESTRICTION: 'Abyste mohli prohlížet archiv nebo koncepty, musíte být přihlášeni se svým CMS heslem. <a href="%s">Klikněte sem pro návrat na zveřejněné stránky.</a>'
-    Email: Email
+    Email: E-mail
     INSTALL_SUCCESS: 'Instalace úspěšná!'
     InstallFilesDeleted: 'Instalační soubory byly odstraněny úspěšně.'
     InstallSecurityWarning: 'Z bezpečnostních důvodů byste měli nyní odstranit instalační soubory, pokud se nechystáte přeinstalovat později (<em>vyžaduje admin přihlášení, viz výše </em>). Webový server nyní potřebuje pouze přístup pro zápis do složky "assets", můžete odstranit práva zápisu ze všech ostatních složek. <a href="{link}" style="text-align: center;"> Klikněte sem pro smazání instalačních souborů.</a>'
     InstallSuccessCongratulations: 'SilverStripe byl nainstalován úspěšně!'
     LOGGEDINAS: 'Přihlášen jako'
     LOGIN: Přihlášení
-    LOGOUT: Odhlášení
+    LOGOUT: 'Odhlášení'
     NOTLOGGEDIN: 'Není přihlášen'
     PUBLISHEDSITE: 'Zveřejnen web'
     Password: Heslo
     PostInstallTutorialIntro: 'Tento web je zjednodušená verze SilverStripe 3. webu. Pro rozšíření, podívejte se na {link} prosím.'
-    StartEditing: 'Můžete začít editovat váš obsah webu otevřením <a href="{link}">CMS</a>.'
+    StartEditing: 'Můžete začít editovat váš obsah otevřením <a href="{link}">CMS</a>.'
     UnableDeleteInstall: 'Nelze smazat instalační soubory. Prosím, odstraňte soubory níže ručně'
     VIEWPAGEIN: 'Zobrazit stránku v:'
+    DRAFT: Koncept
+    PUBLISHED: Zveřejněno
   ErrorPage:
-    CODE: 'Chybový kód'
-    DEFAULTERRORPAGECONTENT: '<p>Omlouváme se, zdá se, že jste se pokoušeli o přístup na stránku, která neexistuje. </p> <p> Zkontrolujte pravopis URL, na které jste se pokoušeli o přístup a zkuste to znovu</p>'
-    DEFAULTERRORPAGETITLE: 'Strana nenelazena'
-    DEFAULTSERVERERRORPAGECONTENT: '<p>Je nám to líto, ale nastal problém se zpracováním Vašeho poždavku.</p>'
-    DEFAULTSERVERERRORPAGETITLE: 'Chyba serveru'
-    DESCRIPTION: 'Vlastní obsah pro různé případy chyb (např. "Stránka nenalezena")'
-    ERRORFILEPROBLEM: 'Chyba otevření souboru "{filename}" pro zápis. Zkontrolujte oprávnění souboru, prosím.'
-    PLURALNAME: 'Chybové stránky'
-    SINGULARNAME: 'Chybová stránka'
     400: '400 - Špatný požadavek'
     401: '401 - Neautorizováno'
     403: '403 - Zakázáno'
@@ -217,6 +206,15 @@ cs:
     503: '503 - Nedostupná služba'
     504: '504 - Vypršel čas Gateway'
     505: '505 - HTTP verze není podporována'
+    CODE: 'Chybový kód'
+    DEFAULTERRORPAGECONTENT: '<p>Omlouváme se, zdá se, že jste se pokoušeli o přístup na stránku, která neexistuje.</p><p>Zkontrolujte prosím pravopis požadované URL adresy, ke které jste se pokoušeli přistoupit a zkuste to znovu.</p>'
+    DEFAULTERRORPAGETITLE: 'Stránka nenelazena'
+    DEFAULTSERVERERRORPAGECONTENT: '<p>Promiňte, nastal problém s obsloužením vaší žádosti.</p>'
+    DEFAULTSERVERERRORPAGETITLE: 'Chyba serveru'
+    DESCRIPTION: 'Vlastní obsah pro různé případy chyb (např. "Stránka nenalezena")'
+    ERRORFILEPROBLEM: 'Chyba otevření souboru "{filename}" pro zápis. Zkontrolujte oprávnění souboru, prosím.'
+    PLURALNAME: 'Chybové stránky'
+    SINGULARNAME: 'Chybová stránka'
   Folder:
     AddFolderButton: 'Přidat složku'
     DELETEUNUSEDTHUMBNAILS: 'Smazat nepoužité miniatury'
@@ -236,19 +234,19 @@ cs:
     CONTENT_CATEGORY: 'Oprávnění obsahu'
     PERMISSIONS_CATEGORY: 'Role a přístupová práva'
   RedirectorPage:
-    DESCRIPTION: 'Přesměrovat na jinou interní stránku'
+    DESCRIPTION: 'Přesměruje na jinou interní stránku'
     HASBEENSETUP: 'Přesměrovací stránka byla nastavena bez cíle.'
-    HEADER: 'Tato stránka přesměruje uživatele na jinou'
-    OTHERURL: 'Jinou webovou adresu'
+    HEADER: 'Tato stránka přesměruje uživatele na jinou stránku'
+    OTHERURL: 'Jiná web adresa'
     PLURALNAME: 'Přesměrovací stránky'
     REDIRECTTO: 'Přesměrovat na'
-    REDIRECTTOEXTERNAL: 'Jinou webovou stránku'
+    REDIRECTTOEXTERNAL: 'Jiná web stránka'
     REDIRECTTOPAGE: 'Stránka na vašem webu'
     SINGULARNAME: 'Přesměrovací stránka'
     YOURPAGE: 'Stránka na vašem webu'
   ReportAdmin:
-    MENUTITLE: Výkazy
     ReportTitle: Titulek
+    MENUTITLE: Výkazy
   ReportAdminForm:
     FILTERBY: 'Filtrovat dle'
   SearchForm:
@@ -268,7 +266,7 @@ cs:
     ParameterLiveCheckbox: 'Zkontrolovat web'
     REPEMPTY: '{title} výkaz je prázdný.'
   SilverStripeNavigatorLink:
-    ShareInstructions: 'K sdílení této stránky, odkaz zkopírujte a vložte dolů.'
+    ShareInstructions: 'K sdílení této stránky, odkaz zkopírujte a vložte dolů..'
     ShareLink: 'Sdílet odkaz'
   SilverStripeNavigatorLinkl:
     CloseLink: Zavřít
@@ -284,7 +282,7 @@ cs:
     SITETITLE: 'Titulek webu'
     TABACCESS: Přístup
     TABMAIN: Hlavní
-    TAGLINEDEFAULT: 'zde tvůj štítek'
+    TAGLINEDEFAULT: 'Slogan Vašeho webu'
     THEME: Téma
     TOPLEVELCREATE: 'Kdo může vytvářet stránky v kořenu webu?'
     VIEWHEADER: 'Kdo může vidět stránky na tomto webu?'
@@ -299,7 +297,7 @@ cs:
     APPEARSVIRTUALPAGES: 'Tento obsah se také zobrazí na virtuálních stránkáchy v sekcích {title}.'
     BUTTONCANCELDRAFT: 'Zrušit změny v konceptu'
     BUTTONCANCELDRAFTDESC: 'Odstranit koncept a vrátit se k aktuálně zveřejněné stránce'
-    BUTTONSAVEPUBLISH: 'Uložit a Zveřejnit'
+    BUTTONSAVEPUBLISH: 'Uložit & zveřehnit'
     BUTTONUNPUBLISH: Nezveřejňovat
     BUTTONUNPUBLISHDESC: 'Odstranit tuto stránku z publikovaných na webu'
     CREATED: 'Datum vytvoření'
@@ -310,7 +308,7 @@ cs:
     DEFAULTCONTACTCONTENT: '<p>Můžete tuto stránku vyplnit vlastním obsahem, nebo ji smazat a vytvořit si vlastní stránky. <br /> </p>'
     DEFAULTCONTACTTITLE: 'Kontaktujte nás'
     DEFAULTHOMECONTENT: '<p>Vítejte v CMS SilverStripe! Toto je úvodní stránka. Tuto i jiné stránky můžete změnit <a href="admin/">přihlášením do systému</a>. Můžete také navštívit <a href="http://doc.silverstripe.com">vývojářskou dokumentaci (EN)</a>, nebo <a href="http://doc.silverstripe.com/doku.php?id=tutorials">návody (EN)</a></p>'
-    DEFAULTHOMETITLE: 'Úvodní strana'
+    DEFAULTHOMETITLE: Úvodní strana
     DELETEDPAGEHELP: 'Stránka už není více zveřejněna'
     DELETEDPAGESHORT: Smazáno
     DEPENDENT_NOTE: 'Následující stránky závisí na této stránce. Tyto obsahují virtuální stránky, přesměrovací stránky a stránky s odkazy obsahu.'
@@ -330,14 +328,14 @@ cs:
     LASTUPDATED: 'Poslední změna'
     LINKCHANGENOTE: 'Změnění tohoto odkazu stránky, bude mít také vliv na odkazy podřízených stránek.'
     MENUTITLE: 'Navigační popisek'
-    METADESC: Popis
+    METADESC: 'Popis'
     METADESCHELP: 'Vyhledávače používají tento obsah pro zobrazovaní výsledkův vyhledávaní (i když to nebude mít vlyv na jejich hodnocení).'
     METAEXTRA: 'Vlastní meta tagy'
     METAEXTRAHELP: 'HTML tagy pro další meta informace. Například &lt;meta name="vlastnínazev" content="vlastní obsah zde" /&gt;'
     MODIFIEDONDRAFTHELP: 'Stránka má nezveřejněné změny'
-    MODIFIEDONDRAFTSHORT: Změněno
+    MODIFIEDONDRAFTSHORT: Upraveno
     MetadataToggle: Metadata
-    OBSOLETECLASS: 'Tato stránka je zastaralý typ {type}. Uložení spůsobí zrušení jeho typu a vy můžete přijít o svá data'
+    OBSOLETECLASS: 'Tato stránka je zastaralého typu {type}. Uložení zpúsobí zrušení svého typu a múžete tak ztratit data'
     PAGELOCATION: 'Umístění stránky'
     PAGETITLE: 'Název stránky'
     PAGETYPE: 'Typ stránky'
@@ -359,14 +357,14 @@ cs:
     SHOWINSEARCH: 'Zobrazovat ve vyhledávání?'
     SINGULARNAME: Stránka
     TABBEHAVIOUR: Chování
-    TABCONTENT: Obsah
+    TABCONTENT: 'Obsah'
     TABDEPENDENT: 'Závislé stránky'
     TOPLEVEL: 'Obsah Webu (Nejvyšší úroveň)'
     TOPLEVELCREATORGROUPS: 'Tvůrci nejvyšší úrovně'
     URLSegment: 'Segment URL'
     VIEWERGROUPS: 'Prohlížeč skupin'
     VIEW_ALL_DESCRIPTION: 'Může vidět jakoukoli stránku webu, obcházeje bezpečnostní specifikaci stránky'
-    VIEW_ALL_HELP: 'Možnost zobrazit libovolnou stránku na webu, bez ohledu na nastavení na kartě Přístup. Vyžaduje povolení "Přístup k obsahu webu"'
+    VIEW_ALL_HELP: 'Možnost zobrazit libovolnou stránku na webu, bez ohledu na nastevení kartě Přístup. Vyžaduje povolení "Přístup k  sekci ''Stránky''"'
     VIEW_DRAFT_CONTENT: 'Zobrazit obsah konceptu'
     VIEW_DRAFT_CONTENT_HELP: 'Vztahuje se na prohlížení stránek mimo CMS, v koncept módu. Užitečné pro externí spolupracovníky bez přístupu do CMS.'
     Viewers: 'Skupiny návštěvníků'
@@ -375,19 +373,27 @@ cs:
     many_many_BackLinkTracking: 'Stopování zpětných odkazů'
     many_many_ImageTracking: 'Stopování obrázku'
     many_many_LinkTracking: 'Stopování odkazu'
+    BUTTONPUBLISHED: Zveřejněno
+    BUTTONSAVED: Uloženo
+    GroupPlaceholder: 'Klikni pro vybrání skupiny'
+    LASTPUBLISHED: 'Posledně zveřejněno'
+    LASTSAVED: 'Posledně uloženo'
+    MoreOptions: 'Více voleb'
+    NOTPUBLISHED: 'Nezveřejněno'
   SiteTreeURLSegmentField:
     HelpChars: 'Zvláštní znaky jsou automaticky zkonvertovány nebo odstraněny'
+    EMPTY: 'Zadejte prosím URL segment nebo klikněte zrušit'
   StaticExporter:
     BASEURL: 'Základní URL'
     EXPORTTO: 'Exportovat do této složky'
     NAME: 'Statický exportér'
   TableListField:
     SELECT: 'Vybrat:'
-  TableListField.ss:
+  TableListField_ss:
     NOITEMSFOUND: 'Nenalezeny žádné záznamy'
     SORTASC: 'Třídit v vzestupném pořadí'
     SORTDESC: 'Třídit v sestupném pořadí'
-  TableListField_PageControls.ss:
+  TableListField_PageControls_ss:
     DISPLAYING: Zobrazuji
     OF: z
     TO: do
@@ -397,14 +403,34 @@ cs:
     VIEWPREVIOUS: 'Zobrazit předchozí'
   TreeTools:
     DisplayLabel: 'Zobrazení:'
-  ViewArchivedEmail.ss:
+  ViewArchivedEmail_ss:
     CANACCESS: 'Můžete přistupovat k archivu pomocí tohoto odkazu:'
     HAVEASKED: 'Požadovali jste prohlížet obsah našich stránek během'
   VirtualPage:
-    CHOOSE: 'Vyberte, kam má stránka odkazovat'
+    CHOOSE: 'Odkazovaná stránka'
     DESCRIPTION: 'Zobrazit obsah jiné stránky'
-    EDITCONTENT: 'klikněte sem pro editaci obsahu'
+    EDITCONTENT: 'Editovat obsah na odkazované stránce'
     HEADER: 'Toto je virtuální stránka'
     PLURALNAME: 'Virtuální stránky'
     PageTypNotAllowedOnRoot: 'Původní stránka typu "{type}" není povolena na nejvyšší úrovni pro tuto virtuální stránku'
     SINGULARNAME: 'Virtuální stránka'
+    EditLink: editovat
+    HEADERWITHLINK: 'Toto je virtuální stránka, kopíruje se obsah z "{title}" ({link})'
+  CMSFileAddController:
+    MENUTITLE: Soubory
+  CMSPageEditController:
+    MENUTITLE: 'Upravit stránku'
+  CMSPageSettingsController:
+    MENUTITLE: 'Editovat stránku'
+  CMSSettingsController:
+    MENUTITLE: Možnosti
+  SITETREE:
+    VIRTUALPAGEDRAFTWARNING: 'Zveřejněte prosím odkazovanou stránku pro zveřejnění virtuální stránky'
+    VIRTUALPAGEWARNING: 'Zvolte prosím odkazovanou stránku a předem uložte před zveřejněním této stránky'
+    VIRTUALPAGEWARNINGSETTINGS: 'Zvolte prosím odkazovanou stránku v polích hlavního obsahu pro zveřejnění'
+  SilverStripeNavigator:
+    ARCHIVED: Archivováno
+  URLSegmentField:
+    Cancel: Storno
+    Edit: Editovat
+    OK: Ok

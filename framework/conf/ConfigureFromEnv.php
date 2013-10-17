@@ -13,9 +13,12 @@
  *  - SS_DATABASE_SERVER:   The database server to use, defaulting to localhost
  *  - SS_DATABASE_USERNAME: The database username (mandatory)
  *  - SS_DATABASE_PASSWORD: The database password (mandatory)
+ *  - SS_DATABASE_PORT:     The database port
  *  - SS_DATABASE_SUFFIX:   A suffix to add to the database name.
  *  - SS_DATABASE_PREFIX:   A prefix to add to the database name.
  *  - SS_DATABASE_TIMEZONE: Set the database timezone to something other than the system timezone.
+ *  - SS_DATABASE_MEMORY:   Use in-memory state if possible. Useful for testing, currently only  
+ *                          supported by the SQLite database adapter.
  * 
  * There is one more setting that is intended to be used by people who work on SilverStripe.
  *  - SS_DATABASE_CHOOSE_NAME: Boolean/Int.  If set, then the system will choose a default database name for you if
@@ -66,15 +69,16 @@ if(defined('SS_ENVIRONMENT_FILE')) {
 }
 
 if(defined('SS_ENVIRONMENT_TYPE')) {
-	Director::set_environment_type(SS_ENVIRONMENT_TYPE);
+	Config::inst()->update('Director', 'environment_type', SS_ENVIRONMENT_TYPE);
 }
 
 global $database;
 
 // No database provided
 if(!isset($database) || !$database) {
-	// if SS_DATABASE_CHOOSE_NAME 
-	if(defined('SS_DATABASE_CHOOSE_NAME') && SS_DATABASE_CHOOSE_NAME) {
+	if(defined('SS_DATABASE_NAME')) {
+		$database = SS_DATABASE_NAME;
+	} else if(defined('SS_DATABASE_CHOOSE_NAME') && SS_DATABASE_CHOOSE_NAME) {
 		$loopCount = (int)SS_DATABASE_CHOOSE_NAME;
 		$databaseDir = BASE_PATH;
 		for($i=0;$i<$loopCount-1;$i++) $databaseDir = dirname($databaseDir);
@@ -95,6 +99,11 @@ if(defined('SS_DATABASE_USERNAME') && defined('SS_DATABASE_PASSWORD')) {
 			. (defined('SS_DATABASE_SUFFIX') ? SS_DATABASE_SUFFIX : ''),
 	);
 
+	// Set the port if called for
+	if(defined('SS_DATABASE_PORT')) {
+		$databaseConfig['port'] = SS_DATABASE_PORT;
+	}
+
 	// Set the timezone if called for
 	if (defined('SS_DATABASE_TIMEZONE')) {
 		$databaseConfig['timezone'] = SS_DATABASE_TIMEZONE;
@@ -103,6 +112,10 @@ if(defined('SS_DATABASE_USERNAME') && defined('SS_DATABASE_PASSWORD')) {
 	// For schema enabled drivers: 
 	if(defined('SS_DATABASE_SCHEMA')) 
 		$databaseConfig["schema"] = SS_DATABASE_SCHEMA; 
+
+	// For SQlite3 memory databases (mainly for testing purposes)
+	if(defined('SS_DATABASE_MEMORY')) 
+		$databaseConfig["memory"] = SS_DATABASE_MEMORY; 
 }
 
 if(defined('SS_SEND_ALL_EMAILS_TO')) {
@@ -122,7 +135,7 @@ if(defined('SS_DEFAULT_ADMIN_USERNAME')) {
 	Security::setDefaultAdmin(SS_DEFAULT_ADMIN_USERNAME, SS_DEFAULT_ADMIN_PASSWORD);
 }
 if(defined('SS_USE_BASIC_AUTH') && SS_USE_BASIC_AUTH) {
-	BasicAuth::protect_entire_site();
+	Config::inst()->update('BasicAuth', 'entire_site_protected', SS_USE_BASIC_AUTH);
 }
 
 if(defined('SS_ERROR_LOG')) {

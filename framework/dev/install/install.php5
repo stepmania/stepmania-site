@@ -24,21 +24,54 @@ ini_set('display_errors', 'on');
 error_reporting(E_ALL | E_STRICT);
 
 // Attempt to start a session so that the username and password can be sent back to the user.
-if (function_exists('session_start')) {
+if (function_exists('session_start') && !session_id()) {
 	session_start();
 }
 
-// Include environment files
+/**
+ * Include _ss_environment.php file
+ */
 $usingEnv = false;
 $envFileExists = false;
-$envFiles = array('_ss_environment.php', '../_ss_environment.php', '../../_ss_environment.php');
-foreach($envFiles as $envFile) {
-	if(@file_exists($envFile)) {
-		include_once($envFile);
-		$envFileExists = true;
-		$usingEnv = true;
-		break;
-	}
+//define the name of the environment file
+$envFile = '_ss_environment.php';
+//define the dirs to start scanning from (have to add the trailing slash)
+// we're going to check the realpath AND the path as the script sees it
+$dirsToCheck = array(
+	realpath('.'),
+	dirname($_SERVER['SCRIPT_FILENAME'])
+);
+//if they are the same, remove one of them
+if ($dirsToCheck[0] == $dirsToCheck[1]) {
+	unset($dirsToCheck[1]);
+}
+foreach ($dirsToCheck as $dir) {
+	//check this dir and every parent dir (until we hit the base of the drive)
+	// or until we hit a dir we can't read
+	do {
+		//add the trailing slash we need to concatenate properly
+		$dir .= DIRECTORY_SEPARATOR;
+		//if it's readable, go ahead
+		if (@is_readable($dir)) {
+			//if the file exists, then we include it, set relevant vars and break out
+			if (file_exists($dir . $envFile)) {
+				include_once($dir . $envFile);
+				$envFileExists = true;
+				//legacy variable assignment
+				$usingEnv = true;
+				//break out of BOTH loops because we found the $envFile
+				break(2);
+			}
+		}
+		else {
+			//break out of the while loop, we can't read the dir
+			break;
+		}
+		//go up a directory
+		$dir = dirname($dir);
+	//here we need to check that the path of the last dir and the next one are
+	// not the same, if they are, we have hit the root of the drive
+	} while (dirname($dir) != $dir);
 }
 
 if($envFileExists) {
@@ -380,6 +413,7 @@ class InstallRequirements {
 		$this->requireModule(FRAMEWORK_NAME, array("File permissions", FRAMEWORK_NAME . "/ directory exists?"));
 
 		if($isApache) {
+			$this->checkApacheVersion(array("Webserver Configuration", "Webserver is not Apache 1.x", "SilverStripe requires Apache version 2 or greater", $webserver));
 			$this->requireWriteable('.htaccess', array("File permissions", "Is the .htaccess file writeable?", null));
 		} elseif($isIIS) {
 			$this->requireWriteable('web.config', array("File permissions", "Is the web.config file writeable?", null));
@@ -409,7 +443,9 @@ class InstallRequirements {
 			$this->warning(array("Webserver Configuration", "URL rewriting support", "I can't tell whether any rewriting module is running.  You may need to configure a rewriting rule yourself."));
 		}
 
-		$this->requireServerVariables(array('SCRIPT_NAME','HTTP_HOST','SCRIPT_FILENAME'), array("Webserver config", "Recognised webserver", "You seem to be using an unsupported webserver.  The server variables SCRIPT_NAME, HTTP_HOST, SCRIPT_FILENAME need to be set."));
+		$this->requireServerVariables(array('SCRIPT_NAME','HTTP_HOST','SCRIPT_FILENAME'), array("Webserver Configuration", "Recognised webserver", "You seem to be using an unsupported webserver.  The server variables SCRIPT_NAME, HTTP_HOST, SCRIPT_FILENAME need to be set."));
+
+		$this->requirePostSupport(array("Webserver Configuration", "POST Support", 'I can\'t find $_POST, make sure POST is enabled.'));
 
 		// Check for GD support
 		if(!$this->requireFunction("imagecreatetruecolor", array("PHP Configuration", "GD2 support", "PHP must have GD version 2."))) {
@@ -449,9 +485,13 @@ class InstallRequirements {
 
 		$this->suggestClass('finfo', array('PHP Configuration', 'fileinfo support', 'fileinfo should be enabled in PHP. SilverStripe uses it for MIME type detection of files. SilverStripe will still operate, but email attachments and sending files to browser (e.g. export data to CSV) may not work correctly without finfo.'));
 
-		$this->suggestPHPSetting('asp_tags', array(false,0,''), array('PHP Configuration', 'asp_tags option', 'This should be turned off as it can cause issues with SilverStripe'));
-		$this->suggestPHPSetting('magic_quotes_gpc', array(false,0,''), array('PHP Configuration', 'magic_quotes_gpc option', 'This should be turned off, as it can cause issues with cookies. More specifically, unserializing data stored in cookies.'));
-		$this->suggestPHPSetting('display_errors', array(false,0,''), array('PHP Configuration', 'display_errors option', 'Unless you\'re in a development environment, this should be turned off, as it can expose sensitive data to website users.'));
+		$this->suggestFunction('curl_init', array('PHP Configuration', 'curl support', 'curl should be enabled in PHP. SilverStripe uses it for consuming web services via the RestfulService class and many modules rely on it.'));
+
+		$this->suggestClass('tidy', array('PHP Configuration', 'tidy support', 'Tidy provides a library of code to clean up your html. SilverStripe will operate fine without tidy but HTMLCleaner will not be effective.'));
+
+		$this->suggestPHPSetting('asp_tags', array(false), array('PHP Configuration', 'asp_tags option', 'This should be turned off as it can cause issues with SilverStripe'));
+		$this->requirePHPSetting('magic_quotes_gpc', array(false), array('PHP Configuration', 'magic_quotes_gpc option', 'This should be turned off, as it can cause issues with cookies. More specifically, unserializing data stored in cookies.'));
+		$this->suggestPHPSetting('display_errors', array(false), array('PHP Configuration', 'display_errors option', 'Unless you\'re in a development environment, this should be turned off, as it can expose sensitive data to website users.'));
 
 		// Check memory allocation
 		$this->requireMemory(32*1024*1024, 64*1024*1024, array("PHP Configuration", "Memory allocation (PHP config option 'memory_limit')", "SilverStripe needs a minimum of 32M allocated to PHP, but recommends 64M.", ini_get("memory_limit")));
@@ -461,6 +501,7 @@ class InstallRequirements {
 
 	function suggestPHPSetting($settingName, $settingValues, $testDetails) {
 		$this->testing($testDetails);
+
 		$val = ini_get($settingName);
 		if(!in_array($val, $settingValues) && $val != $settingValues) {
 			$testDetails[2] = "$settingName is set to '$val' in php.ini.  $testDetails[2]";
@@ -468,15 +509,35 @@ class InstallRequirements {
 		}
 	}
 
+	function requirePHPSetting($settingName, $settingValues, $testDetails) {
+		$this->testing($testDetails);
+
+		$val = ini_get($settingName);
+		if(!in_array($val, $settingValues) && $val != $settingValues) {
+			$testDetails[2] = "$settingName is set to '$val' in php.ini.  $testDetails[2]";
+			$this->error($testDetails);
+		}
+	}
+
 	function suggestClass($class, $testDetails) {
 		$this->testing($testDetails);
+
 		if(!class_exists($class)) {
+			$this->warning($testDetails);
+		}
+	}
+
+	function suggestFunction($class, $testDetails) {
+		$this->testing($testDetails);
+
+		if(!function_exists($class)) {
 			$this->warning($testDetails);
 		}
 	}
 
 	function requireDateTimezone($testDetails) {
 		$this->testing($testDetails);
+
 		$result = ini_get('date.timezone') && in_array(ini_get('date.timezone'), timezone_identifiers_list());
 		if(!$result) {
 			$this->error($testDetails);
@@ -589,7 +650,10 @@ class InstallRequirements {
 
 	function requireFunction($funcName, $testDetails) {
 		$this->testing($testDetails);
-		if(!function_exists($funcName)) $this->error($testDetails);
+		
+		if(!function_exists($funcName)) {
+			$this->error($testDetails);
+		}
 		else return true;
 	}
 
@@ -613,6 +677,17 @@ class InstallRequirements {
 			$this->error($testDetails);
 		}
 		else return true;
+	}
+
+	function checkApacheVersion($testDetails) {
+		$this->testing($testDetails);
+
+		$is1pointx = preg_match('#Apache[/ ]1\.#', $testDetails[3]);
+		if($is1pointx) {
+			$this->error($testDetails);
+		}
+
+		return true;
 	}
 
 	function requirePHPVersion($recommendedVersion, $requiredVersion, $testDetails) {
@@ -904,17 +979,35 @@ class InstallRequirements {
 		}
 	}
 
-	function requireServerVariables($varNames, $errorMessage) {
-		//$this->testing($testDetails);
+	function requireServerVariables($varNames, $testDetails) {
+		$this->testing($testDetails);
+		$missing = array();
+		
 		foreach($varNames as $varName) {
-			if(!$_SERVER[$varName]) $missing[] = '$_SERVER[' . $varName . ']';
+			if(!isset($_SERVER[$varName]) || !$_SERVER[$varName])  {
+				$missing[] = '$_SERVER[' . $varName . ']';
+			}
 		}
-		if(!isset($missing)) {
+
+		if(!$missing) {
 			return true;
 		} else {
 			$testDetails[2] .= " (the following PHP variables are missing: " . implode(", ", $missing) . ")";
 			$this->error($testDetails);
 		}
+	}
+
+
+	function requirePostSupport($testDetails) {
+		$this->testing($testDetails);
+
+		if(!isset($_POST)) {
+			$this->error($testDetails);
+
+			return false;
+		}
+
+		return true;
 	}
 
 	function isRunningWebServer($testDetails) {
@@ -1080,17 +1173,8 @@ global \$database;
 
 require_once('conf/ConfigureFromEnv.php');
 
-MySQLDatabase::set_connection_charset('utf8');
-
-// Set the current theme. More themes can be downloaded from
-// http://www.silverstripe.org/themes/
-SSViewer::set_theme('$theme');
-
 // Set the site locale
 i18n::set_locale('$locale');
-
-// Enable nested URLs for this site (e.g. page/sub-page/)
-if (class_exists('SiteTree')) SiteTree::enable_nested_urls();
 PHP
 			);
 
@@ -1113,17 +1197,8 @@ global \$databaseConfig;
 	"path" => '{$dbConfig['path']}',
 );
 
-MySQLDatabase::set_connection_charset('utf8');
-
-// Set the current theme. More themes can be downloaded from
-// http://www.silverstripe.org/themes/
-SSViewer::set_theme('$theme');
-
 // Set the site locale
 i18n::set_locale('$locale');
-
-// Enable nested URLs for this site (e.g. page/sub-page/)
-if (class_exists('SiteTree')) SiteTree::enable_nested_urls();
 PHP
 			);
 		}
@@ -1214,8 +1289,12 @@ PHP
 				$this->statusMessage("Checking that friendly URLs work...");
 				$this->checkRewrite();
 			} else {
+				require_once 'core/startup/ParameterConfirmationToken.php';
+				$token = new ParameterConfirmationToken('flush');
+				$params = http_build_query($token->params());
+
 				$destinationURL = 'index.php/' .
-					($this->checkModuleExists('cms') ? 'home/successfullyinstalled?flush=1' : '?flush=1');
+					($this->checkModuleExists('cms') ? "home/successfullyinstalled?$params" : "?$params");
 
 				echo <<<HTML
 				<li>SilverStripe successfully installed; I am now redirecting you to your SilverStripe site...</li>
@@ -1225,7 +1304,7 @@ PHP
 					}, 2000);
 				</script>
 				<noscript>
-				<li><a href="$destinationURL">Click here to access your site.</li>
+				<li><a href="$destinationURL">Click here to access your site.</a></li>
 				</noscript>
 HTML;
 			}
@@ -1278,16 +1357,15 @@ HTML;
 ErrorDocument 404 /assets/error-404.html
 ErrorDocument 500 /assets/error-500.html
 
-<IfModule mod_alias.c>
-	RedirectMatch 403 /silverstripe-cache(/|$)
-	RedirectMatch 403 /vendor(/|$)
-	RedirectMatch 403 /composer\.(json|lock)
-</IfModule>
-
 <IfModule mod_rewrite.c>
 	SetEnv HTTP_MOD_REWRITE On
 	RewriteEngine On
 	$baseClause
+
+	RewriteRule ^vendor(/|$) - [F,L,NC]
+	RewriteRule silverstripe-cache(/|$) - [F,L,NC]
+	RewriteRule composer\.(json|lock) - [F,L,NC]
+	
 	RewriteCond %{REQUEST_URI} ^(.*)$
 	RewriteCond %{REQUEST_FILENAME} !-f
 	RewriteCond %{REQUEST_URI} !\.php$
@@ -1325,7 +1403,14 @@ TEXT;
 			<requestFiltering>
 				<hiddenSegments applyToWebDAV="false">
 					<add segment="silverstripe-cache" />
+					<add segment="vendor" />
+					<add segment="composer.json" />
+					<add segment="composer.lock" />
 				</hiddenSegments>
+				<fileExtensions allowUnlisted="true" >
+					<add fileExtension=".ss" allowed="false"/>
+					<add fileExtension=".yml" allowed="false"/>
+				</fileExtensions>
 			</requestFiltering>
 		</security>
 		<rewrite>
@@ -1347,8 +1432,12 @@ TEXT;
 	}
 
 	function checkRewrite() {
+		require_once 'core/startup/ParameterConfirmationToken.php';
+		$token = new ParameterConfirmationToken('flush');
+		$params = http_build_query($token->params());
+
 		$destinationURL = str_replace('install.php', '', $_SERVER['SCRIPT_NAME']) .
-			($this->checkModuleExists('cms') ? 'home/successfullyinstalled?flush=1' : '?flush=1');
+			($this->checkModuleExists('cms') ? "home/successfullyinstalled?$params" : "?$params");
 
 		echo <<<HTML
 <li id="ModRewriteResult">Testing...</li>

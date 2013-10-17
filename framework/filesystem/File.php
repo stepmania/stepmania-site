@@ -64,13 +64,13 @@
  */
 class File extends DataObject {
 
-	static $default_sort = "\"Name\"";
+	private static $default_sort = "\"Name\"";
 
-	static $singular_name = "File";
+	private static $singular_name = "File";
 
-	static $plural_name = "Files";
+	private static $plural_name = "Files";
 
-	static $db = array(
+	private static $db = array(
 		"Name" => "Varchar(255)",
 		"Title" => "Varchar(255)",
 		"Filename" => "Text",
@@ -79,24 +79,25 @@ class File extends DataObject {
 		'ShowInSearch' => 'Boolean(1)',
 	);
 	
-	static $has_one = array(
+	private static $has_one = array(
 		"Parent" => "File",
 		"Owner" => "Member"
 	);
 	
-	static $has_many = array();
+	private static $has_many = array();
 	
-	static $many_many = array();
+	private static $many_many = array();
 	
-	static $defaults = array(
+	private static $defaults = array(
 		"ShowInSearch" => 1,
 	);
 	
-	static $extensions = array(
+	private static $extensions = array(
 		"Hierarchy",
 	);
 	
 	/**
+	 * @config
 	 * @var array List of allowed file extensions, enforced through {@link validate()}.
 	 * 
 	 * Note: if you modify this, you should also change a configuration file in the assets directory.
@@ -108,27 +109,25 @@ class File extends DataObject {
 	 *
 	 * Instructions for the change you need to make are included in a comment in the config file.
 	 */
-	public static $allowed_extensions = array(
-		'','html','htm','xhtml','js','css',
-		'bmp','png','gif','jpg','jpeg','ico','pcx','tif','tiff',
-		'au','mid','midi','mpa','mp3','ogg','m4a','ra','wma','wav','cda',
-		'avi','mpg','mpeg','asf','wmv','m4v','mov','mkv','mp4','swf','flv','ram','rm',
-		'doc','docx','txt','rtf','xls','xlsx','pages',
-		'ppt','pptx','pps','csv',
-		'cab','arj','tar','zip','zipx','sit','sitx','gz','tgz','bz2','ace','arc','pkg','dmg','hqx','jar',
-		'xml','pdf',
+	private static $allowed_extensions = array(
+		'','ace','arc','arj','asf','au','avi','bmp','bz2','cab','cda','css','csv','dmg','doc','docx',
+		'flv','gif','gpx','gz','hqx','htm','html','ico','jar','jpeg','jpg','js','kml', 'm4a','m4v',
+		'mid','midi','mkv','mov','mp3','mp4','mpa','mpeg','mpg','ogg','ogv','pages','pcx','pdf','pkg',
+		'png','pps','ppt','pptx','ra','ram','rm','rtf','sit','sitx','swf','tar','tgz','tif','tiff',
+		'txt','wav','webm','wma','wmv','xhtml','xls','xlsx','xml','zip','zipx',
 	);
 
 	/**
+	 * @config
 	 * @var array Category identifiers mapped to commonly used extensions.
 	 */
-	static $app_categories = array(
+	private static $app_categories = array(
 		'audio' => array(
 			"aif" ,"au" ,"mid" ,"midi" ,"mp3" ,"ra" ,"ram" ,"rm","mp3" ,"wav" ,"m4a" ,"snd" ,"aifc" ,"aiff" ,"wma",
 			"apl", "avr" ,"cda" ,"mp4" ,"ogg"
 		),
 		'mov' => array(
-			"mpeg" ,"mpg" ,"m1v" ,"mp2" ,"mpa" ,"mpe" ,"ifo" ,"vob","avi" ,"wmv" ,"asf" ,"m2v" ,"qt"
+			"mpeg" ,"mpg" ,"m1v" ,"mp2" ,"mpa" ,"mpe" ,"ifo" ,"vob","avi" ,"wmv" ,"asf" ,"m2v" ,"qt", "ogv", "webm"
 		),
 		'zip' => array(
 			"arc" ,"rar" ,"tar" ,"gz" ,"tgz" ,"bz2" ,"dmg" ,"jar","ace" ,"arj" ,"bz" ,"cab"
@@ -145,13 +144,18 @@ class File extends DataObject {
 	);
 
 	/**
+	 * @config
 	 * @var If this is true, then restrictions set in {@link $allowed_max_file_size} and
 	 * {@link $allowed_extensions} will be applied to users with admin privileges as
 	 * well.
 	 */
-	public static $apply_restrictions_to_admin = true;
+	private static $apply_restrictions_to_admin = true;
 
-	public static $update_filesystem = true;
+	/**
+	 * @config
+	 * @var boolean
+	 */
+	private static $update_filesystem = true;
 
 	/**
 	 * Cached result of a "SHOW FIELDS" call
@@ -235,14 +239,6 @@ class File extends DataObject {
 	}
 
 	/**
-	 * @deprecated 3.0 Use getTreeTitle()
-	 */
-	public function TreeTitle() {
-		Deprecation::notice('3.0', 'Use getTreeTitle() instead.');
-		return $this->getTreeTitle();
-	}
-
-	/**
 	 * @return string
 	 */
 	public function getTreeTitle() {
@@ -293,7 +289,7 @@ class File extends DataObject {
 		$result = $this->extendedCan('canEdit', $member);
 		if($result !== null) return $result;
 		
-		return Permission::checkMember($member, 'CMS_ACCESS_AssetAdmin');
+		return true;
 	}
 	
 	/**
@@ -330,7 +326,10 @@ class File extends DataObject {
 	public function getCMSFields() {
 		// Preview
 		if($this instanceof Image) {
-			$formattedImage = $this->getFormattedImage('SetWidth', Image::$asset_preview_width);
+			$formattedImage = $this->getFormattedImage(
+				'SetWidth', 
+				Config::inst()->get('Image', 'asset_preview_width')
+			);
 			$thumbnail = $formattedImage ? $formattedImage->URL : '';
 			$previewField = new LiteralField("ImageFull",
 				"<img id='thumbnailImage' class='thumbnail-preview' src='{$thumbnail}?r=" 
@@ -341,10 +340,10 @@ class File extends DataObject {
 		}
 
 		// Upload
-		$uploadField = new UploadField('UploadField','Upload Field');
-		$uploadField->setConfig('previewMaxWidth', 40);
-		$uploadField->setConfig('previewMaxHeight', 30);
-		$uploadField->setConfig('allowedMaxFileNumber', 1);
+		$uploadField = UploadField::create('UploadField','Upload Field')
+			->setPreviewMaxWidth(40)
+			->setPreviewMaxHeight(30)
+			->setAllowedMaxFileNumber(1);
 		//$uploadField->setTemplate('FileEditUploadField');
 		if ($this->ParentID) {
 			$parent = $this->Parent();
@@ -407,7 +406,7 @@ class File extends DataObject {
 	 */
 	public static function get_app_category($ext) {
 		$ext = strtolower($ext);
-		foreach(self::$app_categories as $category => $exts) {
+		foreach(Config::inst()->get('File', 'app_categories') as $category => $exts) {
 			if(in_array($ext, $exts)) return $category;
 		}
 		return false;
@@ -419,7 +418,7 @@ class File extends DataObject {
 	 * @return String
 	 */
 	public function appCategory() {
-		return self::get_app_category($this->Extension);
+		return self::get_app_category($this->getExtension());
 	}
 
 	public function CMSThumbnail() {
@@ -434,7 +433,7 @@ class File extends DataObject {
 	 * @return String 
 	 */
 	public function Icon() {
-		$ext = $this->Extension;
+		$ext = strtolower($this->getExtension());
 		if(!Director::fileExists(FRAMEWORK_DIR . "/images/app_icons/{$ext}_32.gif")) {
 			$ext = $this->appCategory();
 		}
@@ -467,7 +466,9 @@ class File extends DataObject {
 		parent::onBeforeWrite();
 
 		// Set default owner
-		if(!$this->ID) $this->OwnerID = (Member::currentUser() ? Member::currentUser()->ID : 0);
+		if(!$this->ID && !$this->OwnerID) {
+			$this->OwnerID = (Member::currentUser() ? Member::currentUser()->ID : 0);
+		}
 
 		// Set default name
 		if(!$this->getField('Name')) $this->Name = "new-" . strtolower($this->class);
@@ -496,7 +497,7 @@ class File extends DataObject {
 	 * (it might have been influenced by {@link setName()} or {@link setParentID()} before).
 	 */
 	public function updateFilesystem() {
-		if(!self::$update_filesystem) return false;
+		if(!$this->config()->update_filesystem) return false;
 
 		// Regenerate "Filename", just to be sure
 		$this->setField('Filename', $this->getRelativePath());
@@ -528,13 +529,13 @@ class File extends DataObject {
 			if(!is_a($this, 'Folder')) {
 				// Only throw a fatal error if *both* before and after paths don't exist.
 				if(!file_exists($pathBeforeAbs)) {
-					throw new Exception("Cannot move $pathBefore to $pathAfter - $pathBefore doesn't exist");
+					throw new Exception("Cannot move $pathBeforeAbs to $pathAfterAbs - $pathBeforeAbs doesn't exist");
 				}
 				
 				// Check that target directory (not the file itself) exists.
 				// Only check if we're dealing with a file, otherwise the folder will need to be created
 				if(!file_exists(dirname($pathAfterAbs))) {
-					throw new Exception("Cannot move $pathBefore to $pathAfter - Directory " . dirname($pathAfter)
+					throw new Exception("Cannot move $pathBeforeAbs to $pathAfterAbs - Directory " . dirname($pathAfter)
 						. " doesn't exist");
 				}
 			} 
@@ -868,22 +869,19 @@ class File extends DataObject {
 	}
 	
 	public function validate() {
-		if(File::$apply_restrictions_to_admin || !Permission::check('ADMIN')) {
+		if($this->config()->apply_restrictions_to_admin || !Permission::check('ADMIN')) {
 			// Extension validation
 			// TODO Merge this with Upload_Validator
 			$extension = $this->getExtension();
-			$allowed = array_map('strtolower', self::$allowed_extensions);
-			if($extension && !in_array(strtolower($extension), $allowed)) {
+			$allowed = array_map('strtolower', $this->config()->allowed_extensions);
+			if(!in_array(strtolower($extension), $allowed)) {
 				$exts =  $allowed;
 				sort($exts);
-				$message = sprintf(
-					_t(
-						'File.INVALIDEXTENSION', 
-						'Extension is not allowed (valid: %s)',
-						
-						'Argument 1: Comma-separated list of valid extensions'
-					),
-					wordwrap(implode(', ',$exts))
+				$message =  _t(
+					'File.INVALIDEXTENSION',
+					'Extension is not allowed (valid: {extensions})',
+					'Argument 1: Comma-separated list of valid extensions',
+					array('extensions' => wordwrap(implode(', ',$exts)))
 				);
 				return new ValidationResult(false, $message);
 			}
@@ -896,9 +894,10 @@ class File extends DataObject {
 	}
 	
 	/**
+	 * @config
 	 * @var Array Only use lowercase extensions in here.
 	 */
-	static $class_for_file_extension = array(
+	private static $class_for_file_extension = array(
 		'*' => 'File',
 		'jpg' => 'Image',
 		'jpeg' => 'Image',
@@ -922,7 +921,7 @@ class File extends DataObject {
 	 * @return String Classname for a subclass of {@link File}
 	 */
 	public static function get_class_for_file_extension($ext) {
-		$map = array_change_key_case(self::$class_for_file_extension, CASE_LOWER);
+		$map = array_change_key_case(self::config()->class_for_file_extension, CASE_LOWER);
 		return (array_key_exists(strtolower($ext), $map)) ? $map[strtolower($ext)] : $map['*'];
 	}
 	
@@ -936,12 +935,12 @@ class File extends DataObject {
 		if(!is_array($exts)) $exts = array($exts);
 		
 		foreach($exts as $ext) {
-			if(is_subclass_of($ext, 'File')) {
+			if(!is_subclass_of($class, 'File')) {
 				throw new InvalidArgumentException(
 					sprintf('Class "%s" (for extension "%s") is not a valid subclass of File', $class, $ext)
 				);
 			}
-			self::$class_for_file_extension[$ext] = $class;
+			self::config()->class_for_file_extension = array($ext => $class);
 		}
 	}
 	

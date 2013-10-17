@@ -59,7 +59,8 @@ class SilverStripeNavigator extends ViewableData {
 		}
 		ksort($items);
 
-		return new ArrayList($items);
+		// Drop the keys and let the ArrayList handle the numbering, so $First, $Last and others work properly.
+		return new ArrayList(array_values($items));
 	}
 	
 	/**
@@ -82,7 +83,7 @@ class SilverStripeNavigator extends ViewableData {
 			$text = $item->getHTML();
 			if($text) $html .= $text;
 			$newMessage = $item->getMessage();
-			if($newMessage) $message = $newMessage;
+			if($newMessage && $item->isActive()) $message = $newMessage;
 		}
 		
 		return array(
@@ -122,10 +123,17 @@ class SilverStripeNavigatorItem extends ViewableData {
 
 	/**
 	* @return String
-	* Text displayed in watermark
+	* Get the Title of an item
 	*/
-	public function getWatermark() {}
+	public function getTitle() {}
 	
+	/**
+	 * Machine-friendly name.
+	 */
+	public function getName() {
+		return substr(get_class($this), strpos(get_class($this), '_')+1);
+	}
+
 	/**
 	 * Optional link to a specific view of this record.
 	 * Not all items are simple links, please use {@link getHTML()}
@@ -174,6 +182,36 @@ class SilverStripeNavigatorItem extends ViewableData {
 	public function canView($member = null) {
 		return true;
 	}
+
+	/**
+	 * Counts as "archived" if the current record is a different version from both live and draft.
+	 * 
+	 * @return boolean
+	 */
+	public function isArchived() {
+		if(!$this->record->hasExtension('Versioned')) return false;
+		
+		if(!isset($this->record->_cached_isArchived)) {
+			$baseTable = ClassInfo::baseDataClass($this->record->class);
+			$currentDraft = Versioned::get_one_by_stage(
+				$baseTable, 
+				'Stage', 
+				sprintf('"%s"."ID" = %d', $baseTable, $this->record->ID)
+			);
+			$currentLive = Versioned::get_one_by_stage(
+				$baseTable, 
+				'Live', 
+				sprintf('"%s"."ID" = %d', $baseTable, $this->record->ID)
+			);
+			
+			$this->record->_cached_isArchived = (
+				(!$currentDraft || ($currentDraft && $this->record->Version != $currentDraft->Version)) 
+				&& (!$currentLive || ($currentLive && $this->record->Version != $currentLive->Version))
+			);
+}
+
+		return $this->record->_cached_isArchived;
+	}
 }
 
 /**
@@ -181,7 +219,8 @@ class SilverStripeNavigatorItem extends ViewableData {
  * @subpackage content
  */
 class SilverStripeNavigatorItem_CMSLink extends SilverStripeNavigatorItem {
-	static $priority = 10;	
+	/** @config */
+	private static $priority = 10;	
 	
 	public function getHTML() {
 		return sprintf(
@@ -189,6 +228,10 @@ class SilverStripeNavigatorItem_CMSLink extends SilverStripeNavigatorItem {
 			$this->record->CMSEditLink(),
 			_t('ContentController.CMS', 'CMS')
 		);
+	}
+	
+	public function getTitle() {
+		return _t('ContentController.CMS', 'CMS', 'Used in navigation. Should be a short label');		
 	}
 	
 	public function getLink() {
@@ -200,8 +243,12 @@ class SilverStripeNavigatorItem_CMSLink extends SilverStripeNavigatorItem {
 	}
 	
 	public function canView($member = null) {
+		return (
 		// Don't show in CMS
-		return !(Controller::curr() instanceof LeftAndMain);
+			!(Controller::curr() instanceof LeftAndMain)
+			// Don't follow redirects in preview, they break the CMS editing form
+			&& !($this->record instanceof RedirectorPage)
+		);
 	}
 
 }
@@ -211,18 +258,19 @@ class SilverStripeNavigatorItem_CMSLink extends SilverStripeNavigatorItem {
  * @subpackage content
  */
 class SilverStripeNavigatorItem_StageLink extends SilverStripeNavigatorItem {
-	static $priority = 20;
+	/** @config */
+	private static $priority = 20;
 
 	public function getHTML() {
 		$draftPage = $this->getDraftPage();
 		if($draftPage) {
 			$this->recordLink = Controller::join_links($draftPage->AbsoluteLink(), "?stage=Stage");
-			return "<a href=\"$this->recordLink\">". _t('ContentController.DRAFTSITE', 'Draft Site') ."</a>";
+			return "<a ". ($this->isActive() ? 'class="current" ' : '') ."href=\"$this->recordLink\">". _t('ContentController.DRAFTSITE', 'Draft Site') ."</a>";
 		}
 	}
 
-	public function getWatermark() {
-		return _t('ContentController.DRAFTSITE');
+	public function getTitle() {
+		return _t('ContentController.DRAFT', 'Draft', 'Used for the Switch between draft and published view mode. Needs to be a short label');
 	}
 	
 	public function getMessage() {
@@ -230,17 +278,28 @@ class SilverStripeNavigatorItem_StageLink extends SilverStripeNavigatorItem {
 	}
 	
 	public function getLink() {
-		return Controller::join_links($this->record->AbsoluteLink(), '?stage=Stage');
+		$date = Versioned::current_archived_date();
+		return Controller::join_links(
+			$this->record->PreviewLink(), 
+			'?stage=Stage',
+			$date ? '?archiveDate=' . $date : null
+		);
 	}
 	
 	public function canView($member = null) {
-		return ($this->record->hasExtension('Versioned') && $this->getDraftPage());
+		return (
+			$this->record->hasExtension('Versioned') 
+			&& $this->getDraftPage()
+			// Don't follow redirects in preview, they break the CMS editing form
+			&& !($this->record instanceof RedirectorPage)
+		);
 	}
 	
 	public function isActive() {
 		return (
 			Versioned::current_stage() == 'Stage' 
 			&& !(ClassInfo::exists('SiteTreeFutureState') && SiteTreeFutureState::get_future_datetime())
+			&& !$this->isArchived()
 		);
 	}
 	
@@ -259,18 +318,19 @@ class SilverStripeNavigatorItem_StageLink extends SilverStripeNavigatorItem {
  * @subpackage content
  */
 class SilverStripeNavigatorItem_LiveLink extends SilverStripeNavigatorItem {
-	static $priority = 30;
+	/** @config */
+	private static $priority = 30;
 
 	public function getHTML() {
 		$livePage = $this->getLivePage();
 		if($livePage) {
 			$this->recordLink = Controller::join_links($livePage->AbsoluteLink(), "?stage=Live");
-			return "<a href=\"$this->recordLink\">". _t('ContentController.PUBLISHEDSITE', 'Published Site') ."</a>";
+			return "<a ". ($this->isActive() ? 'class="current" ' : '') ."href=\"$this->recordLink\">". _t('ContentController.PUBLISHEDSITE', 'Published Site') ."</a>";
 		}
 	}
 
-	public function getWatermark() {
-		return _t('ContentController.PUBLISHEDSITE');
+	public function getTitle() {
+		return _t('ContentController.PUBLISHED', 'Published', 'Used for the Switch between draft and published view mode. Needs to be a short label');
 	}
 	
 	public function getMessage() {
@@ -278,15 +338,23 @@ class SilverStripeNavigatorItem_LiveLink extends SilverStripeNavigatorItem {
 	}
 	
 	public function getLink() {
-		return Controller::join_links($this->record->AbsoluteLink(), '?stage=Live');
+		return Controller::join_links($this->record->PreviewLink(), '?stage=Live');
 	}
 	
 	public function canView($member = null) {
-		return ($this->record->hasExtension('Versioned') && $this->getLivePage());
+		return (
+			$this->record->hasExtension('Versioned') 
+			&& $this->getLivePage()
+			// Don't follow redirects in preview, they break the CMS editing form
+			&& !($this->record instanceof RedirectorPage)
+		);
 	}
 	
 	public function isActive() {
-		return (!Versioned::current_stage() || Versioned::current_stage() == 'Live');
+		return (
+			(!Versioned::current_stage() || Versioned::current_stage() == 'Live')
+			&& !$this->isArchived()
+		);
 	}
 	
 	protected function getLivePage() {
@@ -304,56 +372,40 @@ class SilverStripeNavigatorItem_LiveLink extends SilverStripeNavigatorItem {
  * @subpackage content
  */
 class SilverStripeNavigatorItem_ArchiveLink extends SilverStripeNavigatorItem {
-	static $priority = 40;
+	/** @config */
+	private static $priority = 40;
 
 	public function getHTML() {
 			$this->recordLink = $this->record->AbsoluteLink();
-			return "<a class=\"ss-ui-button\" href=\"$this->recordLink?archiveDate={$this->record->LastEdited}\" target=\"_blank\">". _t('ContentController.ARCHIVEDSITE', 'Preview version') ."</a>";
+			return "<a class=\"ss-ui-button". ($this->isActive() ? ' current' : '') ."\" href=\"$this->recordLink?archiveDate={$this->record->LastEdited}\" target=\"_blank\">". _t('ContentController.ARCHIVEDSITE', 'Preview version') ."</a>";
+	}
+	
+	public function getTitle() {
+		return _t('SilverStripeNavigator.ARCHIVED', 'Archived');
 	}
 	
 	public function getMessage() { 
 		if($date = Versioned::current_archived_date()) {
-			$dateObj = Datetime::create();
-			$dateObj->setValue($date);
+			$dateObj = DBField::create_field('Datetime', $date);
 			return "<div id=\"SilverStripeNavigatorMessage\" title=\"". _t('ContentControl.NOTEWONTBESHOWN', 'Note: this message will not be shown to your visitors') ."\">". _t('ContentController.ARCHIVEDSITEFROM', 'Archived site from') ."<br>" . $dateObj->Nice() . "</div>";
 		}
 	}
 	
 	public function getLink() {
-		return $this->record->AbsoluteLink() . '?archiveDate=' . $this->record->LastEdited;
+		return $this->record->PreviewLink() . '?archiveDate=' . urlencode($this->record->LastEdited);
 	}
 	
 	public function canView($member = null) {
-		return ($this->record->hasExtension('Versioned') && $this->isArchived());
+		return (
+			$this->record->hasExtension('Versioned') 
+			&& $this->isArchived()
+			// Don't follow redirects in preview, they break the CMS editing form
+			&& !($this->record instanceof RedirectorPage)
+		);
 	}
 	
 	public function isActive() {
-		return (Versioned::current_archived_date());
+		return $this->isArchived();
 	}
-	
-	/**
-	 * Counts as "archived" if the current record is a different version from both live and draft.
-	 * 
-	 * @return boolean
-	 */
-	public function isArchived() {
-		if(!$this->record->hasExtension('Versioned')) return false;
-		
-		$baseTable = ClassInfo::baseDataClass($this->record->class);
-		$currentDraft = Versioned::get_one_by_stage(
-			$baseTable, 
-			'Stage', 
-			sprintf('"%s"."ID" = %d', $baseTable, $this->record->ID)
-		);
-		$currentLive = Versioned::get_one_by_stage(
-			$baseTable, 
-			'Live', 
-			sprintf('"%s"."ID" = %d', $baseTable, $this->record->ID)
-		);
-		return (
-			(!$currentDraft || ($currentDraft && $this->record->Version != $currentDraft->Version)) 
-			&& (!$currentLive || ($currentLive && $this->record->Version != $currentLive->Version))
-		);
 	}
-}
 

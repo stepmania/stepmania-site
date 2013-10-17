@@ -6,7 +6,7 @@
  */
 class Security extends Controller {
 	
-	static $allowed_actions = array( 
+	private static $allowed_actions = array( 
 		'index', 
 		'login', 
 		'logout', 
@@ -40,71 +40,81 @@ class Security extends Controller {
 	 * If set to TRUE to prevent sharing of the session across several sites
 	 * in the domain.
 	 *
+	 * @config
 	 * @var bool
 	 */
-	protected static $strictPathChecking = false;
+	protected static $strict_path_checking = false;
 
 	/**
 	 * The password encryption algorithm to use by default.
 	 * This is an arbitrary code registered through {@link PasswordEncryptor}.
 	 *
+	 * @config
 	 * @var string
 	 */
-	protected static $encryptionAlgorithm = 'blowfish';
+	private static $password_encryption_algorithm = 'blowfish';
 
 	/**
 	 * Showing "Remember me"-checkbox 
 	 * on loginform, and saving encrypted credentials to a cookie. 
- 	 *  
+ 	 *
+ 	 * @config
 	 * @var bool 
 	 */ 
-	public static $autologin_enabled = true;
+	private static $autologin_enabled = true;
 	
 	/**
 	 * Location of word list to use for generating passwords
-	 * 
+	 *
+	 * @config
 	 * @var string
 	 */
-	protected static $wordlist = './wordlist.txt';
+	protected static $word_list = './wordlist.txt';
 	
-	static $template = 'BlankPage';
+	private static $template = 'BlankPage';
 	
 	/**
 	 * Template thats used to render the pages.
 	 *
 	 * @var string
+	 * @config
 	 */
-	public static $template_main = 'Page';
+	private static $template_main = 'Page';
 	
 	/**
 	 * Default message set used in permission failures.
 	 *
 	 * @var array|string
 	 */
-	protected static $default_message_set = '';
+	private static $default_message_set = '';
 
 	/**
 	 * Random secure token, can be used as a crypto key internally.
 	 * Generate one through 'sake dev/generatesecuretoken'.
-	 * 
+	 *
+	 * @config
 	 * @var String
 	 */
-	public static $token;
+	private static $token;
 	
 	/**
 	 * Get location of word list file
+	 *
+	 * @deprecated 3.2 Use the "Security.word_list" config setting instead
 	 */
 	public static function get_word_list() {
-		return Security::$wordlist;
+		Deprecation::notice('3.2', 'Use the "Security.word_list" config setting instead');
+		return self::config()->word_list;
 	}
 	
 	/**
 	 * Enable or disable recording of login attempts
 	 * through the {@link LoginRecord} object.
-	 * 
+	 *
+	 * @config
 	 * @var boolean $login_recording
 	 */
-	protected static $login_recording = false;
+	private static $login_recording = false;
 	
 	/**
 	 * @var boolean If set to TRUE or FALSE, {@link database_is_ready()}
@@ -122,20 +132,24 @@ class Security extends Controller {
 
 	/**
 	 * Set location of word list file
-	 * 
+	 *
+	 * @deprecated 3.2 Use the "Security.word_list" config setting instead
 	 * @param string $wordListFile Location of word list file
 	 */
 	public static function set_word_list($wordListFile) {
-		Security::$wordlist = $wordListFile;
+		Deprecation::notice('3.2', 'Use the "Security.word_list" config setting instead');
+		self::config()->word_list = $wordListFile;
 	}
 	
 	/**
 	 * Set the default message set used in permissions failures.
 	 *
+	 * @deprecated 3.2 Use the "Security.default_message_set" config setting instead
 	 * @param string|array $messageSet
 	 */
 	public static function set_default_message_set($messageSet) {
-		self::$default_message_set = $messageSet;
+		Deprecation::notice('3.2', 'Use the "Security.default_message_set" config setting instead');
+		self::config()->default_message_set = $messageSet;
 	}
 
 
@@ -174,7 +188,10 @@ class Security extends Controller {
 		if(Director::is_ajax()) {
 			$response = ($controller) ? $controller->getResponse() : new SS_HTTPResponse();
 			$response->setStatusCode(403);
-			if(!Member::currentUser()) $response->setBody('NOTLOGGEDIN:');
+			if(!Member::currentUser()) {
+				$response->setBody(_t('ContentController.NOTLOGGEDIN','Not logged in'));
+				$response->setStatusDescription(_t('ContentController.NOTLOGGEDIN','Not logged in'));
+			}
 			return $response;
 		} else {
 			// Prepare the messageSet provided
@@ -208,17 +225,20 @@ class Security extends Controller {
 				$messageSet = array('default' => $messageSet);
 			}
 
+			$member = Member::currentUser();
+
 			// Work out the right message to show
-			if(Member::currentUser()) {
+			if($member && $member->exists()) {
 				$response = ($controller) ? $controller->getResponse() : new SS_HTTPResponse();
 				$response->setStatusCode(403);
 
 				//If 'alreadyLoggedIn' is not specified in the array, then use the default
 				//which should have been specified in the lines above
-				if(isset($messageSet['alreadyLoggedIn']))
-					$message=$messageSet['alreadyLoggedIn'];
-				else
-					$message=$messageSet['default'];
+				if(isset($messageSet['alreadyLoggedIn'])) {
+					$message = $messageSet['alreadyLoggedIn'];
+				} else {
+					$message = $messageSet['default'];
+				}
 
 				// Somewhat hackish way to render a login form with an error message.
 				$me = new Security();
@@ -226,8 +246,11 @@ class Security extends Controller {
 				$form->sessionMessage($message, 'warning');
 				Session::set('MemberLoginForm.force_message',1);
 				$formText = $me->login();
-				
+
 				$response->setBody($formText);
+
+				$controller->extend('permissionDenied', $member);
+
 				return $response;
 			} else {
 				$message = $messageSet['default'];
@@ -244,17 +267,24 @@ class Security extends Controller {
 
 			$controller->redirect(
 				Config::inst()->get('Security', 'login_url')
-			 . "?BackURL=" . urlencode($_SERVER['REQUEST_URI'])
+				. "?BackURL=" . urlencode($_SERVER['REQUEST_URI'])
 			);
 		}
 		return;
+	}
+
+	public function init() {
+		parent::init();
+
+		// Prevent clickjacking, see https://developer.mozilla.org/en-US/docs/HTTP/X-Frame-Options
+		$this->response->addHeader('X-Frame-Options', 'SAMEORIGIN');
 	}
 
 
 	/**
 	 * Get the login form to process according to the submitted data
 	 */
-	protected function LoginForm() {
+	public function LoginForm() {
 		if(isset($this->requestParams['AuthenticationMethod'])) {
 			$authenticator = trim($_REQUEST['AuthenticationMethod']);
 
@@ -281,7 +311,7 @@ class Security extends Controller {
 	 *
 	 * @todo Check how to activate/deactivate authentication methods
 	 */
-	protected function GetLoginForms()
+	public function GetLoginForms()
 	{
 		$forms = array();
 
@@ -326,7 +356,9 @@ class Security extends Controller {
 		$member = Member::currentUser();
 		if($member) $member->logOut();
 
-		if($redirect) $this->redirectBack();
+		if($redirect && (!$this->response || !$this->response->isFinished())) {
+			$this->redirectBack();
+		}
 	}
 
 
@@ -657,7 +689,7 @@ class Security extends Controller {
 	 * @return Form Returns the lost password form
 	 */
 	public function ChangePasswordForm() {
-		return new ChangePasswordForm($this, 'ChangePasswordForm');
+        return Object::create('ChangePasswordForm', $this, 'ChangePasswordForm');
 	}
 
 	/**
@@ -761,43 +793,49 @@ class Security extends Controller {
 	 * This prevents sharing of the session across several sites in the
 	 * domain.
 	 *
+	 * @deprecated 3.2 Use the "Security.strict_path_checking" config setting instead
 	 * @param boolean $strictPathChecking To enable or disable strict patch
 	 *                                    checking.
 	 */
 	public static function setStrictPathChecking($strictPathChecking) {
-		self::$strictPathChecking = $strictPathChecking;
+		Deprecation::notice('3.2', 'Use the "Security.strict_path_checking" config setting instead');
+		self::config()->strict_path_checking = $strictPathChecking;
 	}
 
 
 	/**
 	 * Get strict path checking
 	 *
+	 * @deprecated 3.2 Use the "Security.strict_path_checking" config setting instead
 	 * @return boolean Status of strict path checking
 	 */
 	public static function getStrictPathChecking() {
-		return self::$strictPathChecking;
+		Deprecation::notice('3.2', 'Use the "Security.strict_path_checking" config setting instead');
+		return self::config()->strict_path_checking;
 	}
 
 
 	/**
 	 * Set the password encryption algorithm
 	 *
+	 * @deprecated 3.2 Use the "Security.password_encryption_algorithm" config setting instead
 	 * @param string $algorithm One of the available password encryption
 	 *  algorithms determined by {@link Security::get_encryption_algorithms()}
 	 * @return bool Returns TRUE if the passed algorithm was valid, otherwise FALSE.
 	 */
 	public static function set_password_encryption_algorithm($algorithm) {
-		if(!array_key_exists($algorithm, PasswordEncryptor::get_encryptors())) return false;
+		Deprecation::notice('3.2', 'Use the "Security.password_encryption_algorithm" config setting instead');
 		
-		self::$encryptionAlgorithm = $algorithm;
-		return true;
+		self::config()->password_encryption_algorithm = $algorithm;
 	}
 	
 	/**
+	 * @deprecated 3.2 Use the "Security.password_encryption_algorithm" config setting instead
 	 * @return String
 	 */
 	public static function get_password_encryption_algorithm() {
-		return self::$encryptionAlgorithm;
+		Deprecation::notice('3.2', 'Use the "Security.password_encryption_algorithm" config setting instead');
+		return self::config()->password_encryption_algorithm;
 	}
 
 	/**
@@ -826,11 +864,10 @@ class Security extends Controller {
 	 * If the passed algorithm is invalid, FALSE will be returned.
 	 *
 	 * @see encrypt_passwords()
-	 * @see set_password_encryption_algorithm()
 	 */
 	public static function encrypt_password($password, $salt = null, $algorithm = null, $member = null) {
 		// Fall back to the default encryption algorithm
-		if(!$algorithm) $algorithm = self::$encryptionAlgorithm;
+		if(!$algorithm) $algorithm = self::config()->password_encryption_algorithm;
 		
 		$e = PasswordEncryptor::create_for_algorithm($algorithm);
 
@@ -886,38 +923,49 @@ class Security extends Controller {
 	/**
 	 * Enable or disable recording of login attempts
 	 * through the {@link LoginRecord} object.
-	 * 
+	 *
+	 * @deprecated 3.2 Use the "Security.login_recording" config setting instead
 	 * @param boolean $bool
 	 */
 	public static function set_login_recording($bool) {
+		Deprecation::notice('3.2', 'Use the "Security.login_recording" config setting instead');
 		self::$login_recording = (bool)$bool;
 	}
 	
 	/**
+	 * @deprecated 3.2 Use the "Security.login_recording" config setting instead
 	 * @return boolean
 	 */
 	public static function login_recording() {
+		Deprecation::notice('3.2', 'Use the "Security.login_recording" config setting instead');
 		return self::$login_recording;
 	}
 	
-	protected static $default_login_dest = "";
-	
 	/**
-	 * Set the default login dest
+	 * @config
+	 * @var string Set the default login dest
 	 * This is the URL that users will be redirected to after they log in,
 	 * if they haven't logged in en route to access a secured page.
-	 * 
-	 * By default, this is set to the homepage
+	 * By default, this is set to the homepage.
+	 */
+	private static $default_login_dest = "";
+	
+	/**
+	 * @deprecated 3.2 Use the "Security.default_login_dest" config setting instead
 	 */
 	public static function set_default_login_dest($dest) {
-		self::$default_login_dest = $dest;
+		Deprecation::notice('3.2', 'Use the "Security.default_login_dest" config setting instead');
+		self::config()->default_login_dest = $dest;
 	}
 
 	/**
-	 * Get the default login dest
+	 * Get the default login dest.
+	 *
+	 * @deprecated 3.2 Use the "Security.default_login_dest" config setting instead
 	 */
 	public static function default_login_dest() {
-		return self::$default_login_dest;
+		Deprecation::notice('3.2', 'Use the "Security.default_login_dest" config setting instead');
+		return self::config()->default_login_dest;
 	}
 
 	protected static $ignore_disallowed_actions = false;
@@ -935,20 +983,22 @@ class Security extends Controller {
 		return self::$ignore_disallowed_actions;
 	}
 
-	protected static $login_url = "Security/login";
+	/** @config */
+	private static $login_url = "Security/login";
 
 	/**
 	 * Set a custom log-in URL if you have built your own log-in page.
 	 */
 	public static function set_login_url($loginUrl) {
-	    self::$login_url = $loginUrl;
-}
+		self::$login_url = $loginUrl;
+	}
+
 	/**
 	 * Get the URL of the log-in page.
 	 * Defaults to Security/login but can be re-set with {@link set_login_url()}
 	 */
 	public static function login_url() {
-	    return self::$login_url;
+		return self::$login_url;
 	}
 
 }

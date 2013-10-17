@@ -15,6 +15,7 @@
 class SS_ClassManifest {
 
 	const CONF_FILE = '_config.php';
+	const CONF_DIR = '_config';
 
 	protected $base;
 	protected $tests;
@@ -28,6 +29,7 @@ class SS_ClassManifest {
 	protected $interfaces   = array();
 	protected $implementors = array();
 	protected $configs      = array();
+	protected $configDirs   = array();
 
 	/**
 	 * @return TokenisedRegularExpression
@@ -117,11 +119,10 @@ class SS_ClassManifest {
 		$this->base  = $base;
 		$this->tests = $includeTests;
 
-		$this->cache = SS_Cache::factory('SS_ClassManifest', 'Core', array(
-			'automatic_serialization' => true,
-			'lifetime' => null
-		));
-		$this->cacheKey = $this->tests ? 'manifest_tests' : 'manifest';
+		$cacheClass = defined('SS_MANIFESTCACHE') ? SS_MANIFESTCACHE : 'ManifestCache_File';
+
+		$this->cache = new $cacheClass('classmanifest'.($includeTests ? '_tests' : ''));
+		$this->cacheKey = 'manifest';
 
 		if (!$forceRegen && $data = $this->cache->load($this->cacheKey)) {
 			$this->classes      = $data['classes'];
@@ -129,6 +130,7 @@ class SS_ClassManifest {
 			$this->interfaces   = $data['interfaces'];
 			$this->implementors = $data['implementors'];
 			$this->configs      = $data['configs'];
+			$this->configDirs   = $data['configDirs'];
 		} else {
 			$this->regenerate($cache);
 		}
@@ -246,16 +248,38 @@ class SS_ClassManifest {
 
 	/**
 	 * Returns an array of module names mapped to their paths.
-	 * "Modules" in SilverStripe are simply directories with a _config.php file.
+	 *
+	 * "Modules" in SilverStripe are simply directories with a _config.php 
+	 * file.
 	 *
 	 * @return array
 	 */
 	public function getModules() {
 		$modules = array();
-		foreach($this->configs as $configPath) {
-			$modules[basename(dirname($configPath))] = dirname($configPath);
+		
+		if($this->configs) {
+			foreach($this->configs as $configPath) {
+				$modules[basename(dirname($configPath))] = dirname($configPath);
+			}
 		}
+
+		if($this->configDirs) {
+			foreach($this->configDirs as $configDir) {
+				$path = preg_replace('/\/_config$/', '', dirname($configDir));
+				$modules[basename($path)] = $path;
+			}
+		}
+
 		return $modules;
+	}
+
+	/**
+	 * Used to set up files that we want to exclude from parsing for performance reasons.
+	 */
+	protected function setDefaults()
+	{
+		$this->classes['sstemplateparser'] = FRAMEWORK_PATH.'/view/SSTemplateParser.php';
+		$this->classes['sstemplateparseexception'] = FRAMEWORK_PATH.'/view/SSTemplateParser.php';
 	}
 
 	/**
@@ -266,7 +290,7 @@ class SS_ClassManifest {
 	public function regenerate($cache = true) {
 		$reset = array(
 			'classes', 'roots', 'children', 'descendants', 'interfaces',
-			'implementors', 'configs'
+			'implementors', 'configs', 'configDirs'
 		);
 
 		// Reset the manifest so stale info doesn't cause errors.
@@ -274,12 +298,15 @@ class SS_ClassManifest {
 			$this->$reset = array();
 		}
 
+		$this->setDefaults();
+
 		$finder = new ManifestFileFinder();
 		$finder->setOptions(array(
 			'name_regex'    => '/^(_config.php|[^_].*\.php)$/',
-			'ignore_files'  => array('index.php', 'main.php', 'cli-script.php'),
+			'ignore_files'  => array('index.php', 'main.php', 'cli-script.php', 'SSTemplateParser.php'),
 			'ignore_tests'  => !$this->tests,
-			'file_callback' => array($this, 'handleFile')
+			'file_callback' => array($this, 'handleFile'),
+			'dir_callback' => array($this, 'handleDir')
 		));
 		$finder->find($this->base);
 
@@ -293,9 +320,16 @@ class SS_ClassManifest {
 				'descendants'  => $this->descendants,
 				'interfaces'   => $this->interfaces,
 				'implementors' => $this->implementors,
-				'configs'      => $this->configs
+				'configs'      => $this->configs,
+				'configDirs'   => $this->configDirs
 			);
 			$this->cache->save($data, $this->cacheKey);
+		}
+	}
+
+	public function handleDir($basename, $pathname, $depth) {
+		if ($basename == self::CONF_DIR) {
+			$this->configDirs[] = $pathname;
 		}
 	}
 
@@ -343,7 +377,7 @@ class SS_ClassManifest {
 			$interfaces = self::get_interface_parser()->findAll($tokens);
 
 			$cache = array('classes' => $classes, 'interfaces' => $interfaces, 'namespace' => $namespace);
-			$this->cache->save($cache, $key, array('fileparse'));
+			$this->cache->save($cache, $key);
 		}
 
 		foreach ($classes as $class) {

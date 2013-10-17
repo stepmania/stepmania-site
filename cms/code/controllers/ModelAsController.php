@@ -95,7 +95,7 @@ class ModelAsController extends Controller implements NestedController {
 			sprintf(
 				'"URLSegment" = \'%s\' %s', 
 				Convert::raw2sql(rawurlencode($URLSegment)), 
-				(SiteTree::nested_urls() ? 'AND "ParentID" = 0' : null)
+				(SiteTree::config()->nested_urls ? 'AND "ParentID" = 0' : null)
 			)
 		);
 		if(class_exists('Translatable')) Translatable::enable_locale_filter();
@@ -126,11 +126,8 @@ class ModelAsController extends Controller implements NestedController {
 				return $this->response;
 			}
 			
-			if($response = ErrorPage::response_for(404)) {
-				return $response;
-			} else {
-				$this->httpError(404, 'The requested page could not be found.');
-			}
+			$response = ErrorPage::response_for(404);
+			$this->httpError(404, $response ? $response : 'The requested page could not be found.');
 		}
 		
 		// Enforce current locale setting to the loaded SiteTree object
@@ -151,10 +148,10 @@ class ModelAsController extends Controller implements NestedController {
 	static public function find_old_page($URLSegment,$parentID = 0, $ignoreNestedURLs = false) {
 		$URLSegment = Convert::raw2sql(rawurlencode($URLSegment));
 		
-		$useParentIDFilter = SiteTree::nested_urls() && $parentID;
+		$useParentIDFilter = SiteTree::config()->nested_urls && $parentID;
 				
 		// First look for a non-nested page that has a unique URLSegment and can be redirected to.
-		if(SiteTree::nested_urls()) {
+		if(SiteTree::config()->nested_urls) {
 			$pages = DataObject::get(
 				'SiteTree', 
 				"\"URLSegment\" = '$URLSegment'" . ($useParentIDFilter ? ' AND "ParentID" = ' . (int)$parentID : '')

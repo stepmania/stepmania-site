@@ -6,8 +6,8 @@
  * This is essentially an abstract class which should be subclassed.
  * See {@link CMSMain} for a good example.
  * 
- * @package cms
- * @subpackage core
+ * @package framework
+ * @subpackage admin
  */
 class LeftAndMain extends Controller implements PermissionProvider {
 	
@@ -16,41 +16,48 @@ class LeftAndMain extends Controller implements PermissionProvider {
 	 * Note that if this is changed, many javascript
 	 * behaviours need to be updated with the correct url
 	 *
+	 * @config
 	 * @var string $url_base
 	 */
-	static $url_base = "admin";
+	private static $url_base = "admin";
 	
 	/**
 	 * The current url segment attached to the LeftAndMain instance
 	 *
+	 * @config
 	 * @var string
 	 */
-	static $url_segment;
+	private static $url_segment;
 	
 	/**
+	 * @config
 	 * @var string
 	 */
-	static $url_rule = '/$Action/$ID/$OtherID';
+	private static $url_rule = '/$Action/$ID/$OtherID';
 	
 	/**
+	 * @config
 	 * @var string
 	 */
-	static $menu_title;
+	private static $menu_title;
 
 	/**
+	 * @config
 	 * @var string
 	 */
-	static $menu_icon;
+	private static $menu_icon;
 	
 	/**
+	 * @config
 	 * @var int
 	 */
-	static $menu_priority = 0;
+	private static $menu_priority = 0;
 	
 	/**
+	 * @config
 	 * @var int
 	 */
-	static $url_priority = 50;
+	private static $url_priority = 50;
 
 	/**
 	 * A subclass of {@link DataObject}. 
@@ -58,21 +65,23 @@ class LeftAndMain extends Controller implements PermissionProvider {
 	 * Determines what is managed in this interface, through 
 	 * {@link getEditForm()} and other logic.
 	 *
+	 * @config
 	 * @var string 
 	 */
-	static $tree_class = null;
+	private static $tree_class = null;
 	
 	/**
 	 * The url used for the link in the Help tab in the backend
-	 * 
+	 *
+	 * @config
 	 * @var string
 	 */
-	static $help_link = 'http://3.0.userhelp.silverstripe.org';
+	private static $help_link = 'http://userhelp.silverstripe.org/framework/en/3.1';
 
 	/**
 	 * @var array
 	 */
-	static $allowed_actions = array(
+	private static $allowed_actions = array(
 		'index',
 		'save',
 		'savetreenode',
@@ -85,38 +94,72 @@ class LeftAndMain extends Controller implements PermissionProvider {
 		'AddForm',
 		'batchactions',
 		'BatchActionsForm',
-		'Member_ProfileForm',
 	);
 
 	/**
+	 * @config
 	 * @var Array Codes which are required from the current user to view this controller.
 	 * If multiple codes are provided, all of them are required.
 	 * All CMS controllers require "CMS_ACCESS_LeftAndMain" as a baseline check,
 	 * and fall back to "CMS_ACCESS_<class>" if no permissions are defined here.
 	 * See {@link canView()} for more details on permission checks.
 	 */
-	static $required_permission_codes;
+	private static $required_permission_codes;
 
 	/**
+	 * @config
 	 * @var String Namespace for session info, e.g. current record.
 	 * Defaults to the current class name, but can be amended to share a namespace in case
 	 * controllers are logically bundled together, and mainly separated
 	 * to achieve more flexible templating.
 	 */
-	static $session_namespace;
+	private static $session_namespace;
 	
 	/**
 	 * Register additional requirements through the {@link Requirements} class.
 	 * Used mainly to work around the missing "lazy loading" functionality
 	 * for getting css/javascript required after an ajax-call (e.g. loading the editform).
 	 *
-	 * @var array $extra_requirements
+	 * YAML configuration example:
+	 * <code>
+	 * LeftAndMain:
+	 *   extra_requirements_javascript:
+	 *     mysite/javascript/myscript.js:
+	 * </code>
+	 *
+	 * @config
+	 * @var array
 	 */
-	protected static $extra_requirements = array(
-		'javascript' => array(),
-		'css' => array(),
-		'themedcss' => array(),
-	);
+	private static $extra_requirements_javascript = array();
+
+	/**
+	 * YAML configuration example:
+	 * <code>
+	 * LeftAndMain:
+	 *   extra_requirements_css:
+	 *     mysite/css/mystyle.css:
+	 *       media: screen
+	 * </code>
+	 * 
+	 * @config
+	 * @var array See {@link extra_requirements_javascript}
+	 */
+	private static $extra_requirements_css = array();
+
+	/**
+	 * @config
+	 * @var array See {@link extra_requirements_javascript}
+	 */
+	private static $extra_requirements_themedCss = array();
+
+	/**
+	 * If true, call a keepalive ping every 5 minutes from the CMS interface,
+	 * to ensure that the session never dies.
+	 * 
+	 * @config
+	 * @var boolean
+	 */
+	private static $session_keepalive_ping = true;
 
 	/**
 	 * @var PjaxResponseNegotiator
@@ -162,19 +205,21 @@ class LeftAndMain extends Controller implements PermissionProvider {
 	public function init() {
 		parent::init();
 
-		SSViewer::setOption('rewriteHashlinks', false);
+		Config::inst()->update('SSViewer', 'rewrite_hash_links', false); 
+		Config::inst()->update('ContentNegotiator', 'enabled', false);
 		
 		// set language
 		$member = Member::currentUser();
 		if(!empty($member->Locale)) i18n::set_locale($member->Locale);
-		if(!empty($member->DateFormat)) i18n::set_date_format($member->DateFormat);
-		if(!empty($member->TimeFormat)) i18n::set_time_format($member->TimeFormat);
+		if(!empty($member->DateFormat)) i18n::config()->date_format = $member->DateFormat;
+		if(!empty($member->TimeFormat)) i18n::config()->time_format = $member->TimeFormat;
 		
 		// can't be done in cms/_config.php as locale is not set yet
 		CMSMenu::add_link(
 			'Help', 
 			_t('LeftAndMain.HELP', 'Help', 'Menu title'), 
-			self::$help_link
+			$this->config()->help_link,
+			-2
 		);
 
 		// Allow customisation of the access check by a extension
@@ -232,8 +277,8 @@ class LeftAndMain extends Controller implements PermissionProvider {
 			// Use theme from the site config
 			if(class_exists('SiteConfig') && ($config = SiteConfig::current_site_config()) && $config->Theme) {
 				$theme = $config->Theme;
-			} elseif(SSViewer::current_theme()) {
-				$theme = SSViewer::current_theme();
+			} elseif(Config::inst()->get('SSViewer', 'theme_enabled') && Config::inst()->get('SSViewer', 'theme')) {
+				$theme = Config::inst()->get('SSViewer', 'theme');
 			} else {
 				$theme = false;
 			}
@@ -291,27 +336,30 @@ class LeftAndMain extends Controller implements PermissionProvider {
 
 		HTMLEditorField::include_js();
 
-		Requirements::combine_files(
-			'leftandmain.js',
-			array_unique(array_merge(
-				array(
-					FRAMEWORK_ADMIN_DIR . '/javascript/LeftAndMain.js',
-					FRAMEWORK_ADMIN_DIR . '/javascript/LeftAndMain.Panel.js',
-					FRAMEWORK_ADMIN_DIR . '/javascript/LeftAndMain.Tree.js',
-					FRAMEWORK_ADMIN_DIR . '/javascript/LeftAndMain.Ping.js',
-					FRAMEWORK_ADMIN_DIR . '/javascript/LeftAndMain.Content.js',
-					FRAMEWORK_ADMIN_DIR . '/javascript/LeftAndMain.EditForm.js',
-					FRAMEWORK_ADMIN_DIR . '/javascript/LeftAndMain.Menu.js',
-					FRAMEWORK_ADMIN_DIR . '/javascript/LeftAndMain.AddForm.js',
-					FRAMEWORK_ADMIN_DIR . '/javascript/LeftAndMain.Preview.js',
-					FRAMEWORK_ADMIN_DIR . '/javascript/LeftAndMain.BatchActions.js',
-					FRAMEWORK_ADMIN_DIR . '/javascript/LeftAndMain.FieldHelp.js',
-					FRAMEWORK_ADMIN_DIR . '/javascript/LeftAndMain.TreeDropdownField.js',
-				),
-				Requirements::add_i18n_javascript(FRAMEWORK_DIR . '/javascript/lang', true, true),
-				Requirements::add_i18n_javascript(FRAMEWORK_ADMIN_DIR . '/javascript/lang', true, true)
-			))
-		);
+		$leftAndMainIncludes = array_unique(array_merge(
+			array(
+				FRAMEWORK_ADMIN_DIR . '/javascript/LeftAndMain.Layout.js',
+				FRAMEWORK_ADMIN_DIR . '/javascript/LeftAndMain.js',
+				FRAMEWORK_ADMIN_DIR . '/javascript/LeftAndMain.ActionTabSet.js',
+				FRAMEWORK_ADMIN_DIR . '/javascript/LeftAndMain.Panel.js',
+				FRAMEWORK_ADMIN_DIR . '/javascript/LeftAndMain.Tree.js',
+				FRAMEWORK_ADMIN_DIR . '/javascript/LeftAndMain.Content.js',
+				FRAMEWORK_ADMIN_DIR . '/javascript/LeftAndMain.EditForm.js',
+				FRAMEWORK_ADMIN_DIR . '/javascript/LeftAndMain.Menu.js',
+				FRAMEWORK_ADMIN_DIR . '/javascript/LeftAndMain.Preview.js',
+				FRAMEWORK_ADMIN_DIR . '/javascript/LeftAndMain.BatchActions.js',
+				FRAMEWORK_ADMIN_DIR . '/javascript/LeftAndMain.FieldHelp.js',
+				FRAMEWORK_ADMIN_DIR . '/javascript/LeftAndMain.TreeDropdownField.js',
+			),
+			Requirements::add_i18n_javascript(FRAMEWORK_DIR . '/javascript/lang', true, true),
+			Requirements::add_i18n_javascript(FRAMEWORK_ADMIN_DIR . '/javascript/lang', true, true)
+		));
+
+		if($this->config()->session_keepalive_ping) {
+			$leftAndMainIncludes[] = FRAMEWORK_ADMIN_DIR . '/javascript/LeftAndMain.Ping.js';
+		}
+
+		Requirements::combine_files('leftandmain.js', $leftAndMainIncludes);
 
 		// TODO Confuses jQuery.ondemand through document.write()
 		if (Director::isDev()) {
@@ -330,34 +378,80 @@ class LeftAndMain extends Controller implements PermissionProvider {
 		$ie = isset($_SERVER['HTTP_USER_AGENT']) ? strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE') : false;
 		if($ie) {
 			$version = substr($_SERVER['HTTP_USER_AGENT'], $ie + 5, 3);
-			if($version == 7) Requirements::css(FRAMEWORK_ADMIN_DIR . '/css/ie7.css');
-			else if($version == 8) Requirements::css(FRAMEWORK_ADMIN_DIR . '/css/ie8.css');
+
+			if($version == 7) {
+				Requirements::css(FRAMEWORK_ADMIN_DIR . '/css/ie7.css');
+			} else if($version == 8) {
+				Requirements::css(FRAMEWORK_ADMIN_DIR . '/css/ie8.css');
+			}
 		}
 
 		// Custom requirements
-		foreach (self::$extra_requirements['javascript'] as $file) {
-			Requirements::javascript($file[0]);
+		$extraJs = $this->stat('extra_requirements_javascript');
+
+		if($extraJs) {
+			foreach($extraJs as $file => $config) {
+				if(is_numeric($file)) {
+					$file = $config;
+				}
+				
+				Requirements::javascript($file);
+			}
 		}
-		foreach (self::$extra_requirements['css'] as $file) {
-			Requirements::css($file[0], $file[1]);
+
+		$extraCss = $this->stat('extra_requirements_css');
+		
+		if($extraCss) {
+			foreach($extraCss as $file => $config) {
+				if(is_numeric($file)) {
+					$file = $config;
+					$config = array();
+				}
+				
+				Requirements::css($file, isset($config['media']) ? $config['media'] : null);
+			}
 		}
-		foreach (self::$extra_requirements['themedcss'] as $file) {
-			Requirements::themedCSS($file[0], $file[1]);
+
+		$extraThemedCss = $this->stat('extra_requirements_themedCss');
+
+		if($extraThemedCss) {
+			foreach ($extraThemedCss as $file => $config) {
+				if(is_numeric($file)) {
+					$file = $config;
+					$config = array();
+				}
+
+				Requirements::themedCSS($file, isset($config['media']) ? $config['media'] : null);
+			}
 		}
 
 		$dummy = null;
 		$this->extend('init', $dummy);
 
-		// The user's theme shouldn't affect the CMS, if, for example, they have replaced
-		// TableListField.ss or Form.ss.
-		SSViewer::set_theme(null);
+		// The user's theme shouldn't affect the CMS, if, for example, they have 
+		// replaced TableListField.ss or Form.ss.
+		Config::inst()->update('SSViewer', 'theme_enabled', false);
 	}
 	
 	public function handleRequest(SS_HTTPRequest $request, DataModel $model = null) {
-		$response = parent::handleRequest($request, $model);
+		try {
+			$response = parent::handleRequest($request, $model);
+		} catch(ValidationException $e) {
+			// Nicer presentation of model-level validation errors
+			$msgs = _t('LeftAndMain.ValidationError', 'Validation error') . ': ' 
+				. $e->getMessage();
+			$e = new SS_HTTPResponse_Exception($msgs, 403);
+			$e->getResponse()->addHeader('Content-Type', 'text/plain');
+			$e->getResponse()->addHeader('X-Status', rawurlencode($msgs));
+			throw $e;
+		}
+
 		$title = $this->Title();
 		if(!$response->getHeader('X-Controller')) $response->addHeader('X-Controller', $this->class);
-		if(!$response->getHeader('X-Title')) $response->addHeader('X-Title', $title);
+		if(!$response->getHeader('X-Title')) $response->addHeader('X-Title', urlencode($title));
+
+		// Prevent clickjacking, see https://developer.mozilla.org/en-US/docs/HTTP/X-Frame-Options
+		$this->response->addHeader('X-Frame-Options', 'SAMEORIGIN');
 		
 		return $response;
 	}
@@ -419,11 +513,15 @@ class LeftAndMain extends Controller implements PermissionProvider {
 	 */
 	public function Link($action = null) {
 		// Handle missing url_segments
-		if(!$this->stat('url_segment', true)) self::$url_segment = $this->class;
+		if($this->config()->url_segment) {
+			$segment = $this->config()->get('url_segment', Config::FIRST_SET);
+		} else {
+			$segment = $this->class;
+		};
 		
 		$link = Controller::join_links(
 			$this->stat('url_base', true),
-			$this->stat('url_segment', true),
+			$segment,
 			'/', // trailing slash needed if $action is null!
 			"$action"
 		);
@@ -645,13 +743,13 @@ class LeftAndMain extends Controller implements PermissionProvider {
 				$ancestors->push($record);
 				foreach($ancestors as $ancestor) {
 					$items->push(new ArrayData(array(
-						'Title' => $ancestor->Title,
+						'Title' => ($ancestor->MenuTitle) ? $ancestor->MenuTitle : $ancestor->Title,
 						'Link' => ($unlinked) ? false : Controller::join_links($this->Link('show'), $ancestor->ID)
 					)));		
 				}
 			} else {
 				$items->push(new ArrayData(array(
-					'Title' => $record->Title,
+					'Title' => ($record->MenuTitle) ? $record->MenuTitle : $record->Title,
 					'Link' => ($unlinked) ? false : Controller::join_links($this->Link('show'), $record->ID)
 				)));	
 			}
@@ -680,7 +778,7 @@ class LeftAndMain extends Controller implements PermissionProvider {
 	 * @return String Nested unordered list with links to each page
 	 */
 	public function getSiteTreeFor($className, $rootID = null, $childrenMethod = null, $numChildrenMethod = null,
-			$filterFunction = null, $minNodeCount = 30) {
+			$filterFunction = null, $nodeCountThreshold = 30) {
 
 		// Filter criteria
 		$params = $this->request->getVar('q');
@@ -708,7 +806,7 @@ class LeftAndMain extends Controller implements PermissionProvider {
 		// Mark the nodes of the tree to return
 		if ($filterFunction) $obj->setMarkingFilterFunction($filterFunction);
 
-		$obj->markPartialTree($minNodeCount, $this, $childrenMethod, $numChildrenMethod);
+		$obj->markPartialTree($nodeCountThreshold, $this, $childrenMethod, $numChildrenMethod);
 		
 		// Ensure current page is exposed
 		if($p = $this->currentPage()) $obj->markToExpose($p);
@@ -726,15 +824,54 @@ class LeftAndMain extends Controller implements PermissionProvider {
 			$link = Controller::join_links($recordController->Link("show"), $child->ID);
 			return LeftAndMain_TreeNode::create($child, $link, $controller->isCurrentPage($child))->forTemplate();
 		};
-		$html = $obj->getChildrenAsUL(
-			"",
-			$titleFn,
-			singleton('CMSPagesController'),
-			true, 
-			$childrenMethod,
-			$numChildrenMethod,
-			$minNodeCount
-		);
+		
+		// Limit the amount of nodes shown for performance reasons.
+		// Skip the check if we're filtering the tree, since its not clear how many children will
+		// match the filter criteria until they're queried (and matched up with previously marked nodes).
+		$nodeThresholdLeaf = Config::inst()->get('Hierarchy', 'node_threshold_leaf');
+		if($nodeThresholdLeaf && !$filterFunction) {
+			$nodeCountCallback = function($parent, $numChildren) use(&$controller, $className, $nodeThresholdLeaf) {
+				if($className == 'SiteTree' && $parent->ID && $numChildren > $nodeThresholdLeaf) {
+					return sprintf(
+						'<ul><li class="readonly"><span class="item">'
+							. '%s (<a href="%s" class="cms-panel-link" data-pjax-target="Content">%s</a>)'
+							. '</span></li></ul>',
+						_t('LeftAndMain.TooManyPages', 'Too many pages'),
+						Controller::join_links(
+							$controller->LinkWithSearch($controller->Link()), '
+							?view=list&ParentID=' . $parent->ID
+						), 
+						_t(
+							'LeftAndMain.ShowAsList', 
+							'show as list', 
+							'Show large amount of pages in list instead of tree view'
+						)
+					);
+				}
+			};	
+		} else {
+			$nodeCountCallback = null;
+		}
+		
+		// If the amount of pages exceeds the node thresholds set, use the callback
+		$html = null;
+		if($obj->ParentID && $nodeCountCallback) {
+			$html = $nodeCountCallback($obj, $obj->$numChildrenMethod());
+		} 
+
+		// Otherwise return the actual tree (which might still filter leaf thresholds on children)
+		if(!$html) {
+			$html = $obj->getChildrenAsUL(
+				"",
+				$titleFn,
+				singleton('CMSPagesController'),
+				true, 
+				$childrenMethod,
+				$numChildrenMethod,
+				$nodeCountThreshold,
+				$nodeCountCallback
+			);
+		}
 
 		// Wrap the root if needs be.
 		if(!$rootID) {
@@ -839,7 +976,7 @@ class LeftAndMain extends Controller implements PermissionProvider {
 		if(substr($SQL_id,0,3) != 'new') {
 			$record = DataObject::get_by_id($className, $SQL_id);
 			if($record && !$record->canEdit()) return Security::permissionFailure($this);
-			if(!$record || !$record->ID) throw new HTTPResponse_Exception("Bad record ID #" . (int)$data['ID'], 404);
+			if(!$record || !$record->ID) $this->httpError(404, "Bad record ID #" . (int)$data['ID']);
 		} else {
 			if(!singleton($this->stat('tree_class'))->canCreate()) return Security::permissionFailure($this);
 			$record = $this->getNewItem($SQL_id, false);
@@ -860,7 +997,7 @@ class LeftAndMain extends Controller implements PermissionProvider {
 		
 		$record = DataObject::get_by_id($className, Convert::raw2sql($data['ID']));
 		if($record && !$record->canDelete()) return Security::permissionFailure();
-		if(!$record || !$record->ID) throw new HTTPResponse_Exception("Bad record ID #" . (int)$data['ID'], 404);
+		if(!$record || !$record->ID) $this->httpError(404, "Bad record ID #" . (int)$data['ID']);
 		
 		$record->delete();
 
@@ -1036,14 +1173,16 @@ class LeftAndMain extends Controller implements PermissionProvider {
 			if(!$fields->dataFieldByName('ClassName')) {
 				$fields->push(new HiddenField('ClassName'));
 			}
+
+			$tree_class = $this->stat('tree_class');
 			if(
-				Object::has_extension($this->stat('tree_class'), 'Hierarchy') 
+				$tree_class::has_extension('Hierarchy') 
 				&& !$fields->dataFieldByName('ParentID')
 			) {
 				$fields->push(new HiddenField('ParentID'));
 			}
 
-			// Added in-line to the form, but plucked into different view by LeftAndMain.Preview.js upon load
+			// Added in-line to the form, but plucked into different view by frontend scripts.
 			if(in_array('CMSPreviewable', class_implements($record))) {
 				$navField = new LiteralField('SilverStripeNavigator', $this->getSilverStripeNavigator());
 				$navField->setAllowHTML(true);
@@ -1075,12 +1214,20 @@ class LeftAndMain extends Controller implements PermissionProvider {
 			$actionsFlattened = $actions->dataFields();
 			if($actionsFlattened) foreach($actionsFlattened as $action) $action->setUseButtonTag(true);
 			
-			$form = new Form($this, "EditForm", $fields, $actions);
+			$form = CMSForm::create( 
+				$this, "EditForm", $fields, $actions
+			)->setHTMLID('Form_EditForm');
+			$form->setResponseNegotiator($this->getResponseNegotiator());
 			$form->addExtraClass('cms-edit-form');
 			$form->loadDataFrom($record);
 			$form->setTemplate($this->getTemplatesWithSuffix('_EditForm'));
 			$form->setAttribute('data-pjax-fragment', 'CurrentForm');
-			
+
+			// Announce the capability so the frontend can decide whether to allow preview or not.
+			if(in_array('CMSPreviewable', class_implements($record))) {
+				$form->addExtraClass('cms-previewable');
+			}
+
 			// Set this if you want to split up tabs into a separate header row
 			// if($form->Fields()->hasTabset()) {
 			// 	$form->Fields()->findOrMakeTab('Root')->setTemplate('CMSTabSet');
@@ -1123,7 +1270,7 @@ class LeftAndMain extends Controller implements PermissionProvider {
 	 * @return Form
 	 */
 	public function EmptyForm() {
-		$form = new Form(
+		$form = CMSForm::create( 
 			$this, 
 			"EditForm", 
 			new FieldList(
@@ -1134,14 +1281,15 @@ class LeftAndMain extends Controller implements PermissionProvider {
 				// new LiteralField(
 				// 	'WelcomeText',
 				// 	sprintf('<p id="WelcomeMessage">%s %s. %s</p>',
-				// 		_t('LeftAndMain_right.ss.WELCOMETO','Welcome to'),
+				// 		_t('LeftAndMain_right_ss.WELCOMETO','Welcome to'),
 				// 		$this->getApplicationName(),
 				// 		_t('CHOOSEPAGE','Please choose an item from the left.')
 				// 	)
 				// )
 			), 
 			new FieldList()
-		);
+		)->setHTMLID('Form_EditForm');
+		$form->setResponseNegotiator($this->getResponseNegotiator());
 		$form->unsetValidator();
 		$form->addExtraClass('cms-edit-form');
 		$form->addExtraClass('root-form');
@@ -1339,19 +1487,71 @@ class LeftAndMain extends Controller implements PermissionProvider {
 
 	/**
 	 * Return the version number of this application.
-	 * Uses the subversion path information in <mymodule>/silverstripe_version
-	 * (automacially replaced by build scripts).
-	 * 
+	 * Uses the number in <mymodule>/silverstripe_version
+	 * (automatically replaced by build scripts).
+	 * If silverstripe_version is empty,
+	 * then attempts to get it from composer.lock
+	 *
 	 * @return string
 	 */
 	public function CMSVersion() {
-		$frameworkVersion = file_get_contents(FRAMEWORK_PATH . '/silverstripe_version');
-		if(!$frameworkVersion) $frameworkVersion = _t('LeftAndMain.VersionUnknown', 'Unknown');
-		
-		return sprintf(
-			"Framework: %s",
-			$frameworkVersion
+		$versions = array();
+		$modules = array(
+			'silverstripe/framework' => array(
+				'title' => 'Framework',
+				'versionFile' => FRAMEWORK_PATH . '/silverstripe_version',
+			)
 		);
+		if(defined('CMS_PATH')) {
+			$modules['silverstripe/cms'] = array(
+				'title' => 'CMS',
+				'versionFile' => CMS_PATH . '/silverstripe_version',
+			);
+		}
+
+		// Tries to obtain version number from composer.lock if it exists
+		$composerLockPath = BASE_PATH . '/composer.lock';
+		if (file_exists($composerLockPath)) {
+			$cache = SS_Cache::factory('LeftAndMain_CMSVersion');
+			$cacheKey = filemtime($composerLockPath);
+			$versions = $cache->load($cacheKey);
+			if($versions) {
+				$versions = json_decode($versions, true);
+			} else {
+				$versions = array();
+			}
+			if(!$versions && $jsonData = file_get_contents($composerLockPath)) {
+				$lockData = json_decode($jsonData);
+				if($lockData && isset($lockData->packages)) {
+					foreach ($lockData->packages as $package) {
+						if(
+							array_key_exists($package->name, $modules)
+							&& isset($package->version)
+						) {
+							$versions[$package->name] = $package->version;
+						}
+					}
+					$cache->save(json_encode($versions), $cacheKey);
+				}
+			}
+		} 
+		
+		// Fall back to static version file
+		foreach($modules as $moduleName => $moduleSpec) {
+			if(!isset($versions[$moduleName])) {
+				if($staticVersion = file_get_contents($moduleSpec['versionFile'])) {
+					$versions[$moduleName] = $staticVersion;		
+				} else {
+					$versions[$moduleName] = _t('LeftAndMain.VersionUnknown', 'Unknown');		
+				}
+			}
+		}
+
+		$out = array();
+		foreach($modules as $moduleName => $moduleSpec) {
+			$out[] = $modules[$moduleName]['title'] . ': ' . $versions[$moduleName];
+		}
+		return implode(', ', $out);
 	}
 	
 	/**
@@ -1375,9 +1575,10 @@ class LeftAndMain extends Controller implements PermissionProvider {
 	 * The href for the anchor on the Silverstripe logo.
 	 * Set by calling LeftAndMain::set_application_link()
 	 *
+	 * @config
 	 * @var String
 	 */
-	static $application_link = 'http://www.silverstripe.org/';
+	private static $application_link = 'http://www.silverstripe.org/';
 	
 	/**
 	 * Sets the href for the anchor on the Silverstripe logo in the menu
@@ -1385,29 +1586,32 @@ class LeftAndMain extends Controller implements PermissionProvider {
 	 * @param String $link
 	 */
 	public static function set_application_link($link) {		
-		self::$application_link = $link;
+		Deprecation::notice('3.2', 'Use the "LeftAndMain.application_link" config setting instead');
+		Config::inst()->update('LeftAndMain', 'application_link', $link);
 	}
 	
 	/**
 	 * @return String
 	 */
 	public function ApplicationLink() {
-		return self::$application_link;
+		return $this->stat('application_link');
 	}
 
 	/**
 	 * The application name. Customisable by calling
 	 * LeftAndMain::setApplicationName() - the first parameter.
-	 * 
+	 *
+	 * @config
 	 * @var String
 	 */
-	static $application_name = 'SilverStripe';
+	private static $application_name = 'SilverStripe';
 	
 	/**
 	 * @param String $name
 	 */
 	public static function setApplicationName($name) {
-		self::$application_name = $name;
+		Deprecation::notice('3.2', 'Use the "LeftAndMain.application_name" config setting instead');
+		Config::inst()->update('LeftAndMain', 'application_name', $name);
 	}
 
 	/**
@@ -1416,7 +1620,7 @@ class LeftAndMain extends Controller implements PermissionProvider {
 	 * @return string
 	 */
 	public function getApplicationName() {
-		return self::$application_name;
+		return $this->stat('application_name');
 	}
 	
 	/**
@@ -1462,10 +1666,6 @@ class LeftAndMain extends Controller implements PermissionProvider {
 		return $this->CSSClasses('Controller');
 	}
 	
-	public function IsPreviewExpanded() {
-		return ($this->request->getVar('cms-preview-expanded'));
-	}
-
 	/**
 	 * @return String
 	 */
@@ -1509,7 +1709,8 @@ class LeftAndMain extends Controller implements PermissionProvider {
 	 * Filenames should be relative to the base, eg, FRAMEWORK_DIR . '/javascript/loader.js'
 	 */
 	public static function require_javascript($file) {
-		self::$extra_requirements['javascript'][] = array($file);
+		Deprecation::notice('3.2', 'Use "LeftAndMain.extra_requirements_javascript" config setting instead');
+		Config::inst()->update('LeftAndMain', 'extra_requirements_javascript', array($file => array()));
 	}
 	
 	/**
@@ -1520,7 +1721,8 @@ class LeftAndMain extends Controller implements PermissionProvider {
 	 * @see http://www.w3.org/TR/REC-CSS2/media.html
 	 */
 	public static function require_css($file, $media = null) {
-		self::$extra_requirements['css'][] = array($file, $media);
+		Deprecation::notice('3.2', 'Use "LeftAndMain.extra_requirements_css" config setting instead');
+		Config::inst()->update('LeftAndMain', 'extra_requirements_css', array($file => array('media' => $media)));
 	}
 	
 	/**
@@ -1532,7 +1734,8 @@ class LeftAndMain extends Controller implements PermissionProvider {
 	 * @param $media String Comma-separated list of media-types (e.g. "screen,projector") 
 	 */
 	public static function require_themed_css($name, $media = null) {
-		self::$extra_requirements['themedcss'][] = array($name, $media);
+		Deprecation::notice('3.2', 'Use "LeftAndMain.extra_requirements_themedCss" config setting instead');
+		Config::inst()->update('LeftAndMain', 'extra_requirements_themedCss', array($name => array('media' => $media)));
 	}
 	
 }
@@ -1613,6 +1816,9 @@ class LeftAndMainMarkingFilter {
 
 /**
  * Allow overriding finished state for faux redirects.
+ *
+ * @package framework
+ * @subpackage admin
  */
 class LeftAndMain_HTTPResponse extends SS_HTTPResponse {
 
@@ -1632,7 +1838,10 @@ class LeftAndMain_HTTPResponse extends SS_HTTPResponse {
  * Wrapper around objects being displayed in a tree.
  * Caution: Volatile API.
  *
- * @todo Implement recursive tree node rendering
+ * @todo Implement recursive tree node rendering.
+ *
+ * @package framework
+ * @subpackage admin
  */
 class LeftAndMain_TreeNode extends ViewableData {
 	
@@ -1678,7 +1887,12 @@ class LeftAndMain_TreeNode extends ViewableData {
 		$classes = $this->obj->CMSTreeClasses();
 		if($this->isCurrent) $classes .= " current";
 		$flags = $this->obj->hasMethod('getStatusFlags') ? $this->obj->getStatusFlags() : false;
-		if($flags) $classes .= ' ' . implode(' ', array_keys($flags));
+		if ($flags) {
+			$statuses = array_keys($flags);
+			foreach ($statuses as $s) {
+				$classes .= ' status-' . $s;
+			}
+		}
 		return $classes;
 	}
 

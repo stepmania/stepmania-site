@@ -63,8 +63,9 @@ class SS_Report extends ViewableData {
 	/**
 	 * Reports which should not be collected and returned in get_reports
 	 * @var array
+	 * @config
 	 */
-	public static $excluded_reports = array(
+	private static $excluded_reports = array(
 		'SS_Report',
 		'SS_ReportWrapper',
 		'SideReportWrapper'
@@ -138,38 +139,16 @@ class SS_Report extends ViewableData {
 	}
 
 	/**
-	 * @deprecated 3.0
-	 * All subclasses of SS_Report now appear in the report admin, no need to register or unregister.
-	 *
-	 * Register a report.
-	 * @param $list The list to add the report to: "ReportAdmin" or "SideReports"
-	 * @param $reportClass The class of the report to add.
-	 * @param $priority The priority.  Higher numbers will appear furhter up in the reports list.
-	 * The default value is zero.
-	 */
-	static public function register($list, $reportClass, $priority = 0) {
-		Deprecation::notice('3.0', 'All subclasses of SS_Report now appear in the report admin, no need to register');
-	}
-
-	/**
-	 * @deprecated 3.0
-	 * All subclasses of SS_Report now appear in the report admin, no need to register or unregister.
-	 */
-	static public function unregister($list, $reportClass) {
-		self::add_excluded_reports($reportClass);
-	}
-
-	/**
 	 * Exclude certain reports classes from the list of Reports in the CMS
 	 * @param $reportClass Can be either a string with the report classname or an array of reports classnames
 	 */
 	static public function add_excluded_reports($reportClass) {
 		if (is_array($reportClass)) {
-			self::$excluded_reports = array_merge(self::$excluded_reports, $reportClass);
+			self::config()->excluded_reports = array_merge(self::config()->excluded_reports, $reportClass);
 		} else {
 			if (is_string($reportClass)) {
 				//add to the excluded reports, so this report doesn't get used
-				self::$excluded_reports[] = $reportClass;
+				self::config()->excluded_reports = array($reportClass);
 			}
 		}
 	}
@@ -177,15 +156,18 @@ class SS_Report extends ViewableData {
 	/**
 	 * Return an array of excluded reports. That is, reports that will not be included in
 	 * the list of reports in report admin in the CMS.
+	 *
+	 * @deprecated 3.2 Use the "Report.excluded_reports" config setting instead
 	 * @return array
 	 */
 	static public function get_excluded_reports() {
-		return self::$excluded_reports;
+		Deprecation::notice('3.2', 'Use the "Report.excluded_reports" config setting instead');
+		return self::config()->excluded_reports;
 	}
 
 	/**
 	 * Return the SS_Report objects making up the given list.
-	 * @return ArrayList an arraylist of SS_Report objects
+	 * @return Array of SS_Report objects
 	 */
 	static public function get_reports() {
 		$reports = ClassInfo::subclassesFor(get_called_class());
@@ -194,7 +176,7 @@ class SS_Report extends ViewableData {
 		if ($reports && count($reports) > 0) {
 			//collect reports into array with an attribute for 'sort'
 			foreach($reports as $report) {
-				if (in_array($report, self::$excluded_reports)) continue;   //don't use the SS_Report superclass
+				if (in_array($report, self::config()->excluded_reports)) continue;   //don't use the SS_Report superclass
 				$reflectionClass = new ReflectionClass($report);
 				if ($reflectionClass->isAbstract()) continue;   //don't use abstract classes
 
@@ -204,13 +186,12 @@ class SS_Report extends ViewableData {
 			}
 		}
 
-		//convert array into ArrayList
-		$list = ArrayList::create($reportsArray);
+		uasort($reportsArray, function($a, $b) {
+			if($a->sort == $b->sort) return 0;
+			else return ($a->sort < $b->sort) ? -1 : 1;
+		});
 
-		//sort
-		$list = $list->sort('sort');
-
-		return $list;
+		return $reportsArray;
 	}
 
 	/////////////////////// UI METHODS ///////////////////////
@@ -286,7 +267,7 @@ class SS_Report extends ViewableData {
 			new GridFieldPrintButton(),
 			new GridFieldExportButton()
 		);
-		$gridField = new GridField('Report',$this->title(), $items, $gridFieldConfig);
+		$gridField = new GridField('Report',false, $items, $gridFieldConfig);
 		$columns = $gridField->getConfig()->getComponentByType('GridFieldDataColumns');
 		$displayFields = array();
 		$fieldCasting = array();
@@ -301,8 +282,13 @@ class SS_Report extends ViewableData {
 			if(isset($info['casting'])) $fieldCasting[$source] = $info['casting'];
 
 			if(isset($info['link']) && $info['link']) {
-				$link = singleton('CMSPageEditController')->Link('show');
-				$fieldFormatting[$source] = '<a href=\"' . $link . '/$ID\">$value</a>';
+				$fieldFormatting[$source] = function($value, &$item) {
+					return sprintf(
+						'<a href="%s">%s</a>',
+						Controller::join_links(singleton('CMSPageEditController')->Link('show'), $item->ID),
+						Convert::raw2xml($value)
+					);
+				};
 			}
 
 			$displayFields[$source] = isset($info['title']) ? $info['title'] : $source;

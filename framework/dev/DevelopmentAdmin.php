@@ -10,14 +10,14 @@
  */
 class DevelopmentAdmin extends Controller {
 	
-	static $url_handlers = array(
+	private static $url_handlers = array(
 		'' => 'index',
 		'build/defaults' => 'buildDefaults',
 		'$Action' => '$Action',
 		'$Action//$Action/$ID' => 'handleAction',
 	);
 	
-	static $allowed_actions = array( 
+	private static $allowed_actions = array( 
 		'index', 
 		'tests', 
 		'jstests', 
@@ -77,12 +77,8 @@ class DevelopmentAdmin extends Controller {
 	public function index() {
 		$actions = array(
 			"build" => "Build/rebuild this environment.  Call this whenever you have updated your project sources",
-			"buildcache" => "Rebuild the static cache, if you're using StaticPublisher",
 			"tests" => "See a list of unit tests to run",
 			"tests/all" => "Run all tests",
-			"tests/startsession" => "Start a test session in your browser"
-				. " (gives you a temporary database with default content)",
-			"tests/endsession" => "Ends a test session",
 			"jstests" => "See a list of JavaScript tests to run",
 			"jstests/all" => "Run all JavaScript tests",
 			"tasks" => "See a list of build tasks to run"
@@ -181,27 +177,26 @@ class DevelopmentAdmin extends Controller {
 		$generator = Injector::inst()->create('RandomGenerator');
 		$token = $generator->randomToken('sha1');
 
-		echo <<<TXT
-
-Token: $token
-
-Please add this to your mysite/_config.php with the following code:
-Config::inst()->update('Security', 'token', '$token');
-
-
-TXT;
+		$path = $this->request->getVar('path');
+		if($path) {
+			if(file_exists(BASE_PATH . '/' . $path)) {
+				echo sprintf(
+					"Configuration file '%s' exists, can't merge. Please choose a new file.\n",
+					BASE_PATH . '/' . $path
+				);
+				exit(1);
+			}
+			$yml = "Security:\n  token: $token";
+			Filesystem::makeFolder(dirname(BASE_PATH . '/' . $path));
+			file_put_contents(BASE_PATH . '/' . $path, $yml);
+			echo "Configured token in $path\n";
+		} else {
+			echo "Generated new token. Please add the following code to your YAML configuration:\n\n";
+			echo "Security:\n";
+			echo "  token: $token\n";
+		}
 	}
 
-	public function reset() {
-		$link = BASE_URL.'/dev/tests/startsession';
-		
-		return "<p>The dev/reset feature has been removed.  If you are trying to test your site " .
-			"with a clean datababase, we recommend that you use " .
-			"<a href=\"$link\">dev/test/startsession</a> ".
-			"instead.</P>";
-
-	}
-	
 	public function errors() {
 		$this->redirect("Debug_");
 	}

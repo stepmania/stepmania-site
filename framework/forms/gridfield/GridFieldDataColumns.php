@@ -1,17 +1,20 @@
 <?php
 /**
- * 
  * @see GridField
  * 
  * @package framework
- * @subpackage fields-relational
+ * @subpackage fields-gridfield
  */
 class GridFieldDataColumns implements GridField_ColumnProvider {
 
-	/** @var array */
+	/** 
+	 * @var array 
+	 */
 	public $fieldCasting = array();
 
-	/** @var array */
+	/** 
+	 * @var array 
+	 */
 	public $fieldFormatting = array();
 	
 	/**
@@ -92,10 +95,15 @@ class GridFieldDataColumns implements GridField_ColumnProvider {
 
 	/**
 	 * Specify custom formatting for fields, e.g. to render a link instead of pure text.
+	 * 
 	 * Caution: Make sure to escape special php-characters like in a normal php-statement.
 	 * Example:	"myFieldName" => '<a href=\"custom-admin/$ID\">$ID</a>'.
+	 * 
 	 * Alternatively, pass a anonymous function, which takes two parameters:
-	 *  The value and the original list item.
+	 * The value and the original list item.
+	 *
+	 * Formatting is applied after field casting, so if you're modifying the string
+	 * to include further data through custom formatting, ensure it's correctly escaped.
 	 *
 	 * @param array $formatting
 	 */

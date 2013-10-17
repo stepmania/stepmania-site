@@ -58,13 +58,13 @@ class Money extends DBField implements CompositeDBField {
 	/**
 	 * @param array
 	 */
-	static $composite_db = array(
+	private static $composite_db = array(
 		"Currency" => "Varchar(3)",
 		"Amount" => 'Decimal(19,4)'
 	);
 	
 	public function __construct($name = null) {
-		$this->currencyLib = new Zend_Currency(null, i18n::default_locale());
+		$this->currencyLib = new Zend_Currency(null, i18n::get_locale());
 		
 		parent::__construct($name);
 	}
@@ -103,6 +103,11 @@ class Money extends DBField implements CompositeDBField {
 	}
 
 	public function setValue($value, $record = null, $markChanged = true) {
+		// Convert an object to an array
+		if($record && $record instanceof DataObject) {
+			$record = $record->getQueriedDatabaseFields();
+		}
+
 		// @todo Allow resetting value to NULL through Money $value field
 		if ($value instanceof Money && $value->exists()) {
 			$this->setCurrency($value->getCurrency(), $markChanged);
@@ -112,7 +117,7 @@ class Money extends DBField implements CompositeDBField {
 			if($record[$this->name . 'Amount']) {
 				if(!empty($record[$this->name . 'Currency'])) {
 					$this->setCurrency($record[$this->name . 'Currency'], $markChanged);
-				} else if($currency = (string)$this->config()->get('default_currency')) {
+				} else if($currency = (string)$this->config()->default_currency) {
 					$this->setCurrency($currency, $markChanged);
 				}
 				

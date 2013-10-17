@@ -19,11 +19,15 @@
  */
 class Folder extends File {
 
-	static $singular_name = "Folder";
+	private static $singular_name = "Folder";
 
-	static $plural_name = "Folders";
+	private static $plural_name = "Folders";
 
-	static $default_sort = "\"Name\"";
+	private static $default_sort = "\"Name\"";
+
+	private static $casting = array (
+		'TreeTitle' => 'HTMLText'
+	);
 	
 	/**
 	 * 
@@ -33,18 +37,7 @@ class Folder extends File {
 		
 		if(!$this->Name) $this->Name = _t('AssetAdmin.NEWFOLDER',"NewFolder");
 	}
-	
-	/**
-	 * @param $folderPath string Absolute or relative path to the file.
-	 *  If path is relative, its interpreted relative to the "assets/" directory.
-	 * @return Folder
-	 * @deprecated in favor of the correct name find_or_make
-	 */
-	public static function findOrMake($folderPath) {
-		Deprecation::notice('3.0', "Use Folder::find_or_make() instead.");
-		return self::find_or_make($folderPath);
-	}
-	
+
 	/**
 	 * Find the given folder or create it both as {@link Folder} database records
 	 * and on the filesystem. If necessary, creates parent folders as well.
@@ -91,12 +84,14 @@ class Folder extends File {
 	}
 	
 	/**
-	 * Syncronise the file database with the actual content of the assets folder
+	 * Synchronize the file database with the actual content of the assets 
+	 * folder.
 	 */
 	public function syncChildren() {
 		$parentID = (int)$this->ID; // parentID = 0 on the singleton, used as the 'root node';
 		$added = 0;
 		$deleted = 0;
+		$skipped = 0;
 
 		// First, merge any children that are duplicates
 		$duplicateChildrenNames = DB::query("SELECT \"Name\" FROM \"File\""
@@ -124,6 +119,7 @@ class Folder extends File {
 		// We don't use DataObject so that things like subsites doesn't muck with this.
 		$dbChildren = DB::query("SELECT * FROM \"File\" WHERE \"ParentID\" = $parentID");
 		$hasDbChild = array();
+
 		if($dbChildren) {
 			foreach($dbChildren as $dbChild) {
 				$className = $dbChild['ClassName'];
@@ -131,6 +127,7 @@ class Folder extends File {
 				$hasDbChild[$dbChild['Name']] = new $className($dbChild);
 			}
 		}
+
 		$unwantedDbChildren = $hasDbChild;
 
 		// if we're syncing a folder with no ID, we assume we're syncing the root assets folder
@@ -146,12 +143,27 @@ class Folder extends File {
 
 		if(file_exists($baseDir)) {
 			$actualChildren = scandir($baseDir);
-			foreach($actualChildren as $actualChild) {
-				if($actualChild[0] == '.' || $actualChild[0] == '_' || substr($actualChild,0,6) == 'Thumbs'
-						|| $actualChild == 'web.config') {
+			$ignoreRules = Config::inst()->get('Filesystem', 'sync_blacklisted_patterns');
 
-					continue;
+			foreach($actualChildren as $actualChild) {
+				if($ignoreRules) {
+					$skip = false;
+
+					foreach($ignoreRules as $rule) {
+						if(preg_match($rule, $actualChild)) {
+							$skip = true;
+
+							break;
+						}
+					}
+
+					if($skip) {
+						$skipped++;
+
+						continue;
+					}
 				}
+
 
 				// A record with a bad class type doesn't deserve to exist. It must be purged!
 				if(isset($hasDbChild[$actualChild])) {
@@ -177,6 +189,7 @@ class Folder extends File {
 					$childResult = $child->syncChildren();
 					$added += $childResult['added'];
 					$deleted += $childResult['deleted'];
+					$skipped += $childResult['skipped'];
 				}
 				
 				// Clean up the child record from memory after use. Important!
@@ -193,7 +206,11 @@ class Folder extends File {
 			DB::query("DELETE FROM \"File\" WHERE \"ID\" = $this->ID");
 		}
 		
-		return array('added' => $added, 'deleted' => $deleted);
+		return array(
+			'added' => $added, 
+			'deleted' => $deleted,
+			'skipped' => $skipped
+		);
 	}
 
 	/**

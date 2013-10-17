@@ -99,9 +99,9 @@ abstract class BulkLoader extends ViewableData {
 	 * isn't Email, you need to ensure that Member is correctly set to the unique field
 	 * you want, as it will merge any duplicates during {@link Member::onBeforeWrite()}.
 	 * 
-	 * {@see Member::set_unique_identifier_field()}.
+	 * {@see Member::$unique_identifier_field}.
 	 * 
-	 * If multiple checks are specified, the first one "wins".
+	 * If multiple checks are specified, the first non-empty field "wins".
 	 * 
 	 *  <code>
 	 * <?php

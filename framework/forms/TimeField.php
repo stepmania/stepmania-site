@@ -24,9 +24,10 @@ require_once 'Zend/Date.php';
 class TimeField extends TextField {
 	
 	/**
+	 * @config
 	 * @var array
 	 */
-	static $default_config = array(
+	private static $default_config = array(
 		'timeformat' => null,
 		'use_strtotime' => true,
 		'datavalueformat' => 'HH:mm:ss'
@@ -54,7 +55,7 @@ class TimeField extends TextField {
 			$this->locale = i18n::get_locale();
 		}
 		
-		$this->config = self::$default_config;
+		$this->config = $this->config()->default_config;
 		
 		if(!$this->getConfig('timeformat')) {
 			$this->setConfig('timeformat', i18n::get_time_format());
@@ -75,6 +76,33 @@ class TimeField extends TextField {
 	public function Type() {
 		return 'time text';
 	}
+	
+	/**
+	 * Parses a time into a Zend_Date object
+	 * 
+	 * @param string $value Raw value
+	 * @param string $format Format string to check against
+	 * @param string $locale Optional locale to parse against
+	 * @param boolean $exactMatch Flag indicating that the date must be in this
+	 * exact format, and is unchanged after being parsed and written out
+	 * 
+	 * @return Zend_Date Returns the Zend_Date, or null if not in the specified format
+	 */
+	protected function parseTime($value, $format, $locale = null, $exactMatch = false) {
+		// Check if the date is in the correct format
+		if(!Zend_Date::isDate($value, $format)) return null;
+		
+		// Parse the value
+		$valueObject = new Zend_Date($value, $format, $locale);
+			
+		// For exact matches, ensure the value preserves formatting after conversion
+		if($exactMatch && ($value !== $valueObject->get($format))) {
+			return null;
+		} else {
+			return $valueObject;
+		}
+	}
+	
 
 	/**
 	 * Sets the internal value to ISO date format.
@@ -82,6 +110,7 @@ class TimeField extends TextField {
 	 * @param String|Array $val
 	 */
 	public function setValue($val) {
+		
 		// Fuzzy matching through strtotime() to support a wider range of times,
 		// e.g. 11am. This means that validate() might not fire.
 		// Note: Time formats are assumed to be less ambiguous than dates across locales.
@@ -98,13 +127,12 @@ class TimeField extends TextField {
 			$this->valueObj = null;
 		}
 		// load ISO time from database (usually through Form->loadDataForm())
-		else if(Zend_Date::isDate($val, $this->getConfig('datavalueformat'))) {
-			$this->valueObj = new Zend_Date($val, $this->getConfig('datavalueformat'));
+		// Requires exact format to prevent false positives from locale specific times
+		else if($this->valueObj = $this->parseTime($val, $this->getConfig('datavalueformat'), null, true)) {
 			$this->value = $this->valueObj->get($this->getConfig('timeformat'));
 		}
 		// Set in current locale (as string)
-		else if(Zend_Date::isDate($val, $this->getConfig('timeformat'), $this->locale)) {
-			$this->valueObj = new Zend_Date($val, $this->getConfig('timeformat'), $this->locale);
+		else if($this->valueObj = $this->parseTime($val, $this->getConfig('timeformat'), $this->locale)) {
 			$this->value = $this->valueObj->get($this->getConfig('timeformat'));
 		}
 		// Fallback: Set incorrect value so validate() can pick it up
@@ -184,14 +212,30 @@ class TimeField extends TextField {
 	 * @return mixed|array
 	 */
 	public function getConfig($name = null) {
-		return $name ? $this->config[$name] : $this->config;
+		if($name) {
+			return isset($this->config[$name]) ? $this->config[$name] : null;
+		} else {
+			return $this->config;
+		}
 	}
 		
 	/**
 	 * Creates a new readonly field specified below
 	 */
 	public function performReadonlyTransformation() {
-		return new TimeField_Readonly($this->name, $this->title, $this->dataValue(), $this->getConfig('timeformat'));
+		return $this->castedCopy('TimeField_Readonly');
+	}
+
+	public function castedCopy($class) {
+		$copy = parent::castedCopy($class);
+		if($copy->hasMethod('setConfig')) {
+			$config = $this->getConfig();
+			foreach($config as $k => $v) {
+				$copy->setConfig($k, $v);
+			}
+		}
+
+		return $copy;
 	}
 	
 }

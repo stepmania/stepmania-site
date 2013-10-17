@@ -1,9 +1,13 @@
 <?php
 
 /**
- * Subclass of {@link DataList} representing a has_many relation
+ * Subclass of {@link DataList} representing a has_many relation.
+ *
+ * @package framework
+ * @subpackage model
  */
 class HasManyList extends RelationList {
+
 	protected $foreignKey;
 	
 	/**
@@ -18,23 +22,28 @@ class HasManyList extends RelationList {
 	 */
 	public function __construct($dataClass, $foreignKey) {
 		parent::__construct($dataClass);
+
 		$this->foreignKey = $foreignKey;
 	}
 	
-	protected function foreignIDFilter() {
+	protected function foreignIDFilter($id = null) {
+		if ($id === null) $id = $this->getForeignID();
+
 		// Apply relation filter
-		if(is_array($this->foreignID)) {
-			return "\"$this->foreignKey\" IN ('" . 
-				implode("', '", array_map('Convert::raw2sql', $this->foreignID)) . "')";
-		} else if($this->foreignID !== null){
+		if(is_array($id)) {
+			return "\"$this->foreignKey\" IN ('" .
+				implode("', '", array_map('Convert::raw2sql', $id)) . "')";
+		} else if($id !== null){
 			return "\"$this->foreignKey\" = '" . 
-				Convert::raw2sql($this->foreignID) . "'";
+				Convert::raw2sql($id) . "'";
 		}
 	}
 
 	/**
 	 * Adds the item to this relation.
+	 *
 	 * It does so by setting the relationFilters.
+	 *
 	 * @param $item The DataObject to be added, or its ID 
 	 */
 	public function add($item) {
@@ -44,29 +53,34 @@ class HasManyList extends RelationList {
 			user_error("HasManyList::add() expecting a $this->dataClass object, or ID value", E_USER_ERROR);
 		}
 
+		$foreignID = $this->getForeignID();
+
 		// Validate foreignID
-		if(!$this->foreignID) {
+		if(!$foreignID) {
 			user_error("ManyManyList::add() can't be called until a foreign ID is set", E_USER_WARNING);
 			return;
 		}
-		if(is_array($this->foreignID)) {
+		if(is_array($foreignID)) {
 			user_error("ManyManyList::add() can't be called on a list linked to mulitple foreign IDs", E_USER_WARNING);
 			return;
 		}
 
 		$fk = $this->foreignKey;
-		$item->$fk = $this->foreignID;
+		$item->$fk = $foreignID;
 
 		$item->write();
 	}
 
 	/**
 	 * Remove an item from this relation.
+	 *
 	 * Doesn't actually remove the item, it just clears the foreign key value.
-	 * @param $itemID The ID of the item to be removed
+	 *
+	 * @param $itemID The ID of the item to be removed.
 	 */
 	public function removeByID($itemID) {
 		$item = $this->byID($itemID);
+
 		return $this->remove($item);
 	}
 	

@@ -88,7 +88,7 @@ class Deprecation {
 
 		$callingfile = realpath($backtrace[1]['file']);
 
-		global $manifest;
+		$manifest = SS_ClassLoader::instance()->getManifest();
 		foreach ($manifest->getModules() as $name => $path) {
 			if (strpos($callingfile, realpath($path)) === 0) {
 				return $name;
@@ -131,12 +131,13 @@ class Deprecation {
 		// Never raise deprecation notices in a live environment
 		if(Director::isLive()) return;
 
-		// If you pass #.#, assume #.#.0
-		if(preg_match('/^[0-9]+\.[0-9]+$/', $atVersion)) $atVersion .= '.0';
-
 		$checkVersion = self::$version;
 		// Getting a backtrace is slow, so we only do it if we need it
 		$backtrace = null;
+
+		// If you pass #.#, assume #.#.0
+		if(preg_match('/^[0-9]+\.[0-9]+$/', $atVersion)) $atVersion .= '.0';
+		if(preg_match('/^[0-9]+\.[0-9]+$/', $checkVersion)) $checkVersion .= '.0';
 
 		if(self::$module_version_overrides) {
 			$module = self::get_calling_module_from_trace($backtrace = debug_backtrace(0));

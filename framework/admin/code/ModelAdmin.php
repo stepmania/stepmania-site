@@ -7,9 +7,9 @@
  * to scaffold interfaces "out of the box", while at the same time providing
  * flexibility to customize the default output.
  * 
- * Add a route (note - this doc is not currently in sync with the code, need to update)
+ * Add a route
  * <code>
- * Director::addRules(50, array('admin/mymodel/$Class/$Action/$ID' => 'MyModelAdmin'));
+ * Director::config()->rules = array(array('admin/mymodel/$Class/$Action/$ID' => 'MyModelAdmin'));
  * </code>
  *
  * @todo saving logic (should mostly use Form->saveInto() and iterate over relations)
@@ -26,12 +26,12 @@
  * 
  * @uses SearchContext
  * 
- * @package cms
- * @subpackage core
+ * @package framework
+ * @subpackage admin
  */
 abstract class ModelAdmin extends LeftAndMain {
 
-	static $url_rule = '/$ModelClass/$Action';	
+	private static $url_rule = '/$ModelClass/$Action';	
 	
 	/**
 	 * List of all managed {@link DataObject}s in this interface.
@@ -51,16 +51,26 @@ abstract class ModelAdmin extends LeftAndMain {
 	 * Available options:
 	 * - 'title': Set custom titles for the tabs or dropdown names
 	 *
+	 * @config
 	 * @var array|string
 	 */
-	public static $managed_models = null;
+	private static $managed_models = null;
+
+	/**
+	 * Override menu_priority so that ModelAdmin CMSMenu objects
+	 * are grouped together directly above the Help menu item.
+	 * @var float
+	 */
+	private static $menu_priority = -0.5;
+
+	private static $menu_icon = 'framework/admin/images/menu-icons/16x16/db.png';
 	
-	public static $allowed_actions = array(
+	private static $allowed_actions = array(
 		'ImportForm',
 		'SearchForm',
 	);
 	
-	public static $url_handlers = array(
+	private static $url_handlers = array(
 		'$ModelClass/$Action' => 'handleAction'
 	);
 
@@ -84,16 +94,18 @@ abstract class ModelAdmin extends LeftAndMain {
 	 * 
 	 * e.g. "BlogEntry" => "BlogEntryCsvBulkLoader"
 	 *
+	 * @config
 	 * @var array
 	 */
-	public static $model_importers = null;
+	private static $model_importers = null;
 	
 	/**
 	 * Amount of results showing on a single page.
 	 *
+	 * @config
 	 * @var int
 	 */
-	public static $page_length = 30;
+	private static $page_length = 30;
 		
 	/**
 	 * Initialize the model admin interface. Sets up embedded jquery libraries and requisite plugins.
@@ -143,12 +155,13 @@ abstract class ModelAdmin extends LeftAndMain {
 			$listField->getConfig()->getComponentByType('GridFieldDetailForm')->setValidator($detailValidator);
 		}
 
-		$form = new Form(
+		$form = CMSForm::create( 
 			$this,
 			'EditForm',
 			new FieldList($listField),
 			new FieldList()
-		);
+		)->setHTMLID('Form_EditForm');
+		$form->setResponseNegotiator($this->getResponseNegotiator());
 		$form->addExtraClass('cms-edit-form cms-panel-padded center');
 		$form->setTemplate($this->getTemplatesWithSuffix('_EditForm'));
 		$editFormAction = Controller::join_links($this->Link($this->sanitiseClassName($this->modelClass)), 'EditForm');
@@ -193,7 +206,7 @@ abstract class ModelAdmin extends LeftAndMain {
 		$form = new Form($this, "SearchForm",
 			$context->getSearchFields(),
 			new FieldList(
-				Object::create('FormAction', 'search', _t('MemberTableField.APPLY FILTER', 'Apply Filter'))
+				Object::create('FormAction', 'search', _t('MemberTableField.APPLY_FILTER', 'Apply Filter'))
 				->setUseButtonTag(true)->addExtraClass('ss-ui-action-constructive'),
 				Object::create('ResetFormAction','clearsearch', _t('ModelAdmin.RESET','Reset'))
 					->setUseButtonTag(true)
@@ -460,16 +473,22 @@ abstract class ModelAdmin extends LeftAndMain {
 	/**
 	 * overwrite the static page_length of the admin panel, 
 	 * should be called in the project _config file.
+	 *
+	 * @deprecated 3.1 Use "ModelAdmin.page_length" config setting
 	 */
 	public static function set_page_length($length){
-		self::$page_length = $length;
+		Deprecation::notice('3.2', 'Use "ModelAdmin.page_length" config setting');
+		self::config()->page_length = $length;
 	}
 	
 	/**
 	 * Return the static page_length of the admin, default as 30
+	 *
+	 * @deprecated 3.1 Use "ModelAdmin.page_length" config setting
 	 */
 	public static function get_page_length(){
-		return self::$page_length;
+		Deprecation::notice('3.2', 'Use "ModelAdmin.page_length" config setting');
+		return self::config()->page_length;
 	} 
 	
 }

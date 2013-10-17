@@ -31,7 +31,6 @@ class PhoneNumberField extends FormField {
 		$fields = new FieldGroup( $this->name );
 		$fields->setID("{$this->name}_Holder");
 		list($countryCode, $areaCode, $phoneNumber, $extension) = $this->parseValue();
-		$hasTitle = false;
 
 		if ($this->value=="") {
 			$countryCode=$this->countryCode;
@@ -51,15 +50,18 @@ class PhoneNumberField extends FormField {
 		}
 		
 		if($this->ext !== null) {
-			$field->push(new NumericField( $this->name.'[Extension]', 'ext', $extension, 6));
+			$fields->push(new NumericField( $this->name.'[Extension]', 'ext', $extension, 6));
 		}
+
+		$description = $this->getDescription();
+		if($description) $fields->getChildren()->First()->setDescription($description);
 
 		foreach($fields as $field) {
 			$field->setDisabled($this->isDisabled());
 			$field->setReadonly($this->isReadonly());
 		}
 			
-		return $field;
+		return $fields;
 	}
 	
 	public function setValue( $value ) {

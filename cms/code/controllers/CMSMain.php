@@ -11,23 +11,23 @@
  */
 class CMSMain extends LeftAndMain implements CurrentPageIdentifier, PermissionProvider {
 	
-	static $url_segment = 'pages';
+	private static $url_segment = 'pages';
 	
-	static $url_rule = '/$Action/$ID/$OtherID';
+	private static $url_rule = '/$Action/$ID/$OtherID';
 	
 	// Maintain a lower priority than other administration sections
 	// so that Director does not think they are actions of CMSMain
-	static $url_priority = 39;
+	private static $url_priority = 39;
 	
-	static $menu_title = 'Edit Page';
+	private static $menu_title = 'Edit Page';
 	
-	static $menu_priority = 10;
+	private static $menu_priority = 10;
 	
-	static $tree_class = "SiteTree";
+	private static $tree_class = "SiteTree";
 	
-	static $subitem_class = "Member";
+	private static $subitem_class = "Member";
 	
-	static $allowed_actions = array(
+	private static $allowed_actions = array(
 		'buildbrokenlinks',
 		'deleteitems',
 		'DeleteItemsForm',
@@ -50,7 +50,7 @@ class CMSMain extends LeftAndMain implements CurrentPageIdentifier, PermissionPr
 	
 	public function init() {
 		// set reading lang
-		if(Object::has_extension('SiteTree', 'Translatable') && !$this->request->isAjax()) {
+		if(SiteTree::has_extension('Translatable') && !$this->request->isAjax()) {
 			Translatable::choose_site_locale(array_keys(Translatable::get_existing_content_languages('SiteTree')));
 		}
 		
@@ -188,7 +188,7 @@ class CMSMain extends LeftAndMain implements CurrentPageIdentifier, PermissionPr
 		}
 	}
 
-	protected function LinkWithSearch($link) {
+	public function LinkWithSearch($link) {
 		// Whitelist to avoid side effects
 		$params = array(
 			'q' => (array)$this->request->getVar('q'),
@@ -296,9 +296,9 @@ class CMSMain extends LeftAndMain implements CurrentPageIdentifier, PermissionPr
 		
 		// Create the Search and Reset action
 		$actions = new FieldList(
-			FormAction::create('doSearch',  _t('CMSMain_left.ss.APPLY FILTER', 'Apply Filter'))
+			FormAction::create('doSearch',  _t('CMSMain_left_ss.APPLY_FILTER', 'Apply Filter'))
 			->addExtraClass('ss-ui-action-constructive'),
-			Object::create('ResetFormAction', 'clear', _t('CMSMain_left.ss.RESET', 'Reset'))
+			Object::create('ResetFormAction', 'clear', _t('CMSMain_left_ss.RESET', 'Reset'))
 		);
 
 		// Use <button> to allow full jQuery UI styling on the all of the Actions
@@ -364,7 +364,6 @@ class CMSMain extends LeftAndMain implements CurrentPageIdentifier, PermissionPr
 	 */
 	public function SiteTreeHints() {
 		$json = '';
-
 		$classes = SiteTree::page_type_classes();
 
 	 	$cacheCanCreate = array();
@@ -377,55 +376,69 @@ class CMSMain extends LeftAndMain implements CurrentPageIdentifier, PermissionPr
 	 	$json = $cache->load($cacheKey);
 	 	if(!$json) {
 			$def['Root'] = array();
-			$def['Root']['disallowedParents'] = array();
+			$def['Root']['disallowedChildren'] = array();
 
+			// Contains all possible classes to support UI controls listing them all,
+			// such as the "add page here" context menu.
+			$def['All'] = array(); 
+
+			// Identify disallows and set globals
+			$globalDisallowed = array();
+			foreach($classes as $class) {
+				$obj = singleton($class);
+				$needsPerm = $obj->stat('need_permission');
+
+				if(!($obj instanceof HiddenClass)) {
+					$def['All'][$class] = array(
+						'title' => $obj->i18n_singular_name()
+					);	
+				}
+
+				if(!$obj->stat('can_be_root')) {
+					$def['Root']['disallowedChildren'][] = $class;
+				}
+				
+				if(
+					($obj instanceof HiddenClass)
+					|| (!array_key_exists($class, $cacheCanCreate) || !$cacheCanCreate[$class])
+					|| ($needsPerm && !$this->can($needsPerm))
+				) {
+					$globalDisallowed[] = $class;
+					$def['Root']['disallowedChildren'][] = $class;
+				}
+			}
+
+			// Set disallows by class
 			foreach($classes as $class) {
 				$obj = singleton($class);
 				if($obj instanceof HiddenClass) continue;
-				
-				$allowedChildren = $obj->allowedChildren();
-				
-				// SiteTree::allowedChildren() returns null rather than an empty array if SiteTree::allowed_chldren == 'none'
-				if($allowedChildren == null) $allowedChildren = array();
-				
-				// Exclude SiteTree from possible Children
-				$possibleChildren = array_diff($allowedChildren, array("SiteTree"));
 
-				// Find i18n - names and build allowed children array
-				foreach($possibleChildren as $child) {
-					$instance = singleton($child);
-					
-					if($instance instanceof HiddenClass) continue;
+				$def[$class] = array();
 
-					if(!array_key_exists($child, $cacheCanCreate) || !$cacheCanCreate[$child]) continue;
+				$allowed = $obj->allowedChildren();
+				if($pos = array_search('SiteTree', $allowed)) unset($allowed[$pos]);
 
-					// skip this type if it is restricted
-					if($instance->stat('need_permission') && !$this->can(singleton($class)->stat('need_permission'))) continue;
+				// Start by disallowing all classes which aren't specifically allowed,
+				// then add the ones which are globally disallowed.
+				$disallowed = array_diff($classes, (array)$allowed);
+				$disallowed = array_unique(array_merge($disallowed, $globalDisallowed));
+				// Re-index the array for JSON non sequential key issue
+				if($disallowed) $def[$class]['disallowedChildren'] = array_values($disallowed);
 
-					$title = $instance->i18n_singular_name();
-
-					$def[$class]['allowedChildren'][] = array("ssclass" => $child, "ssname" => $title);
+				$defaultChild = $obj->defaultChild();
+				if($defaultChild != 'Page' && $defaultChild != null) {
+					$def[$class]['defaultChild'] = $defaultChild;
 				}
 
-				$allowedChildren = array_keys(array_diff($classes, $allowedChildren));
-				if($allowedChildren) $def[$class]['disallowedChildren'] = $allowedChildren;
-				$defaultChild = $obj->defaultChild();
-				if($defaultChild != 'Page' && $defaultChild != null) $def[$class]['defaultChild'] = $defaultChild;
 				$defaultParent = $obj->defaultParent();
 				$parent = SiteTree::get_by_link($defaultParent);
 				$id = $parent ? $parent->id : null;
-				if ($defaultParent != 1 && $defaultParent != null)  $def[$class]['defaultParent'] = $defaultParent;
-				if(isset($def[$class]['disallowedChildren'])) {
-					foreach($def[$class]['disallowedChildren'] as $disallowedChild) {
-						$def[$disallowedChild]['disallowedParents'][] = $class;
-					}
+				if ($defaultParent != 1 && $defaultParent != null) {
+					$def[$class]['defaultParent'] = $defaultParent;
 				}
-				
-				// Are any classes allowed to be parents of root?
-				$def['Root']['disallowedParents'][] = $class;
 			}
 
-			$json = Convert::raw2xml(Convert::raw2json($def));
+			$json = Convert::raw2json($def);
 			$cache->save($json, $cacheKey);
 		}
 		return $json;
@@ -566,7 +579,7 @@ class CMSMain extends LeftAndMain implements CurrentPageIdentifier, PermissionPr
 			 *	This bit breaks the all FileIFrameField functions if the field is used in CMS
 			 *  and its relevent ajax calles, like loading the tree dropdown for TreeSelectorField. 
 			 */
-			/* if($record && Object::has_extension('SiteTree', 'Translatable') && $record->Locale && $record->Locale != Translatable::get_current_locale()) {
+			/* if($record && SiteTree::has_extension('Translatable') && $record->Locale && $record->Locale != Translatable::get_current_locale()) {
 				$record = null;
 			}*/
 
@@ -626,6 +639,18 @@ class CMSMain extends LeftAndMain implements CurrentPageIdentifier, PermissionPr
 				$actions = $record->getAllCMSActions();
 			} else {
 				$actions = $record->getCMSActions();
+
+				// Find and remove action menus that have no actions.
+				if ($actions && $actions->Count()) {
+					$tabset = $actions->fieldByName('ActionMenus');
+					if ($tabset) {
+						foreach ($tabset->getChildren() as $tab) {
+							if (!$tab->getChildren()->count()) {
+								$tabset->removeByName($tab->getName());
+							}
+						}
+					}
+				}
 			}
 
 			// Use <button> to allow full jQuery UI styling
@@ -638,7 +663,10 @@ class CMSMain extends LeftAndMain implements CurrentPageIdentifier, PermissionPr
 				$validator = new RequiredFields();
 			}
 			
-			$form = new Form($this, "EditForm", $fields, $actions, $validator);
+			$form = CMSForm::create( 
+				$this, "EditForm", $fields, $actions, $validator
+			)->setHTMLID('Form_EditForm');
+			$form->setResponseNegotiator($this->getResponseNegotiator());
 			$form->loadDataFrom($record);
 			$form->disableDefaultAction();
 			$form->addExtraClass('cms-edit-form');
@@ -648,6 +676,11 @@ class CMSMain extends LeftAndMain implements CurrentPageIdentifier, PermissionPr
 			// if($form->Fields()->hasTabset()) $form->Fields()->findOrMakeTab('Root')->setTemplate('CMSTabSet');
 			$form->setAttribute('data-pjax-fragment', 'CurrentForm');
 
+			// Announce the capability so the frontend can decide whether to allow preview or not.
+			if(in_array('CMSPreviewable', class_implements($record))) {
+				$form->addExtraClass('cms-previewable');
+			}
+
 			if(!$record->canEdit() || $deletedFromStage) {
 				$readonlyFields = $form->Fields()->makeReadonly();
 				$form->setFields($readonlyFields);
@@ -656,9 +689,11 @@ class CMSMain extends LeftAndMain implements CurrentPageIdentifier, PermissionPr
 			$this->extend('updateEditForm', $form);
 			return $form;
 		} else if($id) {
-			return new Form($this, "EditForm", new FieldList(
+			$form = CMSForm::create( $this, "EditForm", new FieldList(
 				new LabelField('PageDoesntExistLabel',_t('CMSMain.PAGENOTEXISTS',"This page doesn't exist"))), new FieldList()
-			);
+			)->setHTMLID('Form_EditForm');
+			$form->setResponseNegotiator($this->getResponseNegotiator());
+			return $form;
 		}
 	}
 
@@ -724,10 +759,11 @@ class CMSMain extends LeftAndMain implements CurrentPageIdentifier, PermissionPr
 		// Don't allow navigating into children nodes on filtered lists
 		$fields = array(
 			'getTreeTitle' => _t('SiteTree.PAGETITLE', 'Page Title'),
-			'Created' => _t('SiteTree.CREATED', 'Date Created'),
+			'singular_name' => _t('SiteTree.PAGETYPE'),
 			'LastEdited' => _t('SiteTree.LASTUPDATED', 'Last Updated'),
 		);
 		$gridField->getConfig()->getComponentByType('GridFieldSortableHeader')->setFieldSorting(array('getTreeTitle' => 'Title'));
+		$gridField->getState()->ParentID = $parentID;
 
 		if(!$params) {
 			$fields = array_merge(array('listChildrenLink' => ''), $fields);
@@ -747,23 +783,32 @@ class CMSMain extends LeftAndMain implements CurrentPageIdentifier, PermissionPr
 				if($num) {
 					return sprintf(
 						'<a class="cms-panel-link list-children-link" data-pjax-target="ListViewForm,Breadcrumbs" href="%s">%s</a>',
-						Controller::join_links($controller->Link(), "?ParentID={$item->ID}&view=list"),
+						Controller::join_links(
+							$controller->Link(), 
+							sprintf("?ParentID=%d&view=list", (int)$item->ID)
+						),
 						$num
 					);
 				}
 			},
 			'getTreeTitle' => function($value, &$item) use($controller) {
-				return '<a class="action-detail" href="' . singleton('CMSPageEditController')->Link('show') . '/' . $item->ID . '">' . $item->TreeTitle . '</a>';
+				return sprintf(
+					'<a class="action-detail" href="%s/%d">%s</a>',
+					singleton('CMSPageEditController')->Link('show'),
+					(int)$item->ID,
+					$item->TreeTitle // returns HTML, does its own escaping
+				);
 			}
 		));
 		
-		$listview = new Form(
+		$listview = CMSForm::create( 
 			$this,
 			'ListViewForm',
 			new FieldList($gridField),
 			new FieldList()
-		);
+		)->setHTMLID('Form_ListViewForm');
 		$listview->setAttribute('data-pjax-fragment', 'ListViewForm');
+		$listview->setResponseNegotiator($this->getResponseNegotiator());
 
 		$this->extend('updateListView', $listview);
 		
@@ -828,25 +873,7 @@ class CMSMain extends LeftAndMain implements CurrentPageIdentifier, PermissionPr
 		// If the 'Save & Publish' button was clicked, also publish the page
 		if (isset($data['publish']) && $data['publish'] == 1) {
 			$record->doPublish();
-			
-			// Update classname with original and get new instance (see above for explanation)
-			if(isset($data['ClassName'])) {
-				$record->setClassName($data['ClassName']);
-				$publishedRecord = $record->newClassInstance($record->ClassName);
-			}
-			
-			$this->response->addHeader(
-				'X-Status',
-				rawurlencode(_t(
-					'LeftAndMain.STATUSPUBLISHEDSUCCESS', 
-					"Published '{title}' successfully",
-					'Status message after publishing a page, showing the page title',
-					array('title' => $record->Title)
-				))
-			);
-		} else {
-			$this->response->addHeader('X-Status', rawurlencode(_t('LeftAndMain.SAVEDUP', 'Saved.')));
-		}
+		} 
 
 		return $this->getResponseNegotiator()->respond($this->request);
 	}
@@ -1079,15 +1106,14 @@ class CMSMain extends LeftAndMain implements CurrentPageIdentifier, PermissionPr
 		if($version) {
 			$record->doRollbackTo($version);
 			$message = _t(
-				'CMSMain.ROLLEDBACKVERSION',
-				"Rolled back to version #%d.  New version number is #%d",
-				array('version' => $data['Version'], 'versionnew' => $record->Version)
+				'CMSMain.ROLLEDBACKVERSIONv2',
+				"Rolled back to version #%d.",
+				array('version' => $data['Version'])
 			);
 		} else {
 			$record->doRollbackTo('Live');
 			$message = _t(
-				'CMSMain.ROLLEDBACKPUB',"Rolled back to published version. New version number is #{version}",
-				array('version' => $record->Version)
+				'CMSMain.ROLLEDBACKPUBv2',"Rolled back to published version."
 			);
 		}
 
@@ -1112,7 +1138,7 @@ class CMSMain extends LeftAndMain implements CurrentPageIdentifier, PermissionPr
 	}
 	
 	public function BatchActionParameters() {
-		$batchActions = CMSBatchActionHandler::$batch_actions;
+		$batchActions = CMSBatchActionHandler::config()->batch_actions;
 
 		$forms = array();
 		foreach($batchActions as $urlSegment => $batchAction) {
@@ -1247,7 +1273,7 @@ class CMSMain extends LeftAndMain implements CurrentPageIdentifier, PermissionPr
 			rawurlencode(_t(
 				'CMSMain.RESTORED',
 				"Restored '{title}' successfully", 
-				array('title' => $restoredPage->TreeTitle)
+				array('title' => $restoredPage->Title)
 			))
 		);
 		
@@ -1266,24 +1292,34 @@ class CMSMain extends LeftAndMain implements CurrentPageIdentifier, PermissionPr
 			$newPage = $page->duplicate();
 			
 			// ParentID can be hard-set in the URL.  This is useful for pages with multiple parents
-			if($_GET['parentID'] && is_numeric($_GET['parentID'])) {
+			if(isset($_GET['parentID']) && is_numeric($_GET['parentID'])) {
 				$newPage->ParentID = $_GET['parentID'];
 				$newPage->write();
 			}
 			
-			// Reload form, data and actions might have changed
-			$form = $this->getEditForm($newPage->ID);
+			$this->response->addHeader(
+				'X-Status',
+				rawurlencode(_t(
+					'CMSMain.DUPLICATED',
+					"Duplicated '{title}' successfully", 
+					array('title' => $newPage->Title)
+				))
+			);
+			$url = Controller::join_links(singleton('CMSPageEditController')->Link('show'), $newPage->ID);
+			$this->response->addHeader('X-ControllerURL', $url);
+			$this->request->addHeader('X-Pjax', 'Content');  
+			$this->response->addHeader('X-Pjax', 'Content');  
 			
-			return $form->forTemplate();
+			return $this->getResponseNegotiator()->respond($this->request);
 		} else {
-			user_error("CMSMain::duplicate() Bad ID: '$id'", E_USER_WARNING);
+			return new SS_HTTPResponse("CMSMain::duplicate() Bad ID: '$id'", 400);
 		}
 	}
 
 	public function duplicatewithchildren($request) {
 		// Protect against CSRF on destructive action
 		if(!SecurityToken::inst()->checkRequest($request)) return $this->httpError(400);
-		
+		increase_time_limit_to();
 		if(($id = $this->urlParams['ID']) && is_numeric($id)) {
 			$page = DataObject::get_by_id("SiteTree", $id);
 			if($page && (!$page->canEdit() || !$page->canCreate())) return Security::permissionFailure($this);
@@ -1291,36 +1327,25 @@ class CMSMain extends LeftAndMain implements CurrentPageIdentifier, PermissionPr
 
 			$newPage = $page->duplicateWithChildren();
 
-			// Reload form, data and actions might have changed
-			$form = $this->getEditForm($newPage->ID);
+			$this->response->addHeader(
+				'X-Status',
+				rawurlencode(_t(
+					'CMSMain.DUPLICATEDWITHCHILDREN',
+					"Duplicated '{title}' and children successfully", 
+					array('title' => $newPage->Title)
+				))
+			);
+			$url = Controller::join_links(singleton('CMSPageEditController')->Link('show'), $newPage->ID);
+			$this->response->addHeader('X-ControllerURL', $url);
+			$this->request->addHeader('X-Pjax', 'Content');  
+			$this->response->addHeader('X-Pjax', 'Content');  
 			
-			return $form->forTemplate();
+			return $this->getResponseNegotiator()->respond($this->request);
 		} else {
-			user_error("CMSMain::duplicate() Bad ID: '$id'", E_USER_WARNING);
+			return new SS_HTTPResponse("CMSMain::duplicatewithchildren() Bad ID: '$id'", 400);
 		}
 	}
 	
-	/**
-	 * Return the version number of this application.
-	 * Uses the subversion path information in <mymodule>/silverstripe_version
-	 * (automacially replaced by build scripts).
-	 * 
-	 * @return string
-	 */
-	public function CMSVersion() {
-		$cmsVersion = file_get_contents(CMS_PATH . '/silverstripe_version');
-		if(!$cmsVersion) $cmsVersion = _t('LeftAndMain.VersionUnknown', 'Unknown');
-		
-		$frameworkVersion = file_get_contents(FRAMEWORK_PATH . '/silverstripe_version');
-		if(!$frameworkVersion) $frameworkVersion = _t('LeftAndMain.VersionUnknown', 'Unknown');
-		
-		return sprintf(
-			"CMS: %s Framework: %s",
-			$cmsVersion,
-			$frameworkVersion
-		);
-	}
-
 	public function providePermissions() {
 		$title = _t("CMSPagesController.MENUTITLE", LeftAndMain::menu_title_for_class('CMSPagesController'));
 		return array(

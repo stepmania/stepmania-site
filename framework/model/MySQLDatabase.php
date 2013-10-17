@@ -12,23 +12,27 @@ class MySQLDatabase extends SS_Database {
 	 * Connection to the DBMS.
 	 * @var resource
 	 */
-	private $dbConn;
+	protected $dbConn;
 
 	/**
 	 * True if we are connected to a database.
 	 * @var boolean
 	 */
-	private $active;
+	protected $active;
 
 	/**
 	 * The name of the database.
 	 * @var string
 	 */
-	private $database;
+	protected $database;
 
+	/**
+	 * @config
+	 * @var String
+	 */
 	private static $connection_charset = null;
 
-	private $supportsTransactions = true;
+	protected $supportsTransactions = true;
 
 	/**
 	 * Sets the character set for the MySQL database connection.
@@ -39,9 +43,12 @@ class MySQLDatabase extends SS_Database {
 	 * However, sites created before version 2.4.0 should leave this unset or data that isn't 7-bit
 	 * safe will be corrupted.  As such, the installer comes with this set in mysite/_config.php by
 	 * default in versions 2.4.0 and later.
+	 *
+	 * @deprecated 3.1 Use "MySQLDatabase.connection_charset" config setting instead
 	 */
 	public static function set_connection_charset($charset = 'utf8') {
-		self::$connection_charset = $charset;
+		Deprecation::notice('3.2', 'Use "MySQLDatabase.connection_charset" config setting instead');
+		Config::inst()->update('MySQLDatabase', 'connection_charset', $charset);
 	}
 
 	/**
@@ -54,7 +61,12 @@ class MySQLDatabase extends SS_Database {
 	 *  - timezone: (optional) The timezone offset. For example: +12:00, "Pacific/Auckland", or "SYSTEM"
 	 */
 	public function __construct($parameters) {
-		$this->dbConn = new MySQLi($parameters['server'], $parameters['username'], $parameters['password']);
+		if(!empty($parameters['port'])) {
+			$this->dbConn = new MySQLi($parameters['server'], $parameters['username'], $parameters['password'],
+				'', $parameters['port']);
+		} else {
+			$this->dbConn = new MySQLi($parameters['server'], $parameters['username'], $parameters['password']);
+		}
 		
 		if($this->dbConn->connect_error) {
 			$this->databaseError("Couldn't connect to MySQL database | " . $this->dbConn->connect_error);
@@ -62,8 +74,8 @@ class MySQLDatabase extends SS_Database {
 		
 		$this->query("SET sql_mode = 'ANSI'");
 
-		if(self::$connection_charset) {
-			$this->dbConn->set_charset(self::$connection_charset);
+		if(Config::inst()->get('MySQLDatabase', 'connection_charset')) {
+			$this->dbConn->set_charset(Config::inst()->get('MySQLDatabase', 'connection_charset'));
 		}
 
 		$this->active = $this->dbConn->select_db($parameters['database']);
@@ -849,19 +861,17 @@ class MySQLDatabase extends SS_Database {
 		$notMatch = $invertedMatch ? "NOT " : "";
 		if($keywords) {
 			$match['SiteTree'] = "
-				MATCH (Title, MenuTitle, Content, MetaTitle, MetaDescription, MetaKeywords)
-				AGAINST ('$keywords' $boolean)
-				+ MATCH (Title, MenuTitle, Content, MetaTitle, MetaDescription, MetaKeywords)
-				AGAINST ('$htmlEntityKeywords' $boolean)
+				MATCH (Title, MenuTitle, Content, MetaDescription) AGAINST ('$keywords' $boolean)
+				+ MATCH (Title, MenuTitle, Content, MetaDescription) AGAINST ('$htmlEntityKeywords' $boolean)
 			";
 			$match['File'] = "MATCH (Filename, Title, Content) AGAINST ('$keywords' $boolean) AND ClassName = 'File'";
 
 			// We make the relevance search by converting a boolean mode search into a normal one
 			$relevanceKeywords = str_replace(array('*','+','-'),'',$keywords);
 			$htmlEntityRelevanceKeywords = str_replace(array('*','+','-'),'',$htmlEntityKeywords);
-			$relevance['SiteTree'] = "MATCH (Title, MenuTitle, Content, MetaTitle, MetaDescription, MetaKeywords)"
-				. " AGAINST ('$relevanceKeywords') + MATCH (Title, MenuTitle, Content, MetaTitle, MetaDescription,"
-				. " MetaKeywords) AGAINST ('$htmlEntityRelevanceKeywords')";
+			$relevance['SiteTree'] = "MATCH (Title, MenuTitle, Content, MetaDescription) "
+				. "AGAINST ('$relevanceKeywords') "
+				. "+ MATCH (Title, MenuTitle, Content, MetaDescription) AGAINST ('$htmlEntityRelevanceKeywords')";
 			$relevance['File'] = "MATCH (Filename, Title, Content) AGAINST ('$relevanceKeywords')";
 		} else {
 			$relevance['SiteTree'] = $relevance['File'] = 1;
@@ -921,7 +931,7 @@ class MySQLDatabase extends SS_Database {
 
 		$list = new PaginatedList(new ArrayList($objects));
 		$list->setPageStart($start);
-		$list->setPageLEngth($pageLength);
+		$list->setPageLength($pageLength);
 		$list->setTotalItems($totalCount);
 
 		// The list has already been limited by the query above
@@ -1059,6 +1069,28 @@ class MySQLDatabase extends SS_Database {
 	}
 
 	/**
+	 * Generate a WHERE clause for text matching.
+	 * 
+	 * @param String $field Quoted field name
+	 * @param String $value Escaped search. Can include percentage wildcards.
+	 * @param boolean $exact Exact matches or wildcard support.
+	 * @param boolean $negate Negate the clause.
+	 * @param boolean $caseSensitive Enforce case sensitivity if TRUE or FALSE.
+	 *                               Stick with default collation if set to NULL.
+	 * @return String SQL
+	 */
+	public function comparisonClause($field, $value, $exact = false, $negate = false, $caseSensitive = null) {
+		if($exact && $caseSensitive === null) {
+			$comp = ($negate) ? '!=' : '=';
+		} else {
+			$comp = ($caseSensitive) ? 'LIKE BINARY' : 'LIKE';
+			if($negate) $comp = 'NOT ' . $comp;
+		}
+		
+		return sprintf("%s %s '%s'", $field, $comp, $value);
+	}
+
+	/**
 	 * function to return an SQL datetime expression that can be used with MySQL
 	 * used for querying a datetime in a certain format
 	 * @param string $date to be formated, can be either 'now', literal datetime like '1973-10-14 10:30:00' or
@@ -1189,13 +1221,13 @@ class MySQLQuery extends SS_Query {
 	 * The MySQLDatabase object that created this result set.
 	 * @var MySQLDatabase
 	 */
-	private $database;
+	protected $database;
 
 	/**
 	 * The internal MySQL handle that points to the result set.
 	 * @var resource
 	 */
-	private $handle;
+	protected $handle;
 
 	/**
 	 * Hook the result-set given into a Query class, suitable for use by SilverStripe.

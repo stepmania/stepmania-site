@@ -16,6 +16,28 @@ class Hierarchy extends DataExtension {
 	 */
 	protected $_cache_numChildren;
 	
+	/**
+	 * @config
+	 * @var integer The lower bounds for the amount of nodes to mark. If set, the logic will expand
+	 * nodes until it reaches at least this number, and then stops. Root nodes will always
+	 * show regardless of this settting. Further nodes can be lazy-loaded via ajax.
+	 * This isn't a hard limit. Example: On a value of 10, with 20 root nodes, each having
+	 * 30 children, the actual node count will be 50 (all root nodes plus first expanded child).
+	 */
+	private static $node_threshold_total = 50;
+
+	/**
+	 * @config
+	 * @var integer Limit on the maximum children a specific node can display.
+	 * Serves as a hard limit to avoid exceeding available server resources
+	 * in generating the tree, and browser resources in rendering it.
+	 * Nodes with children exceeding this value typically won't display
+	 * any children, although this is configurable through the $nodeCountCallback
+	 * parameter in {@link getChildrenAsUL()}. "Root" nodes will always show
+	 * all children, regardless of this setting.
+	 */
+	private static $node_threshold_leaf = 250;
+	
 	public function augmentSQL(SQLQuery &$query) {
 	}
 
@@ -74,16 +96,29 @@ class Hierarchy extends DataExtension {
 	 * @param string $childrenMethod The name of the method used to get children from each object
 	 * @param boolean $rootCall Set to true for this first call, and then to false for calls inside the recursion. You
 	 *                          should not change this.
-	 * @param int $minNodeCount
+	 * @param int $nodeCountThreshold See {@link self::$node_threshold_total}
+	 * @param callable $nodeCountCallback Called with the node count, which gives the callback an opportunity
+	 *                 to intercept the query. Useful e.g. to avoid excessive children listings (Arguments: $parent, $numChildren)
+	 *                          
 	 * @return string
 	 */
 	public function getChildrenAsUL($attributes = "", $titleEval = '"<li>" . $child->Title', $extraArg = null, 
 			$limitToMarked = false, $childrenMethod = "AllChildrenIncludingDeleted", 
-			$numChildrenMethod = "numChildren", $rootCall = true, $minNodeCount = 30) {
+			$numChildrenMethod = "numChildren", $rootCall = true, $nodeCountThreshold = null, $nodeCountCallback = null) {
+
+		if(!is_numeric($nodeCountThreshold)) {
+			$nodeCountThreshold = Config::inst()->get('Hierarchy', 'node_threshold_total');
+		}
 
 		if($limitToMarked && $rootCall) {
 			$this->markingFinished($numChildrenMethod);
 		}
+		
+		if($nodeCountCallback) {
+			$nodeCountWarning = $nodeCountCallback($this->owner, $this->owner->$numChildrenMethod());	
+			if($nodeCountWarning) return $nodeCountWarning;
+		}
+		
 		
 		if($this->owner->hasMethod($childrenMethod)) {
 			$children = $this->owner->$childrenMethod($extraArg);
@@ -103,9 +138,30 @@ class Hierarchy extends DataExtension {
 				if(!$limitToMarked || $child->isMarked()) {
 					$foundAChild = true;
 					$output .= (is_callable($titleEval)) ? $titleEval($child) : eval("return $titleEval;");
-					$output .= "\n" . 
-					$child->getChildrenAsUL("", $titleEval, $extraArg, $limitToMarked, $childrenMethod,
-						$numChildrenMethod, false, $minNodeCount) . "</li>\n";
+					$output .= "\n";
+
+					$numChildren = $child->$numChildrenMethod();
+					if(
+						// Always traverse into opened nodes (they might be exposed as parents of search results)
+						$child->isExpanded()
+						// Only traverse into children if we haven't reached the maximum node count already.
+						// Otherwise, the remaining nodes are lazy loaded via ajax.
+						&& $child->isMarked()
+					) {
+						// Additionally check if node count requirements are met
+						$nodeCountWarning = $nodeCountCallback ? $nodeCountCallback($child, $numChildren) : null;
+						if($nodeCountWarning) {
+							$output .= $nodeCountWarning;
+							$child->markClosed();
+						} else {
+						$output .= $child->getChildrenAsUL("", $titleEval, $extraArg, $limitToMarked, $childrenMethod,
+							$numChildrenMethod, false, $nodeCountThreshold);
+					} 
+					} elseif($child->isTreeOpened()) {
+						// Since we're not loading children, don't mark it as open either
+						$child->markClosed();
+					}
+					$output .= "</li>\n";
 				}
 			}
 			
@@ -125,21 +181,23 @@ class Hierarchy extends DataExtension {
 	 * This method returns the number of nodes marked.  After this method is called other methods 
 	 * can check isExpanded() and isMarked() on individual nodes.
 	 * 
-	 * @param int $minNodeCount The minimum amount of nodes to mark.
+	 * @param int $nodeCountThreshold See {@link getChildrenAsUL()}
 	 * @return int The actual number of nodes marked.
 	 */
-	public function markPartialTree($minNodeCount = 30, $context = null,
+	public function markPartialTree($nodeCountThreshold = 30, $context = null,
 			$childrenMethod = "AllChildrenIncludingDeleted", $numChildrenMethod = "numChildren") {
 
-		if(!is_numeric($minNodeCount)) $minNodeCount = 30;
+		if(!is_numeric($nodeCountThreshold)) $nodeCountThreshold = 30;
 
 		$this->markedNodes = array($this->owner->ID => $this->owner);
 		$this->owner->markUnexpanded();
 
 		// foreach can't handle an ever-growing $nodes list
 		while(list($id, $node) = each($this->markedNodes)) {
-			$this->markChildren($node, $context, $childrenMethod, $numChildrenMethod);
-			if($minNodeCount && sizeof($this->markedNodes) >= $minNodeCount) {
+			$children = $this->markChildren($node, $context, $childrenMethod, $numChildrenMethod);
+			if($nodeCountThreshold && sizeof($this->markedNodes) > $nodeCountThreshold) {
+				// Undo marking children as opened since they're lazy loaded
+				if($children) foreach($children as $child) $child->markClosed();
 				break;
 			}
 		}		
@@ -200,6 +258,7 @@ class Hierarchy extends DataExtension {
 	/**
 	 * Mark all children of the given node that match the marking filter.
 	 * @param DataObject $node Parent node.
+	 * @return DataList
 	 */
 	public function markChildren($node, $context = null, $childrenMethod = "AllChildrenIncludingDeleted",
 			$numChildrenMethod = "numChildren") {
@@ -213,7 +272,13 @@ class Hierarchy extends DataExtension {
 		$node->markExpanded();
 		if($children) {
 			foreach($children as $child) {
-				if(!$this->markingFilter || $this->markingFilterMatches($child)) {
+				$markingMatches = $this->markingFilterMatches($child);
+				// Filtered results should always show opened, since actual matches
+				// might be hidden by non-matching parent nodes.
+				if($this->markingFilter && $markingMatches) {
+					$child->markOpened();
+				}
+				if(!$this->markingFilter || $markingMatches) {
 					if($child->$numChildrenMethod()) {
 						$child->markUnexpanded();
 					} else {
@@ -223,6 +288,8 @@ class Hierarchy extends DataExtension {
 				}
 			}
 		}
+
+		return $children;
 	}
 	
 	/**
@@ -350,6 +417,15 @@ class Hierarchy extends DataExtension {
 		self::$marked[ClassInfo::baseDataClass($this->owner->class)][$this->owner->ID] = true;
 		self::$treeOpened[ClassInfo::baseDataClass($this->owner->class)][$this->owner->ID] = true;
 	}
+
+	/**
+	 * Mark this DataObject's tree as closed.
+	 */
+	public function markClosed() {
+		if(isset(self::$treeOpened[ClassInfo::baseDataClass($this->owner->class)][$this->owner->ID])) {
+			unset(self::$treeOpened[ClassInfo::baseDataClass($this->owner->class)][$this->owner->ID]);	
+		}
+	}
 	
 	/**
 	 * Check if this DataObject is marked.
@@ -381,24 +457,6 @@ class Hierarchy extends DataExtension {
 	}
 
 	/**
-	 * Return a partial tree as an HTML UL.
-	 */
-	public function partialTreeAsUL($minCount = 50) {
-		$children = $this->owner->AllChildren();
-		if($children) {
-			if($attributes) $attributes = " $attributes";
-			$output = "<ul$attributes>\n";
-		
-			foreach($children as $child) {
-				$output .= eval("return $titleEval;") . "\n" . 
-					$child->getChildrenAsUL("", $titleEval, $extraArg) . "</li>\n";
-			}
-			$output .= "</ul>\n";
-		}
-		return $output;
-	}
-	
-	/**
 	 * Get a list of this DataObject's and all it's descendants IDs.
 	 * @return int
 	 */
@@ -429,20 +487,15 @@ class Hierarchy extends DataExtension {
 	
 	/**
 	 * Get the children for this DataObject.
-	 * @return SS_List
+	 * @return ArrayList
 	 */
 	public function Children() {
 		if(!(isset($this->_cache_children) && $this->_cache_children)) { 
 			$result = $this->owner->stageChildren(false); 
-			if(isset($result)) { 
-				$this->_cache_children = new ArrayList(); 
-				foreach($result as $child) { 
-					if($child->canView()) { 
-						$this->_cache_children->push($child); 
+			$this->_cache_children = $result->filterByCallback(function($item) {	
+				return $item->canView();
+			});
 					} 
-				} 
-			} 
-		} 
 		return $this->_cache_children;
 	}
 
@@ -474,9 +527,6 @@ class Hierarchy extends DataExtension {
 	 */
 	public function doAllChildrenIncludingDeleted($context = null) {
 		if(!$this->owner) user_error('Hierarchy::doAllChildrenIncludingDeleted() called without $this->owner');
-		
-		$idxStageChildren = array();
-		$idxLiveChildren = array();
 		
 		$baseClass = ClassInfo::baseDataClass($this->owner->class);
 		if($baseClass) {
@@ -555,21 +605,16 @@ class Hierarchy extends DataExtension {
 	 * 
 	 * @param showAll Inlcude all of the elements, even those not shown in the menus.
 	 *   (only applicable when extension is applied to {@link SiteTree}).
-	 * @return SS_List
+	 * @return DataList
 	 */
 	public function stageChildren($showAll = false) {
-		if($this->owner->db('ShowInMenus')) {
-			$extraFilter = ($showAll) ? '' : " AND \"ShowInMenus\"=1";
-		} else {
-			$extraFilter = '';
-		}
-		
 		$baseClass = ClassInfo::baseDataClass($this->owner->class);
-		
-		$staged = DataObject::get($baseClass, "\"{$baseClass}\".\"ParentID\" = " 
-			. (int)$this->owner->ID . " AND \"{$baseClass}\".\"ID\" != " . (int)$this->owner->ID
-			. $extraFilter, "");
-			
+		$staged = $baseClass::get()
+			->filter('ParentID', (int)$this->owner->ID)
+			->exclude('ID', (int)$this->owner->ID);
+		if (!$showAll && $this->owner->db('ShowInMenus')) {
+			$staged = $staged->filter('ShowInMenus', 1);
+		}
 		$this->owner->extend("augmentStageChildren", $staged, $showAll);
 		return $staged;
 	}
@@ -588,15 +633,15 @@ class Hierarchy extends DataExtension {
 		}
 
 		$baseClass = ClassInfo::baseDataClass($this->owner->class);
-		$id = $this->owner->ID;
+		$children = $baseClass::get()
+			->filter('ParentID', (int)$this->owner->ID)
+			->exclude('ID', (int)$this->owner->ID)
+			->setDataQueryParam(array(
+				'Versioned.mode' => $onlyDeletedFromStage ? 'stage_unique' : 'stage',
+				'Versioned.stage' => 'Live'
+			));
 		
-		$children = DataObject::get($baseClass)
-			->where("\"{$baseClass}\".\"ParentID\" = $id AND \"{$baseClass}\".\"ID\" != $id");
-		if(!$showAll) $children = $children->where('"ShowInMenus" = 1');
-
-		// Query the live site
-		$children->dataQuery()->setQueryParam('Versioned.mode', $onlyDeletedFromStage ? 'stage_unique' : 'stage');
-		$children->dataQuery()->setQueryParam('Versioned.stage', 'Live');
+		if(!$showAll) $children = $children->filter('ShowInMenus', 1);
 
 		return $children;
 	}
@@ -675,9 +720,12 @@ class Hierarchy extends DataExtension {
 		$nextNode = null;
 		$baseClass = ClassInfo::baseDataClass($this->owner->class);
 		
-		$children = DataObject::get(ClassInfo::baseDataClass($this->owner->class),
-			"\"$baseClass\".\"ParentID\"={$this->owner->ID}" . ( ( $afterNode ) ? " AND \"Sort\" > "
-			. sprintf( '%d', $afterNode->Sort ) : "" ), '"Sort" ASC');
+		$children = $baseClass::get()
+			->filter('ParentID', (int)$this->owner->ID)
+			->sort('Sort', 'ASC');
+		if ($afterNode) {
+			$children = $children->filter('Sort:GreaterThan', $afterNode->Sort);
+		}
 		
 		// Try all the siblings of this node after the given node
 		/*if( $siblings = DataObject::get( ClassInfo::baseDataClass($this->owner->class), 

@@ -3,211 +3,29 @@
  * This file is the Framework bootstrap.  It will get your environment ready to call Director::direct().
  *
  * It takes care of:
- *  - Including _ss_environment.php
- *  - Normalisation of $_SERVER values
- *  - Initialisation of necessary constants (mostly paths)
+ *  - Including Constants.php to include _ss_environment and initialise necessary constants
  *  - Checking of PHP memory limit
  *  - Including all the files needed to get the manifest built
  *  - Building and including the manifest
- * 
- * Initialized constants:
- * - BASE_URL: Full URL to the webroot, e.g. "http://my-host.com/my-webroot" (no trailing slash).
- * - BASE_PATH: Absolute path to the webroot, e.g. "/var/www/my-webroot" (no trailing slash).
- *   See Director::baseFolder(). Can be overwritten by Director::setBaseFolder().
- * - TEMP_FOLDER: Absolute path to temporary folder, used for manifest and template caches. Example: "/var/tmp"
- *   See getTempFolder(). No trailing slash.
- * - MODULES_DIR: Not used at the moment
- * - MODULES_PATH: Not used at the moment
- * - THEMES_DIR: Path relative to webroot, e.g. "themes"
- * - THEMES_PATH: Absolute filepath, e.g. "/var/www/my-webroot/themes"
- * - FRAMEWORK_DIR: Path relative to webroot, e.g. "framework"
- * - FRAMEWORK_PATH:Absolute filepath, e.g. "/var/www/my-webroot/framework"
- * - FRAMEWORK_ADMIN_DIR: Path relative to webroot, e.g. "framework/admin"
- * - FRAMEWORK_ADMIN_PATH: Absolute filepath, e.g. "/var/www/my-webroot/framework/admin"
- * - THIRDPARTY_DIR: Path relative to webroot, e.g. "framework/thirdparty"
- * - THIRDPARTY_PATH: Absolute filepath, e.g. "/var/www/my-webroot/framework/thirdparty"
- * 
+ *
  * @todo This file currently contains a lot of bits and pieces, and its various responsibilities should probably be
  *       moved into different subsystems.
- * @todo A lot of this stuff is very order-independent; for example, the require_once calls have to happen after the
- *       defines.'
- * This could be decoupled.
+ * @todo A lot of this stuff is very order-dependent. This could be decoupled.
+ *
  * @package framework
  * @subpackage core
  */
 
-///////////////////////////////////////////////////////////////////////////////
-// ENVIRONMENT CONFIG
-
-// ALL errors are reported, including E_STRICT by default *unless* the site is in
-// live mode, where reporting is limited to fatal errors and warnings (see later in this file)
+/**
+ * All errors are reported, including E_STRICT by default *unless* the site is in
+ * live mode, where reporting is limited to fatal errors and warnings (see later in this file)
+ */
 error_reporting(E_ALL | E_STRICT);
 
 /**
- * Include _ss_environment.php files
+ * Include Constants (if it hasn't already been included) to pull in BASE_PATH, etc
  */
-$envFiles = array(
-	'_ss_environment.php',
-	'../_ss_environment.php',
-	'../../_ss_environment.php',
-	'../../../_ss_environment.php');
-
-foreach($envFiles as $envFile) {
-	if(@file_exists($envFile)) {
-		define('SS_ENVIRONMENT_FILE', $envFile);
-		include_once($envFile);
-		break;
-	}
-}
-
-///////////////////////////////////////////////////////////////////////////////
-// GLOBALS AND DEFINE SETTING
-
-/**
- * A blank HTTP_HOST value is used to detect command-line execution.
- * We update the $_SERVER variable to contain data consistent with the rest of the application.
- */
-if(!isset($_SERVER['HTTP_HOST'])) {
-	// HTTP_HOST, REQUEST_PORT, SCRIPT_NAME, and PHP_SELF
-	if(isset($_FILE_TO_URL_MAPPING)) {
-		$fullPath = $testPath = realpath($_SERVER['SCRIPT_FILENAME']);
-		while($testPath && $testPath != '/' && !preg_match('/^[A-Z]:\\\\$/', $testPath)) {
-			if(isset($_FILE_TO_URL_MAPPING[$testPath])) {
-				$url = $_FILE_TO_URL_MAPPING[$testPath] 
-					. str_replace(DIRECTORY_SEPARATOR, '/', substr($fullPath,strlen($testPath)));
-				
-				$components = parse_url($url);
-				$_SERVER['HTTP_HOST'] = $components['host'];
-				if(!empty($components['port'])) $_SERVER['HTTP_HOST'] .= ':' . $components['port'];
-				$_SERVER['SCRIPT_NAME'] = $_SERVER['PHP_SELF'] = $components['path'];
-				if(!empty($components['port'])) $_SERVER['REQUEST_PORT'] = $components['port'];
-				break;
-			}
-			$testPath = dirname($testPath);
-		}
-	}
-
-	// Everything else
-	$serverDefaults = array(
-		'SERVER_PROTOCOL' => 'HTTP/1.1',
-		'HTTP_ACCEPT' => 'text/plain;q=0.5',
-		'HTTP_ACCEPT_LANGUAGE' => '*;q=0.5',
-		'HTTP_ACCEPT_ENCODING' => '',
-		'HTTP_ACCEPT_CHARSET' => 'ISO-8859-1;q=0.5',
-		'SERVER_SIGNATURE' => 'Command-line PHP/' . phpversion(),
-		'SERVER_SOFTWARE' => 'PHP/' . phpversion(),
-		'SERVER_ADDR' => '127.0.0.1',
-		'REMOTE_ADDR' => '127.0.0.1',
-		'REQUEST_METHOD' => 'GET',
-		'HTTP_USER_AGENT' => 'CLI',
-	);
-	
-	$_SERVER = array_merge($serverDefaults, $_SERVER);
-	
-/**
- * If we have an HTTP_HOST value, then we're being called from the webserver and there are some things that
- * need checking
- */
-} else {
-	/**
-	 * Fix magic quotes setting
-	 */
-	if (function_exists('get_magic_quotes_gpc') && get_magic_quotes_gpc()) {
-		if($_REQUEST) stripslashes_recursively($_REQUEST);
-		if($_GET) stripslashes_recursively($_GET);
-		if($_POST) stripslashes_recursively($_POST);
-	}
-	
-	/**
-	 * Fix HTTP_HOST from reverse proxies
-	 */
-	if (isset($_SERVER['HTTP_X_FORWARDED_HOST'])) {
-		// Get the first host, in case there's multiple separated through commas
-		$_SERVER['HTTP_HOST'] = strtok($_SERVER['HTTP_X_FORWARDED_HOST'], ',');
-	}
-}
-
-/**
- * Define system paths
- */
-if(!defined('BASE_PATH')) {
-	// Assuming that this file is framework/core/Core.php we can then determine the base path
-	$candidateBasePath = rtrim(dirname(dirname(dirname(__FILE__))), DIRECTORY_SEPARATOR);
-	// We can't have an empty BASE_PATH.  Making it / means that double-slashes occur in places but that's benign.
-	// This likely only happens on chrooted environemnts
-	if($candidateBasePath == '') $candidateBasePath = DIRECTORY_SEPARATOR;
-	define('BASE_PATH', $candidateBasePath);
-}
-if(!defined('BASE_URL')) {
-	// Determine the base URL by comparing SCRIPT_NAME to SCRIPT_FILENAME and getting common elements
-	$path = realpath($_SERVER['SCRIPT_FILENAME']);
-	if(substr($path, 0, strlen(BASE_PATH)) == BASE_PATH) {
-		$urlSegmentToRemove = substr($path, strlen(BASE_PATH));
-		if(substr($_SERVER['SCRIPT_NAME'], -strlen($urlSegmentToRemove)) == $urlSegmentToRemove) {
-			$baseURL = substr($_SERVER['SCRIPT_NAME'], 0, -strlen($urlSegmentToRemove));
-			define('BASE_URL', rtrim($baseURL, DIRECTORY_SEPARATOR));
-		}
-	}
-	
-	// If that didn't work, failover to the old syntax.  Hopefully this isn't necessary, and maybe
-	// if can be phased out?
-	if(!defined('BASE_URL')) {
-		$dir = (strpos($_SERVER['SCRIPT_NAME'], 'index.php') !== false)
-			? dirname($_SERVER['SCRIPT_NAME'])
-			: dirname(dirname($_SERVER['SCRIPT_NAME']));
-		define('BASE_URL', rtrim($dir, DIRECTORY_SEPARATOR));
-	}
-}
-define('MODULES_DIR', 'modules');
-define('MODULES_PATH', BASE_PATH . '/' . MODULES_DIR);
-define('THEMES_DIR', 'themes');
-define('THEMES_PATH', BASE_PATH . '/' . THEMES_DIR);
-// Relies on this being in a subdir of the framework.
-// If it isn't, or is symlinked to a folder with a different name, you must define FRAMEWORK_DIR
-if(!defined('FRAMEWORK_DIR')) {
-	define('FRAMEWORK_DIR', basename(dirname(dirname(__FILE__))));
-}
-define('FRAMEWORK_PATH', BASE_PATH . '/' . FRAMEWORK_DIR);
-define('FRAMEWORK_ADMIN_DIR', FRAMEWORK_DIR . '/admin');
-define('FRAMEWORK_ADMIN_PATH', BASE_PATH . '/' . FRAMEWORK_ADMIN_DIR);
-
-// These are all deprecated. Use the FRAMEWORK_ versions instead.
-define('SAPPHIRE_DIR', FRAMEWORK_DIR);
-define('SAPPHIRE_PATH', FRAMEWORK_PATH);
-define('SAPPHIRE_ADMIN_DIR', FRAMEWORK_ADMIN_DIR);
-define('SAPPHIRE_ADMIN_PATH', FRAMEWORK_ADMIN_PATH);
-
-define('THIRDPARTY_DIR', FRAMEWORK_DIR . '/thirdparty');
-define('THIRDPARTY_PATH', BASE_PATH . '/' . THIRDPARTY_DIR);
-define('ASSETS_DIR', 'assets');
-define('ASSETS_PATH', BASE_PATH . '/' . ASSETS_DIR);
-
-///////////////////////////////////////////////////////////////////////////////
-// INCLUDES
-
-if(defined('CUSTOM_INCLUDE_PATH')) {
-	$includePath = '.' . PATH_SEPARATOR . CUSTOM_INCLUDE_PATH . PATH_SEPARATOR
-		. FRAMEWORK_PATH . PATH_SEPARATOR
-		. FRAMEWORK_PATH . '/parsers' . PATH_SEPARATOR
-		. THIRDPARTY_PATH . PATH_SEPARATOR
-		. get_include_path();
-} else {
-	$includePath = '.' . PATH_SEPARATOR . FRAMEWORK_PATH . PATH_SEPARATOR
-		. FRAMEWORK_PATH . '/parsers' . PATH_SEPARATOR
-		. THIRDPARTY_PATH . PATH_SEPARATOR
-		. get_include_path();
-}
-
-set_include_path($includePath);
-
-/**
- * Define the temporary folder if it wasn't defined yet
- */
-require_once 'core/TempPath.php';
-
-if(!defined('TEMP_FOLDER')) {
-	define('TEMP_FOLDER', getTempFolder(BASE_PATH));
-}
+require_once dirname(__FILE__).'/Constants.php';
 
 /**
  * Priorities definition. These constants are used in calls to _t() as an optional argument
@@ -243,6 +61,8 @@ gc_enable();
 require_once 'cache/Cache.php';
 require_once 'core/Object.php';
 require_once 'core/ClassInfo.php';
+require_once 'core/DAG.php';
+require_once 'core/Config.php';
 require_once 'view/TemplateGlobalProvider.php';
 require_once 'control/Director.php';
 require_once 'dev/Debug.php';
@@ -251,7 +71,10 @@ require_once 'dev/Backtrace.php';
 require_once 'dev/ZendLog.php';
 require_once 'dev/Log.php';
 require_once 'filesystem/FileFinder.php';
+require_once 'core/manifest/ManifestCache.php';
 require_once 'core/manifest/ClassLoader.php';
+require_once 'core/manifest/ConfigManifest.php';
+require_once 'core/manifest/ConfigStaticManifest.php';
 require_once 'core/manifest/ClassManifest.php';
 require_once 'core/manifest/ManifestFileFinder.php';
 require_once 'core/manifest/TemplateLoader.php';
@@ -286,11 +109,15 @@ if(file_exists(BASE_PATH . '/vendor/autoload.php')) {
 }
 
 // Now that the class manifest is up, load the configuration
+$configManifest = new SS_ConfigStaticManifest(BASE_PATH, false, $flush);
+Config::inst()->pushConfigStaticManifest($configManifest);
+
+// Now that the class manifest is up, load the configuration
 $configManifest = new SS_ConfigManifest(BASE_PATH, false, $flush);
-Config::inst()->pushConfigManifest($configManifest);
+Config::inst()->pushConfigYamlManifest($configManifest);
 
 SS_TemplateLoader::instance()->pushManifest(new SS_TemplateManifest(
-	BASE_PATH, false, isset($_GET['flush'])
+	BASE_PATH, project(), false, isset($_GET['flush'])
 ));
 
 // If in live mode, ensure deprecation, strict and notices are not reported
@@ -309,19 +136,6 @@ Debug::loadErrorHandlers();
 
 ///////////////////////////////////////////////////////////////////////////////
 // HELPER FUNCTIONS
-
-function getSysTempDir() {
-	Deprecation::notice(3.0, 'Please use PHP function get_sys_temp_dir() instead.');
-	return sys_get_temp_dir();
-}
-
-/**
- * @deprecated 3.0 Please use {@link SS_ClassManifest::getItemPath()}.
- */
-function getClassFile($className) {
-	Deprecation::notice('3.0', 'Use SS_ClassManifest::getItemPath() instead.');
-	return SS_ClassLoader::instance()->getManifest()->getItemPath($className);
-}
 
 /**
  * Creates a class instance by the "singleton" design pattern.
@@ -344,13 +158,6 @@ function singleton($className) {
 function project() {
 	global $project;
 	return $project;
-}
-
-function stripslashes_recursively(&$array) {
-	foreach($array as $k => $v) {
-		if(is_array($v)) stripslashes_recursively($array[$k]);
-		else $array[$k] = stripslashes($v);
-	}
 }
 
 /**

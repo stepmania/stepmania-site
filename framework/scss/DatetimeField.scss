@@ -4,11 +4,8 @@
 	clear: none;
 	float: left;
 }
-
-.datetime .date .middleColumn {
-	width: 20em;
-}
-
-.datetime .time .middleColumn {
-	width: 10em;
+.datetime .middleColumn .field {
+	margin: 0;
+	border-bottom: none;
+	box-shadow: none;
 }

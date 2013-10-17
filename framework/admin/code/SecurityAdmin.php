@@ -6,17 +6,17 @@
  */
 class SecurityAdmin extends LeftAndMain implements PermissionProvider {
 
-	static $url_segment = 'security';
+	private static $url_segment = 'security';
 	
-	static $url_rule = '/$Action/$ID/$OtherID';
+	private static $url_rule = '/$Action/$ID/$OtherID';
 	
-	static $menu_title = 'Security';
+	private static $menu_title = 'Security';
 	
-	static $tree_class = 'Group';
+	private static $tree_class = 'Group';
 	
-	static $subitem_class = 'Member';
+	private static $subitem_class = 'Member';
 	
-	static $allowed_actions = array(
+	private static $allowed_actions = array(
 		'EditForm',
 		'MemberImportForm',
 		'memberimport',
@@ -26,11 +26,6 @@ class SecurityAdmin extends LeftAndMain implements PermissionProvider {
 		'users',
 		'roles'
 	);
-
-	/**
-	 * @var Array
-	 */
-	static $hidden_permissions = array();
 
 	public function init() {
 		parent::init();
@@ -86,7 +81,12 @@ class SecurityAdmin extends LeftAndMain implements PermissionProvider {
 		$columns->setDisplayFields(array(
 			'Breadcrumbs' => singleton('Group')->fieldLabel('Title')
 		));
-		
+		$columns->setFieldFormatting(array(
+			'Breadcrumbs' => function($val, $item) {
+				return Convert::raw2xml($item->getBreadcrumbs(' > '));
+			}
+		));
+
 		$fields = new FieldList(
 			$root = new TabSet(
 				'Root',
@@ -100,33 +100,41 @@ class SecurityAdmin extends LeftAndMain implements PermissionProvider {
 									. ' database'
 							)
 						)
-					),
-					new HeaderField(_t('SecurityAdmin.IMPORTUSERS', 'Import users'), 3),
-					new LiteralField(
-						'MemberImportFormIframe',
-						sprintf(
-							'<iframe src="%s" id="MemberImportFormIframe" width="100%%" height="250px" border="0">'
-							. '</iframe>',
-							$this->Link('memberimport')
-						)
 					)
 				),
 				$groupsTab = new Tab('Groups', singleton('Group')->i18n_plural_name(),
-					$groupList,
-					new HeaderField(_t('SecurityAdmin.IMPORTGROUPS', 'Import groups'), 3),
-					new LiteralField(
-						'GroupImportFormIframe',
-						sprintf(
-							'<iframe src="%s" id="GroupImportFormIframe" width="100%%" height="250px" border="0">'
-							. '</iframe>',
-							$this->Link('groupimport')
-						)
-					)
+					$groupList
 				)
 			),
 			// necessary for tree node selection in LeftAndMain.EditForm.js
 			new HiddenField('ID', false, 0)
 		);
+
+		// Add import capabilities. Limit to admin since the import logic can affect assigned permissions
+		if(Permission::check('ADMIN')) {
+			$fields->addFieldsToTab('Root.Users', array(
+				new HeaderField(_t('SecurityAdmin.IMPORTUSERS', 'Import users'), 3),
+				new LiteralField(
+					'MemberImportFormIframe',
+					sprintf(
+							'<iframe src="%s" id="MemberImportFormIframe" width="100%%" height="250px" frameBorder="0">'
+						. '</iframe>',
+						$this->Link('memberimport')
+					)
+				)
+			));
+			$fields->addFieldsToTab('Root.Groups', array(
+				new HeaderField(_t('SecurityAdmin.IMPORTGROUPS', 'Import groups'), 3),
+				new LiteralField(
+					'GroupImportFormIframe',
+					sprintf(
+							'<iframe src="%s" id="GroupImportFormIframe" width="100%%" height="250px" frameBorder="0">'
+						. '</iframe>',
+						$this->Link('groupimport')
+					)
+				)
+			));
+		}
 
 		// Tab nav in CMS is rendered through separate template		
 		$root->setTemplate('CMSTabSet');
@@ -154,12 +162,13 @@ class SecurityAdmin extends LeftAndMain implements PermissionProvider {
 
 		$actions = new FieldList();
 		
-		$form = new Form(
+		$form = CMSForm::create( 
 			$this,
 			'EditForm',
 			$fields,
 			$actions
-		);
+		)->setHTMLID('Form_EditForm');
+		$form->setResponseNegotiator($this->getResponseNegotiator());
 		$form->addExtraClass('cms-edit-form');
 		$form->setTemplate($this->getTemplatesWithSuffix('_EditForm'));
 		// Tab nav in CMS is rendered through separate template
@@ -194,6 +203,8 @@ class SecurityAdmin extends LeftAndMain implements PermissionProvider {
 	 * @return Form
 	 */
 	public function MemberImportForm() {
+		if(!Permission::check('ADMIN')) return false;
+
 		$group = $this->currentPage();
 		$form = new MemberImportForm(
 			$this,
@@ -224,6 +235,8 @@ class SecurityAdmin extends LeftAndMain implements PermissionProvider {
 	 * @return Form
 	 */
 	public function GroupImportForm() {
+		if(!Permission::check('ADMIN')) return false;
+
 		$form = new GroupImportForm(
 			$this,
 			'GroupImportForm'
@@ -306,32 +319,41 @@ class SecurityAdmin extends LeftAndMain implements PermissionProvider {
 	 * The permissions represented in the $codes will not appearing in the form
 	 * containing {@link PermissionCheckboxSetField} so as not to be checked / unchecked.
 	 * 
+	 * @deprecated 3.1 Use "Permission.hidden_permissions" config setting instead
 	 * @param $codes String|Array
 	 */
 	public static function add_hidden_permission($codes){
 		if(is_string($codes)) $codes = array($codes);
-		self::$hidden_permissions = array_merge(self::$hidden_permissions, $codes);
+		Deprecation::notice('3.2', 'Use "Permission.hidden_permissions" config setting instead');
+		Config::inst()->update('Permission', 'hidden_permissions', $codes);
 	}
 	
 	/**
+	 * @deprecated 3.1 Use "Permission.hidden_permissions" config setting instead
 	 * @param $codes String|Array
 	 */
 	public static function remove_hidden_permission($codes){
 		if(is_string($codes)) $codes = array($codes);
-		self::$hidden_permissions = array_diff(self::$hidden_permissions, $codes);
+		Deprecation::notice('3.2', 'Use "Permission.hidden_permissions" config setting instead');
+		Config::inst()->remove('Permission', 'hidden_permissions', $codes);
 	}
 	
 	/**
+	 * @deprecated 3.1 Use "Permission.hidden_permissions" config setting instead
 	 * @return Array
 	 */
 	public static function get_hidden_permissions(){
-		return self::$hidden_permissions;
+		Deprecation::notice('3.2', 'Use "Permission.hidden_permissions" config setting instead');
+		Config::inst()->get('Permission', 'hidden_permissions', Config::FIRST_SET);
 	}
 	
 	/**
 	 * Clear all permissions previously hidden with {@link add_hidden_permission}
+	 * 
+	 * @deprecated 3.1 Use "Permission.hidden_permissions" config setting instead
 	 */
 	public static function clear_hidden_permissions(){
-		self::$hidden_permissions = array();
+		Deprecation::notice('3.2', 'Use "Permission.hidden_permissions" config setting instead');
+		Config::inst()->remove('Permission', 'hidden_permissions', Config::anything());
 	}
 }

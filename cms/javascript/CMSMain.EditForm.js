@@ -27,20 +27,19 @@
 
 				self.data('OrigVal', self.val());
 				
-				var form = self.parents('form');
-				var url_segment = $('.field.urlsegment', form).find(':text');
-				var live_link = $('input[name=LiveLink]', form);
-				
-				self._addActions();
+				var form = self.closest('form');
+				var urlSegmentInput = $('input:text[name=URLSegment]', form);
+				var liveLinkInput = $('input[name=LiveLink]', form);
 
-				if(url_segment.length > 0) {
+				if (urlSegmentInput.length > 0) {
+					self._addActions();
 					this.bind('change', function(e) {
 						var origTitle = self.data('OrigVal');
 						var title = self.val();
 						self.data('OrigVal', title);
 
 						// Criteria for defining a "new" page
-						if ((url_segment.val().indexOf('new') == 0) && live_link.val() == '') {
+						if ((urlSegmentInput.val().indexOf('new') == 0) && liveLinkInput.val() == '') {
 							self.updateURLSegment(title);
 						} else {
 							$('.update', self.parent()).show();
@@ -83,9 +82,10 @@
 			 * (String) title
 			 */
 			updateURLSegment: function(title) {
-				var url_segment_field = $('.field.urlsegment', this.parents('form'));
+				var urlSegmentInput = $('input:text[name=URLSegment]', this.closest('form'));
+				var urlSegmentField = urlSegmentInput.closest('.field.urlsegment');
 				var updateURLFromTitle = $('.update', this.parent());
-				url_segment_field.update(title);
+				urlSegmentField.update(title);
 				if (updateURLFromTitle.is(':visible')) {
 					updateURLFromTitle.hide();
 				}
@@ -306,6 +306,53 @@
 					return this._super(e);
 				} else {
 					return false;
+				}
+			}
+		});
+
+		/**
+		 * Enable save buttons upon detecting changes to content.
+		 * "changed" class is added by jQuery.changetracker.
+		 */
+		$('.cms-edit-form.changed').entwine({
+			onmatch: function(e) {
+				this.find('button[name=action_save]').button('option', 'showingAlternate', true);
+				this.find('button[name=action_publish]').button('option', 'showingAlternate', true);
+				this._super(e);
+			},
+			onunmatch: function(e) {
+				var saveButton = this.find('button[name=action_save]');
+				if(saveButton.data('button')) saveButton('option', 'showingAlternate', false);
+				var publishButton = this.find('button[name=action_publish]');
+				if(publishButton.data('button')) publishButton('option', 'showingAlternate', false);
+				this._super(e);
+			}
+		});
+
+		$('.cms-edit-form .Actions button[name=action_publish]').entwine({
+			/**
+			 * Bind to ssui.button event to trigger stylistic changes.
+			 */
+			onbuttonafterrefreshalternate: function() {
+				if (this.button('option', 'showingAlternate')) {
+					this.addClass('ss-ui-action-constructive');
+				}
+				else {
+					this.removeClass('ss-ui-action-constructive');
+				}
+			}
+		});
+
+		$('.cms-edit-form .Actions button[name=action_save]').entwine({
+			/**
+			 * Bind to ssui.button event to trigger stylistic changes.
+			 */
+			onbuttonafterrefreshalternate: function() {
+				if (this.button('option', 'showingAlternate')) {
+					this.addClass('ss-ui-action-constructive');
+				}
+				else {
+					this.removeClass('ss-ui-action-constructive');
 				}
 			}
 		});

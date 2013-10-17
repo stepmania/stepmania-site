@@ -7,7 +7,7 @@
  * @uses DropdownField
  * 
  * @param string $name
- * @param DataOject $object The object that the foreign key is stored on (should have a relation with $name) 
+ * @param DataObject $object The object that the foreign key is stored on (should have a relation with $name) 
  * 
  * @package framework
  * @subpackage model
@@ -19,7 +19,7 @@ class ForeignKey extends Int {
 	 */
 	protected $object;
 
-	public static $default_search_filter_class = 'ExactMatchMultiFilter';
+	private static $default_search_filter_class = 'ExactMatchFilter';
 	
 	public function __construct($name, $object = null) {
 		$this->object = $object;

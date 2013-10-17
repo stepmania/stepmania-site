@@ -1,20 +1,18 @@
 <div id="settings-controller-cms-content" class="cms-content center cms-tabset $BaseCSSClasses" data-layout-type="border" data-pjax-fragment="Content CurrentForm">
 
 	<div class="cms-content-header north">
-		<% with EditForm %>
+		<% with $EditForm %>
 			<div class="cms-content-header-info">
-				<h2>
-				<% with Controller %>
+				<% with $Controller %>
 					<% include CMSBreadcrumbs %>
 				<% end_with %>
-				</h2>
 			</div>
-			<% if Fields.hasTabset %>
-				<% with Fields.fieldByName('Root') %>
+			<% if $Fields.hasTabset %>
+				<% with $Fields.fieldByName('Root') %>
 				<div class="cms-content-header-tabs">
-					<ul>
-					<% loop Tabs %>
-						<li<% if extraClass %> class="$extraClass"<% end_if %>><a href="#$id">$Title</a></li>
+					<ul class="cms-tabset-nav-primary">
+					<% loop $Tabs %>
+						<li<% if $extraClass %> class="$extraClass"<% end_if %>><a href="#$id">$Title</a></li>
 					<% end_loop %>
 					</ul>
 				</div>

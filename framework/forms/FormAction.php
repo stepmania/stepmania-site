@@ -78,7 +78,6 @@ class FormAction extends FormField {
 
 	public function getAttributes() {
 		$type = (isset($this->attributes['src'])) ? 'image' : 'submit';
-		$type = ($this->useButtonTag) ? null : $type;
 		
 		return array_merge(
 			parent::getAttributes(),
@@ -119,10 +118,6 @@ class FormAction extends FormField {
 	 */
 	public function getUseButtonTag() {
 		return $this->useButtonTag;
-	}
-
-	public function extraClass() {
-		return 'action ' . parent::extraClass();
 	}
 
 	/**

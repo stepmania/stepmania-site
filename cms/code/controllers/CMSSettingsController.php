@@ -1,13 +1,19 @@
 <?php
 class CMSSettingsController extends LeftAndMain {
 
-	static $url_segment = 'settings';
-	static $url_rule = '/$Action/$ID/$OtherID';
-	static $menu_priority = -1;
-	static $menu_title = 'Settings';
-	static $tree_class = 'SiteConfig';
-	static $required_permission_codes = array('EDIT_SITECONFIG');
+	private static $url_segment = 'settings';
+	private static $url_rule = '/$Action/$ID/$OtherID';
+	private static $menu_priority = -1;
+	private static $menu_title = 'Settings';
+	private static $tree_class = 'SiteConfig';
+	private static $required_permission_codes = array('EDIT_SITECONFIG');
 	
+	public function init() {
+		parent::init();
+
+		Requirements::javascript(CMS_DIR . '/javascript/CMSMain.EditForm.js');
+	}
+
 	public function getResponseNegotiator() {
 		$neg = parent::getResponseNegotiator();
 		$controller = $this;
@@ -24,8 +30,17 @@ class CMSSettingsController extends LeftAndMain {
 		$siteConfig = SiteConfig::current_site_config();
 		$fields = $siteConfig->getCMSFields();
 
+		// Tell the CMS what URL the preview should show
+		$fields->push(new HiddenField('PreviewURL', 'Preview URL', RootURLController::get_homepage_link()));
+		// Added in-line to the form, but plucked into different view by LeftAndMain.Preview.js upon load
+		$fields->push($navField = new LiteralField('SilverStripeNavigator', $this->getSilverStripeNavigator()));
+		$navField->setAllowHTML(true);
+
 		$actions = $siteConfig->getCMSActions();
-		$form = new Form($this, 'EditForm', $fields, $actions);
+		$form = CMSForm::create( 
+			$this, 'EditForm', $fields, $actions
+		)->setHTMLID('Form_EditForm');
+		$form->setResponseNegotiator($this->getResponseNegotiator());
 		$form->addExtraClass('root-form');
 		$form->addExtraClass('cms-edit-form cms-panel-padded center');
 		// don't add data-pjax-fragment=CurrentForm, its added in the content template instead
@@ -44,6 +59,14 @@ class CMSSettingsController extends LeftAndMain {
 		return $form;
 	}
 
+	/**
+	 * Used for preview controls, mainly links which switch between different states of the page.
+	 *
+	 * @return ArrayData
+	 */
+	public function getSilverStripeNavigator() {
+		return $this->renderWith('CMSSettingsController_SilverStripeNavigator');
+	}
 
 	/**
 	 * Save the current sites {@link SiteConfig} into the database
@@ -62,7 +85,9 @@ class CMSSettingsController extends LeftAndMain {
 	}
 	
 	public function LinkPreview() {
-		return false;
+		$record = $this->getRecord($this->currentPageID());
+		$baseLink = ($record && $record instanceof Page) ? $record->Link('?stage=Stage') : Director::absoluteBaseURL();
+		return $baseLink;
 	}
 
 	public function Breadcrumbs($unlinked = false) {

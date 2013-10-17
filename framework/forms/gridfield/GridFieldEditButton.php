@@ -1,10 +1,17 @@
 <?php
+
 /**
- * Provides the entry point to editing a single record presented by the grid.
- * Doesn't show an edit view on its own or modifies the record, but rather relies on routing conventions
- * established in {@link getColumnContent()}. The default routing applies to
- * the {@link GridFieldDetailForm} component, which has to be added separately
- * to the grid field configuration.
+ * Provides the entry point to editing a single record presented by the 
+ * {@link GridField}.
+ *
+ * Doesn't show an edit view on its own or modifies the record, but rather 
+ * relies on routing conventions established in {@link getColumnContent()}. 
+ *
+ * The default routing applies to the {@link GridFieldDetailForm} component, 
+ * which has to be added separately to the {@link GridField} configuration.
+ *
+ * @package framework
+ * @subpackage fields-gridfield
  */
 class GridFieldEditButton implements GridField_ColumnProvider {
 	
@@ -20,7 +27,7 @@ class GridFieldEditButton implements GridField_ColumnProvider {
 	}
 	
 	/**
-	 * Return any special attributes that will be used for FormField::createTag()
+	 * Return any special attributes that will be used for FormField::create_tag()
 	 *
 	 * @param GridField $gridField
 	 * @param DataObject $record
@@ -55,7 +62,7 @@ class GridFieldEditButton implements GridField_ColumnProvider {
 	}
 	
 	/**
-	 * Which GridField actions are this component handling
+	 * Which GridField actions are this component handling.
 	 *
 	 * @param GridField $gridField
 	 * @return array 
@@ -65,16 +72,16 @@ class GridFieldEditButton implements GridField_ColumnProvider {
 	}
 	
 	/**
-	 *
 	 * @param GridField $gridField
 	 * @param DataObject $record
 	 * @param string $columnName
+	 *
 	 * @return string - the HTML for the column 
 	 */
 	public function getColumnContent($gridField, $record, $columnName) {
-		if(!$record->canEdit()){
-			return;
-		}
+		// No permission checks, handled through GridFieldDetailForm,
+		// which can make the form readonly if no edit permissions are available.
+
 		$data = new ArrayData(array(
 			'Link' => Controller::join_links($gridField->Link('item'), $record->ID, 'edit')
 		));
@@ -83,12 +90,13 @@ class GridFieldEditButton implements GridField_ColumnProvider {
 	}
 	
 	/**
-	 * Handle the actions and apply any changes to the GridField
+	 * Handle the actions and apply any changes to the GridField.
 	 *
 	 * @param GridField $gridField
 	 * @param string $actionName
 	 * @param mixed $arguments
 	 * @param array $data - form data
+	 *
 	 * @return void
 	 */
 	public function handleAction(GridField $gridField, $actionName, $arguments, $data) {

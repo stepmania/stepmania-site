@@ -71,10 +71,21 @@ class i18nTextCollector extends Object {
 	 * @uses DataObject->collectI18nStatics()
 	 * 
 	 * @param array $restrictToModules
+	 * @param array $mergeWithExisting Merge new master strings with existing ones
+	 * already defined in language files, rather than replacing them. This can be useful
+	 * for long-term maintenance of translations across releases, because it allows
+	 * "translation backports" to older releases without removing strings these older releases
+	 * still rely on.
 	 */	
-	public function run($restrictToModules = null) {
-		//Debug::message("Collecting text...", false);
-		
+	public function run($restrictToModules = null, $mergeWithExisting = false) {
+		$entitiesByModule = $this->collect($restrictToModules, $mergeWithExisting);
+		// Write each module language file
+		if($entitiesByModule) foreach($entitiesByModule as $module => $entities) {
+			$this->getWriter()->write($entities, $this->defaultLocale, $this->baseSavePath . '/' . $module);
+		}
+	}
+
+	public function collect($restrictToModules = null, $mergeWithExisting = false) {
 		$modules = scandir($this->basePath);
 		$themeFolders = array();
 		
@@ -137,7 +148,31 @@ class i18nTextCollector extends Object {
 					$entitiesByModule[$othermodule][$fullName] = $spec;
 					unset($entitiesByModule[$module][$fullName]);
 				}
-			}			
+			}		
+
+			// Optionally merge with existing master strings
+			// TODO Support all defined source formats through i18n::get_translators().
+			//      Currently not possible because adapter instances can't be fully reset through the Zend API,
+			//      meaning master strings accumulate across modules
+			if($mergeWithExisting) {
+				$adapter = Injector::inst()->create('i18nRailsYamlAdapter');
+				$masterFile = "{$this->basePath}/{$module}/lang/" 
+					. $adapter->getFilenameForLocale($this->defaultLocale);
+				if(!file_exists($masterFile)) continue;
+
+				$adapter->addTranslation(array(
+					'content' => $masterFile,
+					'locale' => $this->defaultLocale
+				));
+				$entitiesByModule[$module] = array_merge(
+					array_map(
+						// Transform each master string from scalar value to array of strings
+						function($v) {return array($v);},
+						$adapter->getMessages($this->defaultLocale)
+					),
+					$entitiesByModule[$module]
+				);	
+			}
 		}
 
 		// Restrict modules we update to just the specified ones (if any passed)
@@ -147,10 +182,11 @@ class i18nTextCollector extends Object {
 			}
 		}
 
-		// Write each module language file
-		if($entitiesByModule) foreach($entitiesByModule as $module => $entities) {
-			$this->getWriter()->write($entities, $this->defaultLocale, $this->baseSavePath . '/' . $module);
-		}
+		return $entitiesByModule;
+	}
+
+	public function write($module, $entities) {
+		$this->getWriter()->write($entities, $this->defaultLocale, $this->baseSavePath . '/' . $module);
 	}
 	
 	/**
@@ -170,7 +206,7 @@ class i18nTextCollector extends Object {
 			$fileList = $this->getFilesRecursive("$this->basePath/$module/code");
 		} else if($module == FRAMEWORK_DIR || substr($module, 0, 7) == 'themes/') {
 			// framework doesn't have the usual module structure, so we'll scan all subfolders
-			$fileList = $this->getFilesRecursive("$this->basePath/$module");
+			$fileList = $this->getFilesRecursive("$this->basePath/$module", null, null, '/\/(tests|dev)$/');
 		}
 		foreach($fileList as $filePath) {
 			// exclude ss-templates, they're scanned separately
@@ -183,8 +219,7 @@ class i18nTextCollector extends Object {
 		
 		// Search for calls in template files if these exists
 		if(is_dir("$this->basePath/$module/")) {
-			$dummy = array();
-			$fileList = $this->getFilesRecursive("$this->basePath/$module/", $dummy, 'ss');
+			$fileList = $this->getFilesRecursive("$this->basePath/$module/", null, 'ss');
 			foreach($fileList as $index => $filePath) {
 				$content = file_get_contents($filePath);
 				// templates use their filename as a namespace
@@ -253,7 +288,7 @@ class i18nTextCollector extends Object {
 				$inConcat = true;
 			} elseif($inTransFn && $token == ',') {
 				$inConcat = false;
-			} elseif($inTransFn && ($token == ')' || $finalTokenDueToArray)) {
+			} elseif($inTransFn && ($token == ')' || $finalTokenDueToArray || $token == '[')) {
 				// finalize definition
 				$inTransFn = false;
 				$inConcat = false;
@@ -401,25 +436,30 @@ class i18nTextCollector extends Object {
 	 * @param string $folder base directory to scan (will scan recursively)
 	 * @param array $fileList Array to which potential files will be appended
 	 * @param string $type Optional, "php" or "ss"
+	 * @param  string $folderExclude Regular expression matching folder names to exclude
 	 * @return array $fileList An array of files
 	 */
-	protected function getFilesRecursive($folder, &$fileList = null, $type = null) {
+	protected function getFilesRecursive($folder, $fileList = null, $type = null, $folderExclude = null) {
+		if(!$folderExclude) $folderExclude = '/\/(tests)$/';
 		if(!$fileList) $fileList = array();
 		$items = scandir($folder);
 		$isValidFolder = (
 			!in_array('_manifest_exclude', $items)
-			&& !preg_match('/\/tests$/', $folder)
+			&& !preg_match($folderExclude, $folder)
 		);
 
 		if($items && $isValidFolder) foreach($items as $item) {
 			if(substr($item,0,1) == '.') continue;
 			if(substr($item,-4) == '.php' && (!$type || $type == 'php')) {
 				$fileList[substr($item,0,-4)] = "$folder/$item";
-			}
-			else if(substr($item,-3) == '.ss' && (!$type || $type == 'ss')) {
+			} else if(substr($item,-3) == '.ss' && (!$type || $type == 'ss')) {
 				$fileList[$item] = "$folder/$item";
+			} else if(is_dir("$folder/$item")) {
+				$fileList = array_merge(
+					$fileList, 
+					$this->getFilesRecursive("$folder/$item", $fileList, $type, $folderExclude)
+				);
 			}
-			else if(is_dir("$folder/$item")) $this->getFilesRecursive("$folder/$item", $fileList, $type);
 		}
 		return $fileList;
 	}
@@ -462,7 +502,7 @@ class i18nTextCollector_Writer_Php implements i18nTextCollector_Writer {
 		// Create folder for lang files
 		$langFolder = $path . '/lang';
 		if(!file_exists($langFolder)) {
-			Filesystem::makeFolder($langFolder, Filesystem::$folder_create_mask);
+			Filesystem::makeFolder($langFolder, Config::inst()->get('Filesystem', 'folder_create_mask'));
 			touch($langFolder . '/_manifest_exclude');
 		}
 
@@ -539,7 +579,7 @@ class i18nTextCollector_Writer_RailsYaml implements i18nTextCollector_Writer {
 		// Create folder for lang files
 		$langFolder = $path . '/lang';
 		if(!file_exists($langFolder)) {
-			Filesystem::makeFolder($langFolder, Filesystem::$folder_create_mask);
+			Filesystem::makeFolder($langFolder, Config::inst()->get('Filesystem', 'folder_create_mask'));
 			touch($langFolder . '/_manifest_exclude');
 		}
 
@@ -587,8 +627,9 @@ class i18nTextCollector_Writer_RailsYaml implements i18nTextCollector_Writer {
  */
 class i18nTextCollector_Parser extends SSTemplateParser {
 
-	static $entities = array();
-	static $currentEntity = array();
+	private static $entities = array();
+	
+	private static $currentEntity = array();
 
 	public function Translate__construct(&$res) {
 		self::$currentEntity = array(null,null,null); //start with empty array

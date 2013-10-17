@@ -1,11 +1,11 @@
 <?php
 class CMSFileAddController extends LeftAndMain {
 
-	static $url_segment = 'assets/add';
-	static $url_priority = 60;
-	static $required_permission_codes = 'CMS_ACCESS_AssetAdmin';
-	static $menu_title = 'Files';
-	public static $tree_class = 'Folder';
+	private static $url_segment = 'assets/add';
+	private static $url_priority = 60;
+	private static $required_permission_codes = 'CMS_ACCESS_AssetAdmin';
+	private static $menu_title = 'Files';
+	private static $tree_class = 'Folder';
 	
 //	public function upload($request) {
 //		$formHtml = $this->renderWith(array('AssetAdmin_UploadContent'));
@@ -74,24 +74,18 @@ class CMSFileAddController extends LeftAndMain {
 
 		$exts = $uploadField->getValidator()->getAllowedExtensions();
 		asort($exts);
+		$uploadField->Extensions = implode(', ', $exts);
 
-		$form = new Form(
+		$form = CMSForm::create( 
 			$this,
-			'getEditForm',
+			'EditForm',
 			new FieldList(
-				$uploadField,
-				new LiteralField(
-					'AllowedExtensions',
-					sprintf(
-						'<p>%s: %s</p>',
-						_t('AssetAdmin.ALLOWEDEXTS', 'Allowed extensions'),
-						implode('<em>, </em>', $exts)
-					)
-				),
+				$uploadField,				
 				new HiddenField('ID')
 			),
 			new FieldList()
-		);
+		)->setHTMLID('Form_EditForm');
+		$form->setResponseNegotiator($this->getResponseNegotiator());
 		$form->addExtraClass('center cms-edit-form ' . $this->BaseCSSClasses());
 		// Don't use AssetAdmin_EditForm, as it assumes a different panel structure
 		$form->setTemplate($this->getTemplatesWithSuffix('_EditForm'));

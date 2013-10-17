@@ -6,19 +6,21 @@
  */
 class CMSPageHistoryController extends CMSMain {
 
-	static $url_segment = 'pages/history';
-	static $url_rule = '/$Action/$ID/$VersionID/$OtherVersionID';
-	static $url_priority = 42;
-	static $menu_title = 'History';
-	static $required_permission_codes = 'CMS_ACCESS_CMSMain';
-	static $session_namespace = 'CMSMain';
+	private static $url_segment = 'pages/history';
+	private static $url_rule = '/$Action/$ID/$VersionID/$OtherVersionID';
+	private static $url_priority = 42;
+	private static $menu_title = 'History';
+	private static $required_permission_codes = 'CMS_ACCESS_CMSMain';
+	private static $session_namespace = 'CMSMain';
 	
-	static $allowed_actions = array(
+	private static $allowed_actions = array(
 		'VersionsForm',
+		'CompareVersionsForm',
+		'show',
 		'compare'
 	);
 	
-	public static $url_handlers = array(
+	private static $url_handlers = array(
 		'$Action/$ID/$VersionID/$OtherVersionID' => 'handleAction'
 	);
 
@@ -74,6 +76,16 @@ class CMSPageHistoryController extends CMSMain {
 
 		return $negotiator->respond($request);
 	}
+
+	public function getSilverStripeNavigator() {
+		$record = $this->getRecord($this->currentPageID(), $this->request->param('VersionID'));
+		if($record) {
+			$navigator = new SilverStripeNavigator($record);
+			return $navigator->renderWith($this->getTemplatesWithSuffix('_SilverStripeNavigator'));
+		} else {
+			return false;
+		}
+	}
 	
 	/**
 	 * Returns the read only version of the edit form. Detaches all {@link FormAction} 
@@ -98,11 +110,11 @@ class CMSPageHistoryController extends CMSMain {
 		// Respect permission failures from parent implementation
 		if(!($form instanceof Form)) return $form;
 
-		$nav = new SilverStripeNavigatorItem_ArchiveLink($record);
+		// TODO: move to the SilverStripeNavigator structure so the new preview can pick it up.
+		//$nav = new SilverStripeNavigatorItem_ArchiveLink($record);
 
 		$form->setActions(new FieldList(
-			$revert = FormAction::create('doRollback', _t('CMSPageHistoryController.REVERTTOTHISVERSION', 'Revert to this version'))->setUseButtonTag(true),
-			$navField = new LiteralField('ArchivedLink', $nav->getHTML())
+			$revert = FormAction::create('doRollback', _t('CMSPageHistoryController.REVERTTOTHISVERSION', 'Revert to this version'))->setUseButtonTag(true)
 		));
 		
 		$fields = $form->Fields();
@@ -111,7 +123,6 @@ class CMSPageHistoryController extends CMSMain {
 		$fields->push(new HiddenField("Version"));
 		
 		$fields = $fields->makeReadonly();		
-		$navField->setAllowHTML(true);
 		
 		if($compareID) {
 			$link = Controller::join_links(
@@ -131,13 +142,16 @@ class CMSPageHistoryController extends CMSMain {
 			);
 			
 			$revert->setReadonly(true);
-		}
-		else {
-			$message = _t(
-				'CMSPageHistoryController.VIEWINGVERSION',
-				"Currently viewing version {version}.", 
-				array('version' => $versionID)
-			);
+		} else {
+			if($record->isLatestVersion()) {
+				$message = _t('CMSPageHistoryController.VIEWINGLATEST', 'Currently viewing the latest version.');
+			} else {
+				$message = _t(
+					'CMSPageHistoryController.VIEWINGVERSION',
+					"Currently viewing version {version}.",
+					array('version' => $versionID)
+				);
+			}
 		}
 		
 		$fields->addFieldToTab('Root.Main', 
@@ -237,13 +251,13 @@ class CMSPageHistoryController extends CMSMain {
 		// Use <button> to allow full jQuery UI styling
 		foreach($actions->dataFields() as $action) $action->setUseButtonTag(true);
 
-		$form = new Form(
+		$form = CMSForm::create( 
 			$this,
 			'VersionsForm',
 			$fields,
 			$actions
-		);
-		
+		)->setHTMLID('Form_VersionsForm');
+		$form->setResponseNegotiator($this->getResponseNegotiator());
 		$form->loadDataFrom($this->request->requestVars());
 		$hiddenID->setValue($id);
 		$form->unsetValidator();
@@ -395,6 +409,12 @@ class CMSPageHistoryController extends CMSMain {
 			
 			return $form;
 		}
+	}
+
+	public function Breadcrumbs($unlinked = false) {
+		$crumbs = parent::Breadcrumbs($unlinked);
+		$crumbs[0]->Title = _t('CMSPagesController.MENUTITLE');
+		return $crumbs;
 	}
 
 }

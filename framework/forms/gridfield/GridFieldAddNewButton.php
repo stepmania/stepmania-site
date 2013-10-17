@@ -1,9 +1,13 @@
 <?php
 /**
- * This component provides a button for opening the add new form provided by {@link GridFieldDetailForm}.
+ * This component provides a button for opening the add new form provided by 
+ * {@link GridFieldDetailForm}.
+ *
+ * Only returns a button if {@link DataObject->canCreate()} for this record 
+ * returns true.
  *
  * @package framework
- * @subpackage gridfield
+ * @subpackage fields-gridfield
  */
 class GridFieldAddNewButton implements GridField_HTMLProvider {
 
@@ -13,6 +17,7 @@ class GridFieldAddNewButton implements GridField_HTMLProvider {
 
 	public function setButtonName($name) {
 		$this->buttonName = $name;
+
 		return $this;
 	}
 
@@ -21,9 +26,15 @@ class GridFieldAddNewButton implements GridField_HTMLProvider {
 	}
 
 	public function getHTMLFragments($gridField) {
+		$singleton = singleton($gridField->getModelClass());
+
+		if(!$singleton->canCreate()) {
+			return array();
+		}
+
 		if(!$this->buttonName) {
 			// provide a default button name, can be changed by calling {@link setButtonName()} on this component
-			$objectName = singleton($gridField->getModelClass())->i18n_singular_name();
+			$objectName = $singleton->i18n_singular_name();
 			$this->buttonName = _t('GridField.Add', 'Add {name}', array('name' => $objectName));
 		}
 

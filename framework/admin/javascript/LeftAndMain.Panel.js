@@ -30,7 +30,7 @@
 			
 			WidthCollapsed: null,
 			
-			onmatch: function() {
+			onadd: function() {
 				if(!this.find('.cms-panel-content').length) throw new Exception('Content panel for ".cms-panel" not found');
 				
 				// Create default controls unless they already exist.
@@ -62,9 +62,6 @@
 				
 				this._super();
 			},
-			onunmatch: function() {
-				this._super();
-			},
 			/**
 			 * @param {Boolean} TRUE to expand, FALSE to collapse.
 			 * @param {Boolean} TRUE means that events won't be fired, which is useful for the component initialization phase.
@@ -79,8 +76,6 @@
 				var newWidth = bool ? this.getWidthExpanded() : this.getWidthCollapsed();
 				
 				this.width(newWidth); // the content panel width always stays in "expanded state" to avoid floating elements
-				this.find('.toggle-collapse')[bool ? 'show' : 'hide']();
-				this.find('.toggle-expand')[bool ? 'hide' : 'show']();
 				
 				// If an alternative collapsed view exists, toggle it as well
 				var collapsedContent = this.find('.cms-panel-content-collapsed');
@@ -91,7 +86,7 @@
 
 				// Save collapsed state in cookie
 				if($.cookie && this.attr('id')) $.cookie('cms-panel-collapsed-' + this.attr('id'), !bool, {path: '/', expires: 31});
-				
+
 				// TODO Fix redraw order (inner to outer), and re-enable silent flag
 				// to avoid multiple expensive redraws on a single load.
 				// if(!silent) {

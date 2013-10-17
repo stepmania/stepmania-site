@@ -7,7 +7,7 @@
  * @package cms
  */
 class SiteConfig extends DataObject implements PermissionProvider {
-	static $db = array(
+	private static $db = array(
 		"Title" => "Varchar(255)",
 		"Tagline" => "Varchar(255)",
 		"Theme" => "Varchar(255)",
@@ -16,16 +16,24 @@ class SiteConfig extends DataObject implements PermissionProvider {
 		"CanCreateTopLevelType" => "Enum('LoggedInUsers, OnlyTheseUsers', 'LoggedInUsers')",
 	);
 	
-	static $many_many = array(
+	private static $many_many = array(
 		"ViewerGroups" => "Group",
 		"EditorGroups" => "Group",
 		"CreateTopLevelGroups" => "Group"
 	);
 	
-	protected static $disabled_themes = array();
+	/**
+	 * @config
+	 * @var array
+	 */
+	private static $disabled_themes = array();
 	
+	/**
+	 * @deprecated 3.2 Use the "SiteConfig.disabled_themes" config setting instead
+	 */
 	static public function disable_theme($theme) {
-		self::$disabled_themes[$theme] = $theme;
+		Deprecation::notice('3.2', 'Use the "SiteConfig.disabled_themes" config setting instead');
+		Config::inst()->update('SiteConfig', 'disabled_themes', array($theme));
 	}
 
 	public function populateDefaults()
@@ -58,13 +66,28 @@ class SiteConfig extends DataObject implements PermissionProvider {
 				$tabAccess = new Tab('Access',
 					$viewersOptionsField = new OptionsetField("CanViewType", _t('SiteConfig.VIEWHEADER', "Who can view pages on this site?")),
 					$viewerGroupsField = ListboxField::create("ViewerGroups", _t('SiteTree.VIEWERGROUPS', "Viewer Groups"))
-						->setMultiple(true)->setSource($groupsMap),
+						->setMultiple(true)
+						->setSource($groupsMap)
+						->setAttribute(
+							'data-placeholder', 
+							_t('SiteTree.GroupPlaceholder', 'Click to select group')
+						),
 					$editorsOptionsField = new OptionsetField("CanEditType", _t('SiteConfig.EDITHEADER', "Who can edit pages on this site?")),
 					$editorGroupsField = ListboxField::create("EditorGroups", _t('SiteTree.EDITORGROUPS', "Editor Groups"))
-						->setMultiple(true)->setSource($groupsMap),
+						->setMultiple(true)
+						->setSource($groupsMap)
+						->setAttribute(
+							'data-placeholder', 
+							_t('SiteTree.GroupPlaceholder', 'Click to select group')
+						),
 					$topLevelCreatorsOptionsField = new OptionsetField("CanCreateTopLevelType", _t('SiteConfig.TOPLEVELCREATE', "Who can create pages in the root of the site?")),
 					$topLevelCreatorsGroupsField = ListboxField::create("CreateTopLevelGroups", _t('SiteTree.TOPLEVELCREATORGROUPS', "Top level creators"))
-						->setMultiple(true)->setSource($groupsMap)
+						->setMultiple(true)
+						->setSource($groupsMap)
+						->setAttribute(
+							'data-placeholder', 
+							_t('SiteTree.GroupPlaceholder', 'Click to select group')
+						)
 				)
 			),
 			new HiddenField('ID')
@@ -117,7 +140,8 @@ class SiteConfig extends DataObject implements PermissionProvider {
 	 */
 	public function getAvailableThemes($baseDir = null) {
 		$themes = SSViewer::get_themes($baseDir);
-		foreach(self::$disabled_themes as $theme) {
+		$disabled = (array)$this->config()->disabled_themes;
+		foreach($disabled as $theme) {
 			if(isset($themes[$theme])) unset($themes[$theme]);
 		}
 		return $themes;

@@ -1,14 +1,21 @@
 <?php
 /**
  * Handle the X-Pjax header that AJAX responses may provide, returning the 
- * fragment, or, in the case of non-AJAX form submissions, redirecting back to the submitter.
+ * fragment, or, in the case of non-AJAX form submissions, redirecting back 
+ * to the submitter.
  *
- * X-Pjax ensures that users won't end up seeing the unstyled form HTML in their browser
- * If a JS error prevents the Ajax overriding of form submissions from happening. 
+ * X-Pjax ensures that users won't end up seeing the unstyled form HTML in 
+ * their browser.
+ *
+ * If a JS error prevents the Ajax overriding of form submissions from happening.
+ *
  * It also provides better non-JS operation.
  * 
  * Caution: This API is volatile, and might eventually be replaced by a generic
  * action helper system for controllers.
+ *
+ * @package framework 
+ * @subpackage control
  */
 class PjaxResponseNegotiator {
 
@@ -79,7 +86,8 @@ class PjaxResponseNegotiator {
 		// Execute the fragment callbacks and build the response.
 		foreach($fragments as $fragment) {
 			if(isset($callbacks[$fragment])) {
-				$responseParts[$fragment] = call_user_func($callbacks[$fragment]);
+				$res = call_user_func($callbacks[$fragment]);
+				$responseParts[$fragment] = $res ? (string)$res : $res;
 			} else {
 				throw new SS_HTTPResponse_Exception("X-Pjax = '$fragment' not supported for this URL.", 400);
 			}

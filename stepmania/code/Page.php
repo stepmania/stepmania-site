@@ -7,7 +7,7 @@ class Page extends SiteTree {
 
 		return $fields;
 	}
-	static $db = array(
+	private static $db = array(
 		"BannerContent" => "HTMLText"
 	);
 }
@@ -28,7 +28,7 @@ class Page_Controller extends ContentController {
 	 *
 	 * @var array
 	 */
-	public static $allowed_actions = array (
+	private static $allowed_actions = array (
 	);
 
 	public function init() {

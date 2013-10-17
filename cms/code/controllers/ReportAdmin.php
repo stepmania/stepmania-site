@@ -13,17 +13,15 @@
  */
 class ReportAdmin extends LeftAndMain implements PermissionProvider {
 	
-	static $url_segment = 'reports';
+	private static $url_segment = 'reports';
 	
-	static $url_rule = '/$ReportClass/$Action';
+	private static $url_rule = '/$ReportClass/$Action';
 	
-	static $menu_title = 'Reports';	
+	private static $menu_title = 'Reports';	
 	
-	static $template_path = null; // defaults to (project)/templates/email
-	
-	static $tree_class = 'SS_Report';
+	private static $tree_class = 'SS_Report';
 
-	public static $url_handlers = array(
+	private static $url_handlers = array(
 		'$ReportClass/$Action' => 'handleAction'
 	);
 
@@ -166,14 +164,23 @@ class ReportAdmin extends LeftAndMain implements PermissionProvider {
 				'title' => _t('ReportAdmin.ReportTitle', 'Title'),
 			));
 			$columns->setFieldFormatting(array(
-				'title' => '<a href=\"$Link\" class=\"cms-panel-link\">$value</a>'
+				'title' => function($value, &$item) {
+					return sprintf(
+						'<a href="%s" class="cms-panel-link">%s</a>',
+						Convert::raw2xml($item->Link),
+						Convert::raw2xml($value)
+					);
+				}
 			));
 			$gridField->addExtraClass('all-reports-gridfield');
 			$fields->push($gridField);
 		}
 
 		$actions = new FieldList();
-		$form = new Form($this, "EditForm", $fields, $actions);
+		$form = CMSForm::create( 
+			$this, "EditForm", $fields, $actions
+		)->setHTMLID('Form_EditForm');
+		$form->setResponseNegotiator($this->getResponseNegotiator());
 		$form->addExtraClass('cms-edit-form cms-panel-padded center ' . $this->BaseCSSClasses());
 		$form->loadDataFrom($this->request->getVars());
 

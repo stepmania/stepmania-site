@@ -8,24 +8,27 @@
  */
 class AssetAdmin extends LeftAndMain implements PermissionProvider{
 
-	static $url_segment = 'assets';
+	private static $url_segment = 'assets';
 	
-	static $url_rule = '/$Action/$ID';
+	private static $url_rule = '/$Action/$ID';
 	
-	static $menu_title = 'Files';
+	private static $menu_title = 'Files';
 
-	public static $tree_class = 'Folder';
+	private static $tree_class = 'Folder';
 	
 	/**
+	 * @config
 	 * @see Upload->allowedMaxFileSize
 	 * @var int
 	 */
-	public static $allowed_max_file_size;
+	private static $allowed_max_file_size;
 	
-	public static $allowed_actions = array(
+	private static $allowed_actions = array(
 		'addfolder',
 		'delete',
+		'AddForm',
 		'DeleteItemsForm',
+		'SearchForm',
 		'getsubtree',
 		'movemarked',
 		'removefile',
@@ -120,8 +123,8 @@ JS
 
 		// Category filter
 		if(isset($params['AppCategory'])) {
-			if(isset(File::$app_categories[$params['AppCategory']])) {
-				$exts = File::$app_categories[$params['AppCategory']];
+			if(isset(File::config()->app_categories[$params['AppCategory']])) {
+				$exts = File::config()->app_categories[$params['AppCategory']];
 			} else {
 				$exts = array();
 			}
@@ -146,8 +149,8 @@ JS
 		// File listing
 		$gridFieldConfig = GridFieldConfig::create()->addComponents(
 			new GridFieldToolbarHeader(),
-			new GridFieldFilterHeader(),
 			new GridFieldSortableHeader(),
+			new GridFieldFilterHeader(),			
 			new GridFieldDataColumns(),
 			new GridFieldPaginator(15),
 			new GridFieldEditButton(),
@@ -156,7 +159,7 @@ JS
 			GridFieldLevelup::create($folder->ID)->setLinkSpec('admin/assets/show/%d')
 		);
 
-		$gridField = new GridField('File', $title, $this->getList(), $gridFieldConfig);
+		$gridField = GridField::create('File', $title, $this->getList(), $gridFieldConfig);
 		$columns = $gridField->getConfig()->getComponentByType('GridFieldDataColumns');
 		$columns->setDisplayFields(array(
 			'StripThumbnail' => '',
@@ -227,11 +230,11 @@ JS
 				$tabList = new Tab('ListView', _t('AssetAdmin.ListView', 'List View')),
 				$tabTree = new Tab('TreeView', _t('AssetAdmin.TreeView', 'Tree View'))
 			);
-			$tabList->addExtraClass("content-listview");
-			$tabTree->addExtraClass("content-treeview");
+			$tabList->addExtraClass("content-listview cms-tabset-icon list");
+			$tabTree->addExtraClass("content-treeview cms-tabset-icon tree");
 			if($fields->Count() && $folder->exists()) {
 				$tabs->push($tabDetails = new Tab('DetailsView', _t('AssetAdmin.DetailsView', 'Details')));
-				$tabDetails->addExtraClass("content-galleryview");
+				$tabDetails->addExtraClass("content-galleryview cms-tabset-icon edit");
 				foreach($fields as $field) {
 					$fields->removeByName($field->getName());
 					$tabDetails->push($field);
@@ -259,7 +262,7 @@ JS
 			// TODO Replace with lazy loading on client to avoid performance hit of rendering potentially unused views
 			new LiteralField(
 				'Tree',
-				$treeField->createTag(
+				FormField::create_tag(
 					'div', 
 					array(
 						'class' => 'cms-tree', 
@@ -375,9 +378,9 @@ JS
 
 		$fields = $context->getSearchFields();
 		$actions = new FieldList(
-			FormAction::create('doSearch',  _t('CMSMain_left.ss.APPLY FILTER', 'Apply Filter'))
+			FormAction::create('doSearch',  _t('CMSMain_left_ss.APPLY_FILTER', 'Apply Filter'))
 			->addExtraClass('ss-ui-action-constructive'),
-			Object::create('ResetFormAction', 'clear', _t('CMSMain_left.ss.RESET', 'Reset'))
+			Object::create('ResetFormAction', 'clear', _t('CMSMain_left_ss.RESET', 'Reset'))
 		);
 		
 		$form = new Form($this, 'filter', $fields, $actions);
@@ -393,7 +396,7 @@ JS
 	
 	public function AddForm() {
 		$folder = singleton('Folder');
-		$form = new Form(
+		$form = CMSForm::create( 
 			$this,
 			'AddForm',
 			new FieldList(
@@ -401,11 +404,12 @@ JS
 				new HiddenField('ParentID', false, $this->request->getVar('ParentID'))
 			),
 			new FieldList(
-				FormAction::create('doAdd', _t('AssetAdmin_left.ss.GO','Go'))
+				FormAction::create('doAdd', _t('AssetAdmin_left_ss.GO','Go'))
 					->addExtraClass('ss-ui-action-constructive')->setAttribute('data-icon', 'accept')
 					->setTitle(_t('AssetAdmin.ActionAdd', 'Add folder'))
 			)
-		);
+		)->setHTMLID('Form_AddForm');
+		$form->setResponseNegotiator($this->getResponseNegotiator());
 		$form->setTemplate($this->getTemplatesWithSuffix('_EditForm'));
 		// TODO Can't merge $FormAttributes in template at the moment
 		$form->addExtraClass('add-form cms-add-form cms-edit-form cms-panel-padded center ' . $this->BaseCSSClasses());
@@ -469,7 +473,7 @@ JS
 		$record->write();
 		
 		mkdir($record->FullPath);
-		chmod($record->FullPath, Filesystem::$file_create_mask);
+		chmod($record->FullPath, Filesystem::config()->file_create_mask);
 
 		if($parentRecord) {
 			return $this->redirect(Controller::join_links($this->Link('show'), $parentRecord->ID));
@@ -489,6 +493,7 @@ JS
 				return $folder;
 			}
 		}
+		$this->setCurrentPageID(null);
 		return new Folder();
 	}
 	
@@ -666,7 +671,7 @@ JS
  */
 class AssetAdmin_DeleteBatchAction extends CMSBatchAction {
 	public function getActionTitle() {
-		// _t('AssetAdmin_left.ss.SELECTTODEL','Select the folders that you want to delete and then click the button below')
+		// _t('AssetAdmin_left_ss.SELECTTODEL','Select the folders that you want to delete and then click the button below')
 		return _t('AssetAdmin_DeleteBatchAction.TITLE', 'Delete folders');
 	}
 

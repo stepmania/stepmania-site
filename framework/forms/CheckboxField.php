@@ -40,12 +40,6 @@ class CheckboxField extends FormField {
 		$field->setForm($this->form);
 		return $field;	
 	}
-	
-	public function performDisabledTransformation() {
-		$clone = clone $this;
-		$clone->setDisabled(true);
-		return $clone;
-	}
 
 }
 
@@ -62,7 +56,9 @@ class CheckboxField_Readonly extends ReadonlyField {
 	}
 
 	public function Value() {
-		return Convert::raw2xml($this->value ? _t('CheckboxField.YES', 'Yes') : _t('CheckboxField.NO', 'No'));
+		return Convert::raw2xml($this->value ?
+			_t('CheckboxField.YESANSWER', 'Yes') :
+			_t('CheckboxField.NOANSWER', 'No'));
 	}
 
 }

@@ -4,6 +4,25 @@ jQuery.noConflict();
  * File: LeftAndMain.js
  */
 (function($) {
+
+	var windowWidth, windowHeight;
+	$(window).bind('resize.leftandmain', function(e) {
+		// Entwine's 'fromWindow::onresize' does not trigger on IE8. Use synthetic event.
+		var cb = function() {$('.cms-container').trigger('windowresize');};
+
+		// Workaround to avoid IE8 infinite loops when elements are resized as a result of this event 
+		if($.browser.msie && parseInt($.browser.version, 10) < 9) {
+			var newWindowWidth = $(window).width(), newWindowHeight = $(window).height();
+			if(newWindowWidth != windowWidth || newWindowHeight != windowHeight) {
+				windowWidth = newWindowWidth;
+				windowHeight = newWindowHeight;
+				cb();
+			}
+		} else {
+			cb();
+		}
+	});
+
 	// setup jquery.entwine
 	$.entwine.warningLevel = $.entwine.WARN_LEVEL_BESTPRACTISE;
 	$.entwine('ss', function($) {
@@ -27,7 +46,7 @@ jQuery.noConflict();
 					disable_search_threshold: 20
 				});
 
-				var title = el.prop('title')
+				var title = el.prop('title');
 
 				if(title) {
 					el.siblings('.chzn-container').prop('title', title);
@@ -85,8 +104,7 @@ jQuery.noConflict();
 				statusMessage(decodeURIComponent(msg), msgType);
 			}
 		});
-		
-		
+
 		/**
 		 * Main LeftAndMain interface with some control panel and an edit form.
 		 * 
@@ -102,16 +120,27 @@ jQuery.noConflict();
 			StateChangeCount: 0,
 			
 			/**
+			 * Options for the threeColumnCompressor layout algorithm.
+			 *
+			 * See LeftAndMain.Layout.js for description of these options.
+			 */
+			LayoutOptions: {
+				minContentWidth: 820,
+				minPreviewWidth: 400,
+				mode: 'content'
+			},
+
+			/**
 			 * Constructor: onmatch
 			 */
 			onadd: function() {
 				var self = this;
 
 				// Browser detection
-				if($.browser.msie && parseInt($.browser.version, 10) < 7) {
+				if($.browser.msie && parseInt($.browser.version, 10) < 8) {
 					$('.ss-loading-screen').append(
 						'<p class="ss-loading-incompat-warning"><span class="notice">' + 
-						'Your browser is not compatible with the CMS interface. Please use Internet Explorer 7+, Google Chrome 10+ or Mozilla Firefox 3.5+.' +
+						'Your browser is not compatible with the CMS interface. Please use Internet Explorer 8+, Google Chrome or Mozilla Firefox.' +
 						'</span></p>'
 					).css('z-index', $('.ss-loading-screen').css('z-index')+1);
 					$('.loading-animation').remove();
@@ -127,13 +156,17 @@ jQuery.noConflict();
 				$('.ss-loading-screen').hide();
 				$('body').removeClass('loading');
 				$(window).unbind('resize', positionLoadingSpinner);
+				this.restoreTabState();
 				
 				this._super();
 			},
 
 			fromWindow: {
-				onstatechange: function(){ this.handleStateChange(); },
-				onresize: function(){ this.redraw(); }
+				onstatechange: function(){ this.handleStateChange(); }
+			},
+
+			'onwindowresize': function() {
+				this.redraw();
 			},
 
 			'from .cms-panel': {
@@ -144,19 +177,90 @@ jQuery.noConflict();
 				onaftersubmitform: function(){ this.redraw(); }
 			},
 
+			/**
+			 * Ensure the user can see the requested section - restore the default view.
+			 */
+			'from .cms-menu-list li a': {
+				onclick: function(e) {
+					var href = $(e.target).attr('href');
+					if(e.which > 1 || href == this._tabStateUrl()) return;
+					this.splitViewMode();
+				}
+			},
+
+			/**
+			 * Change the options of the threeColumnCompressor layout, and trigger layouting if needed.
+			 * You can provide any or all options. The remaining options will not be changed.
+			 */
+			updateLayoutOptions: function(newSpec) {
+				var spec = this.getLayoutOptions();
+
+				var dirty = false;
+
+				for (var k in newSpec) {
+					if (spec[k] !== newSpec[k]) {
+						spec[k] = newSpec[k];
+						dirty = true;
+					}
+				}
+
+				if (dirty) this.redraw();
+			},
+
+			/**
+			 * Enable the split view - with content on the left and preview on the right.
+			 */
+			splitViewMode: function() {
+				this.updateLayoutOptions({
+					mode: 'split'
+				});
+			},
+
+			/**
+			 * Content only.
+			 */
+			contentViewMode: function() {
+				this.updateLayoutOptions({
+					mode: 'content'
+				});
+			},
+
+			/**
+			 * Preview only.
+			 */
+			previewMode: function() {
+				this.updateLayoutOptions({
+					mode: 'preview'
+				});
+			},
+
+			RedrawSuppression: false,
+
 			redraw: function() {
+				if (this.getRedrawSuppression()) return;
+
 				if(window.debug) console.log('redraw', this.attr('class'), this.get(0));
 
-				// Move from inner to outer layouts. Some of the elements might not exist.
-				// Not all edit forms are layouted, so qualify by their data value.
+				// Reset the algorithm.
+				this.data('jlayout', jLayout.threeColumnCompressor(
+					{
+						menu: this.children('.cms-menu'),
+						content: this.children('.cms-content'),
+						preview: this.children('.cms-preview')
+					},
+					this.getLayoutOptions()
+				));
 
-				this.layout({resize: false});
-				this.find('.cms-panel-layout').redraw(); 
-				this.find('.cms-content-fields[data-layout-type]').redraw(); 
-				this.find('.cms-edit-form[data-layout-type]').redraw(); 
+				// Trigger layout algorithm once at the top. This also lays out children - we move from outside to
+				// inside, resizing to fit the parent.
+				this.layout();
+
+				// Redraw on all the children that need it
+				this.find('.cms-panel-layout').redraw();
+				this.find('.cms-content-fields[data-layout-type]').redraw();
+				this.find('.cms-edit-form[data-layout-type]').redraw();
 				this.find('.cms-preview').redraw();
 				this.find('.cms-content').redraw();
-				this.layout({resize: false});
 			},
 
 			/**
@@ -243,7 +347,8 @@ jQuery.noConflict();
 				$(button).addClass('loading');
 	
 				// validate if required
-				if(!form.validate()) {
+				var validationResult = form.validate();
+				if(typeof validationResult!=='undefined' && !validationResult) {
 					// TODO Automatically switch to the tab/position of the first error
 					statusMessage("Validation failed.", "bad");
 
@@ -350,12 +455,13 @@ jQuery.noConflict();
 					headers: headers,
 					url: state.url,
 					complete: function() {
+						self.setCurrentXHR(null);
 						// Remove loading indication from old content els (regardless of which are replaced)
 						contentEls.removeClass('loading');
 					},
 					success: function(data, status, xhr) {
-						var els = self.handleAjaxResponse(data, status, xhr);
-						self.trigger('afterstatechange', {data: data, status: status, xhr: xhr, element: els});
+						var els = self.handleAjaxResponse(data, status, xhr, state);
+						self.trigger('afterstatechange', {data: data, status: status, xhr: xhr, element: els, state: state});
 					}
 				});
 				
@@ -366,13 +472,20 @@ jQuery.noConflict();
 			 * Handles ajax responses containing plain HTML, or mulitple
 			 * PJAX fragments wrapped in JSON (see PjaxResponseNegotiator PHP class).
 			 * Can be hooked into an ajax 'success' callback.
+			 *
+			 * Parameters:
+			 * 	(Object) data
+			 * 	(String) status
+			 * 	(XMLHTTPRequest) xhr
+			 * 	(Object) state The original history state which the request was initiated with
 			 */
-			handleAjaxResponse: function(data, status, xhr) {
-				var self = this, url, activeTabs, guessFragment;
+			handleAjaxResponse: function(data, status, xhr, state) {
+				var self = this, url, selectedTabs, guessFragment;
 
 				// Support a full reload
 				if(xhr.getResponseHeader('X-Reload') && xhr.getResponseHeader('X-ControllerURL')) {
-					document.location.href = xhr.getResponseHeader('X-ControllerURL');
+					document.location.href = $('base').attr('href').replace(/\/*$/, '') 
+						+ '/' + xhr.getResponseHeader('X-ControllerURL');
 					return;
 				}
 
@@ -382,7 +495,7 @@ jQuery.noConflict();
 
 				// Update title
 				var title = xhr.getResponseHeader('X-Title');
-				if(title) document.title = title;
+				if(title) document.title = decodeURIComponent(title.replace(/\+/g, ' '));
 
 				var newFragments = {}, newContentEls;
 				// If content type is text/json (ignoring charset and other parameters)
@@ -400,59 +513,68 @@ jQuery.noConflict();
 					newFragments[guessFragment] = $data;
 				}
 
-				// Replace each fragment individually
-				$.each(newFragments, function(newFragment, html) {
-					var contentEl = $('[data-pjax-fragment]').filter(function() {
-						return $.inArray(newFragment, $(this).data('pjaxFragment').split(' ')) != -1;
-					}), newContentEl = $(html);
+				this.setRedrawSuppression(true);
+				try {
+					// Replace each fragment individually
+					$.each(newFragments, function(newFragment, html) {
+						var contentEl = $('[data-pjax-fragment]').filter(function() {
+							return $.inArray(newFragment, $(this).data('pjaxFragment').split(' ')) != -1;
+						}), newContentEl = $(html);
 
-					// Add to result collection
-					if(newContentEls) newContentEls.add(newContentEl);
-					else newContentEls = newContentEl;
-					
-					// Update panels
-					if(newContentEl.find('.cms-container').length) {
-						throw 'Content loaded via ajax is not allowed to contain tags matching the ".cms-container" selector to avoid infinite loops';
-					}
-					
-					// Set loading state and store element state
-					var origStyle = contentEl.attr('style');
-					var origVisible = contentEl.is(':visible');
-					var layoutClasses = ['east', 'west', 'center', 'north', 'south'];
-					var elemClasses = contentEl.attr('class');
-					var origLayoutClasses = [];
-					if(elemClasses) {
-						origLayoutClasses = $.grep(
-							elemClasses.split(' '),
-							function(val) { return ($.inArray(val, layoutClasses) >= 0);}
-						);
-					}
-					
-					newContentEl
-						.removeClass(layoutClasses.join(' '))
-						.addClass(origLayoutClasses.join(' '));
-					if(origStyle) newContentEl.attr('style', origStyle);
-					newContentEl.css('visibility', 'hidden');
+						// Add to result collection
+						if(newContentEls) newContentEls.add(newContentEl);
+						else newContentEls = newContentEl;
 
-					// Allow injection of inline styles, as they're not allowed in the document body.
-					// Not handling this through jQuery.ondemand to avoid parsing the DOM twice.
-					var styles = newContentEl.find('style').detach();
-					if(styles.length) $(document).find('head').append(styles);
+						// Update panels
+						if(newContentEl.find('.cms-container').length) {
+							throw 'Content loaded via ajax is not allowed to contain tags matching the ".cms-container" selector to avoid infinite loops';
+						}
 
-					// Replace panel completely (we need to override the "layout" attribute, so can't replace the child instead)
-					contentEl.replaceWith(newContentEl);
+						// Set loading state and store element state
+						var origStyle = contentEl.attr('style');
+						var origParent = contentEl.parent();
+						var origParentLayoutApplied = (typeof origParent.data('jlayout')!=='undefined');
+						var layoutClasses = ['east', 'west', 'center', 'north', 'south', 'column-hidden'];
+						var elemClasses = contentEl.attr('class');
+						var origLayoutClasses = [];
+						if(elemClasses) {
+							origLayoutClasses = $.grep(
+								elemClasses.split(' '),
+								function(val) { return ($.inArray(val, layoutClasses) >= 0);}
+							);
+						}
 
-					// Unset loading and restore element state (to avoid breaking existing panel visibility, e.g. with preview expanded)
-					if(origVisible) newContentEl.css('visibility', 'visible');
-				});
+						newContentEl
+							.removeClass(layoutClasses.join(' '))
+							.addClass(origLayoutClasses.join(' '));
+						if(origStyle) newContentEl.attr('style', origStyle);
 
-				// Re-init tabs (in case the form tag itself is a tabset)
-				var newForm = newContentEls.filter('form');
-				if(newForm.hasClass('cms-tabset')) newForm.removeClass('cms-tabset').addClass('cms-tabset');
+						// Allow injection of inline styles, as they're not allowed in the document body.
+						// Not handling this through jQuery.ondemand to avoid parsing the DOM twice.
+						var styles = newContentEl.find('style').detach();
+						if(styles.length) $(document).find('head').append(styles);
+
+						// Replace panel completely (we need to override the "layout" attribute, so can't replace the child instead)
+						contentEl.replaceWith(newContentEl);
+
+						// Force jlayout to rebuild internal hierarchy to point to the new elements.
+						// This is only necessary for elements that are at least 3 levels deep. 2nd level elements will
+						// be taken care of when we lay out the top level element (.cms-container).
+						if (!origParent.is('.cms-container') && origParentLayoutApplied) {
+							origParent.layout();
+						}
+					});
+
+					// Re-init tabs (in case the form tag itself is a tabset)
+					var newForm = newContentEls.filter('form');
+					if(newForm.hasClass('cms-tabset')) newForm.removeClass('cms-tabset').addClass('cms-tabset');
+				}
+				finally {
+					this.setRedrawSuppression(false);
+				}
 
 				this.redraw();
-
-				this.restoreTabState();
+				this.restoreTabState((state && typeof state.data.tabState !== 'undefined') ? state.data.tabState : null);
 
 				return newContentEls;
 			},
@@ -493,36 +615,73 @@ jQuery.noConflict();
 			 * Requires HTML5 sessionStorage support.
 			 */
 			saveTabState: function() {
-				if(typeof(window.sessionStorage)=="undefined" || window.sessionStorage == null) return;
+				if(typeof(window.sessionStorage)=="undefined" || window.sessionStorage === null) return;
 
-				var activeTabs = [], url = this._tabStateUrl();
+				var selectedTabs = [], url = this._tabStateUrl();
 				this.find('.cms-tabset,.ss-tabset').each(function(i, el) {
 					var id = $(el).attr('id');
 					if(!id) return; // we need a unique reference
 					if(!$(el).data('tabs')) return; // don't act on uninit'ed controls
-					if($(el).data('ignoreTabState')) return; // allow opt-out
-					activeTabs.push({id:id, active:$(el).tabs('option', 'active')});
+
+					// Allow opt-out via data element or entwine property.
+					if($(el).data('ignoreTabState') || $(el).getIgnoreTabState()) return;
+
+					selectedTabs.push({id:id, selected:$(el).tabs('option', 'selected')});
 				});
-				if(activeTabs) window.sessionStorage.setItem('tabs-' + url, JSON.stringify(activeTabs));
+
+				if(selectedTabs) {
+					var tabsUrl = 'tabs-' + url;
+					try {
+						window.sessionStorage.setItem(tabsUrl, JSON.stringify(selectedTabs));
+					} catch(err) {
+						if (err.code === DOMException.QUOTA_EXCEEDED_ERR && window.sessionStorage.length === 0) {
+							// If this fails we ignore the error as the only issue is that it 
+							// does not remember the tab state.
+							// This is a Safari bug which happens when private browsing is enabled.
+							return;
+						} else {
+							throw err;
+						}
+					}
+				}
 			},
 
 			/**
 			 * Re-select previously saved tabs.
 			 * Requires HTML5 sessionStorage support.
+			 *
+			 * Parameters:
+			 * 	(Object) Map of tab container selectors to tab selectors.
+			 * 	Used to mark a specific tab as active regardless of the previously saved options.
 			 */
-			restoreTabState: function() {
-				if(typeof(window.sessionStorage)=="undefined" || window.sessionStorage == null) return;
-
+			restoreTabState: function(overrideStates) {
 				var self = this, url = this._tabStateUrl(),
-					data = window.sessionStorage.getItem('tabs-' + url),
-					activeTabs = data ? JSON.parse(data) : false;
-				if(activeTabs) {
-					$.each(activeTabs, function(i, activeTab) {
-						var el = self.find('#' + activeTab.id);
-						if(!el.data('tabs')) return; // don't act on uninit'ed controls
-						el.tabs('option', 'active', activeTab.active);
+					hasSessionStorage = (typeof(window.sessionStorage)!=="undefined" && window.sessionStorage),
+					sessionData = hasSessionStorage ? window.sessionStorage.getItem('tabs-' + url) : null,
+					sessionStates = sessionData ? JSON.parse(sessionData) : false;
+
+				this.find('.cms-tabset').each(function() {
+					var index, tabset = $(this), tabsetId = tabset.attr('id'), tab,
+						forcedTab = tabset.find('.ss-tabs-force-active');
+
+					if(!tabset.data('tabs')) return; // don't act on uninit'ed controls
+
+					// The tabs may have changed, notify the widget that it should update its internal state.
+					tabset.tabs('refresh');
+
+					// Make sure the intended tab is selected.
+					if(forcedTab.length) {
+						index = forcedTab.index();
+					} else if(overrideStates && overrideStates[tabsetId]) {
+						tab = tabset.find(overrideStates[tabsetId].tabSelector);
+						if(tab.length) index = tab.index();
+					} else if(sessionStates) {
+						$.each(sessionStates, function(i, sessionState) {
+							if(tabset.is('#' + sessionState.id)) index = sessionState.selected;
 					});
 				}
+					if(index !== null) tabset.tabs('select', index);
+				});
 			},
 
 			/**
@@ -538,7 +697,9 @@ jQuery.noConflict();
 				if(url) {
 					s.removeItem('tabs-' + url);	
 				} else {
-					for(var i=0;i<s.length;i++) s.removeItem(s.key(i));
+					for(var i=0;i<s.length;i++) {
+						if(s.key(i).match(/^tabs-/)) s.removeItem(s.key(i));
+				}
 				}
 			},
 
@@ -633,7 +794,7 @@ jQuery.noConflict();
 						var msg = (xmlhttp.getResponseHeader('X-Status')) ? xmlhttp.getResponseHeader('X-Status') : xmlhttp.responseText;
 						
 						try {
-							if (typeof msg != "undefined" && msg != null) eval(msg);
+							if (typeof msg != "undefined" && msg !== null) eval(msg);
 						}
 						catch(e) {}
 						
@@ -686,12 +847,15 @@ jQuery.noConflict();
 			onmatch: function() {
 				this.find('.ss-ui-button').click(function() {
 						var form = this.form;
+
 						// forms don't natively store the button they've been triggered with
 						if(form) {
 							form.clickedButton = this;
 							// Reset the clicked button shortly after the onsubmit handlers
 							// have fired on the form
-							setTimeout(function() {form.clickedButton = null;}, 10);
+						setTimeout(function() {
+							form.clickedButton = null;
+						}, 10);
 						}
 					});
 
@@ -784,8 +948,6 @@ jQuery.noConflict();
 		$(".cms-panel-layout").entwine({
 			redraw: function() {
 				if(window.debug) console.log('redraw', this.attr('class'), this.get(0));
-
-				this.layout({resize: false});
 			}
 		});
 	
@@ -808,52 +970,46 @@ jQuery.noConflict();
 		 * Generic search form in the CMS, often hooked up to a GridField results display.
 		 */	
 		$('.cms-search-form').entwine({
-
-			onsubmit: function() {
+			onsubmit: function(e) {
 				// Remove empty elements and make the URL prettier
-				var nonEmptyInputs = this.find(':input:not(:submit)').filter(function() {
+				var nonEmptyInputs,
+					url;
+
+				nonEmptyInputs = this.find(':input:not(:submit)').filter(function() {
 					// Use fieldValue() from jQuery.form plugin rather than jQuery.val(),
 					// as it handles checkbox values more consistently
 					var vals = $.grep($(this).fieldValue(), function(val) { return (val);});
 					return (vals.length);
 				});
-				var url = this.attr('action');
-				if(nonEmptyInputs.length) url = $.path.addSearchParams(url, nonEmptyInputs.serialize());
+
+				url = this.attr('action');
+
+				if(nonEmptyInputs.length) {
+					url = $.path.addSearchParams(url, nonEmptyInputs.serialize());
+				}
 
 				var container = this.closest('.cms-container');
 				container.find('.cms-edit-form').tabs('select',0);  //always switch to the first tab (list view) when searching
-				container.loadPanel(url);
+				container.loadPanel(url, "", {}, true);
+
 				return false;
-			},
-
-			/**
-			 * Resets are processed on the serverside, so need to trigger a submit.
-			 */
-			onreset: function(e) {
-				this.clearForm();
-				this.submit();
 			}
-
 		});
 
 		/**
-		 * Simple toggle link, which points to a DOm element by its ID selector
-		 * in the href attribute (which doubles as an anchor link to that element).
+		 * Reset button handler. IE8 does not bubble reset events to
 		 */
-		$('.cms .cms-help-toggle').entwine({
-			onmatch: function() {
-				this._super();
-
-				$(this.attr('href')).hide();
-			},
-			onunmatch: function() {
-				this._super();
-			},
+		$(".cms-search-form button[type=reset], .cms-search-form input[type=reset]").entwine({
 			onclick: function(e) {
-				$(this.attr('href')).toggle();
 				e.preventDefault();
-			}
-		});
+
+				var form = $(this).parents('form');
+
+				form.clearForm();
+				form.find(".dropdown select").prop('selectedIndex', 0).trigger("liszt:updated"); // Reset chosen.js
+				form.submit();
+				}
+		})
 
 		/**
 		 * Allows to lazy load a panel, by leaving it empty
@@ -918,7 +1074,7 @@ jQuery.noConflict();
 				this._super();
 			},
 			onremove: function() {
-				this.tabs('destroy');
+				if (this.data('tabs')) this.tabs('destroy');
 				this._super();
 			},
 			redrawTabs: function() {
@@ -934,9 +1090,15 @@ jQuery.noConflict();
 						return false;
 					},
 					activate: function(e, ui) {
+						// Accessibility: Simulate click to trigger panel load when tab is focused
+						// by a keyboard navigation event rather than a click
+						if(ui.newTab) {
+							ui.newTab.find('.cms-panel-link').click();
+						}
+
 						// Usability: Hide actions for "readonly" tabs (which don't contain any editable fields)
 						var actions = $(this).closest('form').find('.Actions');
-						if($(ui.tab).closest('li').hasClass('readonly')) {
+						if($(ui.newTab).closest('li').hasClass('readonly')) {
 							actions.fadeOut();
 						} else {
 							actions.show();

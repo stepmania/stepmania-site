@@ -11,9 +11,10 @@ class RootURLController extends Controller {
 	protected static $is_at_root = false;
 	
 	/**
+	 * @config
 	 * @var string
 	 */
-	protected static $default_homepage_link = 'home';
+	private static $default_homepage_link = 'home';
 	
 	/**
 	 * @var string
@@ -44,12 +45,12 @@ class RootURLController extends Controller {
 				// TODO Move to 'translatable' module
 				if (
 					class_exists('Translatable')
-					&& Object::has_extension('SiteTree', 'Translatable')
+					&& SiteTree::has_extension('Translatable')
 					&& $link = Translatable::get_homepage_link_by_locale(Translatable::get_current_locale())
 				) {
 					self::$cached_homepage_link = $link;
 				} else {
-					self::$cached_homepage_link = self::get_default_homepage_link();
+					self::$cached_homepage_link = Config::inst()->get('RootURLController', 'default_homepage_link');
 				}
 			}
 		}
@@ -61,19 +62,23 @@ class RootURLController extends Controller {
 	 * Set the URL Segment used for your homepage when it is created by dev/build.
 	 * This allows you to use home page URLs other than the default "home".
 	 *
+	 * @deprecated 3.2 Use the "RootURLController.default_homepage_link" config setting instead
 	 * @param string $urlsegment the URL segment for your home page
 	 */
 	static public function set_default_homepage_link($urlsegment = "home") {
-		self::$default_homepage_link = $urlsegment;
+		Deprecation::notice('3.2', 'Use the "RootURLController.default_homepage_link" config setting instead');
+		Config::inst()->update('RootURLController', 'default_homepage_link', $urlsegment);
 	}
 
 	/**
 	 * Gets the link that denotes the homepage if there is not one explicitly defined for this HTTP_HOST value.
 	 *
+	 * @deprecated 3.2 Use the "RootURLController.default_homepage_link" config setting instead
 	 * @return string
 	 */
 	static public function get_default_homepage_link() {
-		return self::$default_homepage_link;
+		Deprecation::notice('3.2', 'Use the "RootURLController.default_homepage_link" config setting instead');
+		return Config::inst()->get('RootURLController', 'default_homepage_link');
 	}
 	
 	/**
@@ -117,12 +122,10 @@ class RootURLController extends Controller {
 			return $this->response;
 		}
 			
-		$request = new SS_HTTPRequest (
-			$request->httpMethod(), self::get_homepage_link() . '/', $request->getVars(), $request->postVars()
-		);
+		$request->setUrl(self::get_homepage_link() . '/');
 		$request->match('$URLSegment//$Action', true);
-		
 		$controller = new ModelAsController();
+
 		$result     = $controller->handleRequest($request, $model);
 		
 		$this->popCurrent();
