@@ -388,7 +388,7 @@ class WikiPage_Controller extends Page_Controller implements PermissionProvider 
 		$existing = $this->getEditingLocks($this->owner, true);
 		// oops, we've somehow got here even though we shouldn't have
 		if ($existing && $existing['user'] != Member::currentUser()->Email) {
-			Director::redirect($this->owner->Link());
+			Director::force_redirect($this->owner->Link());
 			return;
 		}
 
@@ -488,7 +488,7 @@ class WikiPage_Controller extends Page_Controller implements PermissionProvider 
 	 * 
 	 */
 	public function cancel() {
-		Director::redirect($this->owner->Link() . '?stage=Stage');
+		Director::force_redirect($this->owner->Link() . '?stage=Stage');
 	}
 
 	/**
@@ -498,7 +498,7 @@ class WikiPage_Controller extends Page_Controller implements PermissionProvider 
 		if ($this->owner->IsModifiedOnStage) {
 			$this->owner->doRevertToLive();
 		}
-		Director::redirect($this->owner->Link() . '?stage=Live');
+		Director::force_redirect($this->owner->Link() . '?stage=Live');
 	}
 
 	/**
@@ -522,7 +522,7 @@ class WikiPage_Controller extends Page_Controller implements PermissionProvider 
 				$page->deleteFromStage('Stage');
 			}
 
-			Director::redirect($parent->Link());
+			Director::force_redirect($parent->Link());
 			return;
 		}
 
@@ -578,7 +578,7 @@ class WikiPage_Controller extends Page_Controller implements PermissionProvider 
 			$page->doPublish();
 		}
 
-		Director::redirect($page->Link('edit') . '?stage=Stage');
+		Director::force_redirect($page->Link('edit') . '?stage=Stage');
 	}
 
 	/**
@@ -618,7 +618,7 @@ class WikiPage_Controller extends Page_Controller implements PermissionProvider 
 			$this->owner->doPublish();
 		}
 
-		Director::redirect($this->owner->Link('edit') . '?stage=Stage');
+		Director::force_redirect($this->owner->Link('edit') . '?stage=Stage');
 	}
 
 	/**
@@ -634,7 +634,7 @@ class WikiPage_Controller extends Page_Controller implements PermissionProvider 
 		// save stuff then reuse the edit action
 		$this->savePage($this->owner, $form);
 
-		Director::redirect($this->owner->Link() . '?stage=Stage');
+		Director::force_redirect($this->owner->Link() . '?stage=Stage');
 	}
 
 	/**
@@ -655,7 +655,7 @@ class WikiPage_Controller extends Page_Controller implements PermissionProvider 
 		Versioned::reading_stage('Live');
 
 		// and go 
-		Director::redirect($this->owner->Link() . '?stage=Live');
+		Director::force_redirect($this->owner->Link() . '?stage=Live');
 	}
 
 	/**
@@ -792,7 +792,7 @@ class WikiPage_Controller extends Page_Controller implements PermissionProvider 
 	 * 
 	 */
 	public function startediting() {
-		Director::redirect($this->owner->Link('edit') . '?stage=Stage');
+		Director::force_redirect($this->owner->Link('edit') . '?stage=Stage');
 	}
 
 	/**
