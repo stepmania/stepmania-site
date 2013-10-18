@@ -81,17 +81,17 @@
 	display: flex;
 }
 .forum-flex-left {
-	-webkit-flex: 1 0 auto;
-	flex: 1 0 auto;
+	-webkit-flex: 1 0 0;
+	flex: 1 0 0;
 }
 .forum-flex-mid {
-	-webkit-flex: 1 0 auto;
-	flex: 1 0 auto;
+	-webkit-flex: 1 0 0;
+	flex: 1 0 0;
 	max-width: 150px;
 }
 .forum-flex-right {
-	-webkit-flex: 1 0 auto;
-	flex: 1 0 auto;
+	-webkit-flex: 1 0 0;
+	flex: 1 0 0;
 	max-width: 250px;
 }
 .forum-topics {
@@ -230,8 +230,8 @@
 		background: $bottom;
 		border-right: 1px solid darken($bottom, 10%);
 		overflow: hidden;
-		-webkit-flex: 0 0 auto;
-		flex: 0 0 auto;
+		-webkit-flex: 0 0 0;
+		flex: 0 0 0;
 		vertical-align: top;
 		width: 150px;
 		max-width: 150px;
