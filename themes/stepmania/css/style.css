@@ -58,6 +58,9 @@ strong, b {
 em, i {
   font-style: italic; }
 
+code {
+  font-family: monospace; }
+
 body {
   background: #f0d01f;
   font-family: 'Open Sans', sans-serif;
