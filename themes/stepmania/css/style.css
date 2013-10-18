@@ -58,9 +58,6 @@ strong, b {
 em, i {
   font-style: italic; }
 
-code {
-  font-family: monospace; }
-
 body {
   background: #f0d01f;
   font-family: 'Open Sans', sans-serif;
@@ -502,9 +499,25 @@ footer p {
     flex-direction: column; }
     .forum-subforum .subforum-latest, .forum-subforum .topic-latest, .forum-topic .subforum-latest, .forum-topic .topic-latest {
       margin-top: 14px; } }
-.WikiPage-article li {
-  list-style-type: disc;
-  margin-left: 15px; }
+.WikiPage-article {
+  line-height: 1.4em; }
+  .WikiPage-article ol, .WikiPage-article ul {
+    margin-bottom: 1em; }
+    .WikiPage-article ol li, .WikiPage-article ul li {
+      margin-left: 20px; }
+  .WikiPage-article ul li {
+    list-style-type: disc; }
+  .WikiPage-article ol li {
+    list-style-type: decimal; }
+  .WikiPage-article code {
+    font-family: monospace;
+    font-size: 90%;
+    background: #eee;
+    box-shadow: 0 0 0 2px #eee; }
+  .WikiPage-article h1, .WikiPage-article h2, .WikiPage-article h3, .WikiPage-article h4, .WikiPage-article h5, .WikiPage-article h6 {
+    margin-top: 2em; }
+    .WikiPage-article h1:first-child, .WikiPage-article h2:first-child, .WikiPage-article h3:first-child, .WikiPage-article h4:first-child, .WikiPage-article h5:first-child, .WikiPage-article h6:first-child {
+      margin-top: 0; }
 
 .message {
   border-radius: 3px;
