@@ -515,9 +515,20 @@ footer p {
     background: #eee;
     box-shadow: 0 0 0 2px #eee; }
   .WikiPage-article h1, .WikiPage-article h2, .WikiPage-article h3, .WikiPage-article h4, .WikiPage-article h5, .WikiPage-article h6 {
-    margin-top: 2em; }
+    margin-top: 2em;
+    font-weight: bold; }
     .WikiPage-article h1:first-child, .WikiPage-article h2:first-child, .WikiPage-article h3:first-child, .WikiPage-article h4:first-child, .WikiPage-article h5:first-child, .WikiPage-article h6:first-child {
       margin-top: 0; }
+  .WikiPage-article h1 {
+    font-size: 150%; }
+  .WikiPage-article h2 {
+    font-size: 120%; }
+  .WikiPage-article h3 {
+    font-size: 110%; }
+  .WikiPage-article h4 {
+    font-size: 105%; }
+  .WikiPage-article h5, .WikiPage-article h6 {
+    font-size: 100%; }
 
 .message {
   border-radius: 3px;
