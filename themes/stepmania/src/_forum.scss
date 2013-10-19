@@ -344,6 +344,18 @@
 }
 
 @media only screen and (max-width: 480px) {
+	.forum-flex-left {
+		-webkit-flex: 1 0 auto;
+		flex: 1 0 auto;
+	}
+	.forum-flex-mid {
+		-webkit-flex: 1 0 auto;
+		flex: 1 0 auto;
+	}
+	.forum-flex-right {
+		-webkit-flex: 1 0 auto;
+		flex: 1 0 auto;
+	}
 	.post-body {
 		-webkit-flex-direction: column;
 		flex-direction: column;
