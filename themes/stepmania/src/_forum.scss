@@ -367,6 +367,8 @@
 			max-width: none;
 			border: none;
 			position: relative;
+			-webkit-flex: 0 0 auto;
+			flex: 0 0 auto;
 			height: 70px - $spacing * 2;
 			.avatar {
 				float: right;

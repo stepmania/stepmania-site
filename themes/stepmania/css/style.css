@@ -489,6 +489,8 @@ footer p {
       max-width: none;
       border: none;
       position: relative;
+      -webkit-flex: 0 0 auto;
+      flex: 0 0 auto;
       height: 42px; }
       .post-body .user-info .avatar {
         float: right;
