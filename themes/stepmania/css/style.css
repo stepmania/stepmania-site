@@ -387,8 +387,8 @@ footer p {
     background: #f7f4e4;
     border-right: 1px solid #ebe4bd;
     overflow: hidden;
-    -webkit-flex: 0 0 0;
-    flex: 0 0 0;
+    -webkit-flex: 0 0 auto;
+    flex: 0 0 auto;
     vertical-align: top;
     width: 150px;
     max-width: 150px; }
@@ -489,8 +489,6 @@ footer p {
       max-width: none;
       border: none;
       position: relative;
-      -webkit-flex: 0 0 auto;
-      flex: 0 0 auto;
       height: 42px; }
       .post-body .user-info .avatar {
         float: right;

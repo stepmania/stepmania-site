@@ -230,8 +230,8 @@
 		background: $bottom;
 		border-right: 1px solid darken($bottom, 10%);
 		overflow: hidden;
-		-webkit-flex: 0 0 0;
-		flex: 0 0 0;
+		-webkit-flex: 0 0 auto;
+		flex: 0 0 auto;
 		vertical-align: top;
 		width: 150px;
 		max-width: 150px;
@@ -367,8 +367,6 @@
 			max-width: none;
 			border: none;
 			position: relative;
-			-webkit-flex: 0 0 auto;
-			flex: 0 0 auto;
 			height: 70px - $spacing * 2;
 			.avatar {
 				float: right;
