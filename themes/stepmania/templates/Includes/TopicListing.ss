@@ -11,6 +11,14 @@
 			<% end_if %>
 			</div>
 		<% end_if %>
+		<div class="pages">
+			<% if NumPages %>
+			<span class="topic-page-label">Page:</span>
+			<% loop NumPages %>
+			<span class="topic-page"><a href="$Up.Link?start=$Offset">$Page</a><% if not Last %>, <% end_if %></span>
+			<% end_loop %>
+			<% end_if %>
+		</div>
 	</div>
 	<div class="forum-flex-mid topic-stats">
 		<p>Replies: $NumPosts</p>

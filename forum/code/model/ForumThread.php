@@ -139,7 +139,29 @@ class ForumThread extends DataObject {
 	function getNumPosts() {
 		return (int)DB::query("SELECT count(*) FROM \"Post\" WHERE \"ThreadID\" = $this->ID")->value();
 	}
-	
+
+	function getNumPages() {
+		$pages = (int)($this->getNumPosts() / Forum::$posts_per_page + 1);
+
+		// Don't show pages if there's just one.
+		if ($pages == 1) return 0;
+
+		$list = new ArrayList();
+
+		$max_pages = 10;
+		$start = $pages > $max_pages ? $pages - $max_pages : 0;
+		$end = $pages;
+
+		for ($i = $start; $i < $end; $i++) { 
+			$item = new DataObject();
+			$item->Offset = $i * Forum::$posts_per_page;
+			$item->Page = $i + 1;
+			$list->add($item);
+		}
+
+		return $list;
+	}
+
 	/**
 	 * Check if they have visited this thread before. If they haven't increment 
 	 * the NumViews value by 1 and set visited to true.

@@ -325,6 +325,16 @@ footer p {
     font-size: 120%;
     font-weight: 600; }
 
+.forum-topic {
+  overflow: hidden; }
+
+.forum-topic .pages a {
+  display: inline-block;
+  margin-top: 7px;
+  padding: 3.5px;
+  border-radius: 3.5px;
+  font-weight: 600; }
+
 .button a, .page-numbers .current, .page-numbers .label, .button .locked {
   display: inline-block;
   padding: 7px 14px;
