@@ -658,6 +658,21 @@ class WikiPage_Controller extends Page_Controller implements PermissionProvider 
 		$this->redirect($this->owner->Link() . '?stage=Live');
 	}
 
+	public function Title() {
+		$parent = $this->Parent();
+		$title = "";
+
+		while ($parent != "SiteTree")
+		{
+			$title .= $parent->MenuTitle . "/";
+			$parent = $parent->Parent();
+		}
+
+		$title .= $this->Title;
+
+		return $title;
+	}
+
 	/**
 	 * We only want to output content if we're not in edit mode
 	 * at all
