@@ -9,7 +9,7 @@
 <% end_if %>
 $Content
 <% if ShowInCategories %>
-	<% loop Forums %>
+	<% loop Forums.Sort(StackableOrder) %>
 		<div class="subforums">
 			<h4 class="category">$Title</h4>
 			<% loop CategoryForums %>
