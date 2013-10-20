@@ -551,6 +551,21 @@ footer p {
     font-size: 105%; }
   .WikiPage-article h5, .WikiPage-article h6 {
     font-size: 100%; }
+  .WikiPage-article .wiki-meta {
+    border-radius: 3.5px;
+    border: 1px solid #ccc;
+    margin-top: 1em;
+    padding: 14px;
+    background: #eee; }
+    .WikiPage-article .wiki-meta ul {
+      margin-bottom: 0; }
+      .WikiPage-article .wiki-meta ul li {
+        list-style-type: none;
+        margin-left: 0; }
+    .WikiPage-article .wiki-meta h3 {
+      margin-top: 1em; }
+      .WikiPage-article .wiki-meta h3:first-child {
+        margin-top: 0; }
 
 .message {
   border-radius: 3px;
