@@ -551,6 +551,11 @@ footer p {
     font-size: 105%; }
   .WikiPage-article h5, .WikiPage-article h6 {
     font-size: 100%; }
+  .WikiPage-article #Form_EditForm #Content textarea {
+    min-width: 100%;
+    max-width: 100%;
+    min-height: 30em;
+    resize: vertical; }
   .WikiPage-article .wiki-meta {
     border-radius: 3.5px;
     border: 1px solid #ccc;

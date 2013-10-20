@@ -40,6 +40,14 @@
 	h5, h6 {
 		font-size: 100%;
 	}
+	#Form_EditForm {
+		#Content textarea {
+			min-width: 100%;
+			max-width: 100%;
+			min-height: 30em;
+			resize: vertical;
+		}
+	}
 	.wiki-meta {
 		border-radius: $spacing / 4;
 		border: 1px solid #ccc;

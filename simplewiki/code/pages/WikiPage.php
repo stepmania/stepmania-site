@@ -399,7 +399,7 @@ class WikiPage_Controller extends Page_Controller implements PermissionProvider 
 		$this->form = $this->EditForm();
 
 		// check who's editing and whether or not we should bail out
-		return $this->renderWith(array('WikiPage', 'Page'));
+		return $this->renderWith(array('WikiPage_edit', 'WikiPage', 'Page'));
 	}
 
 	/**
@@ -730,7 +730,7 @@ class WikiPage_Controller extends Page_Controller implements PermissionProvider 
 		} else {
 			$fields = new FieldList();
 			$actions = new FieldList(
-							new FormAction('startediting', _t('WikiPage.STARTEDIT', 'Edit Page'))
+				new FormAction('startediting', _t('WikiPage.STARTEDIT', 'Edit Page'))
 			);
 		}
 
