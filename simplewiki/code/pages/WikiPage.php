@@ -664,7 +664,7 @@ class WikiPage_Controller extends Page_Controller implements PermissionProvider 
 
 		while ($parent != "SiteTree")
 		{
-			$title .= $parent->MenuTitle . "/";
+			$title = $parent->MenuTitle . "/" . $title;
 			$parent = $parent->Parent();
 		}
 
