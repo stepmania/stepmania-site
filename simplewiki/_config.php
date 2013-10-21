@@ -28,3 +28,5 @@ WikiPage::register_formatter(new MarkdownFormatter());
 WikiPage::$show_edit_button = true;
 WikiPage::$auto_publish = true;
 WikiPage::$lock_time = 30;
+
+Director::set_environment_type("dev");

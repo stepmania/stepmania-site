@@ -1,4 +1,4 @@
-$ParsedContent
+$Content
 <div class="wiki-meta">
 	<% if Parent %>
 	<h3 class="wiki-parent-label">Parent:</h3>

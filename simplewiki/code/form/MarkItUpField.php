@@ -86,12 +86,12 @@ class MarkItUpField extends TextareaField
 	/**
 	 * @return string
 	 */
-	function Field() {
+	function Field($properties = Array()) {
 		$settings = ucfirst($this->markupType);
+
 		// add JS
 		Requirements::customScript('jQuery().ready(function () { jQuery("#'.$this->id().'").markItUp(my'.$settings.'Settings)});');
 
-		
 		$attributes = array (
 				'class'   => $this->extraClass(),
 				'rows'    => $this->rows,
@@ -105,7 +105,7 @@ class MarkItUpField extends TextareaField
 		}
 
 		$val = str_replace('&amp;#13;', '', htmlentities($this->value, ENT_COMPAT, 'UTF-8'));
-		return $this->createTag (
+		return $this->createTag(
 			'textarea',
 			$attributes,
 			$val

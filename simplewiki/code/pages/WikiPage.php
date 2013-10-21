@@ -313,7 +313,6 @@ class WikiPage extends Page {
 }
 
 class WikiPage_Controller extends Page_Controller implements PermissionProvider {
-
 	static $allowed_actions = array(
 		'linkselector',
 		'edit',
@@ -328,6 +327,7 @@ class WikiPage_Controller extends Page_Controller implements PermissionProvider 
 		'LinkSelectForm',
 		'objectdetails',
 		'CreatePageForm',
+		'CreatePageFormInPlace',
 		'delete',
 		'addpage',
 		'updatelock',
@@ -340,9 +340,27 @@ class WikiPage_Controller extends Page_Controller implements PermissionProvider 
 
 	public function init() {
 		parent::init();
+
 		Requirements::javascript(THIRDPARTY_DIR . '/jquery/jquery.js');
 		Requirements::javascript('simplewiki/javascript/simplewiki.js');
 		Requirements::css('simplewiki/css/simplewiki.css');
+
+		/*
+		if ($other) {
+			$this->form = $this->CreatePageFormInPlace();
+			return $this->renderWith(array("WikiPage", "Page"));
+		}
+		*/
+	}
+
+	public function CreatePageFormInPlace() {
+		$fields = new FieldList(
+			new TextField('NewPageName', _t('WikiPage.NEW_PAGE_NAME', 'New Page Name'))
+		);
+
+		$actions = new FieldList(new FormAction('addpage', _t('WikiPage.ADD_PAGE', 'Create')));
+
+		return new Form($this, 'CreatePageFormInPlace', $fields, $actions);
 	}
 
 	/**
@@ -659,6 +677,9 @@ class WikiPage_Controller extends Page_Controller implements PermissionProvider 
 	}
 
 	public function Title() {
+		if (!is_callable($this->Parent))
+			return $this->Title;
+
 		$parent = $this->Parent();
 		$title = "";
 
