@@ -62,37 +62,7 @@ $Content
 				</span>
 			<% end_if %>
 		</footer>
-	</div><!-- forum-post. -->
-
-
-<!--
-				<div class="news-post forum-post">
-					<div class="user-content">
-						<h2><a href="$Link">$Title</a></h2>
-						<div class="post-type">
-							$Content.Parse(BBCodeParser)
-						</div>
-						<% if Updated %>
-							<p class="post-edited"><% _t('SinglePost_ss.LASTEDITED','Last edited:') %> $Updated.Long <% _t('SinglePost_ss.AT') %> $Updated.Time</p>
-						<% end_if %>
-					</div>
-					<footer>
-						<p class="post-date">Posted $Created.Long at $Created.Time by <a href="$Author.Link">$Author.Nickname</a> with <a class="post-reply-count" href="$Link">$Up.Up.Posts.Count <% if Up.Up.Posts.Count = 1 %>reply<% else %>replies<% end_if %></a>.
-						<span class="quick-reply">
-							<% if Thread.canPost %>
-							$Top.ReplyLink
-							<% end_if %>
-						</span>
-						<% if EditLink || DeleteLink %>
-							<span class="post-modifiers">
-								<% if EditLink %>$EditLink<% end_if %>
-								<% if DeleteLink %>$DeleteLink<% end_if %>
-								<% if MarkAsSpamLink %>$MarkAsSpamLink<% end_if %>
-							</span>
-						<% end_if %>
-						</p>
-					</footer>
-				</div>-->
+	</div>
 			<% end_loop %>
 		<% end_loop %>
 		<% end_if %>

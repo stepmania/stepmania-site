@@ -186,43 +186,21 @@ footer p {
 .HomePage-banner a {
   color: #f0d01f; }
 
-.HomePage-article {
-  /*	.news-post {
-  		margin-bottom: $spacing;
-  		ul {
-  			margin-left: $spacing;
-  			list-style-type: disc;
-  		}
-  		.post-edited {
-  			color: #444;
-  			margin-top: 1em;
-  			font-style: italic;
-  		}
-  		footer {
-  			font-size: 90%;
-  			p {
-  				padding-top: 0;
-  				color: #444;
-  			}
-  			padding: $spacing 0;
-  		}
-  	}
-  	*/ }
-  .HomePage-article h1 {
+.HomePage-article h1 {
+  display: inline-block;
+  font-size: 1.2rem;
+  color: #6e594e;
+  text-shadow: 0 1px 0 #b9a69c;
+  font-weight: 600; }
+.HomePage-article .forum-post {
+  margin-bottom: 1em; }
+  .HomePage-article .forum-post header h2 {
+    margin-bottom: 0; }
+  .HomePage-article .forum-post footer .post-date {
     display: inline-block;
-    font-size: 1.2rem;
-    color: #6e594e;
-    text-shadow: 0 1px 0 #b9a69c;
-    font-weight: 600; }
-  .HomePage-article .forum-post {
-    margin-bottom: 1em; }
-    .HomePage-article .forum-post header h2 {
-      margin-bottom: 0; }
-    .HomePage-article .forum-post footer .post-date {
-      display: inline-block;
-      padding: 14px; }
-    .HomePage-article .forum-post footer .post-modifiers a {
-      margin: 0; }
+    padding: 14px; }
+  .HomePage-article .forum-post footer .post-modifiers a {
+    margin: 0; }
 
 .forum-footer {
   margin-top: 14px; }
