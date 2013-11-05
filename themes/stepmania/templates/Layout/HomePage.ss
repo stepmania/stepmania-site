@@ -4,15 +4,74 @@ $Content
 	<% if NewsForum %>
 	<% with NewsForum %>
 		<% if Topics %>
-			<% loop Topics.Limit(15) %>
-				<% loop Posts(1).Limit(1) %>
-				<div class="news-post">
+		<% loop Topics.Limit(15) %>
+			<% loop Posts(1).Limit(1) %>
+	<div id="post{$ID}" class="forum-post">
+		<header>
+			<h2><a href="$Link">$Title</a></h2>
+		</header>
+		<div class="forum-flex post-body">
+			<div class="user-content">
+				<div class="post-type">
+					$Content.Parse(BBCodeParser)
+				</div>
+
+				<% if Updated %>
+					<p class="post-edited"><% _t('SinglePost_ss.LASTEDITED','Last edited:') %> $Updated.Long <% _t('SinglePost_ss.AT') %> $Updated.Time</p>
+				<% end_if %>
+				
+				<% if Thread.DisplaySignatures %>
+					<% with Author %>
+						<% if Signature %>
+							<div class="signature">
+								<p>$Signature</p>
+							</div>
+						<% end_if %>
+					<% end_with %>
+				<% end_if %>
+
+				<% if Attachments %>
+					<div class="attachments">
+						<strong><% _t('SinglePost_ss.ATTACHED','Attached Files') %></strong> 
+						<ul class="post-attachments">
+						<% loop Attachments %>
+							<li>
+								<a href="$Link"><img src="$Icon"></a>
+								<a href="$Link">$Name</a><br />
+								<% if ClassName = "Image" %>$Width x $Height - <% end_if %>$Size
+							</li>
+						<% end_loop %>
+						</ul>
+					</div>
+				<% end_if %>
+			</div>
+		</div>
+		<footer>
+			<span class="post-date"><a href="$Link" rel="permalink" title="Permalink to this post">Permalink</a> <% if Created.IsToday %>Today<% else %>$Created.Full<% end_if %>, $Created.Time</span>
+			<% if EditLink || DeleteLink %>
+				<span class="post-modifiers">
+					<% if MarkAsSpamLink %>
+						$MarkAsSpamLink
+					<% end_if %>
+					<% if EditLink %>
+						$EditLink
+					<% end_if %>
+					<% if DeleteLink %>
+						$DeleteLink
+					<% end_if %>
+				</span>
+			<% end_if %>
+		</footer>
+	</div><!-- forum-post. -->
+
+
+<!--
+				<div class="news-post forum-post">
 					<div class="user-content">
 						<h2><a href="$Link">$Title</a></h2>
 						<div class="post-type">
 							$Content.Parse(BBCodeParser)
 						</div>
-						<%--<a href="$Link">Read more &raquo;</a>--%>
 						<% if Updated %>
 							<p class="post-edited"><% _t('SinglePost_ss.LASTEDITED','Last edited:') %> $Updated.Long <% _t('SinglePost_ss.AT') %> $Updated.Time</p>
 						<% end_if %>
@@ -33,9 +92,9 @@ $Content
 						<% end_if %>
 						</p>
 					</footer>
-				</div>
-				<% end_loop %>
+				</div>-->
 			<% end_loop %>
+		<% end_loop %>
 		<% end_if %>
 	<% end_with %>
 	<% else %>

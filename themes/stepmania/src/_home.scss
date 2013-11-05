@@ -27,7 +27,22 @@
 		text-shadow: 0 1px 0 lighten($color, 30%);
 		font-weight: 600;
 	}
-	.news-post {
+	.forum-post {
+		margin-bottom: 1em;
+		header h2 {
+			margin-bottom: 0;
+		}
+		footer {
+			.post-date {
+				display: inline-block;
+				padding: $spacing;
+			}
+			.post-modifiers a {
+				margin: 0;
+			}
+		}
+	}
+/*	.news-post {
 		margin-bottom: $spacing;
 		ul {
 			margin-left: $spacing;
@@ -47,4 +62,5 @@
 			padding: $spacing 0;
 		}
 	}
+	*/
 }
