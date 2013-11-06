@@ -166,6 +166,11 @@ class SMBBCodeParser extends TextParser {
 				'#(?<!\w):u:(?!\w)#i' => " <img src='".SMBBCodeParser::smilies_location(). "/arrows/u4.png'> ",
 				'#(?<!\w):r:(?!\w)#i' => " <img src='".SMBBCodeParser::smilies_location(). "/arrows/r4.png'> ",
 
+				'#(?<!\w):l4:(?!\w)#i' => " <img src='".SMBBCodeParser::smilies_location(). "/arrows/l4.png'> ",
+				'#(?<!\w):d4:(?!\w)#i' => " <img src='".SMBBCodeParser::smilies_location(). "/arrows/d4.png'> ",
+				'#(?<!\w):u4:(?!\w)#i' => " <img src='".SMBBCodeParser::smilies_location(). "/arrows/u4.png'> ",
+				'#(?<!\w):r4:(?!\w)#i' => " <img src='".SMBBCodeParser::smilies_location(). "/arrows/r4.png'> ",
+
 				'#(?<!\w):l8:(?!\w)#i' => " <img src='".SMBBCodeParser::smilies_location(). "/arrows/l8.png'> ",
 				'#(?<!\w):d8:(?!\w)#i' => " <img src='".SMBBCodeParser::smilies_location(). "/arrows/d8.png'> ",
 				'#(?<!\w):u8:(?!\w)#i' => " <img src='".SMBBCodeParser::smilies_location(). "/arrows/u8.png'> ",
