@@ -212,9 +212,8 @@
 	background: $secondary;
 	color: $primary;
 }
-.forum-admin-features {
+.forum-admin-features, .forum-quick-reply {
 	margin-top: $spacing;
-	padding-bottom: $spacing / 2;
 	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.25);
 	border-radius: $spacing / 4;
 	h3 {
@@ -226,6 +225,9 @@
 		font-weight: 600;
 		padding: $spacing;
 		margin-bottom: $spacing;
+	}
+	#Form_AdminFormFeatures {
+		padding-bottom: $spacing / 2;
 	}
 	#ForumID {
 		.left {

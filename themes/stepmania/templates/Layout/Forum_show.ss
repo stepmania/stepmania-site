@@ -59,9 +59,13 @@
 		<strong>$ForumThread.NumViews <% _t('Forum_show_ss.VIEWS','Views') %></strong>
 	</div>
 </div>
+<div class="forum-quick-reply" id="reply">
+	<h3>Quick Reply</h3>
+	$PostMessageForm(true)
+</div>
 <% if AdminFormFeatures %>
 <div class="forum-admin-features">
-	<h3>Forum Admin Features</h3>
+	<h3>Forum Admin</h3>
 	$AdminFormFeatures
 </div>
 <% end_if %>

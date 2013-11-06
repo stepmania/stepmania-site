@@ -365,12 +365,11 @@ footer p {
   background: #21201f;
   color: #f0d01f; }
 
-.forum-admin-features {
+.forum-admin-features, .forum-quick-reply {
   margin-top: 14px;
-  padding-bottom: 7px;
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.25);
   border-radius: 3.5px; }
-  .forum-admin-features h3 {
+  .forum-admin-features h3, .forum-quick-reply h3 {
     border-top-left-radius: 3.5px;
     border-top-right-radius: 3.5px;
     background: #21201f;
@@ -379,7 +378,9 @@ footer p {
     font-weight: 600;
     padding: 14px;
     margin-bottom: 14px; }
-  .forum-admin-features #ForumID .left {
+  .forum-admin-features #Form_AdminFormFeatures, .forum-quick-reply #Form_AdminFormFeatures {
+    padding-bottom: 7px; }
+  .forum-admin-features #ForumID .left, .forum-quick-reply #ForumID .left {
     width: auto;
     font-size: 100%; }
 
