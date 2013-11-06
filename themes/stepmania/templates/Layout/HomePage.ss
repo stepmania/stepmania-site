@@ -13,7 +13,7 @@ $Content
 		<div class="forum-flex post-body">
 			<div class="user-content">
 				<div class="post-type">
-					$Content.Parse(BBCodeParser)
+					$Content.Parse(SMBBCodeParser)
 				</div>
 
 				<% if Updated %>

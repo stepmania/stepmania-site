@@ -46,7 +46,7 @@
 			</div>
 		<% end_if %>
 		<div class="post-type">
-			$Content.Parse(BBCodeParser)
+			$Content.Parse(SMBBCodeParser)
 		</div>
 		
 		<% if Thread.DisplaySignatures %>
