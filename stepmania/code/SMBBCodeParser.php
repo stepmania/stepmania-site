@@ -1,4 +1,21 @@
 <?php
+
+class SSHTMLBBCodeParser_Filter_SMTags extends SSHTMLBBCodeParser
+{
+    var $_definedTags = array(
+		'steps' => array(   'htmlopen'  => 'div class="stepsblock"',
+			'htmlclose' => 'div',
+			'allowed'   => 'all',
+			'attributes'=> array()
+		),
+		'rainbow' => array(   'htmlopen'  => 'span class="rainbow"',
+			'htmlclose' => 'span',
+			'allowed'   => 'all',
+			'attributes'=> array()
+		)
+	);
+}
+
 /**
  * SMBBCode parser object.
  * Use on a text field in a template with $Content.Parse(SMBBCodeParser).
@@ -88,11 +105,16 @@ class SMBBCodeParser extends TextParser {
 				new ArrayData(array(
 					"Title" => _t('SMBBCodeParser.ALIGNEMENT', 'Alignment'),
 					"Example" => '[align=right]'._t('SMBBCodeParser.ALIGNEMENTEXAMPLE', 'right aligned').'[/align]'
-				)),	
+				)),
 				new ArrayData(array(
 					"Title" => _t('SMBBCodeParser.CODE', 'Code Block'),
 					"Description" => _t('SMBBCodeParser.CODEDESCRIPTION', 'Unformatted code block'),
 					"Example" => '[code]'._t('SMBBCodeParser.CODEEXAMPLE', 'Code block').'[/code]'
+				)),
+				new ArrayData(array(
+					"Title" => _t('SMBBCodeParser.STEPS', 'Steps Block'),
+					"Description" => _t('SMBBCodeParser.STEPSDESCRIPTION', 'Steps block'),
+					"Example" => '[steps]:l: :d: :u: :r:[/steps]'
 				)),
 				new ArrayData(array(
 					"Title" => _t('SMBBCodeParser.EMAILLINK', 'Email link'),
@@ -123,7 +145,7 @@ class SMBBCodeParser extends TextParser {
 					"Title" => _t('SMBBCodeParser.LINK', 'Website link'),
 					"Description" => _t('SMBBCodeParser.LINKDESCRIPTION', 'Link to another website or URL'),
 					"Example" => "[url=http://www.website.com/]Website[/url]"
-				))		
+				))
 			)
 		);
 	}
@@ -146,6 +168,12 @@ class SMBBCodeParser extends TextParser {
 		$this->content = str_replace(array('&', '<', '>'), array('&amp;', '&lt;', '&gt;'), $this->content);
 
 		$p = new SSHTMLBBCodeParser();
+		$FilterName = "SMTags_Filter";
+		$p->_filters[$FilterName] = new SSHTMLBBCodeParser_Filter_SMTags();
+		$p->_definedTags = array_merge(
+			$p->_definedTags,
+			$p->_filters[$FilterName]->_definedTags
+		);
 		$this->content = $p->qparse($this->content);
 		unset($p);
 

@@ -108,6 +108,9 @@
 		margin: $spacing;
 	}
 }
+.stepsblock {
+	line-height: 0;
+}
 .forum-header {
 	margin-bottom: $spacing;
 	&.forum-header-toplevel {

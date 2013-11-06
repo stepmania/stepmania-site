@@ -286,6 +286,9 @@ footer p {
   .forum-topics .message {
     margin: 14px; }
 
+.stepsblock {
+  line-height: 0; }
+
 .forum-header {
   margin-bottom: 14px; }
   .forum-header.forum-header-toplevel {
