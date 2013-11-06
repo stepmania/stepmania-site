@@ -1,6 +1,7 @@
-<div class="forum-header">
+<div class="forum-header<% if Parent.ID = 0 %> forum-header-toplevel<% end_if %>">
+	<% if Parent.ID != 0 %>
 	<p class="forum-breadcrumbs">$Breadcrumbs</p>
-	<!--<p class="forum-abstract">$ForumHolder.HolderAbstract</p>-->
+	<% end_if %>
 	<% if Moderators %>
 		<p>
 			Moderators: 

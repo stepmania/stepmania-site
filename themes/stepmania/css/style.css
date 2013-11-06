@@ -288,6 +288,8 @@ footer p {
 
 .forum-header {
   margin-bottom: 14px; }
+  .forum-header.forum-header-toplevel {
+    margin-bottom: 0; }
 
 .topic-footer {
   margin-top: 14px; }

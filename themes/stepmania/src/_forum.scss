@@ -110,6 +110,9 @@
 }
 .forum-header {
 	margin-bottom: $spacing;
+	&.forum-header-toplevel {
+		margin-bottom: 0;
+	}
 }
 .topic-footer {
 	margin-top: $spacing;
