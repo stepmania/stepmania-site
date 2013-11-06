@@ -216,7 +216,11 @@ footer p {
 .user-profile .left {
   display: inline-block;
   width: 164px;
-  float: left; }
+  float: left;
+  clear: left;
+  padding: 3.5px 0; }
+.user-profile p {
+  padding: 3.5px 0; }
 .user-profile .middleColumn {
   display: inline-block;
   float: left; }

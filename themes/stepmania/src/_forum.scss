@@ -15,10 +15,18 @@
 	color: #aaa;
 }
 .user-profile {
+	h2 {
+//		margin-bottom: $spacing;
+	}
 	.left {
 		display: inline-block;
 		width: 150px + $spacing;
 		float: left;
+		clear: left;
+		padding: $spacing/4 0;
+	}
+	p {
+		padding: $spacing/4 0;
 	}
 	.middleColumn {
 		display: inline-block;
