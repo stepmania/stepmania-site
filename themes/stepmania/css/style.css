@@ -430,14 +430,11 @@ footer p {
     .forum-post .user-content .stepsblock {
       line-height: 0;
       overflow: auto;
-      display: inline-block;
-      border: 1px solid #ccc;
-      border-right: none; }
+      display: inline-block; }
       .forum-post .user-content .stepsblock br {
         clear: both; }
       .forum-post .user-content .stepsblock img {
-        float: left;
-        border-right: 1px solid #ccc; }
+        float: left; }
     .forum-post .user-content .codesnippet {
       overflow: auto;
       font-family: monospace;
