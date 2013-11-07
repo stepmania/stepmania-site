@@ -110,6 +110,13 @@
 }
 .stepsblock {
 	line-height: 0;
+	overflow: visible;
+	br {
+		clear: left;
+	}
+	img {
+		float: left;
+	}
 }
 .forum-header {
 	margin-bottom: $spacing;

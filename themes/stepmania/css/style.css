@@ -287,7 +287,12 @@ footer p {
     margin: 14px; }
 
 .stepsblock {
-  line-height: 0; }
+  line-height: 0;
+  overflow: visible; }
+  .stepsblock br {
+    clear: left; }
+  .stepsblock img {
+    float: left; }
 
 .forum-header {
   margin-bottom: 14px; }
