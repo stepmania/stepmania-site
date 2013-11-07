@@ -47,7 +47,7 @@ $Content
 			</div>
 		</div>
 		<footer>
-			<span class="post-date"><a href="$Link" rel="permalink" title="Permalink to this post">Permalink</a> <% if Created.IsToday %>Today<% else %>$Created.Full<% end_if %>, $Created.Time</span>
+			<span class="post-date">Posted <% if Created.IsToday %>Today<% else %>$Created.Full<% end_if %>, $Created.Time by <a href="$Author.Link">$Author.Nickname</a></span>
 			<% if EditLink || DeleteLink %>
 				<span class="post-modifiers">
 					<% if MarkAsSpamLink %>

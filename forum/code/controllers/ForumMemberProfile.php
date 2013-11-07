@@ -75,11 +75,12 @@ class ForumMemberProfile extends Page_Controller {
  	function LatestPosts() {
 		return Post::get()
 			->filter('AuthorID', (int)$this->urlParams['ID'])
-			->limit(0,10)
+			->sort("Created", "DESC")
+ 			->limit(5)
 			->filterByCallback(function($post){
 				return $post->canView();
 			});
- 	}
+	}
 
 
 	/**
