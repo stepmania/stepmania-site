@@ -12,6 +12,16 @@ class SSHTMLBBCodeParser_Filter_SMTags extends SSHTMLBBCodeParser
 			'htmlclose' => 'span',
 			'allowed'   => 'all',
 			'attributes'=> array()
+		),
+		'small' => array(   'htmlopen'  => 'span class="small"',
+			'htmlclose' => 'span',
+			'allowed'   => 'all',
+			'attributes'=> array()
+		),
+		'large' => array(   'htmlopen'  => 'span class="large"',
+			'htmlclose' => 'span',
+			'allowed'   => 'all',
+			'attributes'=> array()
 		)
 	);
 }

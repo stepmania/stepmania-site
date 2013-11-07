@@ -108,16 +108,6 @@
 		margin: $spacing;
 	}
 }
-.stepsblock {
-	line-height: 0;
-	overflow: auto;
-	br {
-		clear: both;
-	}
-	img {
-		float: left;
-	}
-}
 .forum-header {
 	margin-bottom: $spacing;
 	&.forum-header-toplevel {
@@ -295,9 +285,28 @@
 			margin-left: $spacing * 2;
 			list-style-type: disc;
 		}
+		.small {
+			font-size: 75%;
+		}
+		.large {
+			font-size: 125%;
+		}
+		.stepsblock {
+			line-height: 0;
+			overflow: auto;
+			display: inline-block;
+			border: 1px solid #ccc;
+			border-right: none;
+			br {
+				clear: both;
+			}
+			img {
+				float: left;
+				border-right: 1px solid #ccc;
+			}
+		}
 		.codesnippet {
 			overflow: auto;
-//			margin-bottom: $spacing;
 			font-family: monospace;
 			white-space: pre;
 			br { display: none; }

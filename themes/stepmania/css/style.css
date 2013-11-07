@@ -286,14 +286,6 @@ footer p {
   .forum-topics .message {
     margin: 14px; }
 
-.stepsblock {
-  line-height: 0;
-  overflow: auto; }
-  .stepsblock br {
-    clear: both; }
-  .stepsblock img {
-    float: left; }
-
 .forum-header {
   margin-bottom: 14px; }
   .forum-header.forum-header-toplevel {
@@ -431,6 +423,21 @@ footer p {
       margin-top: -1em;
       margin-left: 28px;
       list-style-type: disc; }
+    .forum-post .user-content .small {
+      font-size: 75%; }
+    .forum-post .user-content .large {
+      font-size: 125%; }
+    .forum-post .user-content .stepsblock {
+      line-height: 0;
+      overflow: auto;
+      display: inline-block;
+      border: 1px solid #ccc;
+      border-right: none; }
+      .forum-post .user-content .stepsblock br {
+        clear: both; }
+      .forum-post .user-content .stepsblock img {
+        float: left;
+        border-right: 1px solid #ccc; }
     .forum-post .user-content .codesnippet {
       overflow: auto;
       font-family: monospace;
