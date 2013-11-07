@@ -288,9 +288,9 @@ footer p {
 
 .stepsblock {
   line-height: 0;
-  overflow: visible; }
+  overflow: auto; }
   .stepsblock br {
-    clear: left; }
+    clear: both; }
   .stepsblock img {
     float: left; }
 

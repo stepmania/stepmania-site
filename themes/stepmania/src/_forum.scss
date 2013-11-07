@@ -110,9 +110,9 @@
 }
 .stepsblock {
 	line-height: 0;
-	overflow: visible;
+	overflow: auto;
 	br {
-		clear: left;
+		clear: both;
 	}
 	img {
 		float: left;
