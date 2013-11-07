@@ -1,7 +1,7 @@
 <% include ForumHeader %>
 	<% loop Member %>
 		<div class="user-profile">
-			<h2><% if Nickname %>$Nickname<% else %>Anon<% end_if %>&#39;s <% _t('ForumMemberProfile_show_ss.PROFILE','Profile') %></h2>
+			<h2>User Information</h2>
 			<% if isSuspended %>
 				<div class="message warning suspensionWarning">
 					<p>This user has been canned.</p>
