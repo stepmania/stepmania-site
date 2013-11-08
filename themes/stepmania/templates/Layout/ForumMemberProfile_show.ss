@@ -1,8 +1,10 @@
 <% include ForumHeader %>
+	<% if Member.ID = CurrentMember.ID %>
 	<div id="UserNavigation">
 		<div class="button float-left"><a href="{$Link}edit">Edit Profile</a></div>
 		<div class="button float-left"><a href="{$Link}subscriptions">Manage Subscriptions</a></div>
 	</div>
+	<% end_if %>
 	<% loop Member %>
 		<div class="user-profile">
 			<h2>User Information</h2>
