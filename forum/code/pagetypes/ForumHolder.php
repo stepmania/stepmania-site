@@ -23,6 +23,7 @@ class ForumHolder extends Page {
 		"ShowInCategories" => "Boolean",
 		"AllowGravatars" => "Boolean",
 		"ForbiddenWords" => "Text",
+		"AdminEmail" => "Varchar(200)",
 		"CanPostType" => "Enum('Anyone, LoggedInUsers, OnlyTheseUsers, NoOne', 'LoggedInUsers')",
 	);
 	
@@ -43,6 +44,7 @@ class ForumHolder extends Page {
 		"ForumAbstract" => "<p>From here you can start a new topic.</p>",
 		"ProfileModify" => "<p>Thanks, your member profile has been modified.</p>",
 		"ProfileAdd" => "<p>Thanks, you are now signed up to the forum.</p>",
+		"AdminEmail" => "noreply@your.website"
 	);
 	
 	/**
@@ -86,7 +88,8 @@ class ForumHolder extends Page {
 		$fields->addFieldsToTab("Root.Settings", array(
 			new CheckboxField("DisplaySignatures", "Display Member Signatures?"),
 			new CheckboxField("ShowInCategories", "Show Forums In Categories?"),
-			new CheckboxField("AllowGravatars", "Allow <a href='http://www.gravatar.com/' target='_blank'>Gravatars</a>?")
+			new CheckboxField("AllowGravatars", "Allow <a href='http://www.gravatar.com/' target='_blank'>Gravatars</a>?"),
+			new EmailField("AdminEmail", "Admin email address (for notifications).")
 		));
 		$fields->addFieldsToTab("Root.LanguageFilter", array(
 			new TextField("ForbiddenWords", "Forbidden words (comma separated)"),

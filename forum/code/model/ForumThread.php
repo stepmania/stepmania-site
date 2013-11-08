@@ -322,7 +322,8 @@ class ForumThread_Subscription extends DataObject {
 				
 				if($member) {
 					$email = new Email();
-					$email->setFrom(Email::getAdminEmail());
+					$forumHolder = ForumHolder::get()->first();
+					$email->setFrom($forumHolder->AdminEmail);
 					$email->setTo($member->Email);
 					$email->setSubject('New reply for ' . $post->Title);
 					$email->setTemplate('ForumMember_TopicNotification');
