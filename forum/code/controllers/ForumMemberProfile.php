@@ -9,6 +9,7 @@ class ForumMemberProfile extends Page_Controller {
 	public static $allowed_actions = array(
 		'show',
 		'register',
+		'subscriptions',
 		'RegistrationForm',
 		'registerwithopenid',
 		'RegistrationWithOpenIDForm',
@@ -62,6 +63,10 @@ class ForumMemberProfile extends Page_Controller {
 		parent::init();
  	}
 
+ 	function index($request) {
+ 		return $this->redirect($this->Link() . "show/" . $this->Member()->ID);
+ 	}
+
 	function show($request) {
 		$member = $this->Member();
 		if(!$member) return $this->httpError(404);
@@ -82,6 +87,15 @@ class ForumMemberProfile extends Page_Controller {
 			});
 	}
 
+	function SubscribedThreadsForUser($id) {
+		return DataObject::get("ForumThread_Subscription", "MemberID = '$id'");
+	}
+
+	function subscriptions() {
+		$this->Title = "Subscribed threads";
+		$this->SubscribedThreads = $this->SubscribedThreadsForUser(Member::currentUser()->ID);
+		return $this->renderWith(array('ForumMemberProfile_subscriptions', 'Page'));
+	}
 
 	/**
 	 * Show the registration form

@@ -239,6 +239,15 @@
 		}
 	}
 }
+#UserNavigation {
+	overflow: auto;
+	.button {
+		margin-bottom: $spacing;
+	}
+	.float-left {
+		margin-right: $spacing;
+	}
+}
 .forum-profile-post {
 	margin-bottom: $spacing / 3;
 	vertical-align: top;

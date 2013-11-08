@@ -386,6 +386,13 @@ footer p {
     width: auto;
     font-size: 100%; }
 
+#UserNavigation {
+  overflow: auto; }
+  #UserNavigation .button {
+    margin-bottom: 14px; }
+  #UserNavigation .float-left {
+    margin-right: 14px; }
+
 .forum-profile-post {
   margin-bottom: 4.66667px;
   vertical-align: top;

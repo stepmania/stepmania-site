@@ -1,4 +1,8 @@
 <% include ForumHeader %>
+	<div id="UserNavigation">
+		<div class="button float-left"><a href="{$Link}edit">Edit Profile</a></div>
+		<div class="button float-left"><a href="{$Link}subscriptions">Manage Subscriptions</a></div>
+	</div>
 	<% loop Member %>
 		<div class="user-profile">
 			<h2>User Information</h2>
