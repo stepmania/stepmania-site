@@ -209,8 +209,8 @@ en:
     BY: by
     HI: 'Hi %s,'
     NEWPOSTMESSAGE: 'A new post has been added to a topic you''ve subscribed to'
-    REPLYLINK: 'View the topic'
-    UNSUBSCRIBETEXT: 'Unsubscribe from the topic'
+    REPLYLINK: 'View this topic'
+    UNSUBSCRIBETEXT: 'Unsubscribe from this topic'
   ForumRole:
     ADMIN: Administrator
     ANONYMOUS: 'Anonymous user'
