@@ -245,6 +245,14 @@ class SMBBCodeParser extends TextParser {
 				'#(?<!\w):ms:(?!\w)#i' => " <img src='".SMBBCodeParser::smilies_location(). "/arrows/ms.png'> ",
 				'#(?<!\w):mr:(?!\w)#i' => " <img src='".SMBBCodeParser::smilies_location(). "/arrows/mr.png'> ",
 
+				// pump buttons
+				'#(?<!\w):pc:(?!\w)#i' => " <img src='".SMBBCodeParser::smilies_location(). "/arrows/pc.png'> ",
+				'#(?<!\w):ul:(?!\w)#i' => " <img src='".SMBBCodeParser::smilies_location(). "/arrows/ul.png'> ",
+				'#(?<!\w):ur:(?!\w)#i' => " <img src='".SMBBCodeParser::smilies_location(). "/arrows/ur.png'> ",
+				'#(?<!\w):dl:(?!\w)#i' => " <img src='".SMBBCodeParser::smilies_location(). "/arrows/dl.png'> ",
+				'#(?<!\w):dr:(?!\w)#i' => " <img src='".SMBBCodeParser::smilies_location(). "/arrows/dr.png'> ",
+
+
 				/*
 				'#(?<!\w):D(?!\w)#i'         => " <img src='".SMBBCodeParser::smilies_location(). "/grin.gif'> ", // :D
 				'#(?<!\w):\)(?!\w)#i'        => " <img src='".SMBBCodeParser::smilies_location(). "/smile.gif'> ", // :)
