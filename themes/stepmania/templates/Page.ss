@@ -37,7 +37,7 @@
 	</footer>
 	<% if CurrentMember %>
 	<%-- Go away! Really! --%>
-	$SilverStripeNavigator
+	<%-- $SilverStripeNavigator --%>
 	<% end_if %>
 </body>
 </html>

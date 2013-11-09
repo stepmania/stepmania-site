@@ -25,9 +25,13 @@ em, i {
 }
 
 body {
-	background: $primary;
 	font-family: 'Open Sans', sans-serif;
 	font-size: 10pt;
+	background: $primary center -700px no-repeat;
+	background-image: -webkit-radial-gradient(rgb(250, 238, 51) 100px, rgb(240, 208, 31) 700px);
+	background-image: -moz-radial-gradient(rgb(250, 238, 51) 100px, rgb(240, 208, 31) 700px);
+	background-image: radial-gradient(rgb(250, 238, 51) 100px, rgb(240, 208, 31) 700px);
+	background-size: 1500px 1500px;
 }
 
 a {

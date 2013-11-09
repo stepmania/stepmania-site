@@ -59,9 +59,13 @@ em, i {
   font-style: italic; }
 
 body {
-  background: #f0d01f;
   font-family: 'Open Sans', sans-serif;
-  font-size: 10pt; }
+  font-size: 10pt;
+  background: #f0d01f center -700px no-repeat;
+  background-image: -webkit-radial-gradient(#faee33 100px, #f0d01f 700px);
+  background-image: -moz-radial-gradient(#faee33 100px, #f0d01f 700px);
+  background-image: radial-gradient(#faee33 100px, #f0d01f 700px);
+  background-size: 1500px 1500px; }
 
 a {
   color: #9d201f;
