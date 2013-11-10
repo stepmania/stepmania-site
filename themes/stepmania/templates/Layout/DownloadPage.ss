@@ -1,6 +1,6 @@
 $Content
-<% if Downloads %>
 <div class="downloads-container forum-flex">
+	<% if Downloads %>
 	<div class="downloads forum-flex-left">
 		<% loop Downloads %>
 		<div class="download">
