@@ -15,9 +15,6 @@
 	color: #aaa;
 }
 .user-profile {
-	h2 {
-//		margin-bottom: $spacing;
-	}
 	.left {
 		display: inline-block;
 		width: 150px + $spacing;
@@ -326,14 +323,11 @@
 			line-height: 0;
 			overflow: auto;
 			display: inline-block;
-//			border: 1px solid #ccc;
-//			border-right: none;
 			br {
 				clear: both;
 			}
 			img {
 				float: left;
-//				border-right: 1px solid #ccc;
 			}
 		}
 		.codesnippet {
@@ -404,9 +398,6 @@
 	.forum-post {
 		.user-info {
 			width: 80px + $spacing * 2;
-			.avatar {
-				//max-width: 100%;
-			}
 		}
 	}
 	.subforum-title, .topic-title {
@@ -417,7 +408,7 @@
 	}
 }
 
-@media only screen and (max-width: 480px) {
+@media only screen and (max-width: 500px) {
 	.forum-flex-left {
 		-webkit-flex: 1 0 auto;
 		flex: 1 0 auto;

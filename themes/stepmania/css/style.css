@@ -206,6 +206,58 @@ footer p {
   .HomePage-article .forum-post footer .post-modifiers a {
     margin: 0; }
 
+.i-cant-afford-new-dance-mats {
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.25);
+  border-radius: 3.5px;
+  background: linear-gradient(#eeeeee, #dddddd);
+  margin-left: 14px; }
+  .i-cant-afford-new-dance-mats h2 {
+    display: block;
+    background: #21201f;
+    border-top-left-radius: 3.5px;
+    border-top-right-radius: 3.5px;
+    color: #f0d01f;
+    padding: 14px; }
+  .i-cant-afford-new-dance-mats .content {
+    padding: 14px;
+    padding-top: 0;
+    line-height: 1.25em; }
+  .i-cant-afford-new-dance-mats ul li {
+    list-style-type: disc;
+    margin-left: 14px;
+    margin-bottom: 7px; }
+  .i-cant-afford-new-dance-mats form {
+    margin-bottom: 7px; }
+
+.downloads .download {
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.25);
+  border-radius: 3.5px;
+  background: linear-gradient(#eeeeee, #dddddd);
+  display: block;
+  margin-bottom: 14px; }
+  .downloads .download h2 a {
+    display: block;
+    background: #21201f;
+    border-top-left-radius: 3.5px;
+    border-top-right-radius: 3.5px;
+    color: #f0d01f;
+    padding: 14px; }
+  .downloads .download:last-child {
+    margin-bottom: 0; }
+  .downloads .download .download-info {
+    padding: 14px;
+    padding-top: 0; }
+
+@media only screen and (max-width: 500px) {
+  .i-cant-afford-new-dance-mats {
+    max-width: none !important;
+    margin-top: 14px;
+    margin-left: 0; }
+
+  .downloads-container {
+    height: auto;
+    -webkit-flex-direction: column;
+    flex-direction: column; } }
 .forum-footer {
   margin-top: 14px; }
 
@@ -516,7 +568,7 @@ footer p {
 
   .subforum-stats, .topic-stats {
     display: none; } }
-@media only screen and (max-width: 480px) {
+@media only screen and (max-width: 500px) {
   .forum-flex-left {
     -webkit-flex: 1 0 auto;
     flex: 1 0 auto; }

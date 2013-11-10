@@ -1,9 +1,9 @@
 <!doctype html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
+	<meta charset="UTF-8" />
 	<title>$Title - $SiteConfig.Title</title>
-	<link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+	<link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
 	<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;" />
 	<% base_tag %>
 	<% require themedCSS(style) %>
@@ -32,8 +32,7 @@
 		<% include ForumLogin %>
 	</div>
 	<footer class="limit-width">
-		<p>StepMania is open source software released under the MIT License</p>
-		<br><br>
+		<p>StepMania is open source software released under the MIT License.</p>
 	</footer>
 	<% if CurrentMember %>
 	<%-- Go away! Really! --%>
