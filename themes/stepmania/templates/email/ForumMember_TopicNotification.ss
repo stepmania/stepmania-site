@@ -2,6 +2,8 @@
 
 <p><% _t('ForumMember_TopicNotification_ss.NEWPOSTMESSAGE',"A new post has been added to a topic you've subscribed to") %> - '$Title' <% if Author %><% _t('BY', "by") %> {$Author.Nickname}.<% end_if %></p>
 
+$Content.Parse(BBCodeParser)
+
 <ul>
 	<li><a href="$Link"><% _t('ForumMember_TopicNotification_ss.REPLYLINK', "View this topic") %></a></li>
 	<li><a href="$UnsubscribeLink"><% _t('ForumMember_TopicNotification_ss.UNSUBSCRIBETEXT',"Unsubscribe from this topic") %></a></li>
