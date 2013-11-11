@@ -207,9 +207,11 @@ footer p {
     margin: 0; }
 
 .i-cant-afford-new-dance-mats {
-  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.25);
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.25);
   border-radius: 3.5px;
-  background: linear-gradient(#eeeeee, #dddddd);
+  background: #efebd2;
+  background: -moz-linear-gradient(top, #f6f3e5, #efebd2 50px);
+  background: -webkit-linear-gradient(top, #f6f3e5, #efebd2 50px);
   margin-left: 14px; }
   .i-cant-afford-new-dance-mats h2 {
     display: block;
@@ -230,9 +232,11 @@ footer p {
     margin-bottom: 7px; }
 
 .downloads .download {
-  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.25);
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.25);
   border-radius: 3.5px;
-  background: linear-gradient(#eeeeee, #dddddd);
+  background: #efebd2;
+  background: -moz-linear-gradient(top, #f6f3e5, #efebd2 50px);
+  background: -webkit-linear-gradient(top, #f6f3e5, #efebd2 50px);
   display: block;
   margin-bottom: 14px; }
   .downloads .download h2 a {

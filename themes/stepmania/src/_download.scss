@@ -20,9 +20,15 @@
 	form {
 		margin-bottom: $spacing / 2;
 	}
-	box-shadow: 0 2px 0 rgba(0, 0, 0, 0.25);
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.25);
 	border-radius: $spacing / 4;
-	background: linear-gradient(#eee, #ddd);
+
+	$top: adjust-color($primary, $lightness: 40, $saturation: -40);
+	$bottom: adjust-color($primary, $lightness: 35, $saturation: -40);
+	background: $bottom;
+	background: -moz-linear-gradient(top, $top, $bottom 50px);
+	background: -webkit-linear-gradient(top, $top, $bottom 50px);
+
 	margin-left: $spacing;
 }
 .downloads {
@@ -44,9 +50,13 @@
 			padding: $spacing;
 			padding-top: 0;
 		}
-		box-shadow: 0 2px 0 rgba(0, 0, 0, 0.25);
+		box-shadow: 0 1px 1px rgba(0, 0, 0, 0.25);
 		border-radius: $spacing / 4;
-		background: linear-gradient(#eee, #ddd);
+		$top: adjust-color($primary, $lightness: 40, $saturation: -40);
+		$bottom: adjust-color($primary, $lightness: 35, $saturation: -40);
+		background: $bottom;
+		background: -moz-linear-gradient(top, $top, $bottom 50px);
+		background: -webkit-linear-gradient(top, $top, $bottom 50px);
 		display: block;
 		margin-bottom: $spacing;
 	}
