@@ -241,11 +241,13 @@ footer p {
   margin-bottom: 14px; }
   .downloads .download h2 a {
     display: block;
-    background: #21201f;
+    background: #21201f url("../images/av_download.png") no-repeat 8px 8px;
     border-top-left-radius: 3.5px;
     border-top-right-radius: 3.5px;
     color: #f0d01f;
-    padding: 14px; }
+    padding: 14px;
+    background-size: 28px 28px;
+    padding-left: 44px; }
   .downloads .download:last-child {
     margin-bottom: 0; }
   .downloads .download .download-info {

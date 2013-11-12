@@ -36,11 +36,13 @@
 		h2 {
 			a {
 				display: block;
-				background: $secondary;
+				background: $secondary url('../images/av_download.png') no-repeat 8px 8px;
 				border-top-left-radius: $spacing / 4;
 				border-top-right-radius: $spacing / 4;
 				color: $primary;
 				padding: $spacing;
+				background-size: 28px 28px;
+				padding-left: $spacing + 30px;
 			}
 		}
 		&:last-child {
