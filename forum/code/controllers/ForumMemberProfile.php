@@ -59,7 +59,8 @@ class ForumMemberProfile extends Page_Controller {
 		
 		//$this->Title = DBField::create('HTMLText',Convert::raw2xml($nicknameText) . _t('ForumMemberProfile.USERPROFILE', 'User Profile'));
 		$this->Title = DBField::create_field('HTMLText', Convert::raw2xml($nicknameText) . _t('ForumMemberProfile.USERPROFILE', 'User Profile'));
-		
+		$this->Parent = DataObject::get_one("ForumHolder");
+
 		parent::init();
  	}
 
@@ -439,7 +440,7 @@ class ForumMemberProfile extends Page_Controller {
 			: "<p class=\"error message\">" . _t('ForumMemberProfile.WRONGPERMISSION','You don\'t have the permission to edit that member.') . "</p>";
 
 		return array(
-			"Title" => "Forum",
+			"Title" => "Edit Profile",
 			"Subtitle" => DataObject::get_one("ForumHolder")->ProfileSubtitle,
 			"Abstract" => DataObject::get_one("ForumHolder")->ProfileAbstract,
 			"Form" => $form,
