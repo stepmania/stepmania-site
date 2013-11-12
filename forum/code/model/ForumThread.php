@@ -141,7 +141,7 @@ class ForumThread extends DataObject {
 	}
 
 	function getNumPages() {
-		$pages = (int)($this->getNumPosts() / Forum::$posts_per_page + 1);
+		$pages = (int)(($this->getNumPosts() - 1) / Forum::$posts_per_page + 1);
 
 		// Don't show pages if there's just one.
 		if ($pages == 1) return 0;
