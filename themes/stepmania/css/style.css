@@ -49,7 +49,7 @@ table {
 /* for mixins and stuff */
 .limit-width {
   width: 98%;
-  max-width: 960px;
+  max-width: 1280px;
   margin: 0 auto; }
 
 strong, b {
