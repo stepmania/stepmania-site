@@ -1,4 +1,4 @@
-<div id="post{$ID}" class="forum-post">
+<div id="post{$ID}" class="forum-post" x-post-data="$Content.XML" x-post-author="$Author.Nickname.XML">
 	<header>
 		<span class="post-date"><a href="$Link" rel="permalink" title="Permalink to this post">#$ID</a> <% if Created.IsToday %>Today<% else %>$Created.Full<% end_if %>, $Created.Time</span>
 	</header>
