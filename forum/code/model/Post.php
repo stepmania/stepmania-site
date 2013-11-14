@@ -201,9 +201,7 @@ class Post extends DataObject {
 	 * @return String
 	 */
 	function ReplyLink() {
-		$url = $this->Link('reply');
-
-		return '<a href="' . $url . '" class="replyLink">' . _t('Post.REPLYLINK','Post Reply') . '</a>';
+		return $this->Link('reply');
 	}
 		
 	/**

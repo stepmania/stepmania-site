@@ -21,6 +21,9 @@
 		margin-bottom: $spacing;
 	}
 	.textarea {
+		.left {
+			display: none;
+		}
 		min-width: 100%;
 		max-width: 100%;
 		min-height: 15em;

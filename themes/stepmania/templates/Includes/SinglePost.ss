@@ -1,4 +1,4 @@
-<div id="post{$ID}" class="forum-post" x-post-data="$Content.XML" x-post-author="$Author.Nickname.XML">
+<div id="post{$ID}" class="forum-post">
 	<header>
 		<span class="post-date"><a href="$Link" rel="permalink" title="Permalink to this post">#$ID</a> <% if Created.IsToday %>Today<% else %>$Created.Full<% end_if %>, $Created.Time</span>
 	</header>
@@ -51,7 +51,7 @@
 	</div>
 	<footer>
 		<span class="quick-reply">
-			$Top.ReplyLink
+			<a href="$Top.ReplyLink" class="replyLink" x-post-data="$Content.XML" x-post-author="$Author.Nickname.XML" x-post-id="post{$ID}">Reply</a>
 		</span>
 		<% if EditLink || DeleteLink %>
 			<span class="post-modifiers">

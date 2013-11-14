@@ -71,5 +71,4 @@
 	$AdminFormFeatures
 </div>
 <% end_if %>
-
 <% include ForumFooter %>

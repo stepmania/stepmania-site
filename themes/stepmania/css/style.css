@@ -699,6 +699,8 @@ footer p {
   max-width: 100%;
   min-height: 15em;
   resize: vertical; }
+#Form_PostMessageForm .textarea .left, #Form_EditForm .textarea .left {
+  display: none; }
 #Form_PostMessageForm .left, #Form_EditForm .left {
   text-align: left;
   display: block;

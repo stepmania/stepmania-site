@@ -7,9 +7,9 @@
 	<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;" />
 	<% base_tag %>
 	<% require themedCSS(style) %>
-	<% require javascript(stepmania/javascript/jquery-2.0.3.min.js) %>
-	<% require javascript(stepmania/javascript/rainbow.js) %>
-	<% require javascript(stepmania/javascript/site.js) %>
+	<% require javascript("stepmania/javascript/jquery-2.0.3.min.js") %>
+	<% require javascript("stepmania/javascript/rainbow.js") %>
+	<% require javascript("stepmania/javascript/site.js") %>
 </head>
 <body>
 	<header>
