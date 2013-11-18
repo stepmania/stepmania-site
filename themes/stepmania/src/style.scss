@@ -68,6 +68,12 @@ small {
 		padding-top: 0 !important;
 		text-align: justify;
 	}
+	.edit-button {
+		font-size: 110%;
+		font-weight: bold;
+		margin: $spacing;
+		color: $primary;
+	}
 	table {
 		td {
 			padding: $spacing;

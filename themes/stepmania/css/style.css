@@ -75,6 +75,11 @@ small {
   margin-top: 0;
   padding-top: 0 !important;
   text-align: justify; }
+.banner .edit-button {
+  font-size: 110%;
+  font-weight: bold;
+  margin: 14px;
+  color: #f0d01f; }
 .banner table td {
   padding: 14px;
   padding-right: 0;
