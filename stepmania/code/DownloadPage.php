@@ -21,6 +21,9 @@ class TrackedFile extends File {
 }
 
 class DownloadPage extends Page {
+	static $db = array(
+		"GibMoneyPls" => "HTMLText"
+	);
 	function getCMSFields() {
 		$fields = parent::getCMSFields();
 
@@ -38,6 +41,8 @@ class DownloadPage extends Page {
 		$gridfield = new GridField("Downloads", "Downloads:", $this->Downloads(), $grid_config);
 
 		$fields->addFieldToTab("Root.Downloads", $gridfield);
+
+		$fields->addFieldToTab("Root.Special", new HTMLEditorField("GibMoneyPls", "Donation box"));
 
 		return $fields;
 	}

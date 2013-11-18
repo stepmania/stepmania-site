@@ -8,6 +8,7 @@
 	<% base_tag %>
 	<% require themedCSS(style) %>
 	<% require javascript("stepmania/javascript/jquery-2.0.3.min.js") %>
+	<% require javascript("stepmania/javascript/bitcoinate.min.js") %>
 	<% require javascript("stepmania/javascript/rainbow.js") %>
 	<% require javascript("stepmania/javascript/site.js") %>
 </head>
