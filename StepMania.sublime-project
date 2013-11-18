@@ -6,7 +6,6 @@
 			"name": "StepMania",
 			"folder_exclude_patterns": [
 				// ignore default stuff, we don't touch it
-				"mysite",
 				"assets",
 				"cms",
 				"framework",
