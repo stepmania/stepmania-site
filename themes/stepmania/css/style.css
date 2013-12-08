@@ -712,6 +712,18 @@ footer p {
 #Form_AdminFormFeatures {
   margin: 9.33333px; }
 
+#Form_EditProfileForm {
+  max-width: 800px; }
+  #Form_EditProfileForm .middleColumn {
+    min-width: 500px; }
+  #Form_EditProfileForm .text .left {
+    padding-top: 8px; }
+  #Form_EditProfileForm .textarea {
+    min-width: 100%;
+    max-width: 100%;
+    min-height: 15em;
+    resize: vertical; }
+
 #Form_PostMessageForm, #Form_EditForm {
   padding: 0 14px 28px 14px; }
   #Form_PostMessageForm #Form_PostMessageForm_Title, #Form_EditForm #Form_PostMessageForm_Title {
@@ -750,14 +762,22 @@ form .field {
     display: inline-block; }
     form .field .middleColumn input {
       width: 250px; }
-  form .field input {
-    padding: 3.5px;
-    background: white;
-    box-shadow: 0 -2px 0 #f0d01f inset;
-    border: 1px solid #aaa;
-    border: none;
+  form .field input, form .field textarea {
+    padding: 7px;
+    padding-bottom: 9px;
+    background-image: -webkit-gradient(linear, top, from(#fff7e5), to(white 15px));
+    background-image: -webkit-linear-gradient(top, #fff7e5, white 15px);
+    background-image: -moz-linear-gradient(top, #fff7e5, white 15px);
+    background-image: -ms-linear-gradient(top, #fff7e5, white 15px);
+    background-image: -o-linear-gradient(top, #fff7e5, white 15px);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fff7e5', endColorstr='white 15px',GradientType=0);
+    background-image: linear-gradient(top, #fff7e5, white 15px);
+    box-shadow: 0 -2px 0 #f3da4f inset;
+    border: 1px solid #f8e996;
     border-radius: 3px;
-    display: inline-block; }
+    display: inline-block;
+    font-family: inherit;
+    font-size: 100%; }
 form .Actions .action {
   display: inline-block; }
 form .Actions #ForgotPassword {

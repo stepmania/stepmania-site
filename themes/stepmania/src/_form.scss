@@ -11,6 +11,21 @@
 #Form_AdminFormFeatures {
 	margin: $spacing / 1.5;
 }
+#Form_EditProfileForm {
+	max-width: 800px;
+	.middleColumn {
+		min-width: 500px;
+	}
+	.text .left {
+		padding-top: 8px;
+	}
+	.textarea {
+		min-width: 100%;
+		max-width: 100%;
+		min-height: 15em;
+		resize: vertical;
+	}
+}
 #Form_PostMessageForm, #Form_EditForm {
 	padding: 0 $spacing $spacing * 2 $spacing;
 	#Form_PostMessageForm_Title {
@@ -60,14 +75,16 @@ form {
 				width: 250px;
 			}
 		}
-		input {
-			padding: $spacing/4;
-			background: white;
-			box-shadow: 0 -2px 0 $primary inset;
-			border: 1px solid #aaa;
-			border: none;
+		input, textarea {
+			padding: $spacing/2;
+			padding-bottom: $spacing/2 + 2px;
+			@include gradient(lighten(#fec, 5%), white 15px);
+			box-shadow: 0 -2px 0 lighten($primary, 10%) inset;
+			border: 1px solid lighten($primary, 25%);
 			border-radius: 3px;
 			display: inline-block;
+			font-family: inherit;
+			font-size: 100%;
 		}
 	}
 	.Actions {
