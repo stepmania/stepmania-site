@@ -777,7 +777,12 @@ form .field {
     border-radius: 3px;
     display: inline-block;
     font-family: inherit;
-    font-size: 100%; }
+    font-size: 100%;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -ms-box-sizing: border-box;
+    -o-box-sizing: border-box;
+    box-sizing: border-box; }
 form .Actions .action {
   display: inline-block; }
 form .Actions #ForgotPassword {

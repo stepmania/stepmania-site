@@ -85,6 +85,7 @@ form {
 			display: inline-block;
 			font-family: inherit;
 			font-size: 100%;
+			@include box-sizing(border-box);
 		}
 	}
 	.Actions {
