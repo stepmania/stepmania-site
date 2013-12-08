@@ -474,8 +474,13 @@
 				display: none;
 			}
 			.post-count {
-				position: relative;
-				top: -0.9em;
+				//position: relative;
+				//top: -0.9em;
+			}
+			.join-date {
+				display: none;
+				//position: relative;
+				//top: -1em;
 			}
 			.author-link, .custom-title {
 				display: inline-block;

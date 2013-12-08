@@ -637,9 +637,8 @@ footer p {
         position: absolute; }
       .post-body .user-info .forum-rank {
         display: none; }
-      .post-body .user-info .post-count {
-        position: relative;
-        top: -0.9em; }
+      .post-body .user-info .join-date {
+        display: none; }
       .post-body .user-info .author-link, .post-body .user-info .custom-title {
         display: inline-block; }
 
