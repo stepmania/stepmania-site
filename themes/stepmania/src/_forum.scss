@@ -15,8 +15,11 @@
 	color: #aaa;
 }
 .signature {
-	border-top: 1px solid #ccc;
 	margin-top: 1em;
+	&:before {
+		content: "---";
+		display: block;
+	}
 	img {
 		max-width: 500px;
 		max-height: 250px;

@@ -281,8 +281,10 @@ footer p {
   color: #aaa; }
 
 .signature {
-  border-top: 1px solid #ccc;
   margin-top: 1em; }
+  .signature:before {
+    content: "---";
+    display: block; }
   .signature img {
     max-width: 500px;
     max-height: 250px; }
