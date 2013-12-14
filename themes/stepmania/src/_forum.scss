@@ -76,8 +76,7 @@
 	}
 	height: 3em;
 	padding: $spacing;
-	display: -webkit-flex;
-	display: flex;
+	@include display-flex;
 	p:last-child {
 		margin-bottom: 0 !important;
 	}
@@ -93,21 +92,17 @@
 	}
 }
 .forum-flex {
-	display: -webkit-flex;
-	display: flex;
+	@include display-flex;
 }
 .forum-flex-left {
-	-webkit-flex: 1 0 0;
-	flex: 1 0 0;
+	@include flex(1 0 0);
 }
 .forum-flex-mid {
-	-webkit-flex: 1 0 0;
-	flex: 1 0 0;
+	@include flex(1 0 0);
 	max-width: 150px;
 }
 .forum-flex-right {
-	-webkit-flex: 1 0 0;
-	flex: 1 0 0;
+	@include flex(1 0 0);
 	max-width: 250px;
 }
 .forum-topics {
@@ -279,7 +274,7 @@
 	}
 }
 .forum-post {
-	margin-bottom: $spacing / 4;
+	margin-bottom: 4px;
 	vertical-align: top;
 	border-radius: $spacing / 4;
 	$top: adjust-color($primary, $lightness: 45, $saturation: -35);
@@ -293,8 +288,7 @@
 		background: $bottom;
 		border-right: 1px solid darken($bottom, 10%);
 		overflow: hidden;
-		-webkit-flex: 0 0 auto;
-		flex: 0 0 auto;
+		@include flex(0 0 auto);
 		vertical-align: top;
 		width: 150px;
 		max-width: 150px;
@@ -442,20 +436,16 @@
 
 @media only screen and (max-width: 500px) {
 	.forum-flex-left {
-		-webkit-flex: 1 0 auto;
-		flex: 1 0 auto;
+		@include flex(1 0 auto);
 	}
 	.forum-flex-mid {
-		-webkit-flex: 1 0 auto;
-		flex: 1 0 auto;
+		@include flex(1 0 auto);
 	}
 	.forum-flex-right {
-		-webkit-flex: 1 0 auto;
-		flex: 1 0 auto;
+		@include flex(1 0 auto);
 	}
 	.post-body {
-		-webkit-flex-direction: column;
-		flex-direction: column;
+		@include flex-direction(column);
 		.user-content {
 			width: auto;
 		}
@@ -492,8 +482,7 @@
 	}
 	.forum-subforum, .forum-topic {
 		height: auto;
-		-webkit-flex-direction: column;
-		flex-direction: column;
+		@include flex-direction(column);
 		.subforum-latest, .topic-latest {
 			margin-top: $spacing;
 		}

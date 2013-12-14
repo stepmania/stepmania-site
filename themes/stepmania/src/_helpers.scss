@@ -90,6 +90,12 @@
 	display: flex;
 }
 
+@mixin flex($args) {
+	-webkit-flex: $args;
+	-ms-flex: $args;
+	flex: $args;
+}
+
 @mixin flex-direction($dir) {
 	$alt: vertical !default;
 	@if $dir == column {
