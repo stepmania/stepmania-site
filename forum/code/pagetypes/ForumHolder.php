@@ -482,7 +482,8 @@ class ForumHolder extends Page {
 class ForumHolder_Controller extends Page_Controller {
 
 	public static $allowed_actions = array(
-		'popularthreads',
+		//'latestthreads',
+		//'popularthreads',
 		'login',
 		'logout',
 		'search',
@@ -509,6 +510,18 @@ class ForumHolder_Controller extends Page_Controller {
 		}
 	}
 	
+	function latestthreads() {
+		$this->Threads = $this->getRecentPosts(50);
+
+		return $this->renderWith(array("Forum_show"));
+
+		return array(
+			'Title' => _t('ForumHolder.POPULARTHREADS', 'Latest Threads')
+		);
+
+//		function getRecentPosts($limit = 50, $forumID = null, $threadID = null, $lastVisit = null, $lastPostID = null) {
+	}
+
 	/** 
 	 * Generate a complete list of all the members data. Return a 
 	 * set of all these members sorted by a GET variable
@@ -781,7 +794,7 @@ class ForumHolder_Controller extends Page_Controller {
 				header('HTTP/1.1 304 Not Modified');
 			}
 		}
-		exit;
+		//exit;
 	}
 	
 	/**

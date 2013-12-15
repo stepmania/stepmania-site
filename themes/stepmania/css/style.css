@@ -415,8 +415,6 @@ footer p {
 
 .forum-topic .pages a {
   display: inline-block;
-  margin-top: 7px;
-  padding: 3.5px;
   border-radius: 3.5px;
   font-weight: 600; }
 
@@ -611,12 +609,13 @@ footer p {
   .forum-post .user-info {
     width: 108px; }
 
-  .subforum-title, .topic-title {
-    padding-right: 14px; }
-
   .subforum-stats, .topic-stats {
     display: none; } }
-@media only screen and (max-width: 500px) {
+@media only screen and (max-width: 600px) {
+  .forum-topic .pages a {
+    margin-top: 7px;
+    padding: 4.66667px; }
+
   .forum-flex-left {
     -webkit-flex: 1 0 auto;
     -ms-flex: 1 0 auto;
