@@ -1,4 +1,4 @@
-<h1>$Title</h1>
+<!--<h1>$Title</h1>-->
 $Content
 <div class="forum-news">
 	<% if NewsForum %>
@@ -18,16 +18,6 @@ $Content
 
 				<% if Updated %>
 					<p class="post-edited"><% _t('SinglePost_ss.LASTEDITED','Last edited:') %> $Updated.Long <% _t('SinglePost_ss.AT') %> $Updated.Time</p>
-				<% end_if %>
-				
-				<% if Thread.DisplaySignatures %>
-					<% with Author %>
-						<% if Signature %>
-							<div class="signature">
-								<p>$Signature</p>
-							</div>
-						<% end_if %>
-					<% end_with %>
 				<% end_if %>
 
 				<% if Attachments %>
