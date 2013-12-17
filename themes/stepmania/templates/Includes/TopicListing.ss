@@ -13,8 +13,9 @@
 		<% end_if %>
 		<% with Posts.First %>
 			<span class="thread-author">
-				<% with Author %>by <% if Link %><a href="$Link"><% if Nickname %>$Nickname<% else %>Anon<% end_if %></a><% else %><span>Anon</span><% end_if %> <span class="thread-date">($Created.Ago)</span>
+				<% with Author %>by <% if Link %><a href="$Link"><% if Nickname %>$Nickname<% else %>Anon<% end_if %></a><% else %><span>Anon</span><% end_if %>
 				<% end_with %>
+				 <span class="thread-date">($Created.Ago)</span>
 			</span>
 		<% end_with %>
 		<div class="pages">
