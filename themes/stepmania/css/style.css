@@ -322,7 +322,6 @@ footer p {
   background: #efebd2;
   background: -moz-linear-gradient(top, #f6f3e5, #efebd2 50px);
   background: -webkit-linear-gradient(top, #f6f3e5, #efebd2 50px);
-  height: 3em;
   padding: 14px;
   display: -webkit-box-flex;
   display: -webkit-flexbox;
@@ -388,8 +387,7 @@ footer p {
   background: #efebd2;
   background: -moz-linear-gradient(top, #f6f3e5, #efebd2 50px);
   background: -webkit-linear-gradient(top, #f6f3e5, #efebd2 50px);
-  padding: 14px;
-  height: 3em; }
+  padding: 14px; }
   .forum-topic.sticky {
     background: #eadfa4;
     background: -moz-linear-gradient(top, #f4eece, #eadfa4 50px);

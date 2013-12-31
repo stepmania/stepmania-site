@@ -74,7 +74,6 @@
 		border-bottom-left-radius: $spacing / 4;
 		border-bottom-right-radius: $spacing / 4;
 	}
-	height: 3em;
 	padding: $spacing;
 	@include display-flex;
 	p:last-child {
@@ -134,7 +133,6 @@
 	background: -moz-linear-gradient(top, $top, $bottom 50px);
 	background: -webkit-linear-gradient(top, $top, $bottom 50px);
 	padding: $spacing;
-	height: 3em;
 	&.sticky {
 		$top: adjust-color($primary, $lightness: 35, $saturation: -25);
 		$bottom: adjust-color($primary, $lightness: 25, $saturation: -25);
