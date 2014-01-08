@@ -15,7 +15,7 @@
 <body>
 	<header>
 		<nav class="limit-width">
-			<img src="$ThemeDir/images/logo-small.png" alt="StepMania">
+			<a href="$BaseHref"><img src="$ThemeDir/images/logo-small.png" alt="StepMania"></img></a>
 			<ul>
 				<% loop Menu(1) %>
 				<li><a href="$Link" class="$LinkingMode">$MenuTitle</a></li>
