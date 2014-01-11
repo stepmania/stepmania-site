@@ -1,45 +1,11 @@
 <?php
+require_once "jbbcode/Parser.php";
 
-class SSHTMLBBCodeParser_Filter_SMTags extends SSHTMLBBCodeParser
-{
-    var $_definedTags = array(
-		'steps' => array(   'htmlopen'  => 'div class="stepsblock"',
-			'htmlclose' => 'div',
-			'allowed'   => 'all',
-			'attributes'=> array()
-		),
-		'rainbow' => array(   'htmlopen'  => 'span class="rainbow"',
-			'htmlclose' => 'span',
-			'allowed'   => 'all',
-			'attributes'=> array()
-		),
-		'small' => array(   'htmlopen'  => 'span class="small"',
-			'htmlclose' => 'span',
-			'allowed'   => 'all',
-			'attributes'=> array()
-		),
-		'large' => array(   'htmlopen'  => 'span class="large"',
-			'htmlclose' => 'span',
-			'allowed'   => 'all',
-			'attributes'=> array()
-		)
-	);
-}
-
-/**
- * SMBBCode parser object.
- * Use on a text field in a template with $Content.Parse(SMBBCodeParser).
- * @package framework
- * @subpackage misc
- */
 class SMBBCodeParser extends TextParser {
 	private static $autolink_urls = true;
 	private static $allow_smilies = true;
 	private static $smilies_location = null;
 	
-	/**
-	 * @deprecated 3.2 Use the "SMBBCodeParser.smilies_location" config setting instead
-	 */
 	public static function smilies_location() {
 		Deprecation::notice('3.2', 'Use the "SMBBCodeParser.smilies_location" config setting instead');
 		if(!SMBBCodeParser::$smilies_location) {
@@ -48,41 +14,30 @@ class SMBBCodeParser extends TextParser {
 		return static::config()->smilies_location;
 	}
 
-	/**
-	 * @deprecated 3.2 Use the "SMBBCodeParser.smilies_location" config setting instead
-	 */
 	public static function set_icon_folder($path) {
 		Deprecation::notice('3.2', 'Use the "SMBBCodeParser.smilies_location" config setting instead');
 		static::config()->smilies_location = $path;
 	} 
 	
-	/**
-	 * @deprecated 3.2 Use the "SMBBCodeParser.autolink_urls" config setting instead
-	 */
+
 	public static function autolinkUrls() {
 		Deprecation::notice('3.2', 'Use the "SMBBCodeParser.autolink_urls" config setting instead');
 		return static::config()->autolink_urls;
 	}
 	
-	/**
-	 * @deprecated 3.2 Use the "SMBBCodeParser.autolink_urls" config setting instead
-	 */
+
 	public static function disable_autolink_urls($autolink = false) {
 		Deprecation::notice('3.2', 'Use the "SMBBCodeParser.autolink_urls" config setting instead');
 		static::config()->autolink_urls = $autolink;
 	}
 	
-	/**
-	 * @deprecated 3.2 Use the "SMBBCodeParser.allow_smilies" config setting instead
-	 */
+
 	public static function smiliesAllowed() {
 		Deprecation::notice('3.2', 'Use the "SMBBCodeParser.allow_smilies" config setting instead');
 		return static::config()->allow_smilies;
 	}
 	
-	/**
-	 * @deprecated 3.2 Use the "SMBBCodeParser.allow_smilies" config setting instead
-	 */
+
 	public static function enable_smilies() {
 		Deprecation::notice('3.2', 'Use the "SMBBCodeParser.allow_smilies" config setting instead');
 		static::config()->allow_smilies = true;
@@ -175,26 +130,19 @@ class SMBBCodeParser extends TextParser {
 	 * @return Text
 	 */
 	public function parse() {
-		$this->content = str_replace(array('&', '<', '>'), array('&amp;', '&lt;', '&gt;'), $this->content);
+//		$this->content = str_replace(array('&', '<', '>'), array('&amp;', '&lt;', '&gt;'), $this->content);
 
-		$p = new SSHTMLBBCodeParser();
-		$FilterName = "SMTags_Filter";
-		$p->_filters[$FilterName] = new SSHTMLBBCodeParser_Filter_SMTags();
-		$p->_definedTags = array_merge(
-			$p->_definedTags,
-			$p->_filters[$FilterName]->_definedTags
-		);
-		$this->content = $p->qparse($this->content);
-		unset($p);
+		$parser = new JBBCode\Parser();
+		$parser->addCodeDefinitionSet(new SMBBCodeDefinitionSet());
 
-		$this->content = "<p>".$this->content."</p>";
+		$parser->parse($this->content);
 
-		$this->content = preg_replace('/(<p[^>]*>)\s+/i', '\\1', $this->content);
-		$this->content = preg_replace('/\s+(<\/p[^>]*>)/i', '\\1', $this->content);
+		$this->content = $parser->getAsHtml();
 
-		$this->content = preg_replace("/\n\s*\n/", "</p><p>", $this->content);
+		// make sure newlines aren't all wonky
 		$this->content = str_replace("\n", "<br />", $this->content);
-				
+
+		// add smilies				
 		if($this->config()->allow_smilies) {
 			$smilies = array(
 				// arrows
@@ -268,5 +216,4 @@ class SMBBCodeParser extends TextParser {
 		}
 		return $this->content;
 	}
-	
 }
