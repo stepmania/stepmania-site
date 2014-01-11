@@ -130,7 +130,7 @@ class SMBBCodeParser extends TextParser {
 	 * @return Text
 	 */
 	public function parse() {
-//		$this->content = str_replace(array('&', '<', '>'), array('&amp;', '&lt;', '&gt;'), $this->content);
+		$this->content = str_replace(array('&', '<', '>'), array('&amp;', '&lt;', '&gt;'), $this->content);
 
 		$parser = new JBBCode\Parser();
 		$parser->addCodeDefinitionSet(new SMBBCodeDefinitionSet());
