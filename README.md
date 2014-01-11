@@ -24,11 +24,15 @@ See [installation on different platforms](http://doc.silverstripe.org/framework/
 
 In order to make stylesheet changes be aware that you will need [Sass](http://sass-lang.com/).
 
-## License
+## Licenses
 
-Unless otherwise noted, all sources and assets not belonging to SilverStripe are under the terms of the StepMania license (i.e. the MIT license).
+Unless otherwise noted, all sources and assets are under the terms of the MIT license.
 
-### StepMania License ###
+StepMania and JBBCode are under the terms of the MIT license.
+
+JBBCode is Copyright (c) 2011 Jackson Owens <[jackson_owens@brown.edu](mailto:jackson_owens@brown.edu)>
+
+### MIT License ###
 
 	Copyright (c) 2014, StepMania - stepmania.com
 
