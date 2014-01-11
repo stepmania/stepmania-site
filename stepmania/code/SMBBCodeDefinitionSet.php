@@ -7,11 +7,13 @@ require_once 'jbbcode/InputValidator.php';
 
 class UrlValidator implements JBBCode\InputValidator
 {
-    public function validate($input)
-    {
-        $valid = filter_var($input, FILTER_VALIDATE_URL);
-        return !!$valid;
-    }
+	public function validate($input)
+	{
+		$valid = !!filter_var($input, FILTER_VALIDATE_URL);
+		if (!$valid)
+			$valid = !!filter_var(Director::absoluteBaseURL() . $input, FILTER_VALIDATE_URL);
+		return $valid;
+	}
 }
 
 class NickValidator implements JBBCode\InputValidator
