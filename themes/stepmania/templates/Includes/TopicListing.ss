@@ -11,7 +11,7 @@
 			<% end_if %>
 			</div>
 		<% end_if %>
-		<% with Posts.First %>
+		<% with FirstPost %>
 			<span class="thread-author">
 				<% with Author %>by <% if Link %><a href="$Link"><% if Nickname %>$Nickname<% else %>Anon<% end_if %></a><% else %><span>Anon</span><% end_if %>
 				<% end_with %>
