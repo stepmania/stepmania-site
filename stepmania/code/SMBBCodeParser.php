@@ -110,6 +110,11 @@ class SMBBCodeParser extends TextParser {
 					"Title" => _t('SMBBCodeParser.LINK', 'Website link'),
 					"Description" => _t('SMBBCodeParser.LINKDESCRIPTION', 'Link to another website or URL'),
 					"Example" => "[url=http://www.website.com/]Website[/url]"
+				)),
+				new ArrayData(array(
+					"Title" => _t('SMBBCodeParser.YOUTUBE', 'YouTube Video'),
+					"Description" => _t('SMBBCodeParser.YOUTUBEDESCRIPTION', 'Embed a YouTube video'),
+					"Example" => "[youtube]https://www.youtube.com/watch?v=WiUjG9fF3zw[/youtube]"
 				))
 			)
 		);
@@ -134,6 +139,9 @@ class SMBBCodeParser extends TextParser {
 
 		$parser = new JBBCode\Parser();
 		$parser->addCodeDefinitionSet(new SMBBCodeDefinitionSet());
+
+		$youtubeEmbed = new YoutubeEmbed();
+		$parser->addCodeDefinition($youtubeEmbed);
 
 		$parser->parse($this->content);
 

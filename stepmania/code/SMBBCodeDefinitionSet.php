@@ -24,6 +24,27 @@ class NickValidator implements JBBCode\InputValidator
 	}
 }
 
+class YoutubeEmbed extends JBBCode\CodeDefinition {
+	public function __construct()
+	{
+		parent::__construct();
+		$this->setTagName("youtube");
+	}
+
+	public function asHtml(JBBCode\ElementNode $el)
+	{
+		$content = "";
+		foreach($el->getChildren() as $child)
+			$content .= $child->getAsBBCode();
+			
+		$foundMatch = preg_match('/v=([A-z0-9=\-]+?)(&.*)?$/i', $content, $matches);
+		if(!$foundMatch)
+			return $el->getAsBBCode();
+		else
+			return "<iframe width=\"640\" height=\"390\" src=\"http://www.youtube.com/embed/".$matches[1]."\" frameborder=\"0\" allowfullscreen></iframe>";
+	}
+}
+
 class SMBBCodeDefinitionSet implements JBBCode\CodeDefinitionSet
 {
 	protected $definitions = array();
@@ -45,12 +66,12 @@ class SMBBCodeDefinitionSet implements JBBCode\CodeDefinitionSet
 		array_push($this->definitions, $builder->build());
 
 		/* [url] link tag */
-		$builder = new JBBCode\CodeDefinitionBuilder('url', '<a href="{param}">{param}</a>');
+		$builder = new JBBCode\CodeDefinitionBuilder('url', '<a href="{param}" rel="nofollow">{param}</a>');
 		$builder->setParseContent(false)->setBodyValidator($urlValidator);
 		array_push($this->definitions, $builder->build());
 
 		/* [url=http://example.com] link tag */
-		$builder = new JBBCode\CodeDefinitionBuilder('url', '<a href="{option}">{param}</a>');
+		$builder = new JBBCode\CodeDefinitionBuilder('url', '<a href="{option}" rel="nofollow">{param}</a>');
 		$builder->setUseOption(true)->setParseContent(true)->setOptionValidator($urlValidator);
 		array_push($this->definitions, $builder->build());
 
@@ -70,8 +91,8 @@ class SMBBCodeDefinitionSet implements JBBCode\CodeDefinitionSet
 		array_push($this->definitions, $builder->build());
 
 		// TODO: cite for users/post ids
-        //$builder = new CodeDefinitionBuilder('url', '<a href="{option}">{param}</a>');
-        /* [quote] */
+		//$builder = new CodeDefinitionBuilder('url', '<a href="{option}">{param}</a>');
+		/* [quote] */
 		$builder = new JBBCode\CodeDefinitionBuilder('quote', '<q>{param}</q>');
 		array_push($this->definitions, $builder->build());
 
