@@ -270,12 +270,11 @@
 	}
 }
 .forum-post {
-	margin-bottom: 4px;
 	vertical-align: top;
-	border-radius: $spacing / 4;
+	margin-bottom: 5px;
 	$top: adjust-color($primary, $lightness: 45, $saturation: -35);
 	$bottom: adjust-color($primary, $lightness: 40, $saturation: -35);
-	box-shadow: 0 2px 1px rgba(0, 0, 0, 0.25);
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
 	&:nth-child(even) .user-info {
 		background: darken($bottom, 5%);
 	}
@@ -376,24 +375,20 @@
 		background: $bottom !important;
 		background: -moz-linear-gradient(top, $top, $bottom)  !important;
 		background: -webkit-linear-gradient(top, $top, $bottom)  !important;
-		border-top-left-radius: $spacing / 4;
-		border-top-right-radius: $spacing / 4;
-		padding: $spacing;
 		margin-bottom: 0 !important;
-		.post-date {
-			display: block;
-		}
 	}
 	footer {
-		border-bottom-left-radius: $spacing / 4;
-		border-bottom-right-radius: $spacing / 4;
-		$top: lighten($secondary, 75%);
+		$top: white;//lighten($secondary, 75%);
 		$bottom: darken($top, 5%);
 		background: $bottom;
 		background: -moz-linear-gradient(top, $top, $bottom);
 		background: -webkit-linear-gradient(top, $top, $bottom);
 		overflow: auto;
-		.post-modifiers a, .quick-reply a, .deleteLink {
+		.post-date {
+			padding: $spacing;
+			display: inline-block;
+		}
+		.quick-reply a, .deleteLink {
 			&.deleteLink {
 				background: mix(#f00, $bottom, 10%);
 			}
