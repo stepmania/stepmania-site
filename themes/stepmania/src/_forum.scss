@@ -301,6 +301,7 @@
 	}
 	.user-content {
 		width: 100%;
+		min-height: 200px;
 		padding: $spacing;
 		line-height: 1.4em;
 		overflow: hidden; // damn you, Jousway!
