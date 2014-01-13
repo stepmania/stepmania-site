@@ -1,37 +1,41 @@
+/*
 *,
 *:after,
 *::before {
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
 }
+*/
 
-html, body, .container, .scroller {
+.container, .scroller {
 	height: 100%;
 }
 
 .scroller {
 	overflow-y: auto;
+	@include box-sizing(border-box);
 }
 
 .scroller,
 .scroller-inner {
 	position: relative;
+	@include box-sizing(border-box);
 }
 
 .container {
+	@include box-sizing(border-box);
 	width: 100%;
 	position: relative;
 	overflow: hidden;
 }
 
 .mp-pusher {
+	@include box-sizing(border-box);
 	position: relative;
 	left: 0;
 	height: 100%;
 }
 
 .mp-menu {
+	@include box-sizing(border-box);
 	position: absolute; /* we can't use fixed here :( */
 	top: 0;
 	left: 0;

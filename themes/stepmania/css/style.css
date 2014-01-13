@@ -516,6 +516,11 @@ footer p {
       margin: 14px 0;
       max-width: 100%; }
   .forum-post .user-content {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -ms-box-sizing: border-box;
+    -o-box-sizing: border-box;
+    box-sizing: border-box;
     width: 100%;
     min-height: 200px;
     padding: 14px;
@@ -660,34 +665,58 @@ footer p {
     flex-direction: column; }
     .forum-subforum .subforum-latest, .forum-subforum .topic-latest, .forum-topic .subforum-latest, .forum-topic .topic-latest {
       margin-top: 14px; } }
+/*
 *,
 *:after,
 *::before {
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box; }
-
-html, body, .container, .scroller {
+}
+*/
+.container, .scroller {
   height: 100%; }
 
 .scroller {
-  overflow-y: auto; }
+  overflow-y: auto;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  -o-box-sizing: border-box;
+  box-sizing: border-box; }
 
 .scroller,
 .scroller-inner {
-  position: relative; }
+  position: relative;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  -o-box-sizing: border-box;
+  box-sizing: border-box; }
 
 .container {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  -o-box-sizing: border-box;
+  box-sizing: border-box;
   width: 100%;
   position: relative;
   overflow: hidden; }
 
 .mp-pusher {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  -o-box-sizing: border-box;
+  box-sizing: border-box;
   position: relative;
   left: 0;
   height: 100%; }
 
 .mp-menu {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  -o-box-sizing: border-box;
+  box-sizing: border-box;
   position: absolute;
   /* we can't use fixed here :( */
   top: 0;
