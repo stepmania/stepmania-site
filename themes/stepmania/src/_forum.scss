@@ -445,6 +445,7 @@
 		@include flex-direction(column);
 		.user-content {
 			width: auto;
+			min-height: 0;
 		}
 		.user-info {
 			width: auto;

@@ -636,7 +636,8 @@ footer p {
     -ms-flex-direction: column;
     flex-direction: column; }
     .post-body .user-content {
-      width: auto; }
+      width: auto;
+      min-height: 0; }
     .post-body .user-info {
       width: auto;
       max-width: none;
