@@ -29,6 +29,9 @@
 	}
 	.forum-post {
 		margin-bottom: 1em;
+		header {
+			padding: $spacing;
+		}
 		header h2 {
 			margin-bottom: 0;
 		}

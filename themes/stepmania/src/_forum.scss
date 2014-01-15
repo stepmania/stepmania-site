@@ -140,9 +140,6 @@
 		background: -moz-linear-gradient(top, $top, $bottom 50px);
 		background: -webkit-linear-gradient(top, $top, $bottom 50px);
 	}
-	&.sticky .sticky {
-		font-size: 120%;
-	}
 	&.locked {
 		$top: adjust-color($primary, $lightness: 30, $saturation: -45, $hue: -20);
 		$bottom: adjust-color($primary, $lightness: 25, $saturation: -45, $hue: -20);
@@ -150,16 +147,19 @@
 		background: -moz-linear-gradient(top, $top, $bottom 50px);
 		background: -webkit-linear-gradient(top, $top, $bottom 50px);
 	}
-	&.locked .locked {
-		font-size: 120%;
-	}
 	p:last-child {
 		margin-bottom: 0 !important;
 	}
 	p {
 		margin-bottom: $spacing/4 !important;
 	}
+	.icon {
+		font-size: 150%;
+		color: rgba(mix($primary, black, 25%), 0.75);
+		padding-right: $spacing;
+	}
 	.topic-title {
+		//margin-left: $spacing * 2;
 		font-size: 120%;
 		font-weight: 600;
 	}
@@ -169,6 +169,7 @@
 	overflow: hidden;
 }
 .forum-topic .pages a {
+	margin-top: $spacing / 2;
 	display: inline-block;
 	border-radius: $spacing / 4;
 	font-weight: 600;

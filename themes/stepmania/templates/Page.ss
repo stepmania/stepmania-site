@@ -26,7 +26,7 @@
 	<div id="container" class="limit-width">
 		<div class="$ClassName-banner banner">
 			<% if BannerContent %>$BannerContent<% else %><h1>$Title</h1><% end_if %>
-			<% if canEdit %><a href="admin/pages/edit/show/$ID" class="float-right edit-button">Edit</a><% end_if %>
+			<% if canEdit %><a href="admin/pages/edit/show/$ID" rel="edit" class="float-right edit-button li_pen"> <span>Edit</span></a><% end_if %>
 		</div>
 		<article class="$ClassName-article">
 			$Layout

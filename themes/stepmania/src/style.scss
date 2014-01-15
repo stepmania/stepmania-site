@@ -1,5 +1,6 @@
 @import "reset";
 @import "helpers";
+@import "linecons";
 
 //$primary: #aa66cc;
 $primary: #f0d01f;
@@ -194,6 +195,13 @@ header {
 		a {
 			color: white;
 			text-decoration: none;
+		}
+	}
+	a[rel="permalink"] {
+		float: left;
+		padding-right: $spacing;
+		span {
+			display: none;
 		}
 	}
 }
