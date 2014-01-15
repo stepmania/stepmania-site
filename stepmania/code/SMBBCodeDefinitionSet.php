@@ -37,7 +37,7 @@ class YoutubeEmbed extends JBBCode\CodeDefinition {
 		foreach($el->getChildren() as $child)
 			$content .= $child->getAsBBCode();
 			
-		$foundMatch = preg_match('/(\?v=|\/\d\/|\/embed\/|\/v\/|\.be\/)([a-zA-Z0-9\-\_]+)/', $content, $matches);
+		$foundMatch = preg_match('/(\?v=|\?.+&v=|\/\d\/|\/embed\/|\/v\/|\.be\/)([a-zA-Z0-9\-\_]+)/', $content, $matches);
 		if(!$foundMatch)
 			return $el->getAsBBCode();
 		else
