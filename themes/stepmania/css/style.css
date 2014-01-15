@@ -580,8 +580,7 @@ footer p {
   .forum-topic p {
     margin-bottom: 3.5px !important; }
   .forum-topic .icon {
-    font-size: 150%;
-    color: rgba(60, 52, 7, 0.75);
+    color: #3c3407;
     padding-right: 14px; }
   .forum-topic .topic-title {
     font-size: 120%;

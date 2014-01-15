@@ -154,8 +154,8 @@
 		margin-bottom: $spacing/4 !important;
 	}
 	.icon {
-		font-size: 150%;
-		color: rgba(mix($primary, black, 25%), 0.75);
+		//font-size: 150%;
+		color: mix($primary, black, 25%);
 		padding-right: $spacing;
 	}
 	.topic-title {
