@@ -140,6 +140,16 @@ class ForumThread extends DataObject {
 		return (int)DB::query("SELECT count(*) FROM \"Post\" WHERE \"ThreadID\" = $this->ID")->value();
 	}
 
+    /**
+     * Return the number of replies in this thread.
+     * It's one less than the post count.
+     *
+     * @return int
+     */
+    function getNumReplies() {
+        return (int)($this->getNumPosts() - 1);
+    }
+
 	function getNumPages() {
 		$pages = (int)(($this->getNumPosts() - 1) / Forum::$posts_per_page + 1);
 

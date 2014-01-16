@@ -28,7 +28,7 @@
 		</div>
 	</div>
 	<div class="forum-flex-mid topic-stats">
-		<p>Replies: $NumPosts</p>
+		<p>Replies: $NumReplies</p>
 		<p>Views: $NumViews</p>
 	</div>
 	<div class="forum-flex-right topic-latest">
