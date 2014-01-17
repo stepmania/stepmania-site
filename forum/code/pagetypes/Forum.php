@@ -557,10 +557,11 @@ class Forum_Controller extends Page_Controller {
 			$obj->LastSent = date("Y-m-d H:i:s"); 
 			$obj->write();
 			
-			die('1');
+			if (Director::is_ajax())
+				die('1');
 		}
-		
-		return false;
+
+		return (Director::is_ajax()) ? true : $this->redirect("ForumMemberProfile/subscriptions");
 	}
 	
 	/**
@@ -582,12 +583,13 @@ class Forum_Controller extends Page_Controller {
 				WHERE \"ThreadID\" = '". Convert::raw2sql($this->urlParams['ID']) ."' 
 				AND \"MemberID\" = '$member->ID'");
 			
-			die('1');
+			if (Director::is_ajax())
+				die('1');
 		}
 
-		return false;
+		return (Director::is_ajax()) ? true : $this->redirect("ForumMemberProfile/subscriptions");
 	}
-	
+
 	/**
 	 * Mark a post as spam. Deletes any posts or threads created by that user
 	 * and removes their user account from the site
@@ -675,7 +677,7 @@ class Forum_Controller extends Page_Controller {
 	 * @see BBCodeParser::usable_tags()
 	 */
 	function BBTags() {
-		return BBCodeParser::usable_tags();
+		return SMBBCodeParser::usable_tags();
 	}
 
 	/**

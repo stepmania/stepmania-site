@@ -11,7 +11,7 @@
 				<header>
 				<% with Thread %>
 				<h2><a href="$Link">$Title</a></h2>
-				<a href="$Link/unsubscribe/$ID">Unsubscribe</a>
+				<a href="$UnsubscribeLink">Unsubscribe</a>
 				<% end_with %>
 				</header>
 			</div>

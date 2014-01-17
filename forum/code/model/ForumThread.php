@@ -211,7 +211,15 @@ class ForumThread extends DataObject {
 
 		return ($member) ? ForumThread_Subscription::already_subscribed($this->ID, $member->ID) : false;
 	}
+
+	function getSubscribeLink() {
+		return $this->Forum()->RelativeLink() . 'subscribe/' . $this->ID;
+	}
 	
+	function getUnsubscribeLink() {
+		return $this->Forum()->RelativeLink() . 'unsubscribe/' . $this->ID;
+	}
+
 	/**
 	 * Before deleting the thread remove all the posts
 	 */
