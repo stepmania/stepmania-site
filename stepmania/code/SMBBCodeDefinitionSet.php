@@ -9,6 +9,8 @@ class UrlValidator implements JBBCode\InputValidator
 {
 	public function validate($input)
 	{
+		if (preg_match("[javascript:]", $input))
+			return false;
 		$valid = !!filter_var($input, FILTER_VALIDATE_URL);
 		if (!$valid)
 			$valid = !!filter_var(Director::absoluteBaseURL() . $input, FILTER_VALIDATE_URL);
@@ -76,13 +78,13 @@ class SMBBCodeDefinitionSet implements JBBCode\CodeDefinitionSet
 		array_push($this->definitions, $builder->build());
 
 		/* [img] image tag */
-		$builder = new JBBCode\CodeDefinitionBuilder('img', '<img src="{param}" />');
+		$builder = new JBBCode\CodeDefinitionBuilder('img', '<img src="{param}" alt="" />');
 		$builder->setUseOption(false)->setParseContent(false)->setBodyValidator($urlValidator);
 		array_push($this->definitions, $builder->build());
 
 		/* [img=alt text] image tag */
 		$builder = new JBBCode\CodeDefinitionBuilder('img', '<img src="{param} alt="{option}" />');
-		$builder->setUseOption(true);
+		$builder->setUseOption(true)->setOptionValidator($urlValidator);
 		array_push($this->definitions, $builder->build());
 
 		/* [color] color tag */
