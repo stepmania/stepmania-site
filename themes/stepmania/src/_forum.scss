@@ -68,8 +68,7 @@
 	$top: adjust-color($primary, $lightness: 40, $saturation: -40);
 	$bottom: adjust-color($primary, $lightness: 35, $saturation: -40);
 	background: $bottom;
-	background: -moz-linear-gradient(top, $top, $bottom 50px);
-	background: -webkit-linear-gradient(top, $top, $bottom 50px);
+	@include gradient($top, $bottom 50px);
 	&:last-child {
 		border-bottom-left-radius: $spacing / 4;
 		border-bottom-right-radius: $spacing / 4;
@@ -130,22 +129,19 @@
 	$top: adjust-color($primary, $lightness: 40, $saturation: -40);
 	$bottom: adjust-color($primary, $lightness: 35, $saturation: -40);
 	background: $bottom;
-	background: -moz-linear-gradient(top, $top, $bottom 50px);
-	background: -webkit-linear-gradient(top, $top, $bottom 50px);
+	@include gradient($top, $bottom 50px);
 	padding: $spacing;
 	&.sticky {
 		$top: adjust-color($primary, $lightness: 35, $saturation: -25);
 		$bottom: adjust-color($primary, $lightness: 25, $saturation: -25);
 		background: $bottom;
-		background: -moz-linear-gradient(top, $top, $bottom 50px);
-		background: -webkit-linear-gradient(top, $top, $bottom 50px);
+		@include gradient($top, $bottom 50px);
 	}
 	&.locked {
 		$top: adjust-color($primary, $lightness: 30, $saturation: -45, $hue: -20);
 		$bottom: adjust-color($primary, $lightness: 25, $saturation: -45, $hue: -20);
 		background: $bottom;
-		background: -moz-linear-gradient(top, $top, $bottom 50px);
-		background: -webkit-linear-gradient(top, $top, $bottom 50px);
+		@include gradient($top, $bottom 50px);
 	}
 	p:last-child {
 		margin-bottom: 0 !important;
@@ -180,8 +176,7 @@
 	$top: adjust-color($secondary, $lightness: 15, $saturation: -40);
 	$bottom: adjust-color($secondary, $lightness: 5, $saturation: -40);
 	background: $bottom;
-	background: -moz-linear-gradient(top, $top, $bottom 50px);
-	background: -webkit-linear-gradient(top, $top, $bottom 50px);
+	@include gradient($top, $bottom 50px);
 	&.locked {
 		color: desaturate($primary, 65%);
 	}
@@ -189,17 +184,15 @@
 		$top: adjust-color($secondary, $lightness: 30, $saturation: -40);
 		$bottom: adjust-color($secondary, $lightness: 15, $saturation: -40);
 		background: $top;
-		background: -moz-linear-gradient(top, $bottom, $top 50px);
+		@include gradient($bottom, $top 50px);
 		color: white;
-		background: -webkit-linear-gradient(top, $bottom, $top 50px);
 	}
 	&.label {
 		$top: adjust-color($secondary, $lightness: 10, $saturation: -40);
 		$bottom: adjust-color($secondary, $lightness: 10, $saturation: -40);
 		background: $top;
-		background: -moz-linear-gradient(top, $bottom, $top 50px);
+		@include gradient($bottom, $top 50px);
 		color: white;
-		background: -webkit-linear-gradient(top, $bottom, $top 50px);
 	}
 	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.25);
 	border-radius: $spacing / 4;
@@ -259,6 +252,7 @@
 		$top: lighten(desaturate($primary, 60%), 40%);
 		$bottom: darken($top, 5%);
 		background: $bottom !important;
+		@include gradient($top, $bottom);
 		background: -moz-linear-gradient(top, $top, $bottom)  !important;
 		background: -webkit-linear-gradient(top, $top, $bottom)  !important;
 		border-top-left-radius: $spacing / 4;
@@ -384,8 +378,7 @@
 		$top: white;//lighten($secondary, 75%);
 		$bottom: darken($top, 5%);
 		background: $bottom;
-		background: -moz-linear-gradient(top, $top, $bottom);
-		background: -webkit-linear-gradient(top, $top, $bottom);
+		@include gradient($top, $bottom);
 		overflow: auto;
 		.post-date {
 			padding: $spacing;
@@ -402,6 +395,7 @@
 				background: $bottom;
 				text-decoration: none;
 			}
+			background: rgba(255, 255, 255, 0);
 			border-left: 1px solid darken($bottom, 5%);
 			padding: $spacing;
 			font-weight: 600;
@@ -419,9 +413,6 @@
 		.user-info {
 			width: 80px + $spacing * 2;
 		}
-	}
-	.subforum-title, .topic-title {
-		//padding-right: $spacing;
 	}
 	.subforum-stats, .topic-stats {
 		display: none;
@@ -465,14 +456,8 @@
 			.forum-rank {
 				display: none;
 			}
-			.post-count {
-				//position: relative;
-				//top: -0.9em;
-			}
 			.join-date {
 				display: none;
-				//position: relative;
-				//top: -1em;
 			}
 			.author-link, .custom-title {
 				display: inline-block;
