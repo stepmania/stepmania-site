@@ -75,7 +75,7 @@
 							<% end_if %>
 							</div>
 							<footer>
-								<span class="post-date"><a href="$Link" rel="permalink" title="Permalink to this post">#$ID</a> <% if Created.IsToday %>Today<% else %>$Created.Full<% end_if %>, $Created.Time</span>
+								<span class="post-date"><a href="$Link" class="li_clip" rel="permalink" title="Permalink to this post"></a> <% if Created.IsToday %>Today<% else %>$Created.Full<% end_if %>, $Created.Time</span>
 								<span class="quick-reply">
 									<%-- <a href="#" x-post-id="post{$ID}" class="menu-trigger">Options</a> --%>
 									<a href="$Top.ReplyLink" class="replyLink" x-post-data="$Content.XML" x-post-author="$Author.Nickname.XML" x-post-id="post{$ID}">Reply</a>
