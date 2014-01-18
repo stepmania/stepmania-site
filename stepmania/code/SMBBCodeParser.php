@@ -6,31 +6,10 @@ class SMBBCodeParser extends TextParser {
 	private static $allow_smilies = true;
 	private static $smilies_location = null;
 	
-	public static function smilies_location() {
-		Deprecation::notice('3.2', 'Use the "SMBBCodeParser.smilies_location" config setting instead');
-		if(!SMBBCodeParser::$smilies_location) {
-			return 'stepmania/images/smilies';
-		}
-		return static::config()->smilies_location;
-	}
-
 	public static function set_icon_folder($path) {
 		Deprecation::notice('3.2', 'Use the "SMBBCodeParser.smilies_location" config setting instead');
 		static::config()->smilies_location = $path;
 	} 
-	
-
-	public static function autolinkUrls() {
-		Deprecation::notice('3.2', 'Use the "SMBBCodeParser.autolink_urls" config setting instead');
-		return static::config()->autolink_urls;
-	}
-	
-
-	public static function disable_autolink_urls($autolink = false) {
-		Deprecation::notice('3.2', 'Use the "SMBBCodeParser.autolink_urls" config setting instead');
-		static::config()->autolink_urls = $autolink;
-	}
-	
 
 	public static function smiliesAllowed() {
 		Deprecation::notice('3.2', 'Use the "SMBBCodeParser.allow_smilies" config setting instead');
@@ -42,7 +21,20 @@ class SMBBCodeParser extends TextParser {
 		Deprecation::notice('3.2', 'Use the "SMBBCodeParser.allow_smilies" config setting instead');
 		static::config()->allow_smilies = true;
 	}
-	
+
+	public static function disable_smilies() {
+		Deprecation::notice('3.2', 'Use the "SMBBCodeParser.disallow_smilies" config setting instead');
+		static::config()->disallow_smilies = false;
+	}
+
+	public static function smilies_location() {
+		Deprecation::notice('3.2', 'Use the "SMBBCodeParser.smilies_location" config setting instead');
+		if(!SMBBCodeParser::$smilies_location) {
+			return 'stepmania/images/smilies';
+		}
+		return static::config()->smilies_location;
+	}
+
 	
 	public static function usable_tags() {
 		return new ArrayList(
@@ -66,11 +58,11 @@ class SMBBCodeParser extends TextParser {
 				new ArrayData(array(
 					"Title" => _t('SMBBCodeParser.COLORED', 'Colored text'),
 					"Example" => '[color=blue]'._t('SMBBCodeParser.COLOREDEXAMPLE', 'blue text').'[/color]'
-				)),
+				)),/*
 				new ArrayData(array(
 					"Title" => _t('SMBBCodeParser.ALIGNEMENT', 'Alignment'),
 					"Example" => '[align=right]'._t('SMBBCodeParser.ALIGNEMENTEXAMPLE', 'right aligned').'[/align]'
-				)),
+				)),*/
 				new ArrayData(array(
 					"Title" => _t('SMBBCodeParser.CODE', 'Code Block'),
 					"Description" => _t('SMBBCodeParser.CODEDESCRIPTION', 'Unformatted code block'),
@@ -80,17 +72,12 @@ class SMBBCodeParser extends TextParser {
 					"Title" => _t('SMBBCodeParser.STEPS', 'Steps Block'),
 					"Description" => _t('SMBBCodeParser.STEPSDESCRIPTION', 'Steps block'),
 					"Example" => '[steps]:l: :d: :u: :r:[/steps]'
-				)),
+				)),/*
 				new ArrayData(array(
 					"Title" => _t('SMBBCodeParser.EMAILLINK', 'Email link'),
 					"Description" => _t('SMBBCodeParser.EMAILLINKDESCRIPTION', 'Create link to an email address'),
-					"Example" => "[email]you@yoursite.com[/email]"
-				)),
-				new ArrayData(array(
-					"Title" => _t('SMBBCodeParser.EMAILLINK', 'Email link'),
-					"Description" => _t('SMBBCodeParser.EMAILLINKDESCRIPTION', 'Create link to an email address'),
-					"Example" => "[email=you@yoursite.com]Email[/email]"
-				)),
+					"Example" => "[email]you@yoursite.com[/email] or [email=you@yoursite.com]Email[/email]"
+				)),*/
 				new ArrayData(array(
 					"Title" => _t('SMBBCodeParser.UNORDERED', 'Unordered list'),
 					"Description" => _t('SMBBCodeParser.UNORDEREDDESCRIPTION', 'Unordered list'),
@@ -104,12 +91,7 @@ class SMBBCodeParser extends TextParser {
 				new ArrayData(array(
 					"Title" => _t('SMBBCodeParser.LINK', 'Website link'),
 					"Description" => _t('SMBBCodeParser.LINKDESCRIPTION', 'Link to another website or URL'),
-					"Example" => '[url]http://www.website.com/[/url]'
-				)),
-				new ArrayData(array(
-					"Title" => _t('SMBBCodeParser.LINK', 'Website link'),
-					"Description" => _t('SMBBCodeParser.LINKDESCRIPTION', 'Link to another website or URL'),
-					"Example" => "[url=http://www.website.com/]Website[/url]"
+					"Example" => '[url]http://www.website.com/[/url] or [url=http://www.website.com/]Website[/url]'
 				)),
 				new ArrayData(array(
 					"Title" => _t('SMBBCodeParser.YOUTUBE', 'YouTube Video'),
@@ -129,8 +111,7 @@ class SMBBCodeParser extends TextParser {
 	}
 	
 	/**
-	 * Main BBCode parser method. This takes plain jane content and
-	 * runs it through so many filters 
+	 * Main BBCode parser method. This takes plain jane content and filters it
 	 *
 	 * @return Text
 	 */
