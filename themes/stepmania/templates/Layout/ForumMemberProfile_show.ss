@@ -43,6 +43,10 @@
 				<label class="left"><% _t('ForumMemberProfile_show_ss.AVATAR','Avatar') %>:</label> 
 				<p><img class="userAvatar" src="$FormattedAvatar" alt="<% if Nickname %>$Nickname<% else %>Anon<% end_if %><% _t('ForumMemberProfile_show_ss.USERSAVATAR','&#39;s avatar') %>" /></p>
 			</div>
+			<div id="ForumProfileSignature">
+				<label class="left">Signature:</label>
+				<p class="readonly">$Signature.Parse(SMBBCodeParser)</p>
+			</div>
 		</div>
 	<% end_loop %>
 	<% if LatestPosts %>
