@@ -83,7 +83,7 @@ class SMBBCodeDefinitionSet implements JBBCode\CodeDefinitionSet
 		array_push($this->definitions, $builder->build());
 
 		/* [img=alt text] image tag */
-		$builder = new JBBCode\CodeDefinitionBuilder('img', '<img src="{param} alt="{option}" />');
+		$builder = new JBBCode\CodeDefinitionBuilder('img', '<img src="{param}" alt="{option}" />');
 		$builder->setUseOption(true)->setOptionValidator($urlValidator);
 		array_push($this->definitions, $builder->build());
 
