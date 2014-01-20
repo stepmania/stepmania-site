@@ -145,6 +145,11 @@ class SMBBCodeDefinitionSet implements JBBCode\CodeDefinitionSet
 		$builder = new JBBCode\CodeDefinitionBuilder('code', '<pre class="code">{param}</pre>');
 		$builder->setParseContent(false);
 		array_push($this->definitions, $builder->build());
+
+        /* [abbr=description] abbreviation */
+        $builder = new JBBCode\CodeDefinitionBuilder('abbr', '<abbr title="{option}">{param}</abbr>');
+        $builder->setUseOption(true);
+        array_push($this->definitions, $builder->build());
 	}
 
 	public function getCodeDefinitions()
