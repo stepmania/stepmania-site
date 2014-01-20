@@ -83,8 +83,8 @@ class SMBBCodeDefinitionSet implements JBBCode\CodeDefinitionSet
 		array_push($this->definitions, $builder->build());
 
 		/* [img=alt text] image tag */
-		$builder = new JBBCode\CodeDefinitionBuilder('img', '<img src="{param} alt="{option}" />');
-		$builder->setUseOption(true)->setOptionValidator($urlValidator);
+		$builder = new JBBCode\CodeDefinitionBuilder('img', '<img src="{param}" alt="{option}" />');
+		$builder->setUseOption(true)->setParseContent(false)->setBodyValidator($urlValidator);
 		array_push($this->definitions, $builder->build());
 
 		/* [color] color tag */
@@ -145,6 +145,11 @@ class SMBBCodeDefinitionSet implements JBBCode\CodeDefinitionSet
 		$builder = new JBBCode\CodeDefinitionBuilder('code', '<pre class="code">{param}</pre>');
 		$builder->setParseContent(false);
 		array_push($this->definitions, $builder->build());
+
+        /* [abbr=description] abbreviation */
+        $builder = new JBBCode\CodeDefinitionBuilder('abbr', '<abbr title="{option}">{param}</abbr>');
+        $builder->setUseOption(true);
+        array_push($this->definitions, $builder->build());
 	}
 
 	public function getCodeDefinitions()
