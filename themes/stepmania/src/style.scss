@@ -127,8 +127,16 @@ header {
 				color: white;
 				background: $secondary;
 				transition: background-color 0.5s linear;
+				outline: none;
 				&.current, &.section {
 					border-bottom: 4px solid $primary;
+				}
+				&:active {
+					background: adjust-color($primary,
+						$saturation: -10%,
+						$lightness: -20%
+					) !important;
+					transition: background-color 0.08s linear;
 				}
 				&:hover {
 					color: white;

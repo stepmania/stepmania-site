@@ -305,9 +305,13 @@ header {
         text-decoration: none;
         color: white;
         background: #21201f;
-        transition: background-color 0.5s linear; }
+        transition: background-color 0.5s linear;
+        outline: none; }
         header nav ul li a.current, header nav ul li a.section {
           border-bottom: 4px solid #f0d01f; }
+        header nav ul li a:active {
+          background: #968213 !important;
+          transition: background-color 0.08s linear; }
         header nav ul li a:hover {
           color: white;
           text-decoration: none;
