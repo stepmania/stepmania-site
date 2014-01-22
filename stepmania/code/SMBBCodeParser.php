@@ -116,8 +116,7 @@ class SMBBCodeParser extends TextParser {
 	 * @return Text
 	 */
 	public function parse() {
-		$this->content = htmlspecialchars($this->content);
-		$this->content = htmlentities($this->content);
+		$this->content = htmlentities($this->content, ENT_QUOTES);
 
 		$parser = new JBBCode\Parser();
 		$parser->addCodeDefinitionSet(new SMBBCodeDefinitionSet());
