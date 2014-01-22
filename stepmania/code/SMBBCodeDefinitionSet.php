@@ -102,7 +102,6 @@ class SMBBCodeDefinitionSet implements JBBCode\CodeDefinitionSet
 
 		/* [quote=user] */
 		$builder = new JBBCode\CodeDefinitionBuilder('quote', '<q cite="{option}">{param}</q>');
-		$builder->setUseOption(true)->setOptionValidator(new NickValidator());
 		array_push($this->definitions, $builder->build());
 
 		/* [small=#color] */
