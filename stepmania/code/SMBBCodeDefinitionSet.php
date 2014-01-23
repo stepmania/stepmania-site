@@ -53,6 +53,41 @@ class YoutubeEmbed extends JBBCode\CodeDefinition {
 	}
 }
 
+/**
+ * Implements a [list] code definition that provides the following syntax:
+ *
+ * [list]
+ * [*] first item
+ * [*] second item
+ * [*] third item
+ * [/list]
+ *
+ * @author jbowens
+ */
+class ListCodeDefinition extends JBBCode\CodeDefinition
+{
+	public function __construct()
+	{
+		$this->parseContent = true;
+		$this->useOption = false;
+		$this->setTagName("list");
+		$this->nestLimit = -1;
+	}
+
+	public function asHtml(\JBBCode\ElementNode $el)
+	{
+		$bodyHtml = '';
+		foreach ($el->getChildren() as $child) {
+			$bodyHtml .= $child->getAsHTML();
+		}
+
+		$listPieces = explode('[*]', $bodyHtml);
+		unset($listPieces[0]);
+		$listPieces = array_map(function($li) { return '<li>'.trim($li).'</li>'; }, $listPieces);
+		return '<ul>'.implode('', $listPieces).'</ul>';
+	}
+}
+
 class SMBBCodeDefinitionSet implements JBBCode\CodeDefinitionSet
 {
 	protected $definitions = array();
@@ -152,10 +187,10 @@ class SMBBCodeDefinitionSet implements JBBCode\CodeDefinitionSet
 		$builder->setParseContent(false);
 		array_push($this->definitions, $builder->build());
 
-        /* [abbr=description] abbreviation */
-        $builder = new JBBCode\CodeDefinitionBuilder('abbr', '<abbr title="{option}">{param}</abbr>');
-        $builder->setUseOption(true);
-        array_push($this->definitions, $builder->build());
+		/* [abbr=description] abbreviation */
+		$builder = new JBBCode\CodeDefinitionBuilder('abbr', '<abbr title="{option}">{param}</abbr>');
+		$builder->setUseOption(true);
+		array_push($this->definitions, $builder->build());
 	}
 
 	public function getCodeDefinitions()

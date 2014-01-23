@@ -124,6 +124,8 @@ class SMBBCodeParser extends TextParser {
 		$youtubeEmbed = new YoutubeEmbed();
 		$parser->addCodeDefinition($youtubeEmbed);
 
+		$parser->addCodeDefinition(new ListCodeDefinition());
+
 		$parser->parse($this->content);
 
 		$this->content = $parser->getAsHtml();
