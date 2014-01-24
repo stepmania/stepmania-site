@@ -491,8 +491,6 @@ class Forum_Controller extends Page_Controller {
 		Requirements::javascript("forum/javascript/forum.js");
 		Requirements::javascript("forum/javascript/jquery.MultiFile.js");
 
-		Requirements::themedCSS('forum','forum','all');
-
 		RSSFeed::linkToFeed($this->Parent()->Link("rss/forum/$this->ID"), sprintf(_t('Forum.RSSFORUM',"Posts to the '%s' forum"),$this->Title)); 
 	 	RSSFeed::linkToFeed($this->Parent()->Link("rss"), _t('Forum.RSSFORUMS','Posts to all forums'));
 
