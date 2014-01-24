@@ -488,7 +488,6 @@ class Forum_Controller extends Page_Controller {
 		parent::init();
 		if($this->redirectedTo()) return;
 
-		Requirements::javascript(THIRDPARTY_DIR . "/jquery/jquery.js"); 
 		Requirements::javascript("forum/javascript/forum.js");
 		Requirements::javascript("forum/javascript/jquery.MultiFile.js");
 
