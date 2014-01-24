@@ -7,7 +7,6 @@
 				<img class="avatar" src="$FormattedAvatar" alt="Avatar" /><br />
 				<% if NumPosts %><span class="post-count">Posts: $NumPosts<br /></span><% end_if %>
 				<span class="join-date">Joined: $Created.Format(M Y)<br /></span>
-				<%--<% if ForumRank %><br /><span class="forum-rank">$ForumRank</span><% end_if %>--%>
 			<% end_with %>
 		</div>
 		<div class="container">
