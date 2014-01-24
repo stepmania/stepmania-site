@@ -19,7 +19,9 @@ $Content
 	<% end_loop %>
 <% else %>
 	<% loop Forums %>
-		<% include ForumHolder_List %>
+		<div class="subforums">
+			<% include ForumHolder_List %>
+		</div>
 	<% end_loop %>
 <% end_if %>
 <% include ForumFooter %>
