@@ -17,7 +17,7 @@ class UrlValidator implements JBBCode\InputValidator
 		$scheme = isset($scheme["scheme"]) ? strtolower($scheme["scheme"]) : false;
 
 		// Whitelist schemes we allow people to link to
-		$valid_schemes = array(
+		$allowed_schemes = array(
 			false, // for relative links
 			"http",
 			"https",
@@ -28,7 +28,7 @@ class UrlValidator implements JBBCode\InputValidator
 			"mailto"
 		);
 
-		return $valid_url && in_array($scheme, $valid_schemes);
+		return $valid_url && in_array($scheme, $allowed_schemes);
 	}
 }
 
