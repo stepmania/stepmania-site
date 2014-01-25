@@ -746,8 +746,16 @@ footer p {
     -ms-box-sizing: border-box;
     -o-box-sizing: border-box;
     box-sizing: border-box;
+    display: -webkit-box-flex;
+    display: -webkit-flexbox;
+    display: -ms-flexbox;
+    display: -webkit-box;
+    display: flex;
+    -webkit-flex-direction: column;
+    -webkit-box-orient: horizontal;
+    -ms-flex-direction: column;
+    flex-direction: column;
     width: 100%;
-    min-height: 225px;
     padding: 14px;
     line-height: 1.4em;
     overflow: hidden;
@@ -814,7 +822,9 @@ footer p {
     background-image: -o-linear-gradient(top, white, #f2f2f2);
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='white', endColorstr='#f2f2f2',GradientType=0);
     background-image: linear-gradient(top, white, #f2f2f2);
-    overflow: auto; }
+    overflow: auto;
+    margin: -14px;
+    margin-top: 0; }
     .forum-post footer .post-date {
       padding: 14px;
       display: inline-block; }

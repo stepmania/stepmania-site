@@ -296,8 +296,9 @@
 	}
 	.user-content {
 		@include box-sizing(border-box);
+		@include display-flex;
+		@include flex-direction(row);
 		width: 100%;
-		min-height: 225px;
 		padding: $spacing;
 		line-height: 1.4em;
 		overflow: hidden; // damn you, Jousway!
@@ -380,6 +381,8 @@
 		background: $bottom;
 		@include gradient($top, $bottom);
 		overflow: auto;
+		margin: -$spacing;
+		margin-top: 0;
 		.post-date {
 			padding: $spacing;
 			display: inline-block;

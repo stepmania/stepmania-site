@@ -13,21 +13,21 @@
 			<div class="post-type">
 				$Content.Parse(SMBBCodeParser)
 			</div>
-		<% if Updated %>
+			<% if Updated %>
 			<p class="post-edited"><% _t('SinglePost_ss.LASTEDITED','Last edited:') %> $Updated.Long <% _t('SinglePost_ss.AT') %> $Updated.Time</p>
-		<% end_if %>
+			<% end_if %>
 		
-		<% if Thread.DisplaySignatures %>
+			<% if Thread.DisplaySignatures %>
 			<% with Author %>
-				<% if Signature %>
-					<div class="signature">
-						$Signature.Parse(SMBBCodeParser)
-					</div>
-				<% end_if %>
+			<% if Signature %>
+			<div class="signature">
+				$Signature.Parse(SMBBCodeParser)
+			</div>
+			<% end_if %>
 			<% end_with %>
-		<% end_if %>
+			<% end_if %>
 
-		<% if Attachments %>
+			<% if Attachments %>
 			<div class="attachments">
 				<strong><% _t('SinglePost_ss.ATTACHED','Attached Files') %></strong> 
 				<ul class="post-attachments">
@@ -40,16 +40,16 @@
 				<% end_loop %>
 				</ul>
 			</div>
-		<% end_if %>
+			<% end_if %>
+			<footer>
+				<span class="post-date"><a href="$Link" class="li_clip" rel="permalink" title="Permalink to this post"></a> <% if Created.IsToday %>Today<% else %>$Created.Full<% end_if %>, $Created.Time</span>
+				<span class="quick-reply">
+					<a href="$Top.ReplyLink" class="replyLink" x-post-data="$Content.XML" x-post-author="$Author.Nickname.XML" x-post-id="post{$ID}">Reply</a>
+					<% if EditLink %>$EditLink<% end_if %>
+					<% if DeleteLink %>$DeleteLink<% end_if %>
+					<% if MarkAsSpamLink %>$MarkAsSpamLink<% end_if %>
+				</span>
+			</footer>
 		</div>
-		<footer>
-			<span class="post-date"><a href="$Link" class="li_clip" rel="permalink" title="Permalink to this post"></a> <% if Created.IsToday %>Today<% else %>$Created.Full<% end_if %>, $Created.Time</span>
-			<span class="quick-reply">
-				<a href="$Top.ReplyLink" class="replyLink" x-post-data="$Content.XML" x-post-author="$Author.Nickname.XML" x-post-id="post{$ID}">Reply</a>
-				<% if EditLink %>$EditLink<% end_if %>
-				<% if DeleteLink %>$DeleteLink<% end_if %>
-				<% if MarkAsSpamLink %>$MarkAsSpamLink<% end_if %>
-			</span>
-		</footer>
 	</div>
 </div>
