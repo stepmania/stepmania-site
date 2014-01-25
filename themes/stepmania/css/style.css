@@ -488,13 +488,15 @@ footer p {
   margin: 14px 0; }
   .forum-news .forum-post {
     display: block; }
-  .forum-news footer p {
-    padding: 14px 0 0 0;
-    color: black; }
-  .forum-news footer .post-modifiers {
-    float: right; }
-    .forum-news footer .post-modifiers a {
-      margin: 7px; }
+  .forum-news footer {
+    margin: 0 !important; }
+    .forum-news footer p {
+      padding: 14px 0 0 0;
+      color: black; }
+    .forum-news footer .post-modifiers {
+      float: right; }
+      .forum-news footer .post-modifiers a {
+        margin: 7px; }
 
 .subforums, .forum-topics {
   margin-bottom: 14px;
