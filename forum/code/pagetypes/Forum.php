@@ -1049,7 +1049,7 @@ class Forum_Controller extends Page_Controller {
 
 			RSSFeed::linkToFeed($this->Link("rss") . '/thread/' . (int) $this->urlParams['ID'], $posts);
 
-			$title = 'Topic: ' . Convert::raw2xml($thread->Title); // . ' &raquo; ' . $title;
+			$title = Convert::raw2xml($thread->Title); // . ' &raquo; ' . $title;
 			$field = DBField::create_field('HTMLText', $title);
 
 			return array(
