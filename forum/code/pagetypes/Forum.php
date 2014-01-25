@@ -722,6 +722,7 @@ class Forum_Controller extends Page_Controller {
 			"url" => "url",
 			"img" => "img",
 			"code" => "&lt;code /&gt;",
+			"quote" => "quote",
 			"youtube" => "youtube",
 		);
 
