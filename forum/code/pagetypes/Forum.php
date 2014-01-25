@@ -714,8 +714,31 @@ class Forum_Controller extends Page_Controller {
 
 		$forumBBCodeHint = $this->renderWith('Forum_BBCodeHint');
 
+		$buttons = array(
+			"b" => "<strong>b</strong>",
+			"i" => "<em>i</em>",
+			"u" => "<u>u</u>",
+			"s" => "<s> s </s>",
+			"url" => "url",
+			"img" => "img",
+			"code" => "&lt;code /&gt;",
+			"youtube" => "youtube",
+		);
+
+		$buttonHTML = "";
+
+		foreach ($buttons as $k => $v) {
+			$buttonHTML .= "<button data-tag=\"$k\">$v</button>";
+		}
+
 		$fields = new FieldList(
 			($post && $post->isFirstPost() || !$thread) ? new TextField("Title", _t('Forum.FORUMTHREADTITLE', 'Title')) : new ReadonlyField('Title',  _t('Forum.FORUMTHREADTITLE', ''), 'Re:'. $thread->Title),
+			new LiteralField(
+				"EditorButtons",
+				"<div class=\"BBCodeButtons\">" .
+				$buttonHTML .
+				"</div>"
+			),
 			new TextareaField("Content", _t('Forum.FORUMREPLYCONTENT', 'Content')),
 			new LiteralField(
 				"BBCodeHelper", 
