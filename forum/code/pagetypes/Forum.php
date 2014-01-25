@@ -733,7 +733,7 @@ class Forum_Controller extends Page_Controller {
 		}
 
 		$fields = new FieldList(
-			($post && $post->isFirstPost() || !$thread) ? new TextField("Title", _t('Forum.FORUMTHREADTITLE', 'Title')) : new ReadonlyField('Title',  _t('Forum.FORUMTHREADTITLE', ''), 'Re:'. $thread->Title),
+			($post && $post->isFirstPost() || !$thread) ? new TextField("Title", _t('Forum.FORUMTHREADTITLE', 'Title')) : new ReadonlyField('Title',  _t('Forum.FORUMTHREADTITLE', ''), 'Re: 	'. $thread->Title),
 			new LiteralField(
 				"EditorButtons",
 				"<div class=\"BBCodeButtons\">" .
@@ -787,23 +787,18 @@ class Forum_Controller extends Page_Controller {
 
 		$form = new Form($this, 'PostMessageForm', $fields, $actions, $required);
 
+		if ($thread) {
+			if ($post)
+				$this->Title = "Editing Post";
+			else
+				$this->Title = "Re: " . $thread->Title;
+		} else {
+			$this->Title = "New Topic";
+		}
+
 		if($post) $form->loadDataFrom($post);
 		
 		return $form;
-	}
-	
-	/**
-	 * Wrapper for older templates. Previously the new, reply and edit forms were 3 separate
-	 * forms, they have now been refactored into 1 form. But in order to not break existing 
-	 * themes too much just include this.
-	 *
-	 * @deprecated 0.5 
-	 * @return Form
-	 */
-	function ReplyForm() {
-		user_error('Please Use $PostMessageForm in your template rather that $ReplyForm', E_USER_WARNING);
-		
-		return $this->PostMessageForm();
 	}
 	
 	/**
