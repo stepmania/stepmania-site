@@ -170,6 +170,10 @@ class SMBBCodeDefinitionSet implements JBBCode\CodeDefinitionSet
 		$builder = new JBBCode\CodeDefinitionBuilder('center', '<span class="center">{param}</span>');
 		array_push($this->definitions, $builder->build());
 
+		/* [right] */
+		$builder = new JBBCode\CodeDefinitionBuilder('center', '<span class="right">{param}</span>');
+		array_push($this->definitions, $builder->build());
+
 		/* [rainbow] */
 		$builder = new JBBCode\CodeDefinitionBuilder('rainbow', '<span class="rainbow">{param}</span>');
 		array_push($this->definitions, $builder->build());
