@@ -680,6 +680,14 @@ class Forum_Controller extends Page_Controller {
 	 * @return Form Returns the post message form
 	 */
 	function PostMessageForm($addMode = false, $post = false) {
+		Requirements::javascript("stepmania/javascript/jquery-2.0.3.min.js");
+		Requirements::javascript("stepmania/javascript/markitup/jquery.markitup.js");
+		Requirements::css("stepmania/javascript/markitup/skins/stepmania/style.css");
+		Requirements::javascript("stepmania/javascript/markitup/sets/bbcode/set.js");
+		Requirements::css("stepmania/javascript/markitup/sets/bbcode/style.css");
+		Requirements::javascript("stepmania/javascript/colorpicker/js/colorpicker.js");
+		Requirements::css("stepmania/javascript/colorpicker/css/colorpicker.css");
+
 		$thread = false;
 
 		if($post) $thread = $post->Thread();
@@ -714,32 +722,8 @@ class Forum_Controller extends Page_Controller {
 
 		$forumBBCodeHint = $this->renderWith('Forum_BBCodeHint');
 
-		$buttons = array(
-			"b" => "<strong>b</strong>",
-			"i" => "<em>i</em>",
-			"u" => "<u>u</u>",
-			"s" => "<s> s </s>",
-			"url" => "url",
-			"img" => "img",
-			"code" => "&lt;code /&gt;",
-			"quote" => "quote",
-			"youtube" => "youtube",
-		);
-
-		$buttonHTML = "";
-
-		foreach ($buttons as $k => $v) {
-			$buttonHTML .= "<button data-tag=\"$k\">$v</button>";
-		}
-
 		$fields = new FieldList(
 			($post && $post->isFirstPost() || !$thread) ? new TextField("Title", _t('Forum.FORUMTHREADTITLE', 'Title')) : new ReadonlyField('Title',  _t('Forum.FORUMTHREADTITLE', ''), 'Re: 	'. $thread->Title),
-			new LiteralField(
-				"EditorButtons",
-				"<div class=\"BBCodeButtons\">" .
-				$buttonHTML .
-				"</div>"
-			),
 			new TextareaField("Content", _t('Forum.FORUMREPLYCONTENT', 'Content')),
 			new LiteralField(
 				"BBCodeHelper", 
@@ -786,6 +770,24 @@ class Forum_Controller extends Page_Controller {
 		$required = $addMode === true ? new RequiredFields("Title", "Content") : new RequiredFields("Content");
 
 		$form = new Form($this, 'PostMessageForm', $fields, $actions, $required);
+
+		Requirements::customScript(<<<EX
+(function($) {
+	$(function () {
+		var form = $('#{$form->FormName()}');
+		form.find('[name=Content]').css('resize', 'none').markItUp(mySettings);
+		form.find('.color').ColorPicker({
+			onSubmit: function(hsb, hex, rgb, el) {
+				$.markItUp({
+					openWith: '[color=#' + hex + ']',
+					closeWith: '[/color]'
+				});
+			}
+		});
+	})
+})(jQuery);
+EX
+		);
 
 		if ($thread) {
 			if ($post)

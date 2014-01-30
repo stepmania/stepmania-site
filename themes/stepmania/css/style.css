@@ -798,6 +798,12 @@ footer p {
       border-radius: 3.5px;
       box-shadow: 0 1px 1px rgba(0, 0, 0, 0.25);
       background: rgba(237, 236, 235, 0.25); }
+    .forum-post .user-content .center {
+      display: block;
+      text-align: center; }
+    .forum-post .user-content .right {
+      display: block;
+      text-align: right; }
     .forum-post .user-content .codesnippet {
       overflow: auto;
       font-family: monospace;
