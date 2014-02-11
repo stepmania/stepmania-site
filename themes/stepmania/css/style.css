@@ -804,11 +804,11 @@ footer p {
     .forum-post .user-content .right {
       display: block;
       text-align: right; }
-    .forum-post .user-content .codesnippet {
+    .forum-post .user-content .code {
       overflow: auto;
       font-family: monospace;
       white-space: pre; }
-      .forum-post .user-content .codesnippet br {
+      .forum-post .user-content .code br {
         display: none; }
     .forum-post .user-content .post-edited {
       margin-top: 1em;
