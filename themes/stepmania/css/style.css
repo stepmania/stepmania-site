@@ -915,55 +915,55 @@ footer p {
     flex-direction: column; }
     .forum-subforum .subforum-latest, .forum-subforum .topic-latest, .forum-topic .subforum-latest, .forum-topic .topic-latest {
       margin-top: 14px; } }
-.WikiPage-article {
+.WikiPage-article, .Page-article {
   line-height: 1.4em; }
-  .WikiPage-article ol, .WikiPage-article ul {
+  .WikiPage-article ol, .WikiPage-article ul, .Page-article ol, .Page-article ul {
     margin-bottom: 1em; }
-    .WikiPage-article ol li, .WikiPage-article ul li {
+    .WikiPage-article ol li, .WikiPage-article ul li, .Page-article ol li, .Page-article ul li {
       margin-left: 20px; }
-  .WikiPage-article ul li {
+  .WikiPage-article ul li, .Page-article ul li {
     list-style-type: disc; }
-  .WikiPage-article ol li {
+  .WikiPage-article ol li, .Page-article ol li {
     list-style-type: decimal; }
-  .WikiPage-article code {
+  .WikiPage-article code, .Page-article code {
     font-family: monospace;
     font-size: 90%;
     background: #eee;
     box-shadow: 0 0 0 2px #eee; }
-  .WikiPage-article h1, .WikiPage-article h2, .WikiPage-article h3, .WikiPage-article h4, .WikiPage-article h5, .WikiPage-article h6 {
+  .WikiPage-article h1, .WikiPage-article h2, .WikiPage-article h3, .WikiPage-article h4, .WikiPage-article h5, .WikiPage-article h6, .Page-article h1, .Page-article h2, .Page-article h3, .Page-article h4, .Page-article h5, .Page-article h6 {
     margin-top: 2em;
     font-weight: bold; }
-    .WikiPage-article h1:first-child, .WikiPage-article h2:first-child, .WikiPage-article h3:first-child, .WikiPage-article h4:first-child, .WikiPage-article h5:first-child, .WikiPage-article h6:first-child {
+    .WikiPage-article h1:first-child, .WikiPage-article h2:first-child, .WikiPage-article h3:first-child, .WikiPage-article h4:first-child, .WikiPage-article h5:first-child, .WikiPage-article h6:first-child, .Page-article h1:first-child, .Page-article h2:first-child, .Page-article h3:first-child, .Page-article h4:first-child, .Page-article h5:first-child, .Page-article h6:first-child {
       margin-top: 0; }
-  .WikiPage-article h1 {
+  .WikiPage-article h1, .Page-article h1 {
     font-size: 150%; }
-  .WikiPage-article h2 {
+  .WikiPage-article h2, .Page-article h2 {
     font-size: 120%; }
-  .WikiPage-article h3 {
+  .WikiPage-article h3, .Page-article h3 {
     font-size: 110%; }
-  .WikiPage-article h4 {
+  .WikiPage-article h4, .Page-article h4 {
     font-size: 105%; }
-  .WikiPage-article h5, .WikiPage-article h6 {
+  .WikiPage-article h5, .WikiPage-article h6, .Page-article h5, .Page-article h6 {
     font-size: 100%; }
-  .WikiPage-article #Form_EditForm #Content textarea {
+  .WikiPage-article #Form_EditForm #Content textarea, .Page-article #Form_EditForm #Content textarea {
     min-width: 100%;
     max-width: 100%;
     min-height: 30em;
     resize: vertical; }
-  .WikiPage-article .wiki-meta {
+  .WikiPage-article .wiki-meta, .Page-article .wiki-meta {
     border-radius: 3.5px;
     border: 1px solid #ccc;
     margin-top: 1em;
     padding: 14px;
     background: #eee; }
-    .WikiPage-article .wiki-meta ul {
+    .WikiPage-article .wiki-meta ul, .Page-article .wiki-meta ul {
       margin-bottom: 0; }
-      .WikiPage-article .wiki-meta ul li {
+      .WikiPage-article .wiki-meta ul li, .Page-article .wiki-meta ul li {
         list-style-type: none;
         margin-left: 0; }
-    .WikiPage-article .wiki-meta h3 {
+    .WikiPage-article .wiki-meta h3, .Page-article .wiki-meta h3 {
       margin-top: 1em; }
-      .WikiPage-article .wiki-meta h3:first-child {
+      .WikiPage-article .wiki-meta h3:first-child, .Page-article .wiki-meta h3:first-child {
         margin-top: 0; }
 
 .message {
