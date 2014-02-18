@@ -38,7 +38,7 @@
 		<% include ForumLogin %>
 	</div>
 	<footer class="limit-width">
-		<p>StepMania is open source software released under the MIT License.</p>
+		<p>StepMania is open source software released under the MIT License. <a href="policies">Privacy Policy</a></p>
 	</footer>
 	<% with SiteConfig %>
 	<% if AnalyticsID %>
