@@ -11,6 +11,7 @@ class Page extends SiteTree {
 		"BannerContent" => "HTMLText"
 	);
 }
+
 class Page_Controller extends ContentController {
 	private static $allowed_actions = array();
 
@@ -19,7 +20,7 @@ class Page_Controller extends ContentController {
 
 		Requirements::clear();
 		Requirements::block("cms/css/SilverStripeNavigator.css");
-//		Requirements::block("framework/thirdparty/jquery/jquery.js");
+		//Requirements::block(THIRDPARTY_DIR . "/jquery/jquery.js");
 	}
 
 }
