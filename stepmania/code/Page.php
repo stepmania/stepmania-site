@@ -18,6 +18,8 @@ class Page_Controller extends ContentController {
 	public function init() {
 		parent::init();
 
+        $this->response->addHeader('X-Frame-Options', 'SAMEORIGIN');
+
 		Requirements::clear();
 		Requirements::block("cms/css/SilverStripeNavigator.css");
 		//Requirements::block(THIRDPARTY_DIR . "/jquery/jquery.js");
