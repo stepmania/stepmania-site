@@ -815,7 +815,10 @@ footer p {
       color: #555;
       font-style: italic; }
     .forum-post .user-content .post-type {
-      display: block; }
+      display: block;
+      -webkit-flex: 1 0 auto;
+      -ms-flex: 1 0 auto;
+      flex: 1 0 auto; }
     .forum-post .user-content .signature {
       -webkit-flex: 1 0 auto;
       -ms-flex: 1 0 auto;

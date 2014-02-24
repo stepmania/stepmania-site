@@ -371,6 +371,7 @@
 		}
 		.post-type {
 			display: block;
+			@include flex(1 0 auto);
 		}
 		.signature {
 			@include flex(1 0 auto);
