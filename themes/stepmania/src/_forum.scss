@@ -372,7 +372,9 @@
 		.post-type {
 			display: block;
 		}
-		.signature {}
+		.signature {
+			@include flex(1 0 auto);
+		}
 		.attachments {}
 	}
 	header {
