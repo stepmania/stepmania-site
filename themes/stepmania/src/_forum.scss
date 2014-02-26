@@ -378,15 +378,6 @@
 		}
 		.attachments {}
 	}
-	header {
-		// note to self: use better selectors. -Colby
-		$top: lighten($primary, 5%);
-		$bottom: $primary;
-		background: $bottom !important;
-		background: -moz-linear-gradient(top, $top, $bottom)  !important;
-		background: -webkit-linear-gradient(top, $top, $bottom)  !important;
-		margin-bottom: 0 !important;
-	}
 	footer {
 		$top: white;//lighten($secondary, 75%);
 		$bottom: darken($top, 5%);

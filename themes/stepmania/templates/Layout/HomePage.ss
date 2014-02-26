@@ -39,7 +39,7 @@ $Content
 		<footer>
 			<span class="post-date"><a href="$Link" rel="permalink" title="Permalink to this post" class="li_clip"><span>#$ID</span></a> Posted <% if Created.IsToday %>Today<% else %>$Created.Date<% end_if %>, $Created.Time by <a href="$Author.Link">$Author.Nickname</a></span>
 			<span class="quick-reply">
-				<a href="$Top.ReplyLink" class="replyLink" x-post-data="$Content.XML" x-post-author="$Author.Nickname.XML" x-post-id="post{$ID}">Reply</a>
+				<a href="$ReplyLink" class="replyLink" x-post-data="$Content.XML" x-post-author="$Author.Nickname.XML" x-post-id="post{$ID}">Reply</a>
 					<% if EditLink %>
 					$EditLink
 					<% end_if %>

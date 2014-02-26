@@ -385,7 +385,8 @@ footer p {
 .HomePage-article .forum-post {
   margin-bottom: 1em; }
   .HomePage-article .forum-post header {
-    padding: 14px; }
+    padding: 14px;
+    padding-bottom: 0; }
   .HomePage-article .forum-post header h2 {
     margin-bottom: 0; }
   .HomePage-article .forum-post footer .post-date {
@@ -823,11 +824,6 @@ footer p {
       -webkit-flex: 1 0 auto;
       -ms-flex: 1 0 auto;
       flex: 1 0 auto; }
-  .forum-post header {
-    background: #f0d01f !important;
-    background: -moz-linear-gradient(top, #f2d537, #f0d01f) !important;
-    background: -webkit-linear-gradient(top, #f2d537, #f0d01f) !important;
-    margin-bottom: 0 !important; }
   .forum-post footer {
     background: #f2f2f2;
     background-image: -webkit-gradient(linear, top, from(white), to(#f2f2f2));
