@@ -94,10 +94,10 @@
 	@include display-flex;
 }
 .forum-flex-left {
-	@include flex(1 0 0);
+	@include flex(1);
 }
 .forum-flex-mid {
-	@include flex(1 0 0);
+	@include flex(1);
 	max-width: 150px;
 }
 .forum-flex-right {

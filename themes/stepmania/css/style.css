@@ -540,14 +540,14 @@ footer p {
   display: flex; }
 
 .forum-flex-left {
-  -webkit-flex: 1 0 0;
-  -ms-flex: 1 0 0;
-  flex: 1 0 0; }
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1; }
 
 .forum-flex-mid {
-  -webkit-flex: 1 0 0;
-  -ms-flex: 1 0 0;
-  flex: 1 0 0;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
   max-width: 150px; }
 
 .forum-flex-right {
