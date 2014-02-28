@@ -32,20 +32,22 @@
 	});
 
 	$(".replyLink").click(function(){
-		var post = $(this);
-		var postData = {
-			id: post.attr("x-post-id"),
-			user: post.attr("x-post-author"),
-			data: post.attr("x-post-data")
-		};
-		editor.val(
-			editor.val() +
-			"[quote=" + postData.user + "]" +
-			postData.data +
-			"[/quote]\n"
-		);
-		editor.focus();
-		return false;
+        if (editor.length > 0) {
+            var post = $(this);
+            var postData = {
+                id: post.attr("x-post-id"),
+                user: post.attr("x-post-author"),
+                data: post.attr("x-post-data")
+            };
+            editor.val(
+                editor.val() +
+                "[quote=" + postData.user + "]" +
+                postData.data +
+                "[/quote]\n"
+            );
+            editor.focus();
+            return false;
+        }
 	});
 
     /* Forum stuff */
