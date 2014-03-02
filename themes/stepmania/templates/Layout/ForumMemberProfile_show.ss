@@ -19,7 +19,7 @@
 			</div>
 			<div id="ForumProfileCustomTitle">
 				<label class="left">Custom title:</label>
-				<p class="readonly">$CustomTitle</p>
+				<p class="readonly"><% if CustomTitle %>$CustomTitle<% else %>&nbsp;<% end_if %></p>
 			</div>
 			<% if EmailPublic %>
 			<div id="ForumProfileEmail"><label class="left"><% _t('ForumMemberProfile_show_ss.EMAIL','Email') %>:</label> <p class="readonly"><a href="mailto:$Email">$Email</a></p></div>
