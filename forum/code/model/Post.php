@@ -68,7 +68,7 @@ class Post extends DataObject {
 		parent::onAfterWrite();
 
 		// Tell the thread this is the most recently added or edited.
-		if ($this->ThreadID) $this->Thread()->updateLastPost($this);
+		if ($this->ThreadID) $this->Thread()->updateLastPost();
 	}
 
 	function onAfterDelete() {
