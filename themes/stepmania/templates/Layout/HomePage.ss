@@ -5,7 +5,7 @@ $Content
 	<% with NewsForum %>
 		<% if Topics %>
 		<% loop Topics.Limit(15) %>
-			<% loop Posts(1).Limit(1) %>
+			<% with FirstPost %>
 	<div id="post{$ID}" class="forum-post">
 		<header>
 			<h2><a href="$Link">$Title</a></h2>
@@ -52,7 +52,7 @@ $Content
 			</span>
 		</footer>
 	</div>
-			<% end_loop %>
+			<% end_with %>
 		<% end_loop %>
 		<% end_if %>
 	<% end_with %>
