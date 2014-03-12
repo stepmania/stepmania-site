@@ -62,13 +62,13 @@ class Post extends DataObject {
 
 	/**
 	 * After saving this post, update the {@link ForumThread} with information
-	 * that this is now the most recent post
+	 * that the most recent post could have changed.
 	 */
 	function onAfterWrite() {
 		parent::onAfterWrite();
 
-		// Tell the thread this is the most recently added or edited.
-		if ($this->ThreadID) $this->Thread()->updateLastPost($this);
+		// Force thread to recalculate it's most recent.
+		if ($this->ThreadID) $this->Thread()->updateLastPost();
 	}
 
 	function onAfterDelete() {
