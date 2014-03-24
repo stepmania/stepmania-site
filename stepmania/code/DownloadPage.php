@@ -54,12 +54,18 @@ class DownloadPage extends Page {
 class DownloadPage_Controller extends Page_Controller {
 	static function mime2platform($mime) {
 		$types = array(
-			"application/octet-stream" => "windows",
-			"application/x-apple-diskimage" => "mac"
+			"application/octet-stream" => "Windows",
+			"application/x-apple-diskimage" => "Mac"
 		);
 		if (array_key_exists($mime, $types))
 			return $types[$mime];
 		return "Any";
+	}
+
+	static function munge($thing) {
+		$ret = strtolower($thing);
+		$ret = str_replace(" ", "-", $ret);
+		return $ret;
 	}
 
 	function getDownloads() {
@@ -81,9 +87,10 @@ class DownloadPage_Controller extends Page_Controller {
 
 			foreach ($release->assets as $asset) {
 				$downloads->add(new ArrayData(array(
-					"Name" => $asset->name,
+					"Name" => $release->name,
 					"Link" => $url . "/" . $asset->name,
 					"Platform" => self::mime2platform($asset->content_type),
+					"Icon" => self::munge(self::mime2platform($asset->content_type)),
 					"Size" => File::format_size($asset->size),
 					"ContentType" => $asset->content_type,
 					"PublishedAt" => date_format($date, "Y-m-d")
@@ -91,9 +98,10 @@ class DownloadPage_Controller extends Page_Controller {
 			}
 
 			$downloads->add(new ArrayData(array(
-				"Name" => "Source (tar.gz)",
+				"Name" => $release->name . " Source (tar.gz)",
 				"Link" => $release->tarball_url,
 				"Platform" => "Any",
+				"Icon" => "source",
 				"Size" => false,
 				"PublishedAt" => date_format($date, "Y-m-d")
 			)));

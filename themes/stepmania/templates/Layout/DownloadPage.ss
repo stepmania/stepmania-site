@@ -3,11 +3,7 @@
 	<div class="downloads forum-flex-left">
 		<% loop Downloads %>
 		<div class="download">
-			<h2><a href="$Link">$Name</a></h2>
-			<div class="download-info">
-				<p>Platform: $Platform</p>
-				<p>Size: $Size</p>
-			</div>
+			<h2><a href="$Link">$Name ($Platform)<% if Size %><small> ~ $Size</small><% end_if %></a></h2>
 		</div>
 		<% end_loop %>
 	</div>
