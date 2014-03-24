@@ -428,15 +428,33 @@ footer p {
   background: -webkit-linear-gradient(top, #f6f3e5, #efebd2 50px);
   display: block;
   margin-bottom: 14px; }
+  .downloads .download.download-windows h2 a {
+    background: #21201f url("../images/windows.png") no-repeat 32px -16px; }
+  .downloads .download.download-mac h2 a {
+    background: #21201f url("../images/mac.png") no-repeat 32px -16px; }
+  .downloads .download.download-source h2 a {
+    background: #21201f url("../images/linux.png") no-repeat 32px -16px; }
   .downloads .download h2 a {
     display: block;
-    background: #21201f url("../images/av_download.png") no-repeat 8px 8px;
-    border-top-left-radius: 3.5px;
-    border-top-right-radius: 3.5px;
+    background: #21201f;
+    border-radius: 3.5px;
+    border-radius: 3.5px;
     color: #f0d01f;
-    padding: 14px;
+    padding: 28px;
     background-size: 28px 28px;
-    padding-left: 44px; }
+    text-decoration: none;
+    -webkit-transition: background-color 0.1s linear;
+    -moz-transition: background-color 0.1s linear;
+    -ms-transition: background-color 0.1s linear;
+    -o-transition: background-color 0.1s linear;
+    transition: background-color 0.1s linear; }
+  .downloads .download h2 a:hover {
+    background-color: #4c4832;
+    -webkit-transition: background-color 0.1s linear;
+    -moz-transition: background-color 0.1s linear;
+    -ms-transition: background-color 0.1s linear;
+    -o-transition: background-color 0.1s linear;
+    transition: background-color 0.1s linear; }
   .downloads .download:last-child {
     margin-bottom: 0; }
   .downloads .download .download-info {

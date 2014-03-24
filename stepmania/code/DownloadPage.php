@@ -103,6 +103,7 @@ class DownloadPage_Controller extends Page_Controller {
 				"Platform" => "Any",
 				"Icon" => "source",
 				"Size" => false,
+				"ContentType" => false,
 				"PublishedAt" => date_format($date, "Y-m-d")
 			)));
 

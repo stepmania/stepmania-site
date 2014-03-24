@@ -33,16 +33,30 @@
 }
 .downloads {
 	.download {
+		&.download-windows h2 a {
+			background: $secondary url('../images/windows.png') no-repeat 32px -16px;
+		}
+		&.download-mac h2 a {
+			background: $secondary url('../images/mac.png') no-repeat 32px -16px;
+		}
+		&.download-source h2 a {
+			background: $secondary url('../images/linux.png') no-repeat 32px -16px;
+		}
 		h2 {
 			a {
 				display: block;
-				background: $secondary url('../images/av_download.png') no-repeat 8px 8px;
-				border-top-left-radius: $spacing / 4;
-				border-top-right-radius: $spacing / 4;
+				background: $secondary;
+				border-radius: $spacing / 4;
+				border-radius: $spacing / 4;
 				color: $primary;
-				padding: $spacing;
+				padding: $spacing * 2;
 				background-size: 28px 28px;
-				padding-left: $spacing + 30px;
+				text-decoration: none;
+				@include transition(background-color 0.1s linear);
+			}
+			a:hover {
+				background-color: desaturate(mix($secondary, $primary, 70%), 30%);
+				@include transition(background-color 0.1s linear);
 			}
 		}
 		&:last-child {
