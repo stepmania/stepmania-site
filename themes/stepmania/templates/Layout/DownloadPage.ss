@@ -3,12 +3,10 @@
 	<div class="downloads forum-flex-left">
 		<% loop Downloads %>
 		<div class="download">
-			<h2><a href="$Link">$Title</a></h2>
+			<h2><a href="$Link">$Name</a></h2>
 			<div class="download-info">
 				<p>Platform: $Platform</p>
-				<p>Architecture: $Architecture</p>
 				<p>Size: $Size</p>
-				<p>Downloads: $DownloadCount <small>($TotalDownloadSize Total)</small></p>
 			</div>
 		</div>
 		<% end_loop %>
