@@ -1,7 +1,10 @@
 <?php
-
-// Bind TeamCity test listener. Echos messages to stdout that TeamCity interprets into the test results
-
+/**
+ * Bind TeamCity test listener. Echos messages to stdout that TeamCity interprets into the test results
+ *
+ * @package framework
+ * @subpackage testing
+ */
 class TeamCityListener implements PHPUnit_Framework_TestListener {
 	
 	private function escape($str) {
@@ -58,4 +61,16 @@ class TeamCityListener implements PHPUnit_Framework_TestListener {
 		$message = $this->escape($e->getMessage());
 		echo "##teamcity[testIgnored name='{$class}.{$test->getName()}' message='$message']\n";
 	}
+
+        /**
+         * Risky test.
+         *
+         * @param PHPUnit_Framework_Test $test
+         * @param Exception              $e
+         * @param float                  $time
+         * @since  Method available since Release 3.8.0
+         */
+        public function addRiskyTest(PHPUnit_Framework_Test $test, Exception $e, $time) {
+    	         // Stub out to support PHPUnit 3.8
+        }
 }

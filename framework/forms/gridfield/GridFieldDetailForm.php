@@ -13,7 +13,7 @@
  *  - <FormURL>/field/<GridFieldName>/item/<RecordID>
  *  - <FormURL>/field/<GridFieldName>/item/<RecordID>/edit
  *
- * @package framework
+ * @package forms
  * @subpackage fields-gridfield
  */
 class GridFieldDetailForm implements GridField_URLHandler {
@@ -89,6 +89,12 @@ class GridFieldDetailForm implements GridField_URLHandler {
 
 		$handler = Object::create($class, $gridField, $this, $record, $controller, $this->name);
 		$handler->setTemplate($this->template);
+
+		// if no validator has been set on the GridField and the record has a
+		// CMS validator, use that.
+		if(!$this->getValidator() && method_exists($record, 'getCMSValidator')) {
+			$this->setValidator($record->getCMSValidator());
+		}
 
 		return $handler->handleRequest($request, DataModel::inst());
 	}
@@ -170,7 +176,7 @@ class GridFieldDetailForm implements GridField_URLHandler {
 		} else if(ClassInfo::exists(get_class($this) . "_ItemRequest")) {
 			return get_class($this) . "_ItemRequest";
 		} else {
-			return 'GridFieldItemRequest_ItemRequest';
+			return 'GridFieldDetailForm_ItemRequest';
 		}
 	}
 
@@ -190,7 +196,7 @@ class GridFieldDetailForm implements GridField_URLHandler {
 }
 
 /**
- * @package framework
+ * @package forms
  * @subpackage fields-gridfield
  */
 class GridFieldDetailForm_ItemRequest extends RequestHandler {
@@ -349,7 +355,7 @@ class GridFieldDetailForm_ItemRequest extends RequestHandler {
 			if($canDelete) {
 				$actions->push(FormAction::create('doDelete', _t('GridFieldDetailForm.Delete', 'Delete'))
 					->setUseButtonTag(true)
-					->addExtraClass('ss-ui-action-destructive'));
+					->addExtraClass('ss-ui-action-destructive action-delete'));
 			}
 
 		}else{ // adding new record
@@ -372,8 +378,26 @@ class GridFieldDetailForm_ItemRequest extends RequestHandler {
 				$actions->push(new LiteralField('cancelbutton', $text));
 			}
 		}
+
 		$fields = $this->component->getFields();
 		if(!$fields) $fields = $this->record->getCMSFields();
+
+		// If we are creating a new record in a has-many list, then
+		// pre-populate the record's foreign key. Also disable the form field as
+		// it has no effect.
+		if($list instanceof HasManyList) {
+			$key = $list->getForeignKey();
+			$id = $list->getForeignID();
+
+			if(!$this->record->isInDB()) {
+				$this->record->$key = $id;
+			}
+
+			if($field = $fields->dataFieldByName($key)) {
+				$fields->makeFieldReadonly($field);
+			}
+		}
+
 		$form = new Form(
 			$this,
 			'ItemEditForm',

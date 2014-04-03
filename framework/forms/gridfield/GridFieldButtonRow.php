@@ -8,7 +8,7 @@
  * This row provides two new HTML fragment spaces: 'toolbar-header-left' and 
  * 'toolbar-header-right'.
  *
- * @package framework
+ * @package forms
  * @subpackage fields-gridfield
  */
 class GridFieldButtonRow implements GridField_HTMLProvider {
@@ -21,6 +21,7 @@ class GridFieldButtonRow implements GridField_HTMLProvider {
 
 	public function getHTMLFragments( $gridField) {
 		$data = new ArrayData(array(
+			"TargetFragmentName" => $this->targetFragment,
 			"LeftFragment" => "\$DefineFragment(buttons-{$this->targetFragment}-left)",
 			"RightFragment" => "\$DefineFragment(buttons-{$this->targetFragment}-right)",
 		));

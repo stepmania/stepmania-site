@@ -10,6 +10,7 @@ class CMSPageAddController extends CMSPageEditController {
 	private static $allowed_actions = array(
 		'AddForm',
 		'doAdd',
+		'doCancel'
 	);
 
 	/**
@@ -81,6 +82,16 @@ class CMSPageAddController extends CMSPageEditController {
 				)
 			)
 		);
+		$parentField->setSearchFunction(function ($sourceObject, $labelField, $search) {
+			return DataObject::get(
+				$sourceObject, 
+				sprintf(
+					"\"MenuTitle\" LIKE '%%%s%%' OR \"Title\" LIKE '%%%s%%'",
+					Convert::raw2sql($search),
+					Convert::raw2sql($search)
+				)
+			);
+		});
 
 		// TODO Re-enable search once it allows for HTML title display, 
 		// see http://open.silverstripe.org/ticket/7455
@@ -98,9 +109,11 @@ class CMSPageAddController extends CMSPageEditController {
 		}
 		
 		$actions = new FieldList(
-			// $resetAction = new ResetFormAction('doCancel', _t('CMSMain.Cancel', 'Cancel')),
 			FormAction::create("doAdd", _t('CMSMain.Create',"Create"))
 				->addExtraClass('ss-ui-action-constructive')->setAttribute('data-icon', 'accept')
+				->setUseButtonTag(true),
+			FormAction::create("doCancel", _t('CMSMain.Cancel',"Cancel"))
+				->addExtraClass('ss-ui-action-destructive ss-ui-action-cancel')
 				->setUseButtonTag(true)
 		);
 		
@@ -123,7 +136,7 @@ class CMSPageAddController extends CMSPageEditController {
 		$suffix = isset($data['Suffix']) ? "-" . $data['Suffix'] : null;
 
 		if(!$parentID && isset($data['Parent'])) {
-			$page = SiteTree:: get_by_link(Convert::raw2sql($data['Parent']));
+			$page = SiteTree::get_by_link($data['Parent']);
 			if($page) $parentID = $page->ID;
 		}
 
@@ -162,6 +175,10 @@ class CMSPageAddController extends CMSPageEditController {
 		Session::set("FormInfo.Form_EditForm.formError.type", 'good');
 		
 		return $this->redirect(Controller::join_links(singleton('CMSPageEditController')->Link('show'), $record->ID));
+	}
+
+	public function doCancel($data, $form) {
+		return $this->redirect(singleton('CMSMain')->Link());
 	}
 
 }

@@ -1,17 +1,21 @@
 <?php
 /**
  * RestfulService class allows you to consume various RESTful APIs.
+ *
  * Through this you could connect and aggregate data of various web services.
- * For more info visit wiki documentation - http://doc.silverstripe.org/doku.php?id=restfulservice  
+ *
+ * @see http://doc.silverstripe.org/framework/en/reference/restfulservice
  * 
  * @package framework
  * @subpackage integration
  */
 class RestfulService extends ViewableData {
+
 	protected $baseURL;
 	protected $queryString;
 	protected $errorTag;
 	protected $checkErrors;
+	protected $connectTimeout = 5;
 	protected $cache_expire;
 	protected $authUsername, $authPassword;
 	protected $customHeaders = array();
@@ -213,7 +217,6 @@ class RestfulService extends ViewableData {
 	 */
 	public function curlRequest($url, $method, $data = null, $headers = null, $curlOptions = array()) {
 		$ch        = curl_init();
-		$timeout   = 5;
 		$sapphireInfo = new SapphireInfo(); 
 		$useragent = 'SilverStripe/' . $sapphireInfo->Version();
 		$curlOptions = $curlOptions + (array)$this->config()->default_curl_options;
@@ -221,11 +224,14 @@ class RestfulService extends ViewableData {
 		curl_setopt($ch, CURLOPT_URL, $url);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($ch, CURLOPT_USERAGENT, $useragent);
-		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
+		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $this->getConnectTimeout());
 		if(!ini_get('open_basedir')) curl_setopt($ch, CURLOPT_FOLLOWLOCATION,1);
 		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
-		//include headers in the response
-		curl_setopt($ch, CURLOPT_HEADER, true);
+
+
+		// Write headers to a temporary file
+		$headerfd = tmpfile();
+		curl_setopt($ch, CURLOPT_WRITEHEADER, $headerfd);
 
 		// Add headers
 		if($this->customHeaders) {
@@ -260,8 +266,13 @@ class RestfulService extends ViewableData {
 		curl_setopt_array($ch, $curlOptions);
 
 		// Run request
-		$rawResponse = curl_exec($ch);
-		$response = $this->extractResponse($ch, $rawResponse);
+		$body = curl_exec($ch);
+
+		rewind($headerfd);
+		$headers = stream_get_contents($headerfd);
+		fclose($headerfd);
+
+		$response = $this->extractResponse($ch, $headers, $body);
 		curl_close($ch);
 
 		return $response;
@@ -315,22 +326,19 @@ class RestfulService extends ViewableData {
 	 *
 	 * @return RestfulService_Response The response object
 	 */
-	protected function extractResponse($ch, $rawResponse) {
+	protected function extractResponse($ch, $rawHeaders, $rawBody) {
 		//get the status code
 		$statusCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 		//get a curl error if there is one
 		$curlError = curl_error($ch);
 		//normalise the status code
 		if(curl_error($ch) !== '' || $statusCode == 0) $statusCode = 500;
-		//calculate the length of the header and extract it
-		$headerLength = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
-		$rawHeaders = substr($rawResponse, 0, $headerLength);
-		//extract the body
-		$body = substr($rawResponse, $headerLength);
 		//parse the headers
-		$headers = $this->parseRawHeaders($rawHeaders);
+		$parts = array_filter(explode("\r\n\r\n", $rawHeaders));
+		$lastHeaders = array_pop($parts);
+		$headers = $this->parseRawHeaders($lastHeaders);
 		//return the response object
-		return new RestfulService_Response($body, $statusCode, $headers);
+		return new RestfulService_Response($rawBody, $statusCode, $headers);
 	}
 
 	/**
@@ -548,6 +556,31 @@ class RestfulService extends ViewableData {
 		
 		return $output;
 	}
+
+	/**
+	 * Set the connection timeout for the curl request in seconds.
+	 *
+	 * @see http://curl.haxx.se/libcurl/c/curl_easy_setopt.html#CURLOPTCONNECTTIMEOUT
+	 *
+	 * @param int
+	 *
+	 * @return RestfulService
+	 */
+	public function setConnectTimeout($timeout) {
+		$this->connectTimeout = $timeout;
+
+		return $this;
+	}
+
+	/**
+	 * Return the connection timeout value.
+	 *
+	 * @return int
+	 */
+	public function getConnectTimeout() {
+		return $this->connectTimeout;
+	}
+
 }
 
 /**

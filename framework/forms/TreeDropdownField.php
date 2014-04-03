@@ -53,7 +53,8 @@ class TreeDropdownField extends FormField {
 	/**
 	 * @ignore
 	 */
-	protected $sourceObject, $keyField, $labelField, $filterCallback, $searchCallback, $baseID = 0;
+	protected $sourceObject, $keyField, $labelField, $filterCallback,
+		$disableCallback, $searchCallback, $baseID = 0;
 	/**
 	 * @var string default child method in Hierarcy->getChildrenAsUL
 	 */
@@ -86,7 +87,7 @@ class TreeDropdownField extends FormField {
 	 *		entering the text in the input field.
 	 */
 	public function __construct($name, $title = null, $sourceObject = 'Group', $keyField = 'ID', 
-		$labelField = 'TreeTitle', $showSearch = false
+		$labelField = 'TreeTitle', $showSearch = true
 	) {
 
 		$this->sourceObject = $sourceObject;
@@ -120,6 +121,20 @@ class TreeDropdownField extends FormField {
 		}
 		
 		$this->filterCallback = $callback;
+		return $this;
+	}
+
+	/**
+	 * Set a callback used to disable checkboxes for some items in the tree 
+	 *
+	 * @param callback $callback
+	 */
+	public function setDisableFunction($callback) {
+		if(!is_callable($callback, true)) {
+			throw new InvalidArgumentException('TreeDropdownField->setDisableFunction(): not passed a valid callback');
+		}
+		
+		$this->disableCallback = $callback;
 		return $this;
 	}
 	
@@ -181,7 +196,11 @@ class TreeDropdownField extends FormField {
 		if($record) {
 			$title = $record->{$this->labelField};
 		} else {
-			$title = _t('DropdownField.CHOOSE', '(Choose)', 'start value of a dropdown');
+			if($this->showSearch) {
+				$title = _t('DropdownField.CHOOSESEARCH', '(Choose or Search)', 'start value of a dropdown');
+			} else {
+				$title = _t('DropdownField.CHOOSE', '(Choose)', 'start value of a dropdown');
+			}
 		}
 
 		// TODO Implement for TreeMultiSelectField
@@ -272,12 +291,13 @@ class TreeDropdownField extends FormField {
 			$keyField = $self->keyField;
 			$labelField = $self->labelField;
 			return sprintf(
-				'<li id="selector-%s-%s" data-id="%s" class="class-%s %s"><a rel="%d">%s</a>',
+				'<li id="selector-%s-%s" data-id="%s" class="class-%s %s %s"><a rel="%d">%s</a>',
 				Convert::raw2xml($self->getName()),
 				Convert::raw2xml($child->$keyField),
 				Convert::raw2xml($child->$keyField),
 				Convert::raw2xml($child->class),
 				Convert::raw2xml($child->markingClasses()),
+				($self->nodeIsDisabled($child)) ? 'disabled' : '',
 				(int)$child->ID,
 				$escapeLabelField ? Convert::raw2xml($child->$labelField) : $child->$labelField
 			);
@@ -348,6 +368,15 @@ class TreeDropdownField extends FormField {
 	}
 
 	/**
+	 * Marking a specific node in the tree as disabled
+	 * @param $node
+	 * @return boolean
+	 */
+	public function nodeIsDisabled($node) {
+		return ($this->disableCallback && call_user_func($this->disableCallback, $node));
+	}
+
+	/**
 	 * @param String $field
 	 */
 	public function setLabelField($field) {
@@ -399,10 +428,32 @@ class TreeDropdownField extends FormField {
 	 */
 	protected function populateIDs() {
 		// get all the leaves to be displayed
-		if ( $this->searchCallback )
+		if ($this->searchCallback) {
 			$res = call_user_func($this->searchCallback, $this->sourceObject, $this->labelField, $this->search);
-		else
-			$res = DataObject::get($this->sourceObject, "\"$this->labelField\" LIKE '%$this->search%'");
+		} else {
+			$sourceObject = $this->sourceObject;
+			$wheres = array();
+			if(singleton($sourceObject)->hasDatabaseField($this->labelField)) {
+				$wheres[] = "\"$this->labelField\" LIKE '%$this->search%'";
+			} else {
+				if(singleton($sourceObject)->hasDatabaseField('Title')) {
+					$wheres[] = "\"Title\" LIKE '%$this->search%'";
+				}
+				if(singleton($sourceObject)->hasDatabaseField('Name')) {
+					$wheres[] = "\"Name\" LIKE '%$this->search%'";
+				}
+			} 
+		
+			if(!$wheres) {
+				throw new InvalidArgumentException(sprintf(
+					'Cannot query by %s.%s, not a valid database column',
+					$sourceObject,
+					$this->labelField
+				));
+			}
+
+			$res = DataObject::get($this->sourceObject, implode(' OR ', $wheres));
+		}
 		
 		if( $res ) {
 			// iteratively fetch the parents in bulk, until all the leaves can be accessed using the tree control

@@ -9,6 +9,7 @@
  * optionally catch attempts to modify the config statics (otherwise the modification will appear
  * to work, but won't actually have any effect - the equvilent of failing silently)
  *
+ * @package framework
  * @subpackage manifest
  */
 class SS_ConfigStaticManifest {
@@ -150,6 +151,9 @@ class SS_ConfigStaticManifest {
  * We can't do this using TokenisedRegularExpression because we need to keep track of state
  * as we process the token list (when we enter and leave a namespace or class, when we see
  * an access level keyword, etc)
+ *
+ * @package framework
+ * @subpackage manifest
  */
 class SS_ConfigStaticManifest_Parser {
 
@@ -237,7 +241,7 @@ class SS_ConfigStaticManifest_Parser {
 			else if($type == '}') {
 				$depth -= 1;
 				if($depth < $clsdepth) $class = $clsdepth = null;
-				if($depth < 0) user_error("Hmm - depth calc wrong, hit negatives", E_USER_ERROR);
+				if($depth < 0) user_error("Hmm - depth calc wrong, hit negatives, see: ".$this->path, E_USER_ERROR);
 			}
 			else if($type == T_PUBLIC || $type == T_PRIVATE || $type == T_PROTECTED) {
 				$access = $type;

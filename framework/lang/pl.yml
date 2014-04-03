@@ -1,6 +1,5 @@
 pl:
   AssetAdmin:
-    ALLOWEDEXTS: 'Dostępne rozszerzenia'
     NEWFOLDER: NowyFolder
     SHOWALLOWEDEXTS: 'Pokaż dostępne rozszerzenia'
   AssetTableField:
@@ -69,6 +68,8 @@ pl:
     ACCESSALLINTERFACES: 'Dostęp do wszystkich sekcji CMSa'
     ACCESSALLINTERFACESHELP: 'Nadpisuje bardziej specyficzne ustawienia dostępu.'
     SAVE: Zapisz
+  CMSPageHistoryController_versions_ss:
+    PREVIEW: 'Podgląd strony'
   CMSProfileController:
     MENUTITLE: 'Mój profil'
   ChangePasswordEmail_ss:
@@ -77,23 +78,13 @@ pl:
     EMAIL: Email
     HELLO: Cześć
     PASSWORD: Hasło
-  ComplexTableField:
-    CLOSEPOPUP: 'Zamknij Okienko'
-    SUCCESSADD2: 'Dodano {name}'
-    SUCCESSEDIT: 'Zapisano %s %s %s'
-  ComplexTableField_ss:
-    ADDITEM: 'Dodaj %s'
-    NOITEMSFOUND: 'Nie znaleziono żadnych elementów'
-    SORTASC: 'Sortuj rosnąco'
-    SORTDESC: 'Sortuj malejąco'
-  ComplexTableField_popup_ss:
-    NEXT: Następny
-    PREVIOUS: Poprzedni
   ConfirmedPasswordField:
     ATLEAST: 'Hasła muszą mieć przynajmniej {min} znaków.'
     BETWEEN: 'Hasła muszą mieć długość pomiędzy {min} a {max} znaków.'
     MAXIMUM: 'Hasła mogą mieć co najwyżej {max} znaków.'
     SHOWONCLICKTITLE: 'Zmiana Hasła'
+  ContentController:
+    NOTLOGGEDIN: 'Nie zalogowany'
   CreditCardField:
     FIRST: pierwszy
     FOURTH: czwarty
@@ -109,6 +100,7 @@ pl:
     DAYS: dni
     HOUR: godzina
     HOURS: godziny
+    LessThanMinuteAgo: 'mniej niż minuta'
     MIN: minuta
     MINS: minuty
     MONTH: miesiąc
@@ -119,7 +111,6 @@ pl:
     TIMEDIFFIN: 'w {difference}'
     YEAR: ro
     YEARS: lat
-    LessThanMinuteAgo: 'mniej niż minuta'
   DateField:
     NOTSET: 'nie ustawiono'
     TODAY: dzisiaj
@@ -132,10 +123,9 @@ pl:
     INVALID_REQUEST: 'Nieprawidłowe żądanie'
   DropdownField:
     CHOOSE: (wybierz)
+    CHOOSESEARCH: '(Wybierz lub szukaj)'
   EmailField:
     VALIDATION: 'Proszę podaj adres e-mail'
-  Email_BounceRecord:
-    SINGULARNAME: 'Odrzucony e-mail'
   Enum:
     ANY: Jakikolwiek
   File:
@@ -170,19 +160,6 @@ pl:
     WavType: 'WAV plik audio'
     XlsType: 'Arkusz kalkulacyjny Excel'
     ZipType: 'Plik ZIP, skompresowany'
-  FileIFrameField:
-    ATTACH: 'Dołącz {type}'
-    ATTACHONCESAVED: 'Element {type} może zostać dołączony dopiero po pierwszym zapisaniu rekordu.'
-    ATTACHONCESAVED2: 'Pliki mogą zostać dołączone dopiero po pierwszym zapisaniu rekordu.'
-    DELETE: 'Usuń {type}'
-    DISALLOWEDFILETYPE: 'Wgrywanie plików tego typu nie jest dozwolone'
-    FILE: Plik
-    FROMCOMPUTER: 'Z Twojego Komputera'
-    FROMFILESTORE: 'Ze Składnicy Plików'
-    NOSOURCE: 'Wybierz źródło pliku do załaczenia'
-    REPLACE: 'Zastąp {type}'
-  FileIFrameField_iframe_ss:
-    TITLE: 'Iframe wgrywania zdjęć'
   Filesystem:
     SYNCRESULTS: 'Synchronizacja zakończona: stworzono {createdcount} i usunięto {deletedcount} pozycji'
   Folder:
@@ -203,10 +180,9 @@ pl:
     VALIDATIONSTRONGPASSWORD: 'Hasła muszą mieć przynajmniej jedną cyfrę oraz jeden znak alfanumeryczny.'
     VALIDATOR: Walidator
     VALIDCURRENCY: 'Proszę podaj prawidłową walutę'
-    CSRF_FAILED_MESSAGE: 'Wygląda na to, że wystąpił błąd techniczny. Kliknij przycisk Wstecz, odśwież przeglądarkę i spróbuj ponownie.'
   FormField:
-    NONE: brak
     Example: 'np: % s'
+    NONE: brak
   GridAction:
     DELETE_DESCRIPTION: Usuń
     Delete: Usuń
@@ -236,7 +212,10 @@ pl:
     DeletePermissionsFailure: 'Brak uprawnień do usuwania'
     Deleted: 'Usunięto %s %s'
     Save: Zapisz
-  GridFieldItemEditView_ss:
+    Saved: 'Zapisane {name} {link}'
+  GridFieldEditButton_ss:
+    EDIT: Edytuj
+  GridFieldItemEditView:
     Go_back: 'Wstecz'
   Group:
     AddRole: 'Dodaj rolę dla tej grupy'
@@ -245,6 +224,7 @@ pl:
     DefaultGroupTitleContentAuthors: 'Autor treści'
     Description: Opis
     GroupReminder: 'Jeśli wybierzesz nadrzędną grupę, obecna grupa otrzyma wszystkie jej role'
+    HierarchyPermsError: 'Nie można przyporządkować uprzywilejowanej grupy "%s" (wymagane uprawnienie ADMIN)'
     Locked: 'Zablokowana?'
     NoRoles: 'Nie znaleziono ról'
     PLURALNAME: Grupy
@@ -253,9 +233,10 @@ pl:
     SINGULARNAME: Grupa
     Sort: 'Kolejność Sortowania'
     has_many_Permissions: Zezwolenia
-    many_many_Members: Członkowie
+    many_many_Members: Użytkownicy
   GroupImportForm:
     Help1: '<p>Zaimportuj użytkowników w <em>formacie CSV</em> (tekst rozdzielany przecinkami). <small><a href="#" class="toggle-advanced">Zaawansowane</a></small></p>'
+    Help2: "<div class=\"advanced\">\n⇥<h4>Użycie zaawansowane</h4>\n⇥<ul>\n⇥<li>Rozpoznawane pola: <em>%s</em></li>\n⇥<li>Istniejące grupy zostaną uaktualnione nowymi wartościami z importowanego pliku. Dopasowanie nastąpi poprzez porównanie z unikalną wartością w polu <em>Code</em>.</li>\n⇥<li>Grupy hierarchiczne mogą zostać utworzone przy pomocy pola <em>ParentCode</em>.</li>\n⇥<li>Kody zezwoleń mogą zostać dodane przy użyciu pola <em>PermissionCode</em>. Istniejące zezwolenia nie zostaną usunięte.</li>\n⇥</ul>\n</div>"
     ResultCreated: 'Stworzono grup: {count}'
     ResultDeleted: 'Usunięto grup: %d'
     ResultUpdated: 'Zaktualizowano grup: %d'
@@ -265,6 +246,7 @@ pl:
     ADDURL: 'Dodaj adres URL'
     ADJUSTDETAILSDIMENSIONS: 'Szczegóły i rozmiar'
     ANCHORVALUE: Odnośnik
+    BUTTONADDURL: 'Dodaj adres url'
     BUTTONINSERT: Wstaw
     BUTTONINSERTLINK: 'Wstaw link'
     BUTTONREMOVELINK: 'Zmień link'
@@ -284,6 +266,8 @@ pl:
     FROMWEB: 'Z WWW'
     FindInFolder: 'Znajdź w Folderze'
     IMAGEALT: 'Tekst alternatywny (alt)'
+    IMAGEALTTEXT: 'Alternatywny tekst (alt) - pokazuje się gdy zdjęcie nie może się wyświetlić'
+    IMAGEALTTEXTDESC: 'Używane przez czytniki ekranu lub gdy obraz nie może zostać wyświetlony'
     IMAGEDIMENSIONS: Rozmiar
     IMAGEHEIGHTPX: Wysokość (px)
     IMAGETITLE: 'Tytuł (tooltip) - dodatkowe informacje o obrazku'
@@ -304,12 +288,9 @@ pl:
     URL: Adres URL
     URLNOTANOEMBEDRESOURCE: 'Adres URL ''{url}'' nie mógł zostać przekształcony w zasób medialny'
     UpdateMEDIA: 'Zaktualizuj Media'
-    BUTTONADDURL: 'Dodaj adres url'
   Image:
     PLURALNAME: Pliki
     SINGULARNAME: Plik
-  ImageField:
-    IMAGE: Obraz
   Image_Cached:
     PLURALNAME: Pliki
     SINGULARNAME: Plik
@@ -328,10 +309,10 @@ pl:
     PreviewButton: Podgląd
     REORGANISATIONSUCCESSFUL: 'Pomyślnie zreorganizowano drzewo serwisu.'
     SAVEDUP: Zapisano.
-    VersionUnknown: Nieznany
     ShowAsList: 'pokaż jako listę'
     TooManyPages: 'Zbyt wiele stron'
     ValidationError: 'Błąd walidacji'
+    VersionUnknown: Nieznany
   LeftAndMain_Menu_ss:
     Hello: Witaj
     LOGOUT: 'Wyloguj się'
@@ -356,26 +337,26 @@ pl:
     EMAIL: E-mail
     EMPTYNEWPASSWORD: 'Nowe hasło nie może być puste, spróbuj ponownie.'
     ENTEREMAIL: 'Wpisz adres e-mail aby otrzymać link do zmiany hasła.'
-    ERRORLOCKEDOUT: 'Twoje konto zostało tymczasowo zablokowane z powodu zbyt wielu błędnych prób logowania. Spróbuj ponownie za 20 minut.'
     ERRORLOCKEDOUT2: 'Twoje konto zostało tymczasowo zablokowane z powodu zbyt wielu błędnych prób logowania. Spróbuj ponownie za {count} minut.'
     ERRORNEWPASSWORD: 'Wprowadziłeś niepoprawnie nowe hasło, spróbuj ponownie'
     ERRORPASSWORDNOTMATCH: 'Twoje hasło nie zgadza się, spróbuj ponownie'
-    ERRORWRONGCRED: 'E-mail lub hasło są nieprawidłowe. Spróbuj ponownie.'
+    ERRORWRONGCRED: 'Podane dane są niepoprawne. Proszę spróbować ponownie.'
     FIRSTNAME: 'Imię'
     INTERFACELANG: 'Język interfejsu'
     INVALIDNEWPASSWORD: 'Nie możesz użyć takiego hasła: {password}'
     LOGGEDINAS: 'Zostałeś zalogowany jako {name}.'
     NEWPASSWORD: 'Nowe hasło'
+    NoPassword: 'Hasło nie zostało skonfigurowane dla tego użytkownika.'
     PASSWORD: Hasło
     PLURALNAME: Użytkownicy
     REMEMBERME: 'Zapamiętaj mnie?'
-    SINGULARNAME: Członek
+    SINGULARNAME: Użytkownik
     SUBJECTPASSWORDCHANGED: 'Twoje hasło zostało zmienione'
     SUBJECTPASSWORDRESET: 'Twój link do zmiany hasła'
     SURNAME: Nazwisko
     TIMEFORMAT: 'Format czasu'
     VALIDATIONMEMBEREXISTS: 'Użytkownik z tym adresem już istnieje'
-    ValidationIdentifierFailed: 'Nie można nadpisać istniejącego członka #{id} identycznym identyfikatorem ({name} = {value})'
+    ValidationIdentifierFailed: 'Nie można nadpisać istniejącego użytkownika #{id} o identycznym identyfikatorze ({name} = {value})'
     WELCOMEBACK: 'Witaj ponownie, {firstname}'
     YOUROLDPASSWORD: 'Twoje stare hasło'
     belongs_many_many_Groups: Grupy
@@ -400,7 +381,6 @@ pl:
     MONTHNOLEADING: 'Miesiąc bez wiodącego zera'
     Preview: Podgląd
     SHORTMONTH: 'Skrócona nazwa miesiąca (np. Cze)'
-    TOGGLEHELP: 'Przełącz pomoc formatowania'
     TWODIGITDAY: 'Dwucyfrowy dzień miesiąca'
     TWODIGITHOUR: 'Dwucyfrowa godzina (od 00 do 23)'
     TWODIGITMINUTE: 'Dwucyfrowa minuta (od 00 do 59)'
@@ -410,10 +390,11 @@ pl:
     Toggle: 'Pokaż pomoc formatowania'
   MemberImportForm:
     Help1: '<p>Zaimportuj użytkowników w <em>formacie CSV</em> (tekst rozdzielany przecinkami). <small><a href="#" class="toggle-advanced">Zaawansowane</a></small></p>'
-    ResultCreated: 'Stworzono członków: {count}'
+    Help2: "<div class=\"advanced\">\n⇥<h4>Użycie zaawansowane</h4>\n⇥<ul>\n⇥<li>Rozpoznawane pola: <em>%s</em></li>\n⇥<li>Istniejący użytkownicy zostaną uaktualnieni nowymi wartościami z importowanego pliku. Dopasowanie nastąpi poprzez porównanie z unikalną wartością w polu <em>Code</em>.</li>\n⇥<li>Grupy mogą zostać przydzielone przy użyciu pola <em>Groups</em>. Do grup należy odnieść się poprzez ich własność <em>Code</em>. Jeśli dodawanych jest wiele grup, należy je oddzielić przecinkiem. Istniejące przynależności do grup nie zostaną usunięte.</li>\n⇥</ul>\n</div>"
+    ResultCreated: 'Utworzono {count} użytkowników'
     ResultDeleted: 'Usunięto %d użytkowników'
     ResultNone: 'Bez zmian'
-    ResultUpdated: 'Zaktualizowano członków: {count}'
+    ResultUpdated: 'Zaktualizowano {count} użytkowników'
   MemberPassword:
     PLURALNAME: 'Hasła użytkownika'
     SINGULARNAME: 'Hasło użytkownika'
@@ -451,6 +432,10 @@ pl:
   Pagination:
     Page: Strona
     View: Widok
+  PasswordValidator:
+    LOWCHARSTRENGTH: 'Proszę zwiększyć siłę hasła, dodając niektóre z następujących znaków: % s'
+    PREVPASSWORD: 'Użyłeś już tego hasła wcześniej, proszę wybrać nowe'
+    TOOSHORT: 'Hasło jest za krótkie, proszę podać %s znaków lub więcej'
   Permission:
     AdminGroup: Administrator
     CMS_ACCESS_CATEGORY: 'Dostęp do CMSa'
@@ -470,18 +455,15 @@ pl:
     Title: Tytuł
   PermissionRoleCode:
     PLURALNAME: 'Kod roli uprawnień'
+    PermsError: 'Nie można przyporządkować uprzywilejowanego uprawnienia "%s" (wymagane uprawnienie ADMIN)'
     SINGULARNAME: 'Kod roli uprawnienia'
   Permissions:
     PERMISSIONS_CATEGORY: 'Role i uprawnienia dostępu'
+    UserPermissionsIntro: 'Przydzielenie grup temu użytkownikowi spowoduje zmianę jego uprawnień. Odwołaj się do sekcji Grupy aby dowiedzieć się więcej o uprawnieniach grupowych.'
   PhoneNumberField:
     VALIDATION: 'Wprowadź poprawny numer telefonu'
-  RelationComplexTableField_ss:
-    ADD: Dodaj
-    CSVEXPORT: 'Eksportuj do CSV'
-    NOTFOUND: 'Nie znaleziono żadnych elementów'
   Security:
     ALREADYLOGGEDIN: 'Nie masz dostępu do tej strony. Jeśli posiadasz inne konto, które umożliwi Ci dostęp do tej strony, możesz się zalogować poniżej'
-    LOSTPASSWORDHEADER: 'Nie pamiętam hasła'
     BUTTONSEND: 'Wyślij mi link do zresetowania hasła'
     CHANGEPASSWORDBELOW: 'Możesz zmienić swoje hasło poniżej'
     CHANGEPASSWORDHEADER: 'Zmień swoje hasło'
@@ -516,42 +498,27 @@ pl:
     BtnImport: 'Import z CSV'
     FileFieldLabel: 'Plik CSV <small>(Dozwolone rozszerzenia: *.csv)</small>'
   SilverStripeNavigator:
-    Edit: Edycja
     Auto: Auto
     ChangeViewMode: 'Zmień tryb podglądu'
     Desktop: Pulpit
     DualWindowView: 'Dzielone okno'
+    Edit: Edycja
     EditView: 'Tryb edycji'
     Mobile: Mobile
+    PreviewState: 'Tryb podlądu'
     PreviewView: 'Tryb podglądu'
+    Responsive: Responsive
+    SplitView: 'Dzielony ekran'
+    Tablet: Tablet
     ViewDeviceWidth: 'Wybierz szerokość podglądu'
     Width: szerokość
-  SimpleImageField:
-    NOUPLOAD: 'Nie wgrano zdjęć'
   SiteTree:
     TABMAIN: Główny
-  TableField:
-    ISREQUIRED: 'W %s ''%s'' jest wymagany'
-  TableField_ss:
-    ADD: 'Dodaj nowy rząd'
-    ADDITEM: 'Dodaj %s'
   TableListField:
     CSVEXPORT: 'Eksportuj do CSV'
-    PRINT: Drukuj
     Print: Drukuj
-    SELECT: 'Wybierz:'
-  TableListField_ss:
-    NOITEMSFOUND: 'Nie znaleziono żadnych elementów'
-    SORTASC: 'Sortuj w porządku rosnącym'
-    SORTDESC: 'Sortuj w porządku malejącym'
   TableListField_PageControls_ss:
-    DISPLAYING: Wyświetlane
     OF: z
-    TO: do
-    VIEWFIRST: 'Zobacz pierwsze'
-    VIEWLAST: 'Zobacz ostatnie'
-    VIEWNEXT: 'Zobacz następne'
-    VIEWPREVIOUS: 'Zobacz poprzednie'
   TimeField:
     VALIDATEFORMAT: 'Proszę wprowadź prawidłowy format czasu ({format})'
   ToggleField:
@@ -561,6 +528,8 @@ pl:
     ATTACHFILE: 'Załącz plik'
     ATTACHFILES: 'Załącz pliki'
     AttachFile: 'Załącz plik(i)'
+    CHOOSEANOTHERFILE: 'Wybierz inny plik'
+    CHOOSEANOTHERINFO: 'Zamień ten plik na inny z magazynu'
     DELETE: 'Usuń z plików'
     DELETEINFO: 'Usuń ten plik z magazynu'
     DOEDIT: Zapisz
@@ -575,29 +544,13 @@ pl:
     FROMFILES: 'Z plików'
     HOTLINKINFO: 'Informacja: Ten obrazek pochodzi z zewnętrznego serwisu. Upewnij się, że jego twórca pozwala korzystać z niego.'
     MAXNUMBEROFFILES: 'Osiągnięto maksymalną liczbę {count} plików.'
-    MAXNUMBEROFFILESSHORT: 'Można wgrać tylko {count} plik(ów/i)'
     MAXNUMBEROFFILESONE: 'Można wgrać tylko jeden plik'
+    MAXNUMBEROFFILESSHORT: 'Można wgrać tylko {count} plik(ów/i)'
+    OVERWRITEWARNING: 'Plik z taką nazwą już istnieje'
     REMOVE: Usuń
-    REMOVEERROR: 'Błąd podczas usuwania pliku'
     REMOVEINFO: 'Usuń pliki z tego miejsca, ale nie usuwaj ich z magazynu'
     STARTALL: 'Rozpocznij wszystko'
-    STARTALLINFO: 'Rozpocznij ładowanie wszystkich'
     Saved: Zapisano
-    CHOOSEANOTHERFILE: 'Wybierz inny plik'
-    CHOOSEANOTHERINFO: 'Zamień ten plik na inny z magazynu'
-    OVERWRITEWARNING: 'Plik z taką nazwą już istnieje'
     UPLOADSINTO: 'zapisano w /{path}'
   Versioned:
     has_many_Versions: Wersje
-  CMSPageHistoryController_versions_ss:
-    PREVIEW: 'Podgląd strony'
-  GridFieldEditButton_ss:
-    EDIT: Edytuj
-  ContentController:
-    NOTLOGGEDIN: 'Nie zalogowany'
-  GridFieldItemEditView:
-    Go_back: 'Wstecz'
-  PasswordValidator:
-    LOWCHARSTRENGTH: 'Proszę zwiększyć siłę hasła, dodając niektóre z następujących znaków: % s'
-    PREVPASSWORD: 'Użyłeś już tego hasła wcześniej, proszę wybrać nowe'
-    TOOSHORT: 'Hasło jest za krótkie, proszę podać %s znaków lub więcej'

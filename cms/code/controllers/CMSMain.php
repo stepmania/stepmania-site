@@ -55,6 +55,8 @@ class CMSMain extends LeftAndMain implements CurrentPageIdentifier, PermissionPr
 		}
 		
 		parent::init();
+
+		Versioned::reading_stage("Stage");
 		
 		Requirements::css(CMS_DIR . '/css/screen.css');
 		Requirements::customCSS($this->generatePageIconsCss());
@@ -131,7 +133,8 @@ class CMSMain extends LeftAndMain implements CurrentPageIdentifier, PermissionPr
 
 	/**
 	 * Override {@link LeftAndMain} Link to allow blank URL segment for CMSMain.
-	 * 
+	 *
+	 * @param string|null $action Action to link to.
 	 * @return string
 	 */
 	public function Link($action = null) {
@@ -202,10 +205,18 @@ class CMSMain extends LeftAndMain implements CurrentPageIdentifier, PermissionPr
 		return $link;
 	}
 
-	public function LinkPageAdd($extraArguments = null) {
+	public function LinkPageAdd($extra = null, $placeholders = null) {
 		$link = singleton("CMSPageAddController")->Link();
 		$this->extend('updateLinkPageAdd', $link);
-		if($extraArguments) $link = Controller::join_links ($link, $extraArguments);
+
+		if($extra) {
+			$link = Controller::join_links ($link, $extra);
+		}
+
+		if($placeholders) {
+			$link .= (strpos($link, '?') === false ? "?$placeholders" : "&amp;$placeholders");
+		}
+
 		return $link;
 	}
 	
@@ -342,6 +353,7 @@ class CMSMain extends LeftAndMain implements CurrentPageIdentifier, PermissionPr
 	}
 
 	/**
+	 * @param bool $unlinked
 	 * @return ArrayList
 	 */
 	public function Breadcrumbs($unlinked = false) {
@@ -438,51 +450,12 @@ class CMSMain extends LeftAndMain implements CurrentPageIdentifier, PermissionPr
 				}
 			}
 
+			$this->extend('updateSiteTreeHints', $def);
+
 			$json = Convert::raw2json($def);
 			$cache->save($json, $cacheKey);
 		}
 		return $json;
-	}
-	
-	/**
-	 * Include CSS for page icons. We're not using the JSTree 'types' option
-	 * because it causes too much performance overhead just to add some icons.
-	 * 
-	 * @return String CSS 
-	 */
-	public function generatePageIconsCss() {
-		$css = ''; 
-		
-		$classes = ClassInfo::subclassesFor('SiteTree'); 
-		foreach($classes as $class) {
-			$obj = singleton($class); 
-			$iconSpec = $obj->stat('icon'); 
-
-			if(!$iconSpec) continue;
-
-			// Legacy support: We no longer need separate icon definitions for folders etc.
-			$iconFile = (is_array($iconSpec)) ? $iconSpec[0] : $iconSpec;
-
-			// Legacy support: Add file extension if none exists
-			if(!pathinfo($iconFile, PATHINFO_EXTENSION)) $iconFile .= '-file.gif';
-
-			$iconPathInfo = pathinfo($iconFile); 
-			
-			// Base filename 
-			$baseFilename = $iconPathInfo['dirname'] . '/' . $iconPathInfo['filename'];
-			$fileExtension = $iconPathInfo['extension'];
-
-			$selector = ".page-icon.class-$class, li.class-$class > a .jstree-pageicon";
-
-			if(Director::fileExists($iconFile)) {
-				$css .= "$selector { background: transparent url('$iconFile') 0 0 no-repeat; }\n";
-			} else {
-				// Support for more sophisticated rules, e.g. sprited icons
-				$css .= "$selector { $iconFile }\n";
-			}
-		}
-
-		return $css;
 	}
 
 	/**
@@ -539,6 +512,7 @@ class CMSMain extends LeftAndMain implements CurrentPageIdentifier, PermissionPr
 	 *
 	 * @param int $id Record ID
 	 * @param int $versionID optional Version id of the given record
+	 * @return DataObject
 	 */
  	public function getRecord($id, $versionID = null) {
 		$treeClass = $this->stat('tree_class');
@@ -675,6 +649,8 @@ class CMSMain extends LeftAndMain implements CurrentPageIdentifier, PermissionPr
 			$form->addExtraClass('center ' . $this->BaseCSSClasses());
 			// if($form->Fields()->hasTabset()) $form->Fields()->findOrMakeTab('Root')->setTemplate('CMSTabSet');
 			$form->setAttribute('data-pjax-fragment', 'CurrentForm');
+			// Set validation exemptions for specific actions
+			$form->setValidationExemptActions(array('restore', 'revert', 'deletefromlive', 'rollback'));
 
 			// Announce the capability so the frontend can decide whether to allow preview or not.
 			if(in_array('CMSPreviewable', class_implements($record))) {
@@ -698,12 +674,17 @@ class CMSMain extends LeftAndMain implements CurrentPageIdentifier, PermissionPr
 	}
 
 	/**
+	 * @param SS_HTTPRequest $request
 	 * @return String HTML
 	 */
 	public function treeview($request) {
 		return $this->renderWith($this->getTemplatesWithSuffix('_TreeView'));
 	}
 
+	/**
+	 * @param SS_HTTPRequest $request
+	 * @return String HTML
+	 */
 	public function listview($request) {
 		return $this->renderWith($this->getTemplatesWithSuffix('_ListView'));
 	}
@@ -713,9 +694,10 @@ class CMSMain extends LeftAndMain implements CurrentPageIdentifier, PermissionPr
 	 * defaulting to no filter and show all pages in first level.
 	 * Doubles as search results, if any search parameters are set through {@link SearchForm()}.
 	 * 
-	 * @param Array Search filter criteria
-	 * @param Int Optional parent node to filter on (can't be combined with other search criteria)
+	 * @param Array $params Search filter criteria
+	 * @param Int $parentID Optional parent node to filter on (can't be combined with other search criteria)
 	 * @return SS_List
+	 * @throws Exception if invalid filter class is passed.
 	 */
 	public function getList($params, $parentID = 0) {
 		$list = new DataList($this->stat('tree_class'));
@@ -793,9 +775,11 @@ class CMSMain extends LeftAndMain implements CurrentPageIdentifier, PermissionPr
 			},
 			'getTreeTitle' => function($value, &$item) use($controller) {
 				return sprintf(
-					'<a class="action-detail" href="%s/%d">%s</a>',
-					singleton('CMSPageEditController')->Link('show'),
-					(int)$item->ID,
+					'<a class="action-detail" href="%s">%s</a>',
+					Controller::join_links(
+						singleton('CMSPageEditController')->Link('show'),
+						(int)$item->ID
+					),
 					$item->TreeTitle // returns HTML, does its own escaping
 				);
 			}
@@ -819,10 +803,15 @@ class CMSMain extends LeftAndMain implements CurrentPageIdentifier, PermissionPr
 	public function currentPageID() {
 		$id = parent::currentPageID();
 		
+		$this->extend('updateCurrentPageID', $id);
+
 		// Fall back to homepage record
 		if(!$id) {
 			$homepageSegment = RootURLController::get_homepage_link();
-			$homepageRecord = DataObject::get_one('SiteTree', sprintf('"URLSegment" = \'%s\'', $homepageSegment));
+			$homepageRecord = DataObject::get_one('SiteTree', sprintf(
+				'"SiteTree"."URLSegment" = \'%s\'',
+				Convert::raw2sql($homepageSegment)
+			));
 			if($homepageRecord) $id = $homepageRecord->ID;
 		}
 		

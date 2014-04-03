@@ -8,7 +8,7 @@
  * 
  * Collects all found entities (and their natural language text for the default locale)
  * into language-files for each module in an array notation. Creates or overwrites these files,
- * e.g. framework/lang/en_US.php.
+ * e.g. framework/lang/en.yml.
  * 
  * The collector needs to be run whenever you make new translatable
  * entities available. Please don't alter the arrays in language tables manually.
@@ -117,12 +117,15 @@ class i18nTextCollector extends Object {
 		$modules = array_merge($modules, $themeFolders);
 
 		foreach($modules as $module) {
-			// Only search for calls in folder with a _config.php file (which means they are modules, including
-			// themes folder)  
+			// Only search for calls in folder with a _config.php file or _config folder
+			// (which means they are modules, including themes folder)
 			$isValidModuleFolder = (
 				is_dir("$this->basePath/$module") 
-				&& is_file("$this->basePath/$module/_config.php") 
 				&& substr($module,0,1) != '.'
+				&& (
+					is_file("$this->basePath/$module/_config.php")
+					|| is_dir("$this->basePath/$module/_config")
+				)
 			) || (
 				substr($module,0,7) == 'themes/'
 				&& is_dir("$this->basePath/$module")
@@ -476,6 +479,9 @@ class i18nTextCollector extends Object {
 /**
  * Allows serialization of entity definitions collected through {@link i18nTextCollector}
  * into a persistent format, usually on the filesystem.
+ *
+ * @package framework
+ * @subpackage i18n
  */
 interface i18nTextCollector_Writer {
 	/**
@@ -492,6 +498,9 @@ interface i18nTextCollector_Writer {
 
 /**
  * Legacy writer for 2.x style persistence.
+ *
+ * @package framework
+ * @subpackage i18n
  */
 class i18nTextCollector_Writer_Php implements i18nTextCollector_Writer {
 
@@ -570,6 +579,9 @@ class i18nTextCollector_Writer_Php implements i18nTextCollector_Writer {
 
 /**
  * Writes files compatible with {@link i18nRailsYamlAdapter}.
+ *
+ * @package framework
+ * @subpackage i18n
  */
 class i18nTextCollector_Writer_RailsYaml implements i18nTextCollector_Writer {
 
@@ -624,12 +636,22 @@ class i18nTextCollector_Writer_RailsYaml implements i18nTextCollector_Writer {
 
 /**
  * Parser that scans through a template and extracts the parameters to the _t and <%t calls
+ *
+ * @package framework
+ * @subpackage i18n
  */
 class i18nTextCollector_Parser extends SSTemplateParser {
 
 	private static $entities = array();
 	
 	private static $currentEntity = array();
+
+	public function __construct($string) {
+		$this->string = $string;
+		$this->pos = 0;
+		$this->depth = 0;
+		$this->regexps = array();
+	}
 
 	public function Translate__construct(&$res) {
 		self::$currentEntity = array(null,null,null); //start with empty array

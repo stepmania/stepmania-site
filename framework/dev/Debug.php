@@ -23,19 +23,7 @@
  * @subpackage dev
  */
 class Debug {
-	
-	/**
-	 * @config
-	 * @var string Email address to send error notifications
-	 */
-	private static $send_errors_to;
-	
-	/**
-	 * @config
-	 * @var string Email address to send warning notifications
-	 */
-	private static $send_warnings_to;
-	
+		
 	/**
 	 * @config
 	 * @var String indicating the file where errors are logged.
@@ -205,11 +193,16 @@ class Debug {
 	 * @param $message string to output
 	 */
 	public static function log($message) {
-		$file = dirname(__FILE__).'/../../debug.log';
+		if (defined('BASE_PATH')) {
+			$path = BASE_PATH;
+		}
+		else {
+			$path = dirname(__FILE__) . '/../..';
+		}
+		$file = $path . '/debug.log';
 		$now = date('r');
-		$oldcontent = (file_exists($file)) ? file_get_contents($file) : '';
-		$content = $oldcontent . "\n\n== $now ==\n$message\n";
-		file_put_contents($file, $content);
+		$content = "\n\n== $now ==\n$message\n";
+		file_put_contents($file, $content, FILE_APPEND);
 	}
 
 	/**
@@ -257,18 +250,6 @@ class Debug {
 		if(error_reporting() == 0) return;
 		ini_set('display_errors', 0);
 
-		if(Config::inst()->get('Debug', 'send_warnings_to')) {
-			return self::emailError(
-				Config::inst()->get('Debug', 'send_warnings_to'), 
-				$errno, 
-				$errstr, 
-				$errfile, 
-				$errline, 
-				$errcontext, 
-				"Warning"
-			);
-		}
-
 		// Send out the error details to the logger for writing
 		SS_Log::log(
 			array(
@@ -281,10 +262,6 @@ class Debug {
 			SS_Log::WARN
 		);
 		
-		if(Config::inst()->get('Debug', 'log_errors_to')) {
-			self::log_error_if_necessary( $errno, $errstr, $errfile, $errline, $errcontext, "Warning");
-		}
-
 		if(Director::isDev()) {
 			return self::showError($errno, $errstr, $errfile, $errline, $errcontext, "Warning");
 		} else {
@@ -305,13 +282,6 @@ class Debug {
 	 */
 	public static function fatalHandler($errno, $errstr, $errfile, $errline, $errcontext) {
 		ini_set('display_errors', 0);
-
-		if(Config::inst()->get('Debug', 'send_errors_to')) {
-			self::emailError(
-				Config::inst()->get('Debug', 'send_errors_to'), $errno, 
-				$errstr, $errfile, $errline, $errcontext, "Error"
-			);
-		}
 		
 		// Send out the error details to the logger for writing
 		SS_Log::log(
@@ -324,10 +294,6 @@ class Debug {
 			),
 			SS_Log::ERR
 		);
-		
-		if(Config::inst()->get('Debug', 'log_errors_to')) {
-			self::log_error_if_necessary( $errno, $errstr, $errfile, $errline, $errcontext, "Error");
-		}
 		
 		if(Director::isDev() || Director::is_cli()) {
 			return self::showError($errno, $errstr, $errfile, $errline, $errcontext, "Error");
@@ -381,6 +347,7 @@ class Debug {
 				);
 				if(file_exists($errorFilePath)) {
 					$content = file_get_contents(ASSETS_PATH . "/error-$statusCode.html");
+					if(!headers_sent()) header('Content-Type: text/html');
 					// $BaseURL is left dynamic in error-###.html, so that multi-domain sites don't get broken
 					echo str_replace('$BaseURL', Director::absoluteBaseURL(), $content);
 				}

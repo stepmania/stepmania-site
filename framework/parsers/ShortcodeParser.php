@@ -5,7 +5,7 @@
  * within a HTMLText or HTMLVarchar field when rendered into a template. The API is inspired by and very similar to the
  * [Wordpress implementation](http://codex.wordpress.org/Shortcode_API) of shortcodes.
  * 
- * @see http://doc.silverstripe.org/framework/en/topics/shortcodes
+ * @see http://doc.silverstripe.org/framework/en/reference/shortcodes
  * @package framework
  * @subpackage misc
  */
@@ -68,6 +68,7 @@ class ShortcodeParser {
 	 *     this will not have been parsed, and can optionally be fed back into the parser.
 	 *   - The {@link ShortcodeParser} instance used to parse the content.
 	 *   - The shortcode tag name that was matched within the parsed content.
+	 *   - An associative array of extra information about the shortcode being parsed.
 	 *
 	 * @param string $shortcode The shortcode tag to map to the callback - normally in lowercase_underscore format.
 	 * @param callback $callback The callback to replace the shortcode with.
@@ -102,9 +103,9 @@ class ShortcodeParser {
 		$this->shortcodes = array();
 	}
 	
-	public function callShortcode($tag, $attributes, $content) {
+	public function callShortcode($tag, $attributes, $content, $extra = array()) {
 		if (!isset($this->shortcodes[$tag])) return false;
-		return call_user_func($this->shortcodes[$tag], $attributes, $content, $this, $tag);
+		return call_user_func($this->shortcodes[$tag], $attributes, $content, $this, $tag, $extra);
 	}
 	
 	// --------------------------------------------------------------------------------------------------------------
@@ -245,12 +246,14 @@ class ShortcodeParser {
 				
 				if ($i == 0) {
 					$err = 'Close tag "'.$tags[$i]['close'].'" is the first found tag, so has no related open tag';
-		}
+				}
 				else if (!$tags[$i-1]['open']) {
-					$err = 'Close tag "'.$tags[$i]['close'].'" preceded by another close tag "'.$tags[$i-1]['close'].'"';
+					$err = 'Close tag "'.$tags[$i]['close'].'" preceded by another close tag "'.
+							$tags[$i-1]['close'].'"';
 				}
 				else if ($tags[$i]['close'] != $tags[$i-1]['open']) {
-					$err = 'Close tag "'.$tags[$i]['close'].'" doesn\'t match preceding open tag "'.$tags[$i-1]['open'].'"';
+					$err = 'Close tag "'.$tags[$i]['close'].'" doesn\'t match preceding open tag "'.
+							$tags[$i-1]['open'].'"';
 				}
 		
 				if($err) {
@@ -330,10 +333,12 @@ class ShortcodeParser {
 		for($i = 0; $i < $attributes->length; $i++) {
 			$node = $attributes->item($i);
 			$tags = $this->extractTags($node->nodeValue);
+			$extra = array('node' => $node, 'element' => $node->ownerElement);
 
 			if($tags) {
-				$node->nodeValue = $this->replaceTagsWithText($node->nodeValue, $tags, function($idx, $tag) use ($parser){
-					$content = $parser->callShortcode($tag['open'], $tag['attrs'], $tag['content']);
+				$node->nodeValue = $this->replaceTagsWithText($node->nodeValue, $tags,
+					function($idx, $tag) use ($parser, $extra){
+					$content = $parser->callShortcode($tag['open'], $tag['attrs'], $tag['content'], $extra);
 
 					if ($content === false) {
 						if(ShortcodeParser::$error_behavior == ShortcodeParser::ERROR) {
@@ -381,7 +386,8 @@ class ShortcodeParser {
 			do {
 				$parent = $parent->parentNode;
 		}
-			while($parent instanceof DOMElement && !in_array(strtolower($parent->tagName), self::$block_level_elements));
+			while($parent instanceof DOMElement &&
+				!in_array(strtolower($parent->tagName), self::$block_level_elements));
 
 			$node->setAttribute('data-parentid', count($parents));
 			$parents[] = $parent;
@@ -451,7 +457,8 @@ class ShortcodeParser {
 		else if($location == self::INLINE) {
 			if(in_array(strtolower($node->tagName), self::$block_level_elements)) {
 				user_error(
-					'Requested to insert block tag '.$node->tagName.' inline - probably this will break HTML compliance', 
+					'Requested to insert block tag '.$node->tagName.
+					' inline - probably this will break HTML compliance', 
 					E_USER_WARNING
 				);
 			}
@@ -461,7 +468,7 @@ class ShortcodeParser {
 			user_error('Unknown value for $location argument '.$location, E_USER_ERROR);
 		}
 	}
- 
+
 	/**
 	 * Given a node with represents a shortcode marker and some information about the shortcode, call the
 	 * shortcode handler & replace the marker with the actual content
@@ -484,7 +491,7 @@ class ShortcodeParser {
 				$content = $tag['text'];
 			}
 			else {
- 				// self::$error_behavior == self::STRIP - NOP
+				// self::$error_behavior == self::STRIP - NOP
 			}
 		}
 		
@@ -549,7 +556,8 @@ class ShortcodeParser {
 
 			if(!$parent) {
 				if($location !== self::INLINE) {
-					user_error("Parent block for shortcode couldn't be found, but location wasn't INLINE", E_USER_ERROR);
+					user_error("Parent block for shortcode couldn't be found, but location wasn't INLINE",
+						E_USER_ERROR);
 				}
 			}
 			else {

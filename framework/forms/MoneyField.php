@@ -6,7 +6,7 @@
  * 
  * @author Ingo Schommer, SilverStripe Ltd. (<firstname>@silverstripe.com)
  * 
- * @package framework
+ * @package forms
  * @subpackage fields-formattedinput
  */
 class MoneyField extends FormField {
@@ -45,8 +45,8 @@ class MoneyField extends FormField {
 	 */
 	public function Field($properties = array()) {
 		return "<div class=\"fieldgroup\">" .
-			"<div class=\"fieldgroupField\">" . $this->fieldCurrency->SmallFieldHolder() . "</div>" . 
-			"<div class=\"fieldgroupField\">" . $this->fieldAmount->SmallFieldHolder() . "</div>" . 
+			"<div class=\"fieldgroup-field\">" . $this->fieldCurrency->SmallFieldHolder() . "</div>" . 
+			"<div class=\"fieldgroup-field\">" . $this->fieldAmount->SmallFieldHolder() . "</div>" . 
 		"</div>";
 	}
 	
@@ -120,6 +120,8 @@ class MoneyField extends FormField {
 	 */
 	public function performReadonlyTransformation() {
 		$clone = clone $this;
+		$clone->fieldAmount = $clone->fieldAmount->performReadonlyTransformation();
+		$clone->fieldCurrency = $clone->fieldCurrency->performReadonlyTransformation();
 		$clone->setReadonly(true);
 		return $clone;
 	}

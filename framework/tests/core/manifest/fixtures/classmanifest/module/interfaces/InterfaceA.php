@@ -1,5 +1,0 @@
-<?php
-/**
- * @ignore
- */
-interface InterfaceA {  }

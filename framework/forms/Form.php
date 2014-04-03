@@ -245,6 +245,8 @@ class Form extends RequestHandler {
 		if(isset($errorInfo['message']) && isset($errorInfo['type'])) {
 			$this->setMessage($errorInfo['message'], $errorInfo['type']);
 		}
+
+		return $this;
 	}
 	
 	/**
@@ -275,10 +277,20 @@ class Form extends RequestHandler {
 	
 		// Protection against CSRF attacks
 		$token = $this->getSecurityToken();
-		if(!$token->checkRequest($request)) {
-			$this->httpError(400, _t("Form.CSRF_FAILED_MESSAGE",
-				"There seems to have been a technical problem. Please click the back button,"
-				. " refresh your browser, and try again."));
+		if( ! $token->checkRequest($request)) {
+			if (empty($vars['SecurityID'])) {
+				$this->httpError(400, _t("Form.CSRF_FAILED_MESSAGE",
+					"There seems to have been a technical problem. Please click the back button, 
+					refresh your browser, and try again."));
+			} else {
+				Session::set("FormInfo.{$this->FormName()}.data", $this->getData());
+				Session::set("FormInfo.{$this->FormName()}.errors", array());
+				$this->sessionMessage(
+					_t("Form.CSRF_EXPIRED_MESSAGE", "Your session has expired. Please re-submit the form."),
+					"warning"
+				);
+				return $this->controller->redirectBack();
+			}
 		}
 		
 		// Determine the action button clicked
@@ -1004,12 +1016,17 @@ class Form extends RequestHandler {
 		return $this->messageType;
 	}
 
+	/**
+	 * @return string
+	 */
 	protected function getMessageFromSession() {
 		if($this->message || $this->messageType) {
 			return $this->message;
-		}else{
+		} else {
 			$this->message = Session::get("FormInfo.{$this->FormName()}.formError.message");
 			$this->messageType = Session::get("FormInfo.{$this->FormName()}.formError.type");
+
+			return $this->message;
 		}
 	}
 
@@ -1378,8 +1395,10 @@ class Form extends RequestHandler {
 	}
 
 	public function buttonClicked() {
-		foreach($this->actions as $action) {
-			if($this->buttonClickedFunc == $action->actionName()) return $action;
+		foreach($this->actions->dataFields() as $action) {
+			if($action->hasMethod('actionname') && $this->buttonClickedFunc == $action->actionName()) {
+				return $action;
+			}
 		}
 	}
 
@@ -1477,14 +1496,12 @@ class Form extends RequestHandler {
 	 *				names delimited by a single space.
 	 */
 	public function addExtraClass($class) {
-		$classes = explode(' ', $class);
-		
+		//split at white space
+		$classes = preg_split('/\s+/', $class);
 		foreach($classes as $class) {
-			$value = trim($class);
-			
-			$this->extraClasses[] = $value;
+			//add classes one by one
+			$this->extraClasses[$class] = $class;
 		}
-
 		return $this;
 	}
 
@@ -1495,8 +1512,12 @@ class Form extends RequestHandler {
 	 * @param string $class
 	 */
 	public function removeExtraClass($class) {
-		$classes = explode(' ', $class);
-		$this->extraClasses = array_diff($this->extraClasses, $classes);
+		//split at white space
+		$classes = preg_split('/\s+/', $class);
+		foreach ($classes as $class) {
+			//unset one by one
+			unset($this->extraClasses[$class]);
+		}
 		return $this;
 	}
 	

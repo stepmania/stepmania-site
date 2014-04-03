@@ -133,8 +133,13 @@ class ArrayList extends ViewableData implements SS_List, SS_Filterable, SS_Sorta
 	 * @return ArrayList 
 	 */
 	public function limit($length, $offset = 0) {
+		if(!$length) {
+			$length = count($this->items);
+		}
+
 		$list = clone $this;
 		$list->items = array_slice($this->items, $offset, $length);
+
 		return $list;
 	}
 
@@ -276,9 +281,14 @@ class ArrayList extends ViewableData implements SS_List, SS_Filterable, SS_Sorta
 	 */
 	public function map($keyfield = 'ID', $titlefield = 'Title') {
 		$map = array();
+
 		foreach ($this->items as $item) {
-			$map[$this->extractValue($item, $keyfield)] = $this->extractValue($item, $titlefield);
+			$map[$this->extractValue($item, $keyfield)] = $this->extractValue(
+				$item, 
+				$titlefield
+			);
 		}
+
 		return $map;
 	}
 
@@ -291,7 +301,9 @@ class ArrayList extends ViewableData implements SS_List, SS_Filterable, SS_Sorta
 	 */
 	public function find($key, $value) {
 		foreach ($this->items as $item) {
-			if ($this->extractValue($item, $key) == $value) return $item;
+			if ($this->extractValue($item, $key) == $value) {
+				return $item;
+			}
 		}
 	}
 
@@ -303,9 +315,11 @@ class ArrayList extends ViewableData implements SS_List, SS_Filterable, SS_Sorta
 	 */
 	public function column($colName = 'ID') {
 		$result = array();
+
 		foreach ($this->items as $item) {
 			$result[] = $this->extractValue($item, $colName);
 		}
+
 		return $result;
 	}
 
@@ -404,7 +418,13 @@ class ArrayList extends ViewableData implements SS_List, SS_Filterable, SS_Sorta
 	 * It works by checking the fields available in the first record of the list.
 	 */
 	public function canFilterBy($by) {
-		return array_key_exists($by, $this->first());
+		$firstRecord = $this->first();
+
+		if ($firstRecord === false) {
+			return false;
+		}
+
+		return array_key_exists($by, $firstRecord);
 	}
 
 	/**
@@ -460,7 +480,37 @@ class ArrayList extends ViewableData implements SS_List, SS_Filterable, SS_Sorta
 	}
 	
 	public function byID($id) {
-		return $this->filter("ID", $id)->First();
+		$firstElement = $this->filter("ID", $id)->first();
+
+		if ($firstElement === false) {
+			return null;
+		}
+
+		return $firstElement;
+	}
+
+	/**
+	 * @see SS_Filterable::filterByCallback()
+	 *
+	 * @example $list = $list->filterByCallback(function($item, $list) { return $item->Age == 9; })
+	 * @param callable $callback
+	 * @return ArrayList
+	 */
+	public function filterByCallback($callback) {
+		if(!is_callable($callback)) {
+			throw new LogicException(sprintf(
+				"SS_Filterable::filterByCallback() passed callback must be callable, '%s' given",
+				gettype($callback)
+			));
+		}
+
+		$output = ArrayList::create();
+
+		foreach($this as $item) {
+			if(call_user_func($callback, $item, $this)) $output->push($item);
+		}
+
+		return $output;
 	}
 
 	/**
@@ -554,7 +604,11 @@ class ArrayList extends ViewableData implements SS_List, SS_Filterable, SS_Sorta
 	 * @param mixed $value
 	 */
 	public function offsetSet($offset, $value) {
-		$this->items[$offset] = $value;
+		if($offset == null) {
+			$this->items[] = $value;
+		} else {
+			$this->items[$offset] = $value;
+		}
 	}
 
 	/**

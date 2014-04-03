@@ -18,8 +18,8 @@
 						<% end_if %>
 					</div>
 				</div>
-				<div class="ss-uploadfield-item-editform loading includeParent">
-					<iframe frameborder="0" src="$UploadFieldEditLink"></iframe>
+				<div class="ss-uploadfield-item-editform includeParent">
+					<iframe frameborder="0" data-src="$UploadFieldEditLink" src="about:blank"></iframe>
 				</div>
 			</li>
 		<% end_loop %>
@@ -52,6 +52,8 @@
 					<% _t('UploadField.FROMCOMPUTER', 'From your computer') %>
 					<input id="$id" name="{$Name}[Uploads][]" class="$extraClass ss-uploadfield-fromcomputer-fileinput" data-config="$configString" type="file"<% if $multiple %> multiple="multiple"<% end_if %> />
 				</label>
+			<% else %>
+				<input id="$id" name="{$Name}[Uploads][]" class="$extraClass ss-uploadfield-fromcomputer-fileinput" data-config="$configString" type="hidden" />
 			<% end_if %>
 
 			<% if $canAttachExisting %>
@@ -67,4 +69,3 @@
 		<div class="clear"><!-- --></div>
 	</div>
 <% end_if %>
-<% if Description %><span class="description">$Description</span><% end_if %>

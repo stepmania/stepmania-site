@@ -1226,7 +1226,9 @@ ss.editorWrappers['default'] = ss.editorWrappers.tinyMCE;
 					'src' : this.find('.thumbnail-preview').attr('src'),
 					'width' : width ? parseInt(width, 10) : null,
 					'height' : height ? parseInt(height, 10) : null,
-					'class' : this.find(':input[name=CSSClass]').val()
+					'class' : this.find(':input[name=CSSClass]').val(),
+					'alt' : this.find(':input[name=AltText]').val(),
+					'title' : this.find(':input[name=Title]').val()
 				};
 			},
 			getExtraData: function() {
@@ -1260,6 +1262,8 @@ ss.editorWrappers['default'] = ss.editorWrappers.tinyMCE;
 				return $('<div />').append(el).html(); // Little hack to get outerHTML string
 			},
 			updateFromNode: function(node) {
+				this.find(':input[name=AltText]').val(node.attr('alt'));
+				this.find(':input[name=Title]').val(node.attr('title'));
 				this.find(':input[name=Width]').val(node.width());
 				this.find(':input[name=Height]').val(node.height());
 				this.find(':input[name=Title]').val(node.attr('title'));
@@ -1311,14 +1315,20 @@ ss.editorWrappers['default'] = ss.editorWrappers.tinyMCE;
 
 			onclick: function(e) {
 				var editForm = this.getEditForm();
-	
-				editForm.parent('.ss-uploadfield-item').removeClass('ui-state-warning');
+		
+				// Make sure we're in an HtmlEditorField here, or fall-back to _super(). HtmlEditorField with 
+				// AssetUploadField doesn't use iframes, so needs its own toggleEditForm() logic
+				if (this.closest('.ss-uploadfield-item').hasClass('ss-htmleditorfield-file')) {
+					editForm.parent('ss-uploadfield-item').removeClass('ui-state-warning');
 
-				editForm.toggleEditForm();
+					editForm.toggleEditForm();
 
-				e.preventDefault(); // Avoid a form submit
+					e.preventDefault(); // Avoid a form submit
 
-				return false; // Avoid duplication from button
+					return false; // Avoid duplication from button
+				}
+
+				this._super(e);
 			}
 		});
 
@@ -1400,17 +1410,6 @@ function sapphiremce_cleanup(type, value) {
 			this.removeAttribute('onresizestart');
 			this.removeAttribute('onresizeend');
 		});
-	}
-
-	// if we are inserting from a popup back into the editor
-	// add the changed class and update the Content value
-	if(type == 'insert_to_editor' && typeof tinyMCE.selectedInstance.editorId !== 'undefined') {
-		var field = jQuery('#' + tinyMCE.selectedInstance.editorId);
-		var original = field.val();
-		if (original != value) {
-			field.val(value).addClass('changed');
-			field.closest('form').addClass('changed');
-		}
 	}
 
 	return value;

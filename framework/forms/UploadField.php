@@ -22,8 +22,8 @@
  * </code>
  * 
  * @author Zauberfisch
- * @package framework
- * @subpackage forms
+ * @package forms
+ * @subpackages fields-files
  */
 class UploadField extends FileField {
 
@@ -118,6 +118,13 @@ class UploadField extends FileField {
 		 * @var boolean|string
 		 */
 		'canPreviewFolder' => true,
+		/**
+		 * Indicate a change event to the containing form if an upload
+		 * or file edit/delete was performed.
+		 *
+		 * @var boolean
+		 */
+		'changeDetection' => true,
 		/**
 		 * Maximum width of the preview thumbnail
 		 * 
@@ -926,8 +933,8 @@ class UploadField extends FileField {
 		Requirements::javascript(THIRDPARTY_DIR . '/jquery/jquery.js');
 		Requirements::javascript(THIRDPARTY_DIR . '/jquery-ui/jquery-ui.js');
 		Requirements::javascript(THIRDPARTY_DIR . '/jquery-entwine/dist/jquery.entwine-dist.js');
-		Requirements::javascript(FRAMEWORK_DIR . '/javascript/i18n.js');
 		Requirements::javascript(FRAMEWORK_ADMIN_DIR . '/javascript/ssui.core.js');
+		Requirements::add_i18n_javascript(FRAMEWORK_DIR . '/javascript/lang');
 
 		Requirements::combine_files('uploadfield.js', array(
 			// @todo jquery templates is a project no longer maintained and should be retired at some point.
@@ -1000,7 +1007,7 @@ class UploadField extends FileField {
 		
 		$mergedConfig = array_merge($config, $this->ufConfig);
 		return $this->customise(array(
-			'configString' => str_replace('"', "'", Convert::raw2json($mergedConfig)),
+			'configString' => str_replace('"', "&quot;", Convert::raw2json($mergedConfig)),
 			'config' => new ArrayData($mergedConfig),
 			'multiple' => $allowedMaxFileNumber !== 1
 		))->renderWith($this->getTemplates());
@@ -1147,6 +1154,11 @@ class UploadField extends FileField {
 			$fileObject = Object::create($relationClass);
 		}
 
+		// Allow replacing files (rather than renaming a duplicate) when warning about overwrites
+		if($this->getConfig('overwriteWarning')) {
+			$this->upload->setReplaceFile(true);
+		}
+
 		// Get the uploaded file into a new file object.
 		try {
 			$this->upload->loadIntoFile($tmpFile, $fileObject, $this->getFolderName());
@@ -1261,11 +1273,15 @@ class UploadField extends FileField {
 		$nameFilter = FileNameFilter::create();
 		$filteredFile = basename($nameFilter->filter($originalFile));
 		
+		// Resolve expected folder name
+		$folderName = $this->getFolderName();
+		$folder = Folder::find_or_make($folderName);
+		$parentPath = BASE_PATH."/".$folder->getFilename();
+		
 		// check if either file exists
-		$folder = $this->getFolderName();
 		$exists = false;
 		foreach(array($originalFile, $filteredFile) as $file) {
-			if(file_exists(ASSETS_PATH."/$folder/$file")) {
+			if(file_exists($parentPath.$file)) {
 				$exists = true;
 				break;
 			}
@@ -1313,8 +1329,8 @@ class UploadField extends FileField {
  * RequestHandler for actions (edit, remove, delete) on a single item (File) of the UploadField
  * 
  * @author Zauberfisch
- * @package framework
- * @subpackage forms
+ * @package forms
+ * @subpackages fields-files
  */
 class UploadField_ItemHandler extends RequestHandler {
 
@@ -1474,6 +1490,9 @@ class UploadField_ItemHandler extends RequestHandler {
 
 /**
  * File selection popup for attaching existing files.
+ *
+ * @package forms
+ * @subpackages fields-files
  */
 class UploadField_SelectHandler extends RequestHandler {
 

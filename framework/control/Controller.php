@@ -498,6 +498,8 @@ class Controller extends RequestHandler implements TemplateGlobalProvider {
 		if($this->request) {
 			if($this->request->requestVar('BackURL')) {
 				$url = $this->request->requestVar('BackURL');
+			} else if($this->request->isAjax() && $this->request->getHeader('X-Backurl')) {
+				$url = $this->request->getHeader('X-Backurl');
 			} else if($this->request->getHeader('Referer')) {
 				$url = $this->request->getHeader('Referer');
 			}
@@ -552,8 +554,9 @@ class Controller extends RequestHandler implements TemplateGlobalProvider {
 	public static function join_links() {
 		$args = func_get_args();
 		$result = "";
-		$querystrings = array();
+		$queryargs = array();
 		$fragmentIdentifier = null;
+
 		foreach($args as $arg) {
 			// Find fragment identifier - keep the last one
 			if(strpos($arg,'#') !== false) {
@@ -562,7 +565,8 @@ class Controller extends RequestHandler implements TemplateGlobalProvider {
 			// Find querystrings
 			if(strpos($arg,'?') !== false) {
 				list($arg, $suffix) = explode('?',$arg,2);
-				$querystrings[] = $suffix;
+				parse_str($suffix, $localargs);
+				$queryargs = array_merge($queryargs, $localargs);
 			}
 			if((is_string($arg) && $arg) || is_numeric($arg)) {
 				$arg = (string)$arg;
@@ -571,7 +575,8 @@ class Controller extends RequestHandler implements TemplateGlobalProvider {
 			}
 		}
 		
-		if($querystrings) $result .= '?' . implode('&', $querystrings);
+		if($queryargs) $result .= '?' . http_build_query($queryargs);
+
 		if($fragmentIdentifier) $result .= "#$fragmentIdentifier";
 		
 		return $result;

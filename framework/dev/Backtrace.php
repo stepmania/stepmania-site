@@ -16,6 +16,8 @@ class SS_Backtrace {
 		'mysql_connect',
 		'mssql_connect',
 		'pg_connect',
+		array('mysqli', 'mysqli'),
+		array('mysqli', 'select_db'),
 		array('DB', 'connect'),
 		array('Security', 'check_default_admin'),
 		array('Security', 'encrypt_password'),
@@ -90,7 +92,7 @@ class SS_Backtrace {
 		// Filter out arguments
 		foreach($bt as $i => $frame) {
 			$match = false;
-			if(@$bt[$i]['class']) {
+			if(!empty($bt[$i]['class'])) {
 				foreach($ignoredArgs as $fnSpec) {
 					if(is_array($fnSpec) && $bt[$i]['class'] == $fnSpec[0] && $bt[$i]['function'] == $fnSpec[1]) {
 						$match = true;
