@@ -571,11 +571,6 @@ class Forum_Controller extends Page_Controller {
 	 * @return bool
 	 */
 	function unsubscribe(SS_HTTPRequest $request) {
-		// Check CSRF
-		if (!SecurityToken::inst()->checkRequest($request)) {
-			return $this->httpError(400);
-		}
-
 		$member = Member::currentUser();
 		
 		if(!$member) Security::permissionFailure($this, _t('LOGINTOUNSUBSCRIBE', 'To unsubscribe from that thread, please log in first.'));
