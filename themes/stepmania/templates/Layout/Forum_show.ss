@@ -58,9 +58,9 @@
 	<div class="topic-tools topic-stats button">
 		<% with ForumThread %>
 		<% if HasSubscribed %>
-		<a href="$UnsubscribeLink">Unsubscribe</a>
+		<a href="$UnsubscribeLink?SecurityID={$SecurityID}">Unsubscribe</a>
 		<% else %>
-		<a href="$SubscribeLink">Subscribe</a>
+		<a href="$SubscribeLink?SecurityID={$SecurityID}">Subscribe</a>
 		<% end_if %>
 		<% end_with %>
 	</div>
