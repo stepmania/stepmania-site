@@ -195,7 +195,14 @@ class ForumThread extends DataObject {
 	 * @return String
 	 */
 	function Link($action = "show", $showID = true) {
-		$baseLink = DataObject::get_by_id("Forum", $this->ForumID)->Link();
+		$forum =  DataObject::get_by_id("Forum", (int)$this->ForumID);
+
+		// Prevents a crash and burn if you're subscribed to an impossible thread...
+		// Happened to my profile after one of SoonDead's CSRF tests. -Colby
+		if (!$forum)
+			return "#";
+
+		$baseLink = $forum->Link();
 		$extra = ($showID) ? '/'.$this->ID : '';
 		
 		return ($action) ? $baseLink . $action . $extra : $baseLink;
