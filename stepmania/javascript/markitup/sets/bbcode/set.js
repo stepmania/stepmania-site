@@ -1,6 +1,7 @@
 var mySettings;
 
 (function () {
+    'use strict';
     mySettings = {
         nameSpace: 'bbcode',
         previewParserPath: '', // path to your BBCode parser
@@ -126,7 +127,7 @@ var mySettings;
 
 
             /*
-             * TODO list, reply selected, stepsblock, alignment css
+             * TODO list, reply selected, stepsblock
              *
              */
             /*{name:'Bulleted list', openWith:'[list]\n', closeWith:'\n[/list]'},
@@ -138,8 +139,8 @@ var mySettings;
     };
 
     /**
-     * It there are two parameters for a tag, and It's not clear where
-     * the selected text should go. It prompts for both.
+     * Use this if there are two parameters for a tag, and It's not clear
+     * where the selected text should go. It prompts for both.
      * It assumes that the second parameter is optional.
      *
      * @param {string} tagName The name of the tag.
@@ -167,6 +168,19 @@ var mySettings;
             h.closeWith = h.closeWith || '[/' + tagName + ']';
         };
     }
+
+    /**
+     * Use this if there are two tags with the same name, one with an optional
+     * parameter and one without it. Like [tagname=] and [tagname].
+      *
+     * It prompts for the optional parameter and if the value is null or empty
+     * it returns the tag with only one parameter, otherwise it returns the tag
+     * with two parameters.
+     *
+     * @param {string} tagName The name of the tag.
+     * @param {string} paramText The text on the prompt for the parameter.
+     * @return {function} A function that can be used in beforeInsert.
+     */
     function optionalParam(tagName, paramText) {
         return function (h) {
             var paramValue = window.prompt(paramText, '');
@@ -178,6 +192,4 @@ var mySettings;
             h.closeWith = h.closeWith || '[/' + tagName + ']';
         };
     }
-
-
 })();
