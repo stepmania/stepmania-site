@@ -54,6 +54,9 @@
 .bbcode .abbreviation a {
     background-image:url(images/abbreviation.png);
 }
+.bbcode .spoiler a {
+    background-image:url(images/spoiler.gif);
+}
 	
 .bbcode .clean a {
 	background-image:url(images/clean.png);
