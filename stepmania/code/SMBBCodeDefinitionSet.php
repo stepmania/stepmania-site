@@ -195,6 +195,10 @@ class SMBBCodeDefinitionSet implements JBBCode\CodeDefinitionSet
 		$builder = new JBBCode\CodeDefinitionBuilder('abbr', '<abbr title="{option}">{param}</abbr>');
 		$builder->setUseOption(true);
 		array_push($this->definitions, $builder->build());
+
+		/* [spoiler] */
+		$builder = new JBBCode\CodeDefinitionBuilder('spoiler', '<span class="spoiler-trigger">Spoiler (click to view)</span><span class="spoiler">{param}</span>');
+		array_push($this->definitions, $builder->build());
 	}
 
 	public function getCodeDefinitions()

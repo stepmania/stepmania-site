@@ -817,6 +817,25 @@ footer p {
       border-radius: 3.5px;
       box-shadow: 0 1px 1px rgba(0, 0, 0, 0.25);
       background: rgba(237, 236, 235, 0.25); }
+    .forum-post .user-content .spoiler-trigger {
+      display: block;
+      color: #f0d01f;
+      font-weight: 600;
+      padding: 7px;
+      background: #21201f;
+      border-top-left-radius: 3.5px;
+      border-top-right-radius: 3.5px;
+      margin: 0;
+      cursor: pointer; }
+    .forum-post .user-content .spoiler {
+      display: none;
+      padding: 7px;
+      border-bottom-left-radius: 3.5px;
+      border-bottom-right-radius: 3.5px;
+      box-shadow: 0 1px 1px rgba(0, 0, 0, 0.25);
+      background: rgba(237, 236, 235, 0.25); }
+      .forum-post .user-content .spoiler.open {
+        display: block; }
     .forum-post .user-content .center {
       display: block;
       text-align: center; }
