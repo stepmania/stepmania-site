@@ -350,6 +350,30 @@
 			box-shadow: 0 1px 1px rgba(0, 0, 0, 0.25);
 			background: rgba(lighten($secondary, 80%), 0.25);
 		}
+		// Most of this is copied from q, might be a good idea
+		// to really refactor this to mixins.
+		.spoiler-trigger {
+			display: block;
+			color: $primary;
+			font-weight: 600;
+			padding: $spacing / 2;
+			background: $secondary;
+			border-top-left-radius: $spacing / 4;
+			border-top-right-radius: $spacing / 4;
+			margin: 0;
+			cursor: pointer;
+		}
+		.spoiler {
+			display: none;
+			padding: $spacing / 2;
+			border-bottom-left-radius: $spacing / 4;
+			border-bottom-right-radius: $spacing / 4;
+			box-shadow: 0 1px 1px rgba(0, 0, 0, 0.25);
+			background: rgba(lighten($secondary, 80%), 0.25);
+			&.open {
+				display: block;
+			}
+		}
 		.center {
 			display: block;
 			text-align: center;

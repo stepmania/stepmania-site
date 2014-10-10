@@ -75,6 +75,10 @@
 		return false;
 	});
 
+    $('.spoiler-trigger').on('click', function () {
+        $(this).next('.spoiler').toggleClass('open');
+    });
+
 
 	/**
 	 * BBCode Tools

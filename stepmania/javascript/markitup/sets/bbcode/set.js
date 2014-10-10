@@ -116,6 +116,11 @@ var mySettings;
             closeWith: '[/abbr]',
             placeHolder: 'Abbreviation here...'
         }, {
+            name: 'Spoiler',
+            className: 'spoiler',
+            openWith: '[spoiler]',
+            closeWith: '[/spoiler]'
+        }, {
             separator: '---------------'
         }, {
             name: 'Clean BBCode from selection',
