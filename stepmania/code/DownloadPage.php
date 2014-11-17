@@ -71,7 +71,8 @@ class DownloadPage_Controller extends Page_Controller {
 	function getDownloads() {
 		$downloads = new ArrayList();
 
-		$data = file_get_contents("../../stepmania-releases.json");
+		// I don't actually like it being here as much as in ~, but this makes it accessible from the admin panel!
+		$data = file_get_contents("../assets/stepmania-releases.json");
 		$gh_data = json_decode($data);
 
 		$owner = "stepmania";
