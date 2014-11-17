@@ -279,7 +279,7 @@
 		background: $bottom;
 		border-right: 1px solid darken($bottom, 10%);
 		overflow: hidden;
-		@include flex(0 0 auto);
+		@include flex(0 0 main-size);
 		vertical-align: top;
 		width: 150px;
 		max-width: 150px;
