@@ -365,6 +365,9 @@ footer p {
   padding: 14px;
   color: #3c3407; }
 
+@media only screen and (max-width: 600px) {
+  .limit-width {
+    width: 100%; } }
 .HomePage-banner table h1 {
   padding: 3.5px 0 !important; }
 .HomePage-banner p {

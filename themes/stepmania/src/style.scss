@@ -220,6 +220,13 @@ footer {
 	}
 }
 
+@media only screen and (max-width: 600px) {
+	// Don't waste any space on phones just to show a little extra yellow.
+	.limit-width {
+		width: 100%;
+	}
+}
+
 @import "home";
 @import "download";
 @import "forum";
