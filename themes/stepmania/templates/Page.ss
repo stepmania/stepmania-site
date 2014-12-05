@@ -33,13 +33,14 @@
 			<% if canEdit %><a href="admin/pages/edit/show/$ID" rel="edit" class="float-right edit-button li_pen"> <span>Edit</span></a><% end_if %>
 		</div>
 		<article class="$ClassName-article">
+			<% include ForumLogin %>
 			$Layout
 		</article>
-		<% include ForumLogin %>
+		<%--<% include ForumLogin %>--%>
+		<footer>
+			<p>StepMania and its website are open source software released under the MIT License. <a href="https://github.com/stepmania" class="github">GitHub</a>. <a href="policies">Privacy Policy</a></p>
+		</footer>
 	</div>
-	<footer class="limit-width">
-		<p>StepMania is open source software released under the MIT License. <a href="policies">Privacy Policy</a></p>
-	</footer>
 	<% include GoogleAnalytics %>
 </body>
 </html>

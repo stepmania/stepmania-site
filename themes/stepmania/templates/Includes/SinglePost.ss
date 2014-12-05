@@ -1,5 +1,5 @@
 <div id="post{$ID}" class="forum-post">
-	<div class="forum-flex post-body">		
+	<div class="forum-flex post-body">
 		<div class="user-info">
 			<% with Author %>
 				<a class="author-link" href="$Link" title="<% _t('SinglePost_ss.GOTOPROFILE','Go to this User&rsquo;s Profile') %>">$Nickname</a><br />

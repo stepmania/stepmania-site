@@ -158,12 +158,17 @@ header {
 	}
 }
 
+.pad {
+	padding: $spacing;
+}
+
 #container {
 	background: white;
-	border-bottom-left-radius: $rounding;
-	border-bottom-right-radius: $rounding;
+	// border-bottom-left-radius: $rounding;
+	// border-bottom-right-radius: $rounding;
 	overflow: auto;
-	box-shadow: $shadow;
+	// box-shadow: $shadow;
+	box-shadow: 0 4px 0 4px darken($primary, 8%);
 	.banner, header {
 		background: $secondary;
 		color: white;
@@ -176,7 +181,8 @@ header {
 		}
 	}
 	article {
-		padding: $spacing;
+		// padding: $spacing;
+		overflow: hidden;
 		&:last-child {
 			margin-bottom: 0;
 		}
@@ -197,10 +203,16 @@ header {
 		}
 	}
 	.login {
-		background: $secondary;
+		// background: $secondary;
 		padding: $spacing;
+		.logged-in {
+			// color: #aaa;
+			color: black;
+		}
+		padding-bottom: 0;
+		// padding-bottom: $spacing;
 		a {
-			color: white;
+			// color: white;
 			text-decoration: none;
 		}
 	}
@@ -216,7 +228,8 @@ header {
 footer {
 	p {
 		padding: $spacing;
-		color: mix($primary, #000, 25%);
+		padding-top: 0;
+		// color: mix($primary, #000, 25%);
 	}
 }
 
@@ -230,6 +243,7 @@ footer {
 @import "home";
 @import "download";
 @import "forum";
+@import "memberlist";
 @import "wiki";
 @import "form";
 @import "silverstripe";

@@ -1,5 +1,5 @@
 <% include ForumHeader %>
-	<div id="UserNavigation">
+	<div id="UserNavigation" class="pad">
 		<div class="button float-left"><a href="{$Link}show/$Member.ID">View Profile</a></div>
 		<div class="button float-left"><a href="{$Link}edit">Edit Profile</a></div>
 	</div>

@@ -1,4 +1,5 @@
 <% include ForumHeader %>
+<div class="pad">
 $Content
 <% if Form %>
 	<div id="UserNavigation">
@@ -9,4 +10,5 @@ $Content
 		$Form
 	</div>
 <% end_if %>
+</div>
 <% include ForumFooter %>

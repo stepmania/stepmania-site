@@ -1,5 +1,5 @@
 <% with ForumHolder %>
-	<div class="forum-footer">
+	<div class="forum-footer pad">
 		<p>
 			<strong><% _t('ForumFooter_ss.CURRENTLYON','Currently Online:') %></strong>
 			<% if CurrentlyOnline %>

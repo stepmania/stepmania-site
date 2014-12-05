@@ -4,15 +4,12 @@
 // I'd like to get it fixed up, but that will have to wait until it's more
 // or less fully functional and in prod. -Colby
 .forum-footer {
-	margin-top: $spacing;
+	// margin-top: $spacing;
 }
 .forum-search-bar {
 	display: inline-block;
 	float: right;
 	margin-right: $spacing;
-}
-.logged-in {
-	color: #aaa;
 }
 .signature {
 	margin-top: 1em;
@@ -42,7 +39,7 @@
 	}
 }
 .forum-news {
-	margin: $spacing 0;
+	// margin: $spacing 0;
 	.forum-post {
 		display: block;
 	}
@@ -61,18 +58,20 @@
 	}
 }
 .subforums, .forum-topics {
-	margin-bottom: $spacing;
-	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.25);
-	border-radius: $spacing / 4;
+	// margin-bottom: $spacing;
+	// box-shadow: 0 1px 1px rgba(0, 0, 0, 0.25);
+	// border-radius: $spacing / 4;
 }
 .forum-subforum {
 	$top: adjust-color($primary, $lightness: 40, $saturation: -40);
 	$bottom: adjust-color($primary, $lightness: 35, $saturation: -40);
-	background: $bottom;
-	@include gradient($top, $bottom 50px);
+	// @include gradient($top, $bottom 50px);
+	&:nth-child(odd) {
+	background: lighten($bottom, 5%);
+	}
 	&:last-child {
-		border-bottom-left-radius: $spacing / 4;
-		border-bottom-right-radius: $spacing / 4;
+		// border-bottom-left-radius: $spacing / 4;
+		// border-bottom-right-radius: $spacing / 4;
 	}
 	padding: $spacing;
 	@include display-flex;
@@ -82,6 +81,7 @@
 	.topic-title {
 		font-size: 120%;
 		font-weight: 600;
+		line-height: 1.5em;
 	}
 	p {
 		margin-bottom: $spacing/4 !important;
@@ -126,23 +126,30 @@
 		padding: $spacing;
 	}
 }
+.forum-breadcrumbs {
+	padding: $spacing;
+	padding-bottom: 0;
+}
 .forum-topic {
 	$top: adjust-color($primary, $lightness: 40, $saturation: -40);
 	$bottom: adjust-color($primary, $lightness: 35, $saturation: -40);
-	background: $bottom;
-	@include gradient($top, $bottom 50px);
+	background: lighten($bottom, 10%);
+	&:nth-child(even) {
+		background: lighten($bottom, 5%);
+	}
+	// @include gradient($top, $bottom 50px);
 	padding: $spacing;
 	&.sticky {
 		$top: adjust-color($primary, $lightness: 35, $saturation: -25);
 		$bottom: adjust-color($primary, $lightness: 25, $saturation: -25);
-		background: $bottom;
-		@include gradient($top, $bottom 50px);
+		background: lighten($bottom, 10%);
+		// @include gradient($top, $bottom 50px);
 	}
 	&.locked {
 		$top: adjust-color($primary, $lightness: 30, $saturation: -45, $hue: -20);
 		$bottom: adjust-color($primary, $lightness: 25, $saturation: -45, $hue: -20);
-		background: $bottom;
-		@include gradient($top, $bottom 50px);
+		background: lighten($bottom, 10%);
+		// @include gradient($top, $bottom 50px);
 	}
 	p:last-child {
 		margin-bottom: 0 !important;
@@ -164,6 +171,13 @@
 // TODO: Limit number of pages displayed for a given topic (latest n? first few + last few?)
 .forum-topic {
 	overflow: hidden;
+}
+.forum-pages {
+	padding: $spacing;
+	padding-bottom: 0;
+	a {
+		padding: 0 $spacing;
+	}
 }
 .forum-topic .pages a {
 	margin-top: $spacing / 2;
@@ -201,8 +215,8 @@
 	font-weight: 600;
 }
 .category {
-	border-top-left-radius: $spacing / 4;
-	border-top-right-radius: $spacing / 4;
+	// border-top-left-radius: $spacing / 4;
+	// border-top-right-radius: $spacing / 4;
 	font-size: 110%;
 	font-weight: bold;
 	padding: $spacing;
@@ -212,10 +226,10 @@
 .forum-admin-features, .forum-quick-reply {
 	margin-top: $spacing;
 	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.25);
-	border-radius: $spacing / 4;
+	// border-radius: $spacing / 4;
 	h3 {
-		border-top-left-radius: $spacing / 4;
-		border-top-right-radius: $spacing / 4;
+		// border-top-left-radius: $spacing / 4;
+		// border-top-right-radius: $spacing / 4;
 		background: $secondary;
 		color: $primary;
 		font-size: 120%;
@@ -243,21 +257,21 @@
 	}
 }
 .forum-profile-post {
-	margin-bottom: $spacing / 3;
+	margin-bottom: 3px;
 	vertical-align: top;
-	border-radius: $spacing / 4;
+	// border-radius: $spacing / 4;
 	$top: adjust-color($primary, $lightness: 45, $saturation: -35);
 	$bottom: adjust-color($primary, $lightness: 40, $saturation: -35);
 	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.25);
 	header {
 		$top: lighten(desaturate($primary, 60%), 40%);
-		$bottom: darken($top, 5%);
+		$bottom: $top;
 		background: $bottom !important;
-		@include gradient($top, $bottom);
-		background: -moz-linear-gradient(top, $top, $bottom)  !important;
-		background: -webkit-linear-gradient(top, $top, $bottom)  !important;
-		border-top-left-radius: $spacing / 4;
-		border-top-right-radius: $spacing / 4;
+		// @include gradient($top, $bottom);
+		// background: -moz-linear-gradient(top, $top, $bottom)  !important;
+		// background: -webkit-linear-gradient(top, $top, $bottom)  !important;
+		// border-top-left-radius: $spacing / 4;
+		// border-top-right-radius: $spacing / 4;
 		padding: $spacing;
 		margin-bottom: 0 !important;
 		.post-date {
@@ -267,7 +281,7 @@
 }
 .forum-post {
 	vertical-align: top;
-	margin-bottom: 5px;
+	margin-bottom: 3px;
 	$top: adjust-color($primary, $lightness: 45, $saturation: -35);
 	$bottom: adjust-color($primary, $lightness: 40, $saturation: -35);
 	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
@@ -364,14 +378,21 @@
 			cursor: pointer;
 		}
 		.spoiler {
-			display: none;
-			padding: $spacing / 2;
+			display: block;
+			height: 4px;
+			overflow: hidden;
 			border-bottom-left-radius: $spacing / 4;
 			border-bottom-right-radius: $spacing / 4;
 			box-shadow: 0 1px 1px rgba(0, 0, 0, 0.25);
-			background: rgba(lighten($secondary, 80%), 0.25);
+			background: $secondary;
+			margin-bottom: $spacing;
+			transition: height 0.1s ease-out, padding 0.1s ease-out, background 0.1s ease-out;
 			&.open {
-				display: block;
+				background: rgba(lighten($secondary, 80%), 0.25);
+				padding: $spacing / 2;
+				height: auto;
+				overflow: auto;
+				// display: block;
 			}
 		}
 		.center {
@@ -468,6 +489,9 @@
 		.user-content {
 			width: auto;
 			min-height: 0;
+			.signature {
+				display: none;
+			}
 		}
 		.user-info {
 			width: auto;

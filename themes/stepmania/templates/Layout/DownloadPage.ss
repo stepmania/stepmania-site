@@ -1,4 +1,4 @@
-<div class="downloads-container forum-flex">
+<div class="downloads-container forum-flex pad">
 	<% if Downloads %>
 	<div class="downloads forum-flex-left">
 		<% loop Downloads %>
@@ -24,5 +24,5 @@
 			$GibMoneyPls
 		</div>
 	</div>
+	$Form
 </div>
-$Form

@@ -1,5 +1,5 @@
 <% include ForumHeader %>
-<div class="forum-header">
+<div class="forum-header pad">
 	<div class="float-left replyButton button">
 		<a href="$ReplyLink" title="<% _t('Forum_show_ss.CLICKREPLY', 'Click to Reply') %>"><% _t('Forum_show_ss.REPLY', 'Reply') %></a>
 	</div>
@@ -29,7 +29,7 @@
 <% loop Posts %>
 	<% include SinglePost %>
 <% end_loop %>
-<div class="topic-footer">
+<div class="topic-footer pad">
 	<div class="float-left replyButton button">
 		<a href="$ReplyLink" title="<% _t('Forum_show_ss.CLICKREPLY', 'Click to Reply') %>"><% _t('Forum_show_ss.REPLY', 'Reply') %></a>
 	</div>

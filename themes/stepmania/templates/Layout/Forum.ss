@@ -11,7 +11,9 @@
 	<p class="message error"><% _t('Forum_ss.READONLYFORUM', 'This Forum is read only. You cannot post replies or start new threads') %></p>
 <% end_if %>
 <% if canPost %>
+<div class="pad">
 	<p class="new-topic button"><a href="{$Link}starttopic" title="<% _t('Forum_ss.NEWTOPIC','Click here to start a new topic') %>"><% _t('Forum_ss.NEWTOPICIMAGE','Start new topic') %></a></p>
+</div>
 <% end_if %>
 <div class="forum-features">
 	<div class="forum-topics" summary="List of topics in this forum">
@@ -32,7 +34,7 @@
 		<% end_if %>
 	</div>
 	<% if Topics.MoreThanOnePage %>
-		<p>
+		<p class="forum-pages">
 			<% if Topics.PrevLink %><a style="float: left" href="$Topics.PrevLink">	&lt; <% _t('Forum_ss.PREVLNK','Previous Page') %></a><% end_if %>
 			<% if Topics.NextLink %><a style="float: right" href="$Topics.NextLink"><% _t('Forum_ss.NEXTLNK','Next Page') %> &gt;</a><% end_if %>
 			

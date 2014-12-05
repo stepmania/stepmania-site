@@ -130,6 +130,13 @@ class SMBBCodeParser extends TextParser {
 
 		$this->content = $parser->getAsHtml();
 
+		// Try to Auto-link URLs
+		// $this->content = preg_replace(
+		// 	"/\b(https?:\/\/([a-z0-9\.\/\-\?\&\%=]+))/iS",
+		// 	"<a href=\"\\1\" rel=\"nofollow\">\\1</a>",
+		// 	$this->content
+		// );
+
 		// make sure newlines aren't all wonky
 		$this->content = str_replace("\n", "<br />", $this->content);
 
