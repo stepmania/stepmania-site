@@ -1,7 +1,7 @@
 (function($) {
-	$.fn.rainbow = function(options) {
+	$.fn.rainbow = function(_options) {
 		this.each(function() {
-		
+			var options = $.extend({}, _options);
 			options.originalText = $(this).html();
 			options.iterations = 0;
 			if (!options.pauseLength) {
