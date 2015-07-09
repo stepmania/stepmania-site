@@ -13,6 +13,10 @@
 	<% require javascript("stepmania/javascript/site.js") %>
 </head>
 <body>
+	<% if CurrentMember %>
+	<%-- Go away! Really! --%>
+	<%-- $SilverStripeNavigator --%>
+	<% end_if %>
 	<header>
 		<nav class="limit-width">
 			<a href="$BaseHref"><img src="$ThemeDir/images/logo-small.png" alt="StepMania"></img></a>
@@ -26,19 +30,17 @@
 	<div id="container" class="limit-width">
 		<div class="$ClassName-banner banner">
 			<% if BannerContent %>$BannerContent<% else %><h1>$Title</h1><% end_if %>
-			<% if canEdit %><a href="admin/pages/edit/show/$ID" class="float-right edit-button">Edit</a><% end_if %>
+			<% if canEdit %><a href="admin/pages/edit/show/$ID" rel="edit" class="float-right edit-button li_pen"> <span>Edit</span></a><% end_if %>
 		</div>
 		<article class="$ClassName-article">
+			<% include ForumLogin %>
 			$Layout
 		</article>
-		<% include ForumLogin %>
+		<%--<% include ForumLogin %>--%>
+		<footer>
+			<p>StepMania and its website are open source software released under the MIT License. <a href="https://github.com/stepmania" class="github">GitHub</a>. <a href="policies">Privacy Policy</a></p>
+		</footer>
 	</div>
-	<footer class="limit-width">
-		<p>StepMania is open source software released under the MIT License.</p>
-	</footer>
-	<% if CurrentMember %>
-	<%-- Go away! Really! --%>
-	<%-- $SilverStripeNavigator --%>
-	<% end_if %>
+	<% include GoogleAnalytics %>
 </body>
 </html>

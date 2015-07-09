@@ -15,7 +15,7 @@
  * For easier setup, have a look at a sample configuration in 
  * {@link GridFieldConfig_RelationEditor}.
  *
- * @package framework
+ * @package forms
  * @subpackage fields-gridfield
  */
 class GridFieldAddExistingAutocompleter 
@@ -107,8 +107,7 @@ class GridFieldAddExistingAutocompleter
 
 		$searchField = new TextField('gridfield_relationsearch',
 			_t('GridField.RelationSearch', "Relation search"), $value);
-		// Apparently the data-* needs to be double qouted for the jQuery.meta data plugin
-		$searchField->setAttribute('data-search-url', '\''.Controller::join_links($gridField->Link('search').'\''));
+		$searchField->setAttribute('data-search-url', Controller::join_links($gridField->Link('search')));
 		$searchField->setAttribute('placeholder', $this->getPlaceholderText($dataClass));
 		$searchField->addExtraClass('relation-search no-change-track');
 		
@@ -230,9 +229,12 @@ class GridFieldAddExistingAutocompleter
 			->limit($this->getResultsLimit());
 
 		$json = array();
+		$originalSourceFileComments = Config::inst()->get('SSViewer', 'source_file_comments');
+		Config::inst()->update('SSViewer', 'source_file_comments', false);
 		foreach($results as $result) {
-			$json[$result->ID] = SSViewer::fromString($this->resultsFormat)->process($result);
+			$json[$result->ID] = html_entity_decode(SSViewer::fromString($this->resultsFormat)->process($result));
 		}
+		Config::inst()->update('SSViewer', 'source_file_comments', $originalSourceFileComments);
 		return Convert::array2json($json);
 	}
 

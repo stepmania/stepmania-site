@@ -53,6 +53,13 @@ class ConfirmedPasswordField extends FormField {
 	 * @param boolean $showOnClick
 	 */
 	protected $showOnClick = false;
+
+
+	/**
+	 * A place to temporarly store the confirm password value
+	 * @var string
+	 */
+	protected $confirmValue;
 	
 	/**
 	 * Title for the link that triggers the visibility of password fields.
@@ -66,7 +73,7 @@ class ConfirmedPasswordField extends FormField {
 	 * 
 	 * @var FieldList
 	 */
-	 public $children;
+	public $children;
 	
 	/**
 	 * @param string $name
@@ -243,10 +250,12 @@ class ConfirmedPasswordField extends FormField {
 		// If $data is a DataObject, don't use the value, since it's a hashed value
 		if ($data && $data instanceof DataObject) $value = '';
 
+		//store this for later
+		$oldValue = $this->value;
+
 		if(is_array($value)) {
-			if($value['_Password'] || (!$value['_Password'] && !$this->canBeEmpty)) {
-				$this->value = $value['_Password'];
-			}
+			$this->value = $value['_Password'];
+			$this->confirmValue = $value['_ConfirmPassword'];
 
 			if($this->showOnClick && isset($value['_PasswordFieldVisible'])) {
 				$this->children->fieldByName($this->getName() . '[_PasswordFieldVisible]')
@@ -258,13 +267,30 @@ class ConfirmedPasswordField extends FormField {
 			}
 		}
 
-		$this->children->fieldByName($this->getName() . '[_Password]')
-			->setValue($this->value);
+		//looking up field by name is expensive, so lets check it needs to change
+		if ($oldValue != $this->value) {
+			$this->children->fieldByName($this->getName() . '[_Password]')
+				->setValue($this->value);
 
-		$this->children->fieldByName($this->getName() . '[_ConfirmPassword]')
-			->setValue($this->value);
+			$this->children->fieldByName($this->getName() . '[_ConfirmPassword]')
+				->setValue($this->value);
+		}
 
 		return $this;
+	}
+
+	/**
+	 * Update the names of the child fields when updating name of field.
+	 * 
+	 * @param string $name new name to give to the field.
+	 */
+	public function setName($name) {
+		$this->children->fieldByName($this->getName() . '[_Password]')
+				->setName($name . '[_Password]');
+		$this->children->fieldByName($this->getName() . '[_ConfirmPassword]')
+				->setName($name . '[_ConfirmPassword]');
+
+		return parent::setName($name);
 	}
 
 	/**
@@ -294,9 +320,9 @@ class ConfirmedPasswordField extends FormField {
 		
 		$passwordField = $this->children->fieldByName($name.'[_Password]');
 		$passwordConfirmField = $this->children->fieldByName($name.'[_ConfirmPassword]');
-		$passwordField->setValue($_POST[$name]['_Password']);
-		$passwordConfirmField->setValue($_POST[$name]['_ConfirmPassword']);
-		
+		$passwordField->setValue($this->value);
+		$passwordConfirmField->setValue($this->confirmValue);
+
 		$value = $passwordField->Value();
 		
 		// both password-fields should be the same
@@ -351,7 +377,9 @@ class ConfirmedPasswordField extends FormField {
 			}
 			$limitRegex = '/^.' . $limit . '$/';
 			if(!empty($value) && !preg_match($limitRegex,$value)) {
-				$validator->validationError('Password', $errorMsg, 
+				$validator->validationError(
+					$name,
+					$errorMsg,
 					"validation", 
 					false
 				);
@@ -361,7 +389,7 @@ class ConfirmedPasswordField extends FormField {
 		if($this->requireStrongPassword) {
 			if(!preg_match('/^(([a-zA-Z]+\d+)|(\d+[a-zA-Z]+))[a-zA-Z0-9]*$/',$value)) {
 				$validator->validationError(
-					'Password', 
+					$name,
 					_t('Form.VALIDATIONSTRONGPASSWORD',
 						"Passwords must have at least one digit and one alphanumeric character"), 
 					"validation", 

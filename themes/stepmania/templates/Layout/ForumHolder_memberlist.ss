@@ -1,12 +1,12 @@
 <% include ForumHeader %>
 	<div class="forumHolderFeatures">
 		
-		<table id="MembersList">
+		<table id="MemberList">
 			<tr class="head">
-				<th><a href="{$URLSegment}/memberlist/?order=name" title="<% _t('ForumHolder_memberlist_ss.ORDERBYNAME', 'Order by Name') %>"><% _t('ForumHolder_memberlist_ss.MEMBERNAME', 'Member Name') %>:</a></th>
-				<th><a href="{$URLSegment}/memberlist/?order=country" title="<% _t('ForumHolder_memberlist_ss.ORDERBYCOUNTRY', 'Order by Country') %>"><% _t('ForumHolder_memberlist_ss.COUNTRY', 'Country') %>:</a></th>
-				<th><a href="{$URLSegment}/memberlist/?order=posts" title="<% _t('ForumHolder_memberlist_ss.ORDERBYPOSTS', 'Order by Posts') %>"><% _t('ForumHolder_memberlist_ss.FORUMPOSTS', 'Forum Posts') %>:</a></th>
-				<th><a href="{$URLSegment}/memberlist/?order=joined" title="<% _t('ForumHolder_memberlist_ss.ORDERBYJOINED', 'Order by Joined') %>"><% _t('ForumHolder_memberlist_ss.JOINED', 'Joined') %>:</a></th>
+				<th><a href="{$URLSegment}/memberlist/?order=name" title="<% _t('ForumHolder_memberlist_ss.ORDERBYNAME', 'Order by Name') %>"><% _t('ForumHolder_memberlist_ss.MEMBERNAME', 'Member Name') %></a></th>
+				<th><a href="{$URLSegment}/memberlist/?order=country" title="<% _t('ForumHolder_memberlist_ss.ORDERBYCOUNTRY', 'Order by Country') %>"><% _t('ForumHolder_memberlist_ss.COUNTRY', 'Country') %></a></th>
+				<th><a href="{$URLSegment}/memberlist/?order=posts" title="<% _t('ForumHolder_memberlist_ss.ORDERBYPOSTS', 'Order by Posts') %>"><% _t('ForumHolder_memberlist_ss.FORUMPOSTS', 'Forum Posts') %></a></th>
+				<th><a href="{$URLSegment}/memberlist/?order=joined" title="<% _t('ForumHolder_memberlist_ss.ORDERBYJOINED', 'Order by Joined') %>"><% _t('ForumHolder_memberlist_ss.JOINED', 'Joined') %></a></th>
 			</tr>
 			
 			<% loop Members %>

@@ -1,5 +1,14 @@
 <?php
 
+require_once FRAMEWORK_PATH . '/src/SilverStripe/Framework/Injector/Factory.php';
+
+require_once __DIR__ . '/InjectionCreator.php';
+require_once __DIR__ . '/SilverStripeInjectionCreator.php';
+require_once __DIR__ . '/ServiceConfigurationLocator.php';
+require_once __DIR__ . '/SilverStripeServiceConfigurationLocator.php';
+
+use SilverStripe\Framework\Injector\Factory;
+
 /**
  * A simple injection manager that manages creating objects and injecting
  * dependencies between them. It borrows quite a lot from ideas taken from
@@ -66,6 +75,7 @@
  *			                                                // type
  *															// By default, singleton is assumed
  *
+ *			'factory' => 'FactoryService'					// A factory service to use to create instances.
  *			'construct'		=> array(						// properties to set at construction
  *				'scalar',									
  *				'%$BeanId',
@@ -89,25 +99,25 @@
  *
  * In addition to specifying the bindings directly in the configuration,
  * you can simply create a publicly accessible property on the target
- * class which will automatically be injected if the autoScanProperties 
+ * class which will automatically be injected if the autoScanProperties
  * option is set to true. This means a class defined as
- * 
+ *
  * <code>
  * class MyController extends Controller {
- * 
+ *
  *		private $permissionService;
- * 
+ *
  *		public setPermissionService($p) {
  *			$this->permissionService = $p;
- *		} 
+ *		}
  * }
  * </code>
- * 
+ *
  * will have setPermissionService called if
- * 
+ *
  * * Injector::inst()->setAutoScanProperties(true) is called and
- * * A service named 'PermissionService' has been configured 
- * 
+ * * A service named 'PermissionService' has been configured
+ *
  * @author marcus@silverstripe.com.au
  * @package framework
  * @subpackage injector
@@ -156,16 +166,18 @@ class Injector {
 	 * @var boolean
 	 */
 	private $autoScanProperties = false;
-	
+
 	/**
-	 * The object used to create new class instances
-	 * 
-	 * Use a custom class here to change the way classes are created to use
-	 * a custom creation method. By default the InjectionCreator class is used,
-	 * which simply creates a new class via 'new', however this could be overridden
-	 * to use, for example, SilverStripe's Object::create() method.
+	 * The default factory used to create new instances.
 	 *
-	 * @var InjectionCreator
+	 * The {@link InjectionCreator} is used by default, which simply directly
+	 * creates objects. This can be changed to use a different default creation
+	 * method if desired.
+	 *
+	 * Each individual component can also specify a custom factory to use by
+	 * using the `factory` parameter.
+	 *
+	 * @var Factory
 	 */
 	protected $objectCreator;
 
@@ -185,7 +197,7 @@ class Injector {
 		);
 		
 		$this->autoProperties = array();
-		
+
 
 		$creatorClass = isset($config['creator']) ? $config['creator'] : 'InjectionCreator';
 		$locatorClass = isset($config['locator']) ? $config['locator'] : 'ServiceConfigurationLocator';
@@ -196,8 +208,6 @@ class Injector {
 		if ($config) {
 			$this->load($config);
 		}
-		
-		self::$instance = $this;
 	}
 
 	/**
@@ -212,7 +222,16 @@ class Injector {
 		}
 		return self::$instance;
 	}
-	
+
+	/**
+	 * Sets the default global injector instance.
+	 *
+	 * @param Injector $instance
+	 */
+	public static function set_inst(Injector $instance) {
+		self::$instance = $instance;
+	}
+
 	/**
 	 * Indicate whether we auto scan injected objects for properties to set. 
 	 *
@@ -223,17 +242,16 @@ class Injector {
 	}
 	
 	/**
-	 * Sets the object to use for creating new objects
+	 * Sets the default factory to use for creating new objects.
 	 *
-	 * @param InjectionCreator $obj 
+	 * @param Factory $obj
 	 */
-	public function setObjectCreator($obj) {
+	public function setObjectCreator(Factory $obj) {
 		$this->objectCreator = $obj;
 	}
 	
 	/**
-	 * Accessor (for testing purposes)
-	 * @return InjectionCreator
+	 * @return Factory
 	 */
 	public function getObjectCreator() {
 		return $this->objectCreator;
@@ -400,7 +418,7 @@ class Injector {
 			// and reload the object; existing bindings don't get
 			// updated though! (for now...) 
 			if (isset($this->serviceCache[$id])) {
-				$this->instantiate($spec, $id);
+				$this->instantiate(array('class'=>$id), $id);
 			}
 		}
 	}
@@ -483,8 +501,9 @@ class Injector {
 			$constructorParams = $spec['constructor'];
 		}
 
-		$object = $this->objectCreator->create($class, $constructorParams);
-		
+		$factory = isset($spec['factory']) ? $this->get($spec['factory']) : $this->getObjectCreator();
+		$object = $factory->create($class, $constructorParams);
+
 		// figure out if we have a specific id set or not. In some cases, we might be instantiating objects
 		// that we don't manage directly; we don't want to store these in the service cache below
 		if (!$id) {
@@ -678,23 +697,24 @@ class Injector {
 	 *					class name of the object to register)
 	 * 
 	 */
-	public function registerService($service, $replace=null) {
+	public function registerService($service, $replace = null) {
 		$registerAt = get_class($service);
 		if ($replace != null) {
 			$registerAt = $replace;
 		}
 		
+		$this->specs[$registerAt] = array('class' => get_class($service));
 		$this->serviceCache[$registerAt] = $service;
 		$this->inject($service);
 	}
 	
 	/**
 	 * Register a service with an explicit name
+	 * 
+	 * @deprecated since 3.1.1
 	 */
 	public function registerNamedService($name, $service) {
-		$this->specs[$name] = array('class' => get_class($service));
-		$this->serviceCache[$name] = $service;
-		$this->inject($service);
+		return $this->registerService($service, $name);
 	}
 	
 	/**
@@ -829,95 +849,5 @@ class Injector {
 	 */
 	public function createWithArgs($name, $constructorArgs) {
 		return $this->get($name, false, $constructorArgs);
-	}
-}
-
-/**
- * A class for creating new objects by the injector
- */
-class InjectionCreator {
-	/**
-	 *
-	 * @param string $object
-	 *					A string representation of the class to create
-	 * @param array $params
-	 *					An array of parameters to be passed to the constructor
-	 */
-	public function create($class, $params = array()) {
-		$reflector = new ReflectionClass($class);
-		if (count($params)) {
-			return $reflector->newInstanceArgs($params); 
-		}
-		return $reflector->newInstance();
-	}
-}
-
-class SilverStripeInjectionCreator {
-	/**
-	 *
-	 * @param string $object
-	 *					A string representation of the class to create
-	 * @param array $params
-	 *					An array of parameters to be passed to the constructor
-	 */
-	public function create($class, $params = array()) {
-		$class = Object::getCustomClass($class);
-		$reflector = new ReflectionClass($class);
-		return $reflector->newInstanceArgs($params);
-	}
-}
-
-/**
- * Used to locate configuration for a particular named service. 
- * 
- * If it isn't found, return null 
- */
-class ServiceConfigurationLocator {
-	public function locateConfigFor($name) {
-		
-	}
-}
-
-/**
- * Use the SilverStripe configuration system to lookup config for a particular service
- */
-class SilverStripeServiceConfigurationLocator {
-	
-	private $configs = array();
-	
-	public function locateConfigFor($name) {
-		
-		if (isset($this->configs[$name])) {
-			return $this->configs[$name];
-		}
-		
-		$config = Config::inst()->get('Injector', $name);
-		if ($config) {
-			$this->configs[$name] = $config;
-			return $config;
-		}
-		
-		// do parent lookup if it's a class
-		if (class_exists($name)) {
-			$parents = array_reverse(array_keys(ClassInfo::ancestry($name)));
-			array_shift($parents);
-			foreach ($parents as $parent) {
-				// have we already got for this? 
-				if (isset($this->configs[$parent])) {
-					return $this->configs[$parent];
-				}
-				$config = Config::inst()->get('Injector', $parent);
-				if ($config) {
-					$this->configs[$name] = $config;
-					return $config;
-				} else {
-					$this->configs[$parent] = false;
-				}
-			}
-			
-			// there is no parent config, so we'll record that as false so we don't do the expensive
-			// lookup through parents again
-			$this->configs[$name] = false;
-		}
 	}
 }

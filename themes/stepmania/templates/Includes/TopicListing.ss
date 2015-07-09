@@ -1,6 +1,6 @@
 <div class="forum-topic forum-flex <% if IsSticky || IsGlobalSticky %>sticky<% end_if %> <% if IsGlobalSticky %>global-sticky<% end_if %><% if IsReadOnly %> locked<% end_if %>">
 	<div class="forum-flex-left">
-		<% if IsSticky || IsGlobalSticky %><span class="sticky">Sticky: </span><% end_if %><a class="topic-title" href="$Link">$Title.LimitCharacters(140)</a><% if IsReadOnly %><span class="locked"> (locked)</span><% end_if %>
+		<% if IsReadOnly %><span title="Locked" class="icon locked li_lock"></span><% end_if %><% if IsSticky || IsGlobalSticky %><span title="Sticky" class="icon sticky li_star"></span><% end_if %><% if IsSticky || IsGlobalSticky || IsReadOnly %><% else %><span class="icon li_bubble"></span><% end_if %><a class="topic-title" href="$Link">$Title.LimitCharacters(140)</a>
 		<% if Content || Moderators %>
 			<div class="summary">
 				<p>$Content.LimitCharacters(80)</p>
@@ -11,7 +11,7 @@
 			<% end_if %>
 			</div>
 		<% end_if %>
-		<% with Posts.First %>
+		<% with FirstPost %>
 			<span class="thread-author">
 				<% with Author %>by <% if Link %><a href="$Link"><% if Nickname %>$Nickname<% else %>Anon<% end_if %></a><% else %><span>Anon</span><% end_if %>
 				<% end_with %>
@@ -28,7 +28,7 @@
 		</div>
 	</div>
 	<div class="forum-flex-mid topic-stats">
-		<p>Replies: $NumPosts</p>
+		<p>Replies: $NumReplies</p>
 		<p>Views: $NumViews</p>
 	</div>
 	<div class="forum-flex-right topic-latest">

@@ -140,6 +140,16 @@ class ForumThread extends DataObject {
 		return (int)DB::query("SELECT count(*) FROM \"Post\" WHERE \"ThreadID\" = $this->ID")->value();
 	}
 
+    /**
+     * Return the number of replies in this thread.
+     * It's one less than the post count.
+     *
+     * @return int
+     */
+    function getNumReplies() {
+        return (int)($this->getNumPosts() - 1);
+    }
+
 	function getNumPages() {
 		$pages = (int)(($this->getNumPosts() - 1) / Forum::$posts_per_page + 1);
 
@@ -185,7 +195,14 @@ class ForumThread extends DataObject {
 	 * @return String
 	 */
 	function Link($action = "show", $showID = true) {
-		$baseLink = DataObject::get_by_id("Forum", $this->ForumID)->Link();
+		$forum =  DataObject::get_by_id("Forum", (int)$this->ForumID);
+
+		// Prevents a crash and burn if you're subscribed to an impossible thread...
+		// Happened to my profile after one of SoonDead's CSRF tests. -Colby
+		if (!$forum)
+			return "#";
+
+		$baseLink = $forum->Link();
 		$extra = ($showID) ? '/'.$this->ID : '';
 		
 		return ($action) ? $baseLink . $action . $extra : $baseLink;
@@ -201,7 +218,15 @@ class ForumThread extends DataObject {
 
 		return ($member) ? ForumThread_Subscription::already_subscribed($this->ID, $member->ID) : false;
 	}
+
+	function getSubscribeLink() {
+		return $this->Forum()->RelativeLink() . 'subscribe/' . $this->ID;
+	}
 	
+	function getUnsubscribeLink() {
+		return $this->Forum()->RelativeLink() . 'unsubscribe/' . $this->ID;
+	}
+
 	/**
 	 * Before deleting the thread remove all the posts
 	 */

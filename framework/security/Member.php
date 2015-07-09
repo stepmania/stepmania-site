@@ -4,6 +4,24 @@
  *
  * @package framework
  * @subpackage security
+ *
+ * @property string FirstName
+ * @property string Surname
+ * @property string Email
+ * @property string Password
+ * @property string RememberLoginHash
+ * @property int NumVisit
+ * @property string LastVisited Date and time of last visit
+ * @property string AutoLoginHash
+ * @property string AutoLoginExpired
+ * @property string PasswordEncryption
+ * @property string Salt
+ * @property string PasswordExpiry
+ * @property string LockedOutUntil
+ * @property string Locale
+ * @property int FailedLoginCount
+ * @property string DateFormat
+ * @property string TimeFormat
  */
 class Member extends DataObject implements TemplateGlobalProvider {
 
@@ -158,7 +176,7 @@ class Member extends DataObject implements TemplateGlobalProvider {
 	 */
 	public function populateDefaults() {
 		parent::populateDefaults();
-		$this->Locale = i18n::get_locale();
+		$this->Locale = i18n::get_closest_translation(i18n::get_locale());
 	}
 	
 	public function requireDefaultRecords() {
@@ -229,9 +247,10 @@ class Member extends DataObject implements TemplateGlobalProvider {
 
 		$e = PasswordEncryptor::create_for_algorithm($this->PasswordEncryption);
 		if(!$e->check($this->Password, $password, $this->Salt, $this)) {
+			$iidentifierField = 
 			$result->error(_t (
 				'Member.ERRORWRONGCRED',
-				'That doesn\'t seem to be the right e-mail address or password. Please try again.'
+				'The provided details don\'t seem to be correct. Please try again.'
 			));
 		}
 
@@ -363,6 +382,8 @@ class Member extends DataObject implements TemplateGlobalProvider {
 	 * @param bool $remember If set to TRUE, the member will be logged in automatically the next time.
 	 */
 	public function logIn($remember = false) {
+		$this->extend('beforeMemberLoggedIn');
+
 		self::session_regenerate_id();
 
 		Session::set("loggedInAs", $this->ID);
@@ -468,6 +489,8 @@ class Member extends DataObject implements TemplateGlobalProvider {
 	 * Logs this member out.
 	 */
 	public function logOut() {
+		$this->extend('beforeMemberLoggedOut');
+
 		Session::clear("loggedInAs");
 		if(Member::config()->login_marker_cookie) Cookie::set(Member::config()->login_marker_cookie, null, 0);
 
@@ -610,21 +633,34 @@ class Member extends DataObject implements TemplateGlobalProvider {
 		return $fields;
 	}
 
+	/**
+	 * Returns the {@link RequiredFields} instance for the Member object. This
+	 * Validator is used when saving a {@link CMSProfileController} or added to
+	 * any form responsible for saving a users data.
+	 *
+	 * To customize the required fields, add a {@link DataExtension} to member
+	 * calling the `updateValidator()` method.
+	 *
+	 * @return Member_Validator
+	 */
 	public function getValidator() {
-		return new Member_Validator();
+		$validator = Injector::inst()->create('Member_Validator');
+		$this->extend('updateValidator', $validator);
+
+		return $validator;
 	}
 
 
 	/**
 	 * Returns the current logged in user
 	 *
-	 * @return bool|Member Returns the member object of the current logged in
-	 *                     user or FALSE.
+	 * @return Member|null
 	 */
 	public static function currentUser() {
 		$id = Member::currentUserID();
+
 		if($id) {
-			return DataObject::get_one("Member", "\"Member\".\"ID\" = $id", true, 1);
+			return Member::get()->byId($id);
 		}
 	}
 	
@@ -858,6 +894,19 @@ class Member extends DataObject implements TemplateGlobalProvider {
 			$group->write();
 			
 			$this->Groups()->add($group);
+		}
+	}
+	
+	/**
+	 * Removes a member from a group.
+	 *
+	 * @param string $groupcode
+	 */
+	public function removeFromGroupByCode($groupcode) {
+		$group = Group::get()->filter(array('Code' => $groupcode))->first();
+		
+		if($group) {
+			$this->Groups()->remove($group);
 		}
 	}
 	
@@ -1199,7 +1248,11 @@ class Member extends DataObject implements TemplateGlobalProvider {
 		$fields->removeByName('Groups');
 
 		if(Permission::check('EDIT_PERMISSIONS')) {
-			$groupsMap = Group::get()->map('ID', 'Breadcrumbs')->toArray();
+			$groupsMap = array();
+			foreach(Group::get() as $group) {
+				// Listboxfield values are escaped, use ASCII char instead of &raquo;
+				$groupsMap[$group->ID] = $group->getBreadcrumbs(' > ');
+			}
 			asort($groupsMap);
 			$fields->addFieldToTab('Root.Main',
 				ListboxField::create('DirectGroups', singleton('Group')->i18n_plural_name())
@@ -1520,18 +1573,21 @@ class Member_GroupSet extends ManyManyList {
 
 /**
  * Class used as template to send an email saying that the password has been
- * changed
+ * changed.
+ *
  * @package framework
  * @subpackage security
  */
 class Member_ChangePasswordEmail extends Email {
+
 	protected $from = '';   // setting a blank from address uses the site's default administrator email
 	protected $subject = '';
 	protected $ss_template = 'ChangePasswordEmail';
 	
 	public function __construct() {
 		parent::__construct();
-	$this->subject = _t('Member.SUBJECTPASSWORDCHANGED', "Your password has been changed", 'Email subject');
+
+		$this->subject = _t('Member.SUBJECTPASSWORDCHANGED', "Your password has been changed", 'Email subject');
 	}
 }
 
@@ -1539,6 +1595,7 @@ class Member_ChangePasswordEmail extends Email {
 
 /**
  * Class used as template to send the forgot password email
+ *
  * @package framework
  * @subpackage security
  */
@@ -1549,18 +1606,29 @@ class Member_ForgotPasswordEmail extends Email {
 	
 	public function __construct() {
 		parent::__construct();
-	$this->subject = _t('Member.SUBJECTPASSWORDRESET', "Your password reset link", 'Email subject');
+
+		$this->subject = _t('Member.SUBJECTPASSWORDRESET', "Your password reset link", 'Email subject');
 	}
 }
 
 /**
  * Member Validator
+ *
+ * Custom validation for the Member object can be achieved either through an
+ * {@link DataExtension} on the Member object or, by specifying a subclass of
+ * {@link Member_Validator} through the {@link Injector} API.
+ *
+ * {@see Member::getValidator()}
+ *
  * @package framework
  * @subpackage security
  */
 class Member_Validator extends RequiredFields {
 
-	protected $customRequired = array('FirstName', 'Email'); //, 'Password');
+	protected $customRequired = array(
+		'FirstName',
+		'Email'
+	);
 
 
 	/**
@@ -1568,14 +1636,15 @@ class Member_Validator extends RequiredFields {
 	 */
 	public function __construct() {
 		$required = func_get_args();
+
 		if(isset($required[0]) && is_array($required[0])) {
 			$required = $required[0];
 		}
+
 		$required = array_merge($required, $this->customRequired);
 
 		parent::__construct($required);
 	}
-
 
 	/**
 	 * Check if the submitted member data is valid (server-side)

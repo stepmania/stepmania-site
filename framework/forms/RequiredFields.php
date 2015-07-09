@@ -1,10 +1,12 @@
 <?php
+
 /**
- * Required Fields allows you to set which fields
- * need to be present before submitting the form
- * Submit an array of arguments or each field as a
- * seperate argument. Validation is performed on a name by
- * name basis.
+ * Required Fields allows you to set which fields need to be present before
+ * submitting the form. Submit an array of arguments or each field as a separate
+ * argument.
+ *
+ * Validation is performed on a field by field basis through
+ * {@link FormField::validate}.
  *
  * @package forms
  * @subpackage validators
@@ -15,34 +17,47 @@ class RequiredFields extends Validator {
 	protected $useLabels = true;
 
 	/**
-	 * Pass each field to be validated as a seperate argument
-	 * to the constructor of this object. (an array of elements are ok)
+	 * Pass each field to be validated as a seperate argument to the constructor
+	 * of this object. (an array of elements are ok).
 	 */
 	public function __construct() {
-		$Required = func_get_args();
-		if( isset($Required[0]) && is_array( $Required[0] ) )
-			$Required = $Required[0];
-		$this->required = $Required;
+		$required = func_get_args();
+		if(isset($required[0]) && is_array($required[0])) {
+			$required = $required[0];
+		}
+		if(!empty($required)) {
+			$this->required = ArrayLib::valuekey($required);
+		} else {
+			$this->required = array();
+		}
 
 		parent::__construct();
 	}
 
 	public function useLabels($flag) {
+		Deprecation::notice('3.2', 'useLabels will be removed from 3.2, please do not use it or implement it yourself');
 		$this->useLabels = $flag;
+		return $this;
 	}
 
 	/**
 	 * Clears all the validation from this object.
+	 *
+	 * @return RequiredFields
 	 */
-	public function removeValidation(){
+	public function removeValidation() {
 		$this->required = array();
+
+		return $this;
 	}
 
 	/**
 	 * Debug helper
 	 */
 	public function debug() {
-		if(!is_array($this->required)) return false;
+		if(!is_array($this->required)) {
+			return false;
+		}
 
 		$result = "<ul>";
 		foreach( $this->required as $name ){
@@ -54,27 +69,42 @@ class RequiredFields extends Validator {
 	}
 
 	/**
-	* Allows validation of fields via specification of a php function for validation which is executed after
-	* the form is submitted
-	*/
+	 * Allows validation of fields via specification of a php function for
+	 * validation which is executed after the form is submitted.
+	 *
+	 * @param array $data
+	 *
+	 * @return boolean
+	 */
 	public function php($data) {
 		$valid = true;
-
 		$fields = $this->form->Fields();
+
 		foreach($fields as $field) {
 			$valid = ($field->validate($this) && $valid);
 		}
+
 		if($this->required) {
 			foreach($this->required as $fieldName) {
-				if(!$fieldName) continue;
+				if(!$fieldName) {
+					continue;
+				}
 
-				$formField = $fields->dataFieldByName($fieldName);
+				if($fieldName instanceof FormField) {
+					$formField = $fieldName;
+					$fieldName = $fieldName->getName();
+				}
+				else {
+					$formField = $fields->dataFieldByName($fieldName);
+				}
 
 				$error = true;
+				
 				// submitted data for file upload fields come back as an array
 				$value = isset($data[$fieldName]) ? $data[$fieldName] : null;
+
 				if(is_array($value)) {
-					if ($formField instanceof FileField && isset($value['error']) && $value['error']) {
+					if($formField instanceof FileField && isset($value['error']) && $value['error']) {
 						$error = true;
 					} else {
 						$error = (count($value)) ? false : true;
@@ -98,11 +128,13 @@ class RequiredFields extends Validator {
 					if($msg = $formField->getCustomValidationMessage()) {
 						$errorMessage = $msg;
 					}
+
 					$this->validationError(
 						$fieldName,
 						$errorMessage,
 						"required"
 					);
+
 					$valid = false;
 				}
 			}
@@ -112,41 +144,66 @@ class RequiredFields extends Validator {
 	}
 
 	/**
-	 * Add's a single required field to requiredfields stack
+	 * Adds a single required field to required fields stack.
+	 *
+	 * @param string $field
+	 *
+	 * @return RequiredFields
 	 */
-	public function addRequiredField( $field ) {
-		$this->required[] = $field;
-	}
+	public function addRequiredField($field) {
+		$this->required[$field] = $field;
 
-	public function removeRequiredField($field) {
-		foreach ($this->required as $i => $required) {
-			if ($field == $required) {
-				array_splice($this->required, $i);
-			}
-		}
+		return $this;
 	}
 
 	/**
-	 * allows you too add more required fields to this object after construction.
+	 * Removes a required field
+	 *
+	 * @param string $field
+	 *
+	 * @return RequiredFields
 	 */
-	public function appendRequiredFields($requiredFields){
-		$this->required = array_merge($this->required,$requiredFields->getRequired());
+	public function removeRequiredField($field) {
+		unset($this->required[$field]);
+
+		return $this;
+	}
+
+	/**
+	 * Add {@link RequiredField} objects together
+	 *
+	 * @param RequiredFields
+	 *
+	 * @return RequiredFields
+	 */
+	public function appendRequiredFields($requiredFields) {
+		$this->required = $this->required + ArrayLib::valuekey(
+			$requiredFields->getRequired()
+		);
+
+		return $this;
 	}
 
 	/**
 	 * Returns true if the named field is "required".
-	 * Used by FormField to return a value for FormField::Required(), to do things like show *s on the form template.
+	 *
+	 * Used by {@link FormField} to return a value for FormField::Required(),
+	 * to do things like show *s on the form template.
+	 *
+	 * @param string $fieldName
+	 *
+	 * @return boolean
 	 */
 	public function fieldIsRequired($fieldName) {
-		return in_array($fieldName, $this->required);
+		return isset($this->required[$fieldName]);
 	}
 
 	/**
-	 * getter function for append
+	 * Return the required fields
+	 *
+	 * @return array
 	 */
-	public function getRequired(){
-		return $this->required;
+	public function getRequired() {
+		return array_values($this->required);
 	}
 }
-
-

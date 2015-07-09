@@ -38,7 +38,7 @@ class Enum extends StringField {
 	public function __construct($name = null, $enum = NULL, $default = NULL) {
 		if($enum) {
 			if(!is_array($enum)) {
-				$enum = preg_split("/ *, */", trim($enum));
+				$enum = preg_split("/ *, */", trim(trim($enum, ',')));
 			}
 
 			$this->enum = $enum;
@@ -116,7 +116,7 @@ class Enum extends StringField {
 	 */
 	public function scaffoldSearchField($title = null) {
 		$anyText = _t('Enum.ANY', 'Any');
-		return $this->formField($title, null, false, '', null, "($anyText)");
+		return $this->formField($title, null, true, '', null, "($anyText)");
 	}
 	
 	/**

@@ -115,7 +115,15 @@ jQuery.noConflict();
 		 */
 		$('.cms-container').entwine({
 			
-			CurrentXHR: null,
+			/**
+			 * Tracks current panel request.
+			 */
+			StateChangeXHR: null,
+
+			/**
+			 * Tracks current fragment-only parallel PJAX requests.
+			 */
+			FragmentXHR: {},
 
 			StateChangeCount: 0,
 			
@@ -276,9 +284,10 @@ jQuery.noConflict();
 			 *  - {Object} data Any additional data passed through to History.pushState()
 			 *  - {boolean} forceReload Forces the replacement of the current history state, even if the URL is the same, i.e. allows reloading.
 			 */
-			loadPanel: function(url, title, data, forceReload) {
+			loadPanel: function(url, title, data, forceReload, forceReferer) {
 				if(!data) data = {};
 				if(!title) title = "";
+				if (!forceReferer) forceReferer = History.getState().url;
 
 				// Check change tracking (can't use events as we need a way to cancel the current state change)
 				var contentEls = this._findFragments(data.pjax ? data.pjax.split(',') : ['Content']);
@@ -298,6 +307,7 @@ jQuery.noConflict();
 				this.saveTabState();
 				
 				if(window.History.enabled) {
+					$.extend(data, {__forceReferer: forceReferer});
 					// Active menu item is set based on X-Controller ajax header,
 					// which matches one class on the menu
 					if(forceReload) {
@@ -419,7 +429,7 @@ jQuery.noConflict();
 			 */
 			handleStateChange: function() {
 				// Don't allow parallel loading to avoid edge cases
-				if(this.getCurrentXHR()) this.getCurrentXHR().abort();
+				if(this.getStateChangeXHR()) this.getStateChangeXHR().abort();
 
 				var self = this, h = window.History, state = h.getState(),
 					fragments = state.data.pjax || 'Content', headers = {},
@@ -449,13 +459,19 @@ jQuery.noConflict();
 				// The actually returned view isn't always decided upon when the request
 				// is fired, so the server might decide to change it based on its own logic.
 				headers['X-Pjax'] = fragments;
-
+		
+				// Set 'fake' referer - we call pushState() before making the AJAX request, so we have to
+				// set our own referer here
+				if (typeof state.data.__forceReferer !== 'undefined') {
+					headers['X-Backurl'] = state.data.__forceReferer;
+				}
+				
 				contentEls.addClass('loading');
 				var xhr = $.ajax({
 					headers: headers,
 					url: state.url,
 					complete: function() {
-						self.setCurrentXHR(null);
+						self.setStateChangeXHR(null);
 						// Remove loading indication from old content els (regardless of which are replaced)
 						contentEls.removeClass('loading');
 					},
@@ -465,7 +481,77 @@ jQuery.noConflict();
 					}
 				});
 				
-				this.setCurrentXHR(xhr);
+				this.setStateChangeXHR(xhr);
+			},
+
+			/**
+			 * ALternative to loadPanel/submitForm.
+			 *
+			 * Triggers a parallel-fetch of a PJAX fragment, which is a separate request to the
+			 * state change requests. There could be any amount of these fetches going on in the background,
+			 * and they don't register as a HTML5 history states.
+			 *
+			 * This is meant for updating a PJAX areas that are not complete panel/form reloads. These you'd
+			 * normally do via submitForm or loadPanel which have a lot of automation built in.
+			 *
+			 * On receiving successful response, the framework will update the element tagged with appropriate
+			 * data-pjax-fragment attribute (e.g. data-pjax-fragment="<pjax-fragment-name>"). Make sure this element
+			 * is available.
+			 *
+			 * Example usage:
+			 * $('.cms-container').loadFragment('admin/foobar/', 'FragmentName');
+			 *
+			 * @param url string Relative or absolute url of the controller.
+			 * @param pjaxFragments string PJAX fragment(s), comma separated.
+			 */
+			loadFragment: function(url, pjaxFragments) {
+
+				var self = this,
+					xhr,
+					headers = {},
+					baseUrl = $('base').attr('href'),
+					fragmentXHR = this.getFragmentXHR();
+
+				// Make sure only one XHR for a specific fragment is currently in progress.
+				if(
+					typeof fragmentXHR[pjaxFragments]!=='undefined' &&
+					fragmentXHR[pjaxFragments]!==null
+				) {
+					fragmentXHR[pjaxFragments].abort();
+					fragmentXHR[pjaxFragments] = null;
+				}
+
+				url = $.path.isAbsoluteUrl(url) ? url : $.path.makeUrlAbsolute(url, baseUrl);
+				headers['X-Pjax'] = pjaxFragments;
+
+				xhr = $.ajax({
+					headers: headers,
+					url: url,
+					success: function(data, status, xhr) {
+						var elements = self.handleAjaxResponse(data, status, xhr, null);
+
+						// We are fully done now, make it possible for others to hook in here.
+						self.trigger('afterloadfragment', { data: data, status: status, xhr: xhr, elements: elements });
+					},
+					error: function(xhr, status, error) {
+						self.trigger('loadfragmenterror', { xhr: xhr, status: status, error: error });
+					},
+					complete: function() {
+						// Reset the current XHR in tracking object.
+						var fragmentXHR = self.getFragmentXHR();
+						if(
+							typeof fragmentXHR[pjaxFragments]!=='undefined' &&
+							fragmentXHR[pjaxFragments]!==null
+						) {
+							fragmentXHR[pjaxFragments] = null;
+						}
+					}
+				});
+
+				// Store the fragment request so we can abort later, should we get a duplicate request.
+				fragmentXHR[pjaxFragments] = xhr;
+
+				return xhr;
 			},
 
 			/**
@@ -660,7 +746,7 @@ jQuery.noConflict();
 					sessionData = hasSessionStorage ? window.sessionStorage.getItem('tabs-' + url) : null,
 					sessionStates = sessionData ? JSON.parse(sessionData) : false;
 
-				this.find('.cms-tabset').each(function() {
+				this.find('.cms-tabset, .ss-tabset').each(function() {
 					var index, tabset = $(this), tabsetId = tabset.attr('id'), tab,
 						forcedTab = tabset.find('.ss-tabs-force-active');
 
@@ -756,6 +842,12 @@ jQuery.noConflict();
 		 */
 		$('.cms .cms-panel-link').entwine({
 			onclick: function(e) {
+				if($(this).hasClass('external-link')) {
+					e.stopPropagation();
+
+					return;
+				}
+
 				var href = this.attr('href'), 
 					url = (href && !href.match(/^#/)) ? href : this.data('href'),
 					data = {pjax: this.data('pjaxTarget')};
@@ -921,7 +1013,7 @@ jQuery.noConflict();
 		 * we can fix the height cropping.
 		 */
 		
-		$('.cms .field.dropdown select, .cms .field select[multiple]').entwine({
+		$('.cms .field.dropdown select, .cms .field select[multiple], .fieldholder-small select.dropdown').entwine({
 			onmatch: function() {
 				if(this.is('.no-chzn')) {
 					this._super();

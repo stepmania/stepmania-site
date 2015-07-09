@@ -4,6 +4,20 @@
  * 
  * @package framework
  * @subpackage security
+ *
+ * @property string Title Name of the group
+ * @property string Description Description of the group
+ * @property string Code Group code
+ * @property string Locked Boolean indicating whether group is locked in security panel
+ * @property int Sort
+ * @property string HtmlEditorConfig
+ *
+ * @property int ParentID ID of parent group
+ *
+ * @method Group Parent() Return parent group
+ * @method HasManyList Permissions() List of group permissions
+ * @method HasManyList Groups() List of child groups
+ * @method ManyManyList Roles() List of PermissionRoles
  */
 class Group extends DataObject {
 	
@@ -96,8 +110,9 @@ class Group extends DataObject {
 		if($this->ID) {
 			$group = $this;
 			$config = new GridFieldConfig_RelationEditor();
-			$config->addComponents(new GridFieldExportButton('after'));
-			$config->addComponents(new GridFieldPrintButton('after'));
+			$config->addComponent(new GridFieldButtonRow('after'));
+			$config->addComponents(new GridFieldExportButton('buttons-after-left'));
+			$config->addComponents(new GridFieldPrintButton('buttons-after-left'));
 			$config->getComponentByType('GridFieldAddExistingAutocompleter')
 				->setResultsFormat('$Title ($Email)')->setSearchFields(array('FirstName', 'Surname', 'Email'));
 			$config->getComponentByType('GridFieldDetailForm')
@@ -113,11 +128,13 @@ class Group extends DataObject {
 						} elseif($record && $record->ID) {
 							// TODO Mark disabled once chosen.js supports it
 							// $groupsField->setDisabledItems(array($group->ID));
-							$form->Fields()->replaceField('DirectGroups', $groupsField->performReadonlyTransformation());
+							$form->Fields()->replaceField('DirectGroups',
+								$groupsField->performReadonlyTransformation());
 						}
 					}
 				});
-			$memberList = GridField::create('Members',false, $this->DirectMembers(), $config)->addExtraClass('members_grid');
+			$memberList = GridField::create('Members',false, $this->DirectMembers(), $config)
+				->addExtraClass('members_grid');
 			// @todo Implement permission checking on GridField
 			//$memberList->setPermissions(array('edit', 'delete', 'export', 'add', 'inlineadd'));
 			$fields->addFieldToTab('Root.Members', $memberList);

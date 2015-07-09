@@ -84,7 +84,7 @@
 				else $(this).find('input').removeAttr('disabled');
 			}
 		});
-	
+
 		$(".cms-page-add-button").entwine({
 			onclick: function(e) {
 				var tree = $('.cms-tree'), list = $('.cms-list'), parentId = 0;
@@ -108,6 +108,9 @@
 
 				$('.cms-container').loadPanel(url, null, data);
 				e.preventDefault();
+
+				// Remove focussed state from button
+				this.blur();
 
 				// $('.cms-page-add-form-dialog').dialog('open');
 				// e.preventDefault();

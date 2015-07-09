@@ -127,7 +127,7 @@ abstract class Object {
 	 *
 	 * @param string $class the class name
 	 * @param mixed $arguments,... arguments to pass to the constructor
-	 * @return Object
+	 * @return static
 	 */
 	public static function create() {
 		$args = func_get_args();
@@ -279,7 +279,7 @@ abstract class Object {
 	 *
 	 * @param string $class the class name
 	 * @param mixed $arguments,... arguments to pass to the constructor
-	 * @return Object
+	 * @return static
 	 */
 	public static function strong_create() {
 		$args  = func_get_args();
@@ -470,12 +470,21 @@ abstract class Object {
 	}
 
 	/**
-	 * Return TRUE if a class has a specified extension
-	 *
-	 * @param string $requiredExtension the class name of the extension to check for.
+	 * Return TRUE if a class has a specified extension.
+	 * This supports backwards-compatible format (static Object::has_extension($requiredExtension)) and new format ($object->has_extension($class, $requiredExtension))
+	 * @param string $classOrExtension if 1 argument supplied, the class name of the extension to check for; if 2 supplied, the class name to test
+	 * @param string $requiredExtension used only if 2 arguments supplied 
 	 */
-	public static function has_extension($requiredExtension) {
-		$class = get_called_class();
+	public static function has_extension($classOrExtension, $requiredExtension = null) {
+		//BC support
+		if(func_num_args() > 1){
+			$class = $classOrExtension;
+			$requiredExtension = $requiredExtension;
+		}
+		else {
+			$class = get_called_class();
+			$requiredExtension = $classOrExtension;
+		}
 
 		$requiredExtension = strtolower($requiredExtension);
 		$extensions = Config::inst()->get($class, 'extensions');
@@ -541,7 +550,7 @@ abstract class Object {
 		Config::inst()->update($class, 'extensions', array($extension));
 		Config::inst()->extraConfigSourcesChanged($class);
 
-		Injector::inst()->unregisterAllObjects();
+		Injector::inst()->unregisterNamedObject($class);
 
 		// load statics now for DataObject classes
 		if(is_subclass_of($class, 'DataObject')) {

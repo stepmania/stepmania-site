@@ -41,6 +41,9 @@ else {
  * This is the exception raised when failing to parse a template. Note that we don't currently do any static analysis,
  * so we can't know if the template will run, just if it's malformed. It also won't catch mistakes that still look
  * valid.
+ *
+ * @package framework
+ * @subpackage view
  */
 class SSTemplateParseException extends Exception {
 	
@@ -85,15 +88,48 @@ class SSTemplateParseException extends Exception {
   * 
   * Angle Bracket: angle brackets "<" and ">" are used to eat whitespace between template elements
   * N: eats white space including newlines (using in legacy _t support)
+  *
+  * @package framework
+  * @subpackage view
   */
-class SSTemplateParser extends Parser {
+class SSTemplateParser extends Parser implements TemplateParser {
 
 	/**
 	 * @var bool - Set true by SSTemplateParser::compileString if the template should include comments intended
 	 * for debugging (template source, included files, etc)
 	 */
 	protected $includeDebuggingComments = false;
-	
+
+	/**
+	 * Stores the user-supplied closed block extension rules in the form:
+	 * array(
+	 *   'name' => function (&$res) {}
+	 * )
+	 * See SSTemplateParser::ClosedBlock_Handle_Loop for an example of what the callable should look like
+	 * @var array
+	 */
+	protected $closedBlocks = array();
+
+	/**
+	 * Stores the user-supplied open block extension rules in the form:
+	 * array(
+	 *   'name' => function (&$res) {}
+	 * )
+	 * See SSTemplateParser::OpenBlock_Handle_Base_tag for an example of what the callable should look like
+	 * @var array
+	 */
+	protected $openBlocks = array();
+
+	/**
+	 * Allow the injection of new closed & open block callables
+	 * @param array $closedBlocks
+	 * @param array $openBlocks
+	 */
+	public function __construct($closedBlocks = array(), $openBlocks = array()) {
+		$this->setClosedBlocks($closedBlocks);
+		$this->setOpenBlocks($openBlocks);
+	}
+
 	/**
 	 * Override the function that constructs the result arrays to also prepare a 'php' item in the array
 	 */
@@ -101,6 +137,84 @@ class SSTemplateParser extends Parser {
 		$res = parent::construct($matchrule, $name, $arguments);
 		if (!isset($res['php'])) $res['php'] = '';
 		return $res;
+	}
+
+	/**
+	 * Set the closed blocks that the template parser should use
+	 * 
+	 * This method will delete any existing closed blocks, please use addClosedBlock if you don't
+	 * want to overwrite
+	 * @param array $closedBlocks
+	 * @throws InvalidArgumentException
+	 */
+	public function setClosedBlocks($closedBlocks) {
+		$this->closedBlocks = array();
+		foreach ((array) $closedBlocks as $name => $callable) {
+			$this->addClosedBlock($name, $callable);
+		}
+	}
+
+	/**
+	 * Set the open blocks that the template parser should use
+	 *
+	 * This method will delete any existing open blocks, please use addOpenBlock if you don't
+	 * want to overwrite
+	 * @param array $openBlocks
+	 * @throws InvalidArgumentException
+	 */
+	public function setOpenBlocks($openBlocks) {
+		$this->openBlocks = array();
+		foreach ((array) $openBlocks as $name => $callable) {
+			$this->addOpenBlock($name, $callable);
+		}
+	}
+
+	/**
+	 * Add a closed block callable to allow <% name %><% end_name %> syntax
+	 * @param string $name The name of the token to be used in the syntax <% name %><% end_name %>
+	 * @param callable $callable The function that modifies the generation of template code
+	 * @throws InvalidArgumentException
+	 */
+	public function addClosedBlock($name, $callable) {
+		$this->validateExtensionBlock($name, $callable, 'Closed block');
+		$this->closedBlocks[$name] = $callable;
+	}
+
+	/**
+	 * Add a closed block callable to allow <% name %> syntax
+	 * @param string $name The name of the token to be used in the syntax <% name %>
+	 * @param callable $callable The function that modifies the generation of template code
+	 * @throws InvalidArgumentException
+	 */
+	public function addOpenBlock($name, $callable) {
+		$this->validateExtensionBlock($name, $callable, 'Open block');
+		$this->openBlocks[$name] = $callable;
+	}
+
+	/**
+	 * Ensures that the arguments to addOpenBlock and addClosedBlock are valid
+	 * @param $name
+	 * @param $callable
+	 * @param $type
+	 * @throws InvalidArgumentException
+	 */
+	protected function validateExtensionBlock($name, $callable, $type) {
+		if (!is_string($name)) {
+			throw new InvalidArgumentException(
+				sprintf(
+					"Name argument for %s must be a string",
+					$type
+				)
+			);
+		} elseif (!is_callable($callable)) {
+			throw new InvalidArgumentException(
+				sprintf(
+					"Callable %s argument named '%s' is not callable",
+					$type,
+					$name
+				)
+			);
+		}
 	}
 	
 	/*!* SSTemplateParser
@@ -462,7 +576,7 @@ class SSTemplateParser extends Parser {
 	CacheBlockArgument:
 	   !( "if " | "unless " )
 		( 
-	      :DollarMarkedLookup |
+			:DollarMarkedLookup |
 			:QuotedString |
 			:Lookup
 		)
@@ -760,15 +874,18 @@ class SSTemplateParser extends Parser {
 			$res['ArgumentCount'] = count($res['Arguments']);
 		}
 	}
-	
+
 	function ClosedBlock__finalise(&$res) {
 		$blockname = $res['BlockName']['text'];
-		
+
 		$method = 'ClosedBlock_Handle_'.$blockname;
-		if (method_exists($this, $method)) $res['php'] = $this->$method($res);
-		else {
+		if (method_exists($this, $method)) {
+			$res['php'] = $this->$method($res);
+		} else if (isset($this->closedBlocks[$blockname])) {
+			$res['php'] = call_user_func($this->closedBlocks[$blockname], $res);
+		} else {
 			throw new SSTemplateParseException('Unknown closed block "'.$blockname.'" encountered. Perhaps you are ' .
-				'not supposed to close this block, or have mis-spelled it?', $this);
+			'not supposed to close this block, or have mis-spelled it?', $this);
 		}
 	}
 
@@ -850,15 +967,18 @@ class SSTemplateParser extends Parser {
 			$res['ArgumentCount'] = count($res['Arguments']);
 		}
 	}
-	
+
 	function OpenBlock__finalise(&$res) {
 		$blockname = $res['BlockName']['text'];
-	
+
 		$method = 'OpenBlock_Handle_'.$blockname;
-		if (method_exists($this, $method)) $res['php'] = $this->$method($res);
-		else {
+		if (method_exists($this, $method)) {
+			$res['php'] = $this->$method($res);
+		} elseif (isset($this->openBlocks[$blockname])) {
+			$res['php'] = call_user_func($this->openBlocks[$blockname], $res);
+		} else {
 			throw new SSTemplateParseException('Unknown open block "'.$blockname.'" encountered. Perhaps you missed ' .
-				' the closing tag or have mis-spelled it?', $this);
+			' the closing tag or have mis-spelled it?', $this);
 		}
 	}
 
@@ -1002,7 +1122,8 @@ class SSTemplateParser extends Parser {
 		// non-dynamically calculated
 		$text = preg_replace(
 			'/href\s*\=\s*\"\#/', 
-			'href="\' . (Config::inst()->get(\'SSViewer\', \'rewrite_hash_links\') ? strip_tags( $_SERVER[\'REQUEST_URI\'] ) : "") . 
+			'href="\' . (Config::inst()->get(\'SSViewer\', \'rewrite_hash_links\') ?' .
+			' strip_tags( $_SERVER[\'REQUEST_URI\'] ) : "") . 
 				\'#',
 			$text
 		);
@@ -1017,29 +1138,28 @@ class SSTemplateParser extends Parser {
 	/**
 	 * Compiles some passed template source code into the php code that will execute as per the template source.
 	 * 
-	 * @static
 	 * @throws SSTemplateParseException
 	 * @param  $string The source of the template
 	 * @param string $templateName The name of the template, normally the filename the template source was loaded from
 	 * @param bool $includeDebuggingComments True is debugging comments should be included in the output
 	 * @return mixed|string The php that, when executed (via include or exec) will behave as per the template source
 	 */
-	static function compileString($string, $templateName = "", $includeDebuggingComments=false) {
+	public function compileString($string, $templateName = "", $includeDebuggingComments=false) {
 		if (!trim($string)) {
 			$code = '';
 		}
 		else {
-			// Construct a parser instance
-			$parser = new SSTemplateParser($string);
-			$parser->includeDebuggingComments = $includeDebuggingComments;
+			parent::__construct($string);
+			
+			$this->includeDebuggingComments = $includeDebuggingComments;
 	
 			// Ignore UTF8 BOM at begining of string. TODO: Confirm this is needed, make sure SSViewer handles UTF
 			// (and other encodings) properly
-			if(substr($string, 0,3) == pack("CCC", 0xef, 0xbb, 0xbf)) $parser->pos = 3;
+			if(substr($string, 0,3) == pack("CCC", 0xef, 0xbb, 0xbf)) $this->pos = 3;
 			
 			// Match the source against the parser
-			$result =  $parser->match_TopTemplate();
-			if(!$result) throw new SSTemplateParseException('Unexpected problem parsing template', $parser);
+			$result =  $this->match_TopTemplate();
+			if(!$result) throw new SSTemplateParseException('Unexpected problem parsing template', $this);
 	
 			// Get the result
 			$code = $result['php'];
@@ -1047,7 +1167,7 @@ class SSTemplateParser extends Parser {
 
 		// Include top level debugging comments if desired
 		if($includeDebuggingComments && $templateName && stripos($code, "<?xml") === false) {
-			$code = $parser->includeDebuggingComments($code, $templateName);
+			$code = $this->includeDebuggingComments($code, $templateName);
 		}	
 		
 		return $code;
@@ -1094,7 +1214,7 @@ class SSTemplateParser extends Parser {
 	 * @param  $template - A file path that contains template source code
 	 * @return mixed|string - The php that, when executed (via include or exec) will behave as per the template source
 	 */
-	static function compileFile($template) {
-		return self::compileString(file_get_contents($template), $template);
+	public function compileFile($template) {
+		return $this->compileString(file_get_contents($template), $template);
 	}
 }

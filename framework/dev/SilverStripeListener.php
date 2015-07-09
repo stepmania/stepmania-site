@@ -1,8 +1,12 @@
 <?php
-
-// Inject SilverStripe 'setUpOnce' and 'tearDownOnce' unittest extension methods into phpunit
-// This is already in later SilverStripe 2.4 versions, but having it here extends compatibility to older versions
-
+/**
+ * Inject SilverStripe 'setUpOnce' and 'tearDownOnce' unittest extension methods into PHPUnit.
+ *
+ * This is already in later SilverStripe 2.4 versions, but having it here extends compatibility to older versions.
+ *
+ * @package framework
+ * @subpackage testing
+ */
 class SilverStripeListener implements PHPUnit_Framework_TestListener {
 	
 	protected function isValidClass($name) {
@@ -42,4 +46,16 @@ class SilverStripeListener implements PHPUnit_Framework_TestListener {
 
 	public function addSkippedTest(PHPUnit_Framework_Test $test, Exception $e, $time) {
 	}
+
+        /**
+         * Risky test.
+         *
+         * @param PHPUnit_Framework_Test $test
+         * @param Exception              $e
+         * @param float                  $time
+         * @since  Method available since Release 3.8.0
+         */
+        public function addRiskyTest(PHPUnit_Framework_Test $test, Exception $e, $time) {
+    	         // Stub out to support PHPUnit 3.8
+        }       
 } 

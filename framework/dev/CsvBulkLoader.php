@@ -6,7 +6,7 @@
  * Uses the fgetcsv() function to process CSV input. Accepts a file-handler as 
  * input.
  * 
- * @see http://rfc.net/rfc4180.html
+ * @see http://tools.ietf.org/html/rfc4180
  *
  * @package framework
  * @subpackage bulkloading
@@ -210,7 +210,8 @@ class CsvBulkLoader extends BulkLoader {
 			if(is_string($duplicateCheck)) {
 				$SQL_fieldName = Convert::raw2sql($duplicateCheck); 
 				
-				if(!isset($record[$SQL_fieldName]) || empty($record[$SQL_fieldName])) { //skip current duplicate check if field value is empty
+				if(!isset($record[$SQL_fieldName]) || empty($record[$SQL_fieldName])) {
+					//skip current duplicate check if field value is empty
 					continue;
 				}
 

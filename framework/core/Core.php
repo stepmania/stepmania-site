@@ -84,8 +84,10 @@ require_once 'control/injector/Injector.php';
 
 // Initialise the dependency injector as soon as possible, as it is 
 // subsequently used by some of the following code
-$default_options = array('locator' => 'SilverStripeServiceConfigurationLocator');
-Injector::inst($default_options); 
+$injector = new Injector(array('locator' => 'SilverStripeServiceConfigurationLocator'));
+$injector->registerService(Config::inst());
+
+Injector::set_inst($injector);
 
 ///////////////////////////////////////////////////////////////////////////////
 // MANIFEST
@@ -96,6 +98,7 @@ Injector::inst($default_options);
 $flush = (isset($_GET['flush']) || isset($_REQUEST['url']) && (
 	$_REQUEST['url'] == 'dev/build' || $_REQUEST['url'] == BASE_URL . '/dev/build'
 ));
+global $manifest;
 $manifest = new SS_ClassManifest(BASE_PATH, false, $flush);
 
 // Register SilverStripe's class map autoload

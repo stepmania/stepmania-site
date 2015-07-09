@@ -10,7 +10,9 @@
 			<% else %>
 			<a href="Security/login?BackURL=$Link" title="<% _t('ForumLogin_ss.LOGINEXPLICATION','Click here to login') %>"><% _t('ForumLogin_ss.LOGIN','Login') %></a>
 			<% end_if %> |
+			<%--
 			<a href="Security/lostpassword" title="<% _t('ForumLogin_ss.LOSTPASSEXPLICATION','Click here to retrieve your password') %>"><% _t('ForumLogin_ss.LOSTPASS','Forgot password') %></a> |
+			--%>
 			<a href="ForumMemberProfile/register" title="<% _t('ForumLogin_ss.REGEXPLICATION','Click here to register') %>"><% _t('ForumLogin_ss.REGISTER','Register') %></a>
 			<% if OpenIDAvailable %> |
 				<a href="ForumMemberProfile/registerwithopenid" title="<% _t('ForumLogin_ss.OPENIDEXPLICATION','Click here to register with OpenID') %>">Register with OpenID <% _t('ForumLogin_ss.OPENID','register with OpenID') %> <img src="sapphire/images/openid-small.gif" alt="<% _t('ForumLogin_ss.OPENIDEXPLICATION') %>"/></a>

@@ -71,7 +71,7 @@ class ForumHolder extends Page {
 	 * 
 	 * @var bool
 	 */
-	public static $use_honeypot_on_register = false;
+	public static $use_honeypot_on_register = true;
 	
 	function getCMSFields() {
 		$fields = parent::getCMSFields();
@@ -482,8 +482,9 @@ class ForumHolder extends Page {
 class ForumHolder_Controller extends Page_Controller {
 
 	public static $allowed_actions = array(
-		//'latestthreads',
+		'latestthreads',
 		//'popularthreads',
+		'memberlist',
 		'login',
 		'logout',
 		'search',
@@ -492,12 +493,6 @@ class ForumHolder_Controller extends Page_Controller {
 
 	public function init() {
 		parent::init();
-
-		Requirements::javascript(THIRDPARTY_DIR . "/jquery/jquery.js");
-		Requirements::javascript("forum/javascript/jquery.MultiFile.js");
-		Requirements::javascript("forum/javascript/forum.js");
-
-		Requirements::themedCSS('forum','forum','all');
 
 		RSSFeed::linkToFeed($this->Link("rss"), _t('ForumHolder.POSTSTOALLFORUMS', "Posts to all forums"));
 
@@ -513,7 +508,7 @@ class ForumHolder_Controller extends Page_Controller {
 	function latestthreads() {
 		$this->Threads = $this->getRecentPosts(50);
 
-		return $this->renderWith(array("Forum_show"));
+		return $this->renderWith(array("ForumHolder_latestthreads", "Page"));
 
 		return array(
 			'Title' => _t('ForumHolder.POPULARTHREADS', 'Latest Threads')
@@ -530,7 +525,8 @@ class ForumHolder_Controller extends Page_Controller {
 	 * @return DataObjectSet A DataObjectSet of all the members which are signed up
 	 */
 	function memberlist() {
-		return $this->httpError(404);
+
+		// return $this->httpError(404);
 
 		$forumGroupID = (int) DataObject::get_one('Group', "\"Code\" = 'forum-members'")->ID;
 		
@@ -547,7 +543,7 @@ class ForumHolder_Controller extends Page_Controller {
 			case "joined":
 //				$members = DataObject::get("Member", "\"GroupID\" = '$forumGroupID'", "\"Member\".\"Created\" ASC", "LEFT JOIN \"Group_Members\" ON \"Member\".\"ID\" = \"Group_Members\".\"MemberID\"", "{$SQL_start},100");
 				$members = Member::get()
-						->filter('Member.GroupID', $forumGroupID)
+						->filter('GroupID', $forumGroupID)
 						->leftJoin('Group_Members', 'Member.ID = Group_Members.MemberID')
 						->sort('Member.Created ASC')
 						->limit($SQL_start . ',100');
@@ -555,7 +551,7 @@ class ForumHolder_Controller extends Page_Controller {
 			case "name":
 //				$members = DataObject::get("Member", "\"GroupID\" = '$forumGroupID'", "\"Member\".\"Nickname\" ASC", "LEFT JOIN \"Group_Members\" ON \"Member\".\"ID\" = \"Group_Members\".\"MemberID\"", "{$SQL_start},100");
 				$members = Member::get()
-						->filter('Member.GroupID', $forumGroupID)
+						->filter('GroupID', $forumGroupID)
 						->leftJoin('Group_Members', 'Member.ID = Group_Members.MemberID')
 						->sort('Member.Nickname ASC')
 						->limit($SQL_start . ',100');
@@ -563,7 +559,7 @@ class ForumHolder_Controller extends Page_Controller {
 			case "country":
 //				$members = DataObject::get("Member", "\"GroupID\" = '$forumGroupID' AND \"Member\".\"CountryPublic\" = TRUE", "\"Member\".\"Country\" ASC", "LEFT JOIN \"Group_Members\" ON \"Member\".\"ID\" = \"Group_Members\".\"MemberID\"", "{$SQL_start},100");
 				$members = Member::get()
-						->filter(array('Member.GroupID' => $forumGroupID, 'Member.CountryPublic' => TRUE))
+						->filter(array('GroupID' => $forumGroupID, 'Member.CountryPublic' => TRUE))
 						->leftJoin('Group_Members', 'Member.ID = Group_Members.MemberID')
 						->sort('Member.Nickname ASC')
 						->limit($SQL_start . ',100');
@@ -576,9 +572,8 @@ class ForumHolder_Controller extends Page_Controller {
 				$members->parseQueryLimit($query);
 			break;
 			default:
-				//$members = DataObject::get("Member", "\"GroupID\" = '$forumGroupID'", "\"Member\".\"Created\" DESC", "LEFT JOIN \"Group_Members\" ON \"Member\".\"ID\" = \"Group_Members\".\"MemberID\"", "{$SQL_start},100");
 				$members = Member::get()
-						->filter('Member.GroupID', $forumGroupID)
+						->filter('GroupID', $forumGroupID)
 						->leftJoin('Group_Members', 'Member.ID = Group_Members.MemberID')
 						->sort('Member.Created DESC')
 						->limit($SQL_start . ',100');

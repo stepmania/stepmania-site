@@ -22,8 +22,10 @@ class CMSSettingsController extends LeftAndMain {
 		});
 		return $neg;
 	}
-	
-		/**
+
+	/**
+	 * @param null $id Not used.
+	 * @param null $fields Not used.
 	 * @return Form
 	 */
 	public function getEditForm($id = null, $fields = null) {
@@ -41,8 +43,7 @@ class CMSSettingsController extends LeftAndMain {
 			$this, 'EditForm', $fields, $actions
 		)->setHTMLID('Form_EditForm');
 		$form->setResponseNegotiator($this->getResponseNegotiator());
-		$form->addExtraClass('root-form');
-		$form->addExtraClass('cms-edit-form cms-panel-padded center');
+		$form->addExtraClass('cms-content center cms-edit-form');
 		// don't add data-pjax-fragment=CurrentForm, its added in the content template instead
 
 		if($form->Fields()->hasTabset()) $form->Fields()->findOrMakeTab('Root')->setTemplate('CMSTabSet');
@@ -78,7 +79,13 @@ class CMSSettingsController extends LeftAndMain {
 	public function save_siteconfig($data, $form) {
 		$siteConfig = SiteConfig::current_site_config();
 		$form->saveInto($siteConfig);
-		$siteConfig->write();
+		
+		try {
+			$siteConfig->write();
+		} catch(ValidationException $ex) {
+			$form->sessionMessage($ex->getResult()->message(), 'bad');
+			return $this->getResponseNegotiator()->respond($this->request);
+		}
 		
 		$this->response->addHeader('X-Status', rawurlencode(_t('LeftAndMain.SAVEDUP', 'Saved.')));
 		return $this->getResponseNegotiator()->respond($this->request);

@@ -1,7 +1,7 @@
 @import "reset";
 @import "helpers";
+@import "linecons";
 
-//$primary: #aa66cc;
 $primary: #f0d01f;
 $secondary: adjust-color(#21201f, $lightness: 0%);
 $spacing: 14px;
@@ -126,8 +126,16 @@ header {
 				color: white;
 				background: $secondary;
 				transition: background-color 0.5s linear;
+				outline: none;
 				&.current, &.section {
 					border-bottom: 4px solid $primary;
+				}
+				&:active {
+					background: adjust-color($primary,
+						$saturation: -10%,
+						$lightness: -20%
+					) !important;
+					transition: background-color 0.08s linear;
 				}
 				&:hover {
 					color: white;
@@ -150,12 +158,17 @@ header {
 	}
 }
 
+.pad {
+	padding: $spacing;
+}
+
 #container {
 	background: white;
-	border-bottom-left-radius: $rounding;
-	border-bottom-right-radius: $rounding;
+	// border-bottom-left-radius: $rounding;
+	// border-bottom-right-radius: $rounding;
 	overflow: auto;
-	box-shadow: $shadow;
+	// box-shadow: $shadow;
+	box-shadow: 0 4px 0 4px darken($primary, 8%);
 	.banner, header {
 		background: $secondary;
 		color: white;
@@ -168,7 +181,8 @@ header {
 		}
 	}
 	article {
-		padding: $spacing;
+		// padding: $spacing;
+		overflow: hidden;
 		&:last-child {
 			margin-bottom: 0;
 		}
@@ -189,11 +203,24 @@ header {
 		}
 	}
 	.login {
-		background: $secondary;
+		// background: $secondary;
 		padding: $spacing;
+		.logged-in {
+			// color: #aaa;
+			color: black;
+		}
+		padding-bottom: 0;
+		// padding-bottom: $spacing;
 		a {
-			color: white;
+			// color: white;
 			text-decoration: none;
+		}
+	}
+	a[rel="permalink"] {
+		float: left;
+		padding-right: $spacing;
+		span {
+			display: none;
 		}
 	}
 }
@@ -201,13 +228,22 @@ header {
 footer {
 	p {
 		padding: $spacing;
-		color: mix($primary, #000, 25%);
+		padding-top: 0;
+		// color: mix($primary, #000, 25%);
+	}
+}
+
+@media only screen and (max-width: 600px) {
+	// Don't waste any space on phones just to show a little extra yellow.
+	.limit-width {
+		width: 100%;
 	}
 }
 
 @import "home";
 @import "download";
 @import "forum";
+@import "memberlist";
 @import "wiki";
 @import "form";
 @import "silverstripe";

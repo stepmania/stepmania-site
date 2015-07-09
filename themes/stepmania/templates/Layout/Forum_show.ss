@@ -1,5 +1,5 @@
 <% include ForumHeader %>
-<div class="forum-header">
+<div class="forum-header pad">
 	<div class="float-left replyButton button">
 		<a href="$ReplyLink" title="<% _t('Forum_show_ss.CLICKREPLY', 'Click to Reply') %>"><% _t('Forum_show_ss.REPLY', 'Reply') %></a>
 	</div>
@@ -29,7 +29,7 @@
 <% loop Posts %>
 	<% include SinglePost %>
 <% end_loop %>
-<div class="topic-footer">
+<div class="topic-footer pad">
 	<div class="float-left replyButton button">
 		<a href="$ReplyLink" title="<% _t('Forum_show_ss.CLICKREPLY', 'Click to Reply') %>"><% _t('Forum_show_ss.REPLY', 'Reply') %></a>
 	</div>
@@ -55,16 +55,27 @@
 		</div>
 	</div>
 	<div class="clear"></div>
+	<div class="topic-tools topic-stats button">
+		<% with ForumThread %>
+		<% if HasSubscribed %>
+		<a href="$UnsubscribeLink?SecurityID={$SecurityID}">Unsubscribe</a>
+		<% else %>
+		<a href="$SubscribeLink?SecurityID={$SecurityID}">Subscribe</a>
+		<% end_if %>
+		<% end_with %>
+	</div>
 	<div class="topic-stats">
 		<strong>$ForumThread.NumViews <% _t('Forum_show_ss.VIEWS','Views') %></strong>
 	</div>
 </div>
+
 <% if CanPost %>
 <div class="forum-quick-reply" id="reply">
 	<h3>Quick Reply</h3>
 	$PostMessageForm(true)
 </div>
 <% end_if %>
+
 <% if AdminFormFeatures %>
 <div class="forum-admin-features">
 	<h3>Forum Admin</h3>

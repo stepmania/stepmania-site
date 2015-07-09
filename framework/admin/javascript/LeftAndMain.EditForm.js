@@ -93,7 +93,7 @@
 					var firstTabWithErrors = this.find('.message.validation:first').closest('.tab');
 					$('.cms-container').clearCurrentTabState(); // clear state to avoid override later on
 					this.redraw();
-					firstTabWithErrors.closest('.cms-tabset').tabs('select', firstTabWithErrors.attr('id'));
+					firstTabWithErrors.closest('.ss-tabset').tabs('select', firstTabWithErrors.attr('id'));
 				}
 			
 				this._super();
@@ -200,11 +200,35 @@
 			 * Function: onclick
 			 */
 			onclick: function(e) {
+				// Confirmation on delete. 
+				if(
+					this.hasClass('gridfield-button-delete')
+					&& !confirm(ss.i18n._t('TABLEFIELD.DELETECONFIRMMESSAGE'))
+				) {
+					e.preventDefault();
+					return false;
+				}
+
 				if(!this.is(':disabled')) {
 					this.parents('form').trigger('submit', [this]);
 				}
 				e.preventDefault();
 				return false;
+			}
+		});
+
+		/**
+		 * If we've a history state to go back to, go back, otherwise fall back to
+		 * submitting the form with the 'doCancel' action.
+		 */
+		$('.cms-edit-form .Actions input.action[type=submit].ss-ui-action-cancel, .cms-edit-form .Actions button.action.ss-ui-action-cancel').entwine({
+			onclick: function(e) {
+				if (History.getStateByIndex(1)) {
+					History.back();
+				} else {
+					this.parents('form').trigger('submit', [this]);
+				}
+				e.preventDefault();
 			}
 		});
 

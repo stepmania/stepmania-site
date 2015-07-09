@@ -91,8 +91,12 @@ class PaginatedList extends SS_ListDecorator {
 	 */
 	public function getPageStart() {
 		if ($this->pageStart === null) {
-			if ($this->request && isset($this->request[$this->getPaginationGetVar()])) {
-				$this->pageStart = (int) $this->request[$this->getPaginationGetVar()];
+			if(
+				$this->request 
+				&& isset($this->request[$this->getPaginationGetVar()])
+				&& $this->request[$this->getPaginationGetVar()] > 0
+			) {
+				$this->pageStart = (int)$this->request[$this->getPaginationGetVar()];
 			} else {
 				$this->pageStart = 0;
 			}
@@ -349,7 +353,7 @@ class PaginatedList extends SS_ListDecorator {
 	 * @return bool
 	 */
 	public function NotLastPage() {
-		return $this->CurrentPage() != $this->TotalPages();
+		return $this->CurrentPage() < $this->TotalPages();
 	}
 
 	/**

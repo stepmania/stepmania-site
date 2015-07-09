@@ -62,13 +62,13 @@ class Post extends DataObject {
 
 	/**
 	 * After saving this post, update the {@link ForumThread} with information
-	 * that this is now the most recent post
+	 * that the most recent post could have changed.
 	 */
 	function onAfterWrite() {
 		parent::onAfterWrite();
 
-		// Tell the thread this is the most recently added or edited.
-		if ($this->ThreadID) $this->Thread()->updateLastPost($this);
+		// Force thread to recalculate it's most recent.
+		if ($this->ThreadID) $this->Thread()->updateLastPost();
 	}
 
 	function onAfterDelete() {
@@ -185,10 +185,13 @@ class Post extends DataObject {
 	 */
 	function DeleteLink() {
 		if($this->canDelete()) {
-			$url = $this->Link('deletepost') . '/' . $this->ID;
+			$link = $this->Link('deletepost') . '/' . $this->ID;
+			$token = SecurityToken::inst();
+			$link = $token->addToUrl($link);
+
 			$firstPost = ($this->isFirstPost()) ? ' firstPost' : '';
 
-			return '<a class="deleteLink' . $firstPost . '" href="' . $url . '">' . _t('Post.DELETE','Delete') . '</a>';
+			return '<a class="deleteLink' . $firstPost . '" href="' . $link . '">' . _t('Post.DELETE','Delete') . '</a>';
 		}
 		
 		return false;
@@ -226,6 +229,9 @@ class Post extends DataObject {
 			$member = Member::currentUser();
 		 	if($member->ID != $this->AuthorID) {
 				$link = $this->Forum()->Link('markasspam') . '/' . $this->ID;
+				$token = SecurityToken::inst();
+				$link = $token->addToUrl($link);
+
 				$firstPost = ($this->isFirstPost()) ? ' firstPost' : '';
 				
 				return '<a href="' . $link .'" class="markAsSpamLink' . $firstPost . '" rel="' . $this->ID . '">'. _t('Post.MARKASSPAM', 'Mark as Spam') . '</a>';

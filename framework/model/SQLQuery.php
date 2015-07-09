@@ -494,11 +494,11 @@ class SQLQuery {
 	/**
 	 * Set ORDER BY clause either as SQL snippet or in array format.
 	 *
-	 * @example $sql->orderby("Column");
-	 * @example $sql->orderby("Column DESC");
-	 * @example $sql->orderby("Column DESC, ColumnTwo ASC");
-	 * @example $sql->orderby("Column", "DESC");
-	 * @example $sql->orderby(array("Column" => "ASC", "ColumnTwo" => "DESC"));
+	 * @example $sql->setOrderBy("Column");
+	 * @example $sql->setOrderBy("Column DESC");
+	 * @example $sql->setOrderBy("Column DESC, ColumnTwo ASC");
+	 * @example $sql->setOrderBy("Column", "DESC");
+	 * @example $sql->setOrderBy(array("Column" => "ASC", "ColumnTwo" => "DESC"));
 	 *
 	 * @param string|array $orderby Clauses to add (escaped SQL statement)
 	 * @param string $dir Sort direction, ASC or DESC
@@ -513,13 +513,13 @@ class SQLQuery {
 	/**
 	 * Add ORDER BY clause either as SQL snippet or in array format.
 	 *
-	 * @example $sql->orderby("Column");
-	 * @example $sql->orderby("Column DESC");
-	 * @example $sql->orderby("Column DESC, ColumnTwo ASC");
-	 * @example $sql->orderby("Column", "DESC");
-	 * @example $sql->orderby(array("Column" => "ASC", "ColumnTwo" => "DESC"));
+	 * @example $sql->addOrderBy("Column");
+	 * @example $sql->addOrderBy("Column DESC");
+	 * @example $sql->addOrderBy("Column DESC, ColumnTwo ASC");
+	 * @example $sql->addOrderBy("Column", "DESC");
+	 * @example $sql->addOrderBy(array("Column" => "ASC", "ColumnTwo" => "DESC"));
 	 *
-	 * @param string|array $orderby Clauses to add (escaped SQL statements)
+	 * @param string|array $clauses Clauses to add (escaped SQL statements)
 	 * @param string $dir Sort direction, ASC or DESC
 	 *
 	 * @return SQLQuery
@@ -566,21 +566,23 @@ class SQLQuery {
 		// directly in the ORDER BY
 		if($this->orderby) {
 			$i = 0;
+			$orderby = array();
 			foreach($this->orderby as $clause => $dir) {
 
 				// public function calls and multi-word columns like "CASE WHEN ..."
 				if(strpos($clause, '(') !== false || strpos($clause, " ") !== false ) {
-					// remove the old orderby
-					unset($this->orderby[$clause]);
 					
+					// Move the clause to the select fragment, substituting a placeholder column in the sort fragment.
 					$clause = trim($clause);
 					$column = "_SortColumn{$i}";
-
 					$this->selectField($clause, $column);
-					$this->addOrderBy('"' . $column . '"', $dir);
+					$clause = '"' . $column . '"';
 					$i++;
 				}
+				
+				$orderby[$clause] = $dir;
 			}
+			$this->orderby = $orderby;
 		}
 
 		return $this;
@@ -1066,10 +1068,20 @@ class SQLQuery {
 	 * @param $alias An optional alias for the aggregate column.
 	 */
 	public function aggregate($column, $alias = null) {
-		
 		$clone = clone $this;
-		$clone->setLimit($this->limit);
-		$clone->setOrderBy($this->orderby);
+
+		// don't set an ORDER BY clause if no limit has been set. It doesn't make
+		// sense to add an ORDER BY if there is no limit, and it will break
+		// queries to databases like MSSQL if you do so. Note that the reason
+		// this came up is because DataQuery::initialiseQuery() introduces
+		// a default sort.
+		if($this->limit) {
+			$clone->setLimit($this->limit);
+			$clone->setOrderBy($this->orderby);
+		} else {
+			$clone->setOrderBy(array());
+		}
+
 		$clone->setGroupBy($this->groupby);
 		if($alias) {
 			$clone->setSelect(array());
@@ -1077,7 +1089,6 @@ class SQLQuery {
 		} else {
 			$clone->setSelect($column);
 		}
-		
 
 		return $clone;
 	}
@@ -1118,10 +1129,15 @@ class SQLQuery {
 		// shift the first FROM table out from so we only deal with the JOINs
 		$baseFrom = array_shift($from);
 		$this->mergesort($from, function($firstJoin, $secondJoin) {
-			if($firstJoin['order'] == $secondJoin['order']) {
+			if(
+				!is_array($firstJoin) 
+				|| !is_array($secondJoin)
+				|| $firstJoin['order'] == $secondJoin['order']
+			) {
 				return 0;
+			} else {
+				return ($firstJoin['order'] < $secondJoin['order']) ?  -1 : 1;
 			}
-			return ($firstJoin['order'] < $secondJoin['order']) ?  -1 : 1;
 		});
 		
 		// Put the first FROM table back into the results 

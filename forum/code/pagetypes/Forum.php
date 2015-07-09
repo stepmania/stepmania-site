@@ -488,12 +488,6 @@ class Forum_Controller extends Page_Controller {
 		parent::init();
 		if($this->redirectedTo()) return;
 
-		Requirements::javascript(THIRDPARTY_DIR . "/jquery/jquery.js"); 
-		Requirements::javascript("forum/javascript/forum.js");
-		Requirements::javascript("forum/javascript/jquery.MultiFile.js");
-
-		Requirements::themedCSS('forum','forum','all');
-
 		RSSFeed::linkToFeed($this->Parent()->Link("rss/forum/$this->ID"), sprintf(_t('Forum.RSSFORUM',"Posts to the '%s' forum"),$this->Title)); 
 	 	RSSFeed::linkToFeed($this->Parent()->Link("rss"), _t('Forum.RSSFORUMS','Posts to all forums'));
 
@@ -549,7 +543,12 @@ class Forum_Controller extends Page_Controller {
 	 *
 	 * @return bool
 	 */
-	function subscribe() {
+	function subscribe(SS_HTTPRequest $request) {
+		// Check CSRF
+		if (!SecurityToken::inst()->checkRequest($request)) {
+			return $this->httpError(400);
+		}
+
 		if(Member::currentUser() && !ForumThread_Subscription::already_subscribed($this->urlParams['ID'])) {
 			$obj = new ForumThread_Subscription();
 			$obj->ThreadID = (int) $this->urlParams['ID'];
@@ -557,10 +556,11 @@ class Forum_Controller extends Page_Controller {
 			$obj->LastSent = date("Y-m-d H:i:s"); 
 			$obj->write();
 			
-			die('1');
+			if (Director::is_ajax())
+				die('1');
 		}
-		
-		return false;
+
+		return (Director::is_ajax()) ? true : $this->redirect("ForumMemberProfile/subscriptions");
 	}
 	
 	/**
@@ -570,7 +570,7 @@ class Forum_Controller extends Page_Controller {
 	 *
 	 * @return bool
 	 */
-	function unsubscribe() {
+	function unsubscribe(SS_HTTPRequest $request) {
 		$member = Member::currentUser();
 		
 		if(!$member) Security::permissionFailure($this, _t('LOGINTOUNSUBSCRIBE', 'To unsubscribe from that thread, please log in first.'));
@@ -582,35 +582,37 @@ class Forum_Controller extends Page_Controller {
 				WHERE \"ThreadID\" = '". Convert::raw2sql($this->urlParams['ID']) ."' 
 				AND \"MemberID\" = '$member->ID'");
 			
-			die('1');
+			if (Director::is_ajax())
+				die('1');
 		}
 
-		return false;
+		return (Director::is_ajax()) ? true : $this->redirect("ForumMemberProfile/subscriptions");
 	}
-	
+
 	/**
 	 * Mark a post as spam. Deletes any posts or threads created by that user
 	 * and removes their user account from the site
 	 *
 	 * Must be logged in and have the correct permissions to do marking
 	 */
-	function markasspam() {
+	function markasspam(SS_HTTPRequest $request) {
 		$currentUser = Member::currentUser();
 		if(!isset($this->urlParams['ID'])) return $this->httpError(400);
 		if(!$this->canModerate()) return $this->httpError(403);
 
+		// Check CSRF token
+		if (!SecurityToken::inst()->checkRequest($request)) {
+			return $this->httpError(400);
+		}
+
 		$post = Post::get()->byID($this->urlParams['ID']);
 		if($post) {
-			// send spam feedback if needed
-			if(class_exists('SpamProtectorManager')) {
-				SpamProtectorManager::send_feedback($post, 'spam');
-			}
-			
 			// post was the start of a thread, Delete the whole thing
 			if($post->isFirstPost()) $post->Thread()->delete();
 
 			// Delete the current post
 			$post->delete();
+			$post->extend('onAfterMarkAsSpam');
 
 			// Log deletion event
 			SS_Log::log(sprintf(
@@ -675,7 +677,7 @@ class Forum_Controller extends Page_Controller {
 	 * @see BBCodeParser::usable_tags()
 	 */
 	function BBTags() {
-		return BBCodeParser::usable_tags();
+		return SMBBCodeParser::usable_tags();
 	}
 
 	/**
@@ -684,6 +686,14 @@ class Forum_Controller extends Page_Controller {
 	 * @return Form Returns the post message form
 	 */
 	function PostMessageForm($addMode = false, $post = false) {
+		Requirements::javascript("stepmania/javascript/jquery-2.0.3.min.js");
+		Requirements::javascript("stepmania/javascript/markitup/jquery.markitup.js");
+		Requirements::css("stepmania/javascript/markitup/skins/stepmania/style.css");
+		Requirements::javascript("stepmania/javascript/markitup/sets/bbcode/set.js");
+		Requirements::css("stepmania/javascript/markitup/sets/bbcode/style.css");
+		Requirements::javascript("stepmania/javascript/colorpicker/js/colorpicker.js");
+		Requirements::css("stepmania/javascript/colorpicker/css/colorpicker.css");
+
 		$thread = false;
 
 		if($post) $thread = $post->Thread();
@@ -719,7 +729,7 @@ class Forum_Controller extends Page_Controller {
 		$forumBBCodeHint = $this->renderWith('Forum_BBCodeHint');
 
 		$fields = new FieldList(
-			($post && $post->isFirstPost() || !$thread) ? new TextField("Title", _t('Forum.FORUMTHREADTITLE', 'Title')) : new ReadonlyField('Title',  _t('Forum.FORUMTHREADTITLE', ''), 'Re:'. $thread->Title),
+			($post && $post->isFirstPost() || !$thread) ? new TextField("Title", _t('Forum.FORUMTHREADTITLE', 'Title')) : new ReadonlyField('Title',  _t('Forum.FORUMTHREADTITLE', ''), 'Re: 	'. $thread->Title),
 			new TextareaField("Content", _t('Forum.FORUMREPLYCONTENT', 'Content')),
 			new LiteralField(
 				"BBCodeHelper", 
@@ -747,11 +757,17 @@ class Forum_Controller extends Page_Controller {
 			if($attachmentList->exists()) {
 				$attachments = "<div id=\"CurrentAttachments\"><h4>". _t('Forum.CURRENTATTACHMENTS', 'Current Attachments') ."</h4><ul>";
 				$link = $this->Link();
-				
+
+				// An instance of the security token
+				$token = SecurityToken::inst();
+
 				foreach($attachmentList as $attachment) {
-					$attachments .= "<li class='attachment-$attachment->ID'>$attachment->Name [<a href='{$link}deleteattachment/$attachment->ID' rel='$attachment->ID' class='deleteAttachment'>"
-							. _t('Forum.REMOVE','remove') 
-							. "</a>]</li>";
+					// Generate a link properly, since it requires a security token
+					$attachmentLink = Controller::join_links($link, 'deleteattachment', $attachment->ID);
+					$attachmentLink = $token->addToUrl($attachmentLink);
+
+					$attachments .= "<li class='attachment-$attachment->ID'>$attachment->Name [<a href='{$attachmentLink}' rel='$attachment->ID' class='deleteAttachment'>"
+							. _t('Forum.REMOVE','remove') . "</a>]</li>";
 				}
 				$attachments .= "</ul></div>";
 			
@@ -767,23 +783,36 @@ class Forum_Controller extends Page_Controller {
 
 		$form = new Form($this, 'PostMessageForm', $fields, $actions, $required);
 
+		Requirements::customScript(<<<EX
+(function($) {
+	$(function () {
+		var form = $('#{$form->FormName()}');
+		form.find('[name=Content]').css('resize', 'none').markItUp(mySettings);
+		form.find('.color').ColorPicker({
+			onSubmit: function(hsb, hex, rgb, el) {
+				$.markItUp({
+					openWith: '[color=#' + hex + ']',
+					closeWith: '[/color]'
+				});
+			}
+		});
+	})
+})(jQuery);
+EX
+		);
+
+		if ($thread) {
+			if ($post)
+				$this->Title = "Editing Post";
+			else
+				$this->Title = "Re: " . $thread->Title;
+		} else {
+			$this->Title = "New Topic";
+		}
+
 		if($post) $form->loadDataFrom($post);
 		
 		return $form;
-	}
-	
-	/**
-	 * Wrapper for older templates. Previously the new, reply and edit forms were 3 separate
-	 * forms, they have now been refactored into 1 form. But in order to not break existing 
-	 * themes too much just include this.
-	 *
-	 * @deprecated 0.5 
-	 * @return Form
-	 */
-	function ReplyForm() {
-		user_error('Please Use $PostMessageForm in your template rather that $ReplyForm', E_USER_WARNING);
-		
-		return $this->PostMessageForm();
 	}
 	
 	/**
@@ -1034,7 +1063,7 @@ class Forum_Controller extends Page_Controller {
 
 			RSSFeed::linkToFeed($this->Link("rss") . '/thread/' . (int) $this->urlParams['ID'], $posts);
 
-			$title = 'Topic: ' . Convert::raw2xml($thread->Title); // . ' &raquo; ' . $title;
+			$title = Convert::raw2xml($thread->Title); // . ' &raquo; ' . $title;
 			$field = DBField::create_field('HTMLText', $title);
 
 			return array(
@@ -1108,8 +1137,12 @@ class Forum_Controller extends Page_Controller {
 	 *
 	 * @return boolean
 	 */
-	function deleteattachment() {
-		
+	function deleteattachment(SS_HTTPRequest $request) {
+		// Check CSRF token
+		if (!SecurityToken::inst()->checkRequest($request)) {
+			return $this->httpError(400);
+		}
+
 		// check we were passed an id and member is logged in
 		if(!isset($this->urlParams['ID'])) return false;
 		
@@ -1153,7 +1186,12 @@ class Forum_Controller extends Page_Controller {
 	 *
 	 * @return bool
 	 */
-	function deletepost() {
+	function deletepost(SS_HTTPRequest $request) {
+		// Check CSRF token
+		if (!SecurityToken::inst()->checkRequest($request)) {
+			return $this->httpError(400);
+		}
+
 		if(isset($this->urlParams['ID'])) {
 			if($post = DataObject::get_by_id('Post', (int) $this->urlParams['ID'])) {
 				if($post->canDelete()) {

@@ -8,7 +8,7 @@
 		</div>
 	
 		<div class="cms-login-status">
-			<a href="Security/logout" class="logout-link" title="<% _t('LeftAndMain_Menu.ss.LOGOUT','Log out') %>"><% _t('LeftAndMain_Menu_ss.LOGOUT','Log out') %></a>
+			<a href="Security/logout" class="logout-link" title="<% _t('LeftAndMain_Menu_ss.LOGOUT','Log out') %>"><% _t('LeftAndMain_Menu_ss.LOGOUT','Log out') %></a>
 			<% with $CurrentMember %>
 				<span>
 					<% _t('LeftAndMain_Menu_ss.Hello','Hi') %>
@@ -24,7 +24,7 @@
 		<ul class="cms-menu-list">
 		<% loop $MainMenu %>
 			<li class="$LinkingMode $FirstLast <% if $LinkingMode == 'link' %><% else %>opened<% end_if %>" id="Menu-$Code" title="$Title.ATT">
-				<a href="$Link" <% if $Code == 'Help' %>target="_blank"<% end_if%>>
+				<a href="$Link" $AttributesHTML>
 					<span class="icon icon-16 icon-{$Code.LowerCase}">&nbsp;</span>
 					<span class="text">$Title</span>
 				</a>

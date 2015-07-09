@@ -1,15 +1,9 @@
-<div class="downloads-container forum-flex">
+<div class="downloads-container forum-flex pad">
 	<% if Downloads %>
 	<div class="downloads forum-flex-left">
 		<% loop Downloads %>
-		<div class="download">
-			<h2><a href="$Link">$Title</a></h2>
-			<div class="download-info">
-				<p>Platform: $Platform</p>
-				<p>Architecture: $Architecture</p>
-				<p>Size: $Size</p>
-				<p>Downloads: $DownloadCount <small>($TotalDownloadSize Total)</small></p>
-			</div>
+		<div class="download download-$Icon">
+			<h2><a href="$Link">$Name ($Platform)<% if Size %><small> ~ $Size</small><% end_if %></a></h2>
 		</div>
 		<% end_loop %>
 	</div>
@@ -30,5 +24,5 @@
 			$GibMoneyPls
 		</div>
 	</div>
+	$Form
 </div>
-$Form

@@ -14,6 +14,7 @@
 }
 
 .HomePage-article {
+	width: 100%;
 	h1 {
 		display: inline-block;
 		font-size: 1.2rem;
@@ -29,6 +30,10 @@
 	}
 	.forum-post {
 		margin-bottom: 1em;
+		header {
+			padding: $spacing;
+			padding-bottom: 0;
+		}
 		header h2 {
 			margin-bottom: 0;
 		}

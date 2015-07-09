@@ -616,7 +616,11 @@ class Versioned extends DataExtension {
 			}
 			
 			// If we're editing Live, then use (table)_Live instead of (table)
-			if(Versioned::current_stage() && Versioned::current_stage() != $this->defaultStage) {
+			if(
+				Versioned::current_stage() 
+				&& Versioned::current_stage() != $this->defaultStage
+				&& in_array(Versioned::current_stage(), $this->stages)
+			) {
 				// If the record has already been inserted in the (table), get rid of it. 
 				if($manipulation[$table]['command']=='insert') {
 					DB::query("DELETE FROM \"{$table}\" WHERE \"ID\"='$id'");
@@ -941,7 +945,7 @@ class Versioned extends DataExtension {
 
 			Session::set('readingMode', 'Stage.' . $stage);
 		}
-		if(isset($_GET['archiveDate'])) {
+		if(isset($_GET['archiveDate']) && strtotime($_GET['archiveDate'])) {
 			Session::set('readingMode', 'Archive.' . $_GET['archiveDate']);
 		}
 		
@@ -1289,21 +1293,7 @@ class Versioned extends DataExtension {
 
 		return $list;
 	}
-	
-	/**
-	 * @param Controller $controller
-	 */
-	public function contentcontrollerInit($controller) {
-		self::choose_site_stage();
-	}
 
-	/**
-	 * @param Controller $controller
-	 */
-	public function modelascontrollerInit($controller) {
-		self::choose_site_stage();
-	}
-	
 	/**
 	 * @param array $labels
 	 */
@@ -1331,6 +1321,22 @@ class Versioned extends DataExtension {
 	 */
 	public function cacheKeyComponent() {
 		return 'versionedmode-'.self::get_reading_mode();
+	}
+
+	/**
+	 * Returns an array of possible stages.
+	 *
+	 * @return array
+	 */
+	public function getVersionedStages() {
+		return $this->stages;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getDefaultStage() {
+		return $this->defaultStage;
 	}
 }
 

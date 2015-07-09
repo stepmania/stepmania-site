@@ -23,9 +23,9 @@
 		});
 		
 		var strings = {
-			'openlink': 'Open',
-			'fieldTitle': '(choose)',
-			'searchFieldTitle': '(choose or search)'
+			'openlink': ss.i18n._t('TreeDropdownField.OpenLink'),
+			'fieldTitle': '(' + ss.i18n._t('TreeDropdownField.FieldTitle') + ')',
+			'searchFieldTitle': '(' + ss.i18n._t('TreeDropdownField.SearchFieldTitle') + ')'
 		};
 
 		var _clickTestFn = function(e) {
@@ -86,8 +86,37 @@
 					.removeClass('ui-icon-triangle-1-s')
 					.addClass('ui-icon-triangle-1-n');
 				
-				if(tree.is(':empty') && !panel.hasClass('loading')) this.loadTree();
+				if(tree.is(':empty') && !panel.hasClass('loading')) {
+					this.loadTree(null, this._riseUp);
+				} else {
+					this._riseUp();
+				}
+
 				this.trigger('panelshow');
+			},
+			_riseUp: function() {
+				var container = this,
+					dropdown = this.getPanel(),
+					toggle = this.find(".treedropdownfield-toggle-panel-link"),
+					offsetTop = toggle.innerHeight(),
+					elHeight,
+					elPos,
+					endOfWindow;
+
+				if (toggle.length > 0) {
+					endOfWindow = ($(window).height() + $(document).scrollTop()) - toggle.innerHeight();
+					elPos = toggle.offset().top;
+					elHeight = dropdown.innerHeight();
+					
+					// If the dropdown is too close to the bottom of the page, position it above the 'trigger'
+					if (elPos + elHeight > endOfWindow && elPos - elHeight > 0) {
+						container.addClass('treedropdownfield-with-rise');
+						offsetTop = -dropdown.outerHeight();
+					} else {
+						container.removeClass('treedropdownfield-with-rise');
+					}
+				}
+				dropdown.css({"top": offsetTop + "px"});
 			},
 			closePanel: function() {
 				jQuery('body').unbind('click', _clickTestFn);
@@ -95,7 +124,7 @@
 				// swap the up arrow with a down arrow
 				var toggle = this.find(".treedropdownfield-toggle-panel-link");
 				toggle.removeClass('treedropdownfield-open-tree');
-				this.removeClass('treedropdownfield-open-tree');
+				this.removeClass('treedropdownfield-open-tree treedropdownfield-with-rise');
 								
 				toggle.find("a")
 					.removeClass('ui-icon-triangle-1-n')
@@ -228,7 +257,25 @@
 					'themes': {
 						'theme': 'apple'
 					},
-					'plugins': ['html_data', 'ui', 'themes']
+					'types' : {
+						'types' : {
+							'default': {
+								'check_node': function(node) {
+									return ( ! node.hasClass('disabled'));
+								},
+								'uncheck_node': function(node) {
+									return ( ! node.hasClass('disabled'));
+								},
+								'select_node': function(node) {
+									return ( ! node.hasClass('disabled'));
+								},
+								'deselect_node': function(node) {
+									return ( ! node.hasClass('disabled'));
+								}
+							}
+						}
+					},
+					'plugins': ['html_data', 'ui', 'themes', 'types']
 				};
 			},
 			/**
@@ -280,24 +327,10 @@
 		$('.TreeDropdownField.searchable').entwine({
 			onadd: function() {
 				this._super();
-				
-				var title = decodeURIComponent(this.data('title'));
-				this.find('.treedropdownfield-title').replaceWith(
-					$('<input type="text" class="treedropdownfield-title search" data-skip-autofocus="true" />')
+				var title = ss.i18n._t('TreeDropdownField.ENTERTOSEARCH');
+				this.find('.treedropdownfield-panel').prepend(
+					$('<input type="text" class="search treedropdownfield-search" data-skip-autofocus="true" placeholder="' + title + '" value="" />')
 				);
-				
-				this.setTitle(title ? title : strings.searchFieldTitle);
-			},
-			setTitle: function(title) {
-				if(!title && title !== '') title = strings.fieldTitle;
-				
-				this.find('.treedropdownfield-title').val(title);
-			},
-			getTitle: function() {
-				return this.find('.treedropdownfield-title').val();
-			},
-			resetTitle: function() {
-				this.setTitle(decodeURIComponent(this.data('title')));
 			},
 			search: function(str, callback) {
 				this.openPanel();
@@ -306,19 +339,10 @@
 			cancelSearch: function() {
 				this.closePanel();
 				this.loadTree();
-				this.resetTitle();
 			}
 		});
 		
 		$('.TreeDropdownField.searchable input.search').entwine({
-			onfocusin: function(e) {
-				var field = this.getField();
-				field.setTitle('');
-			},
-			onfocusout: function(e) {
-				var field = this.getField();
-				field.resetTitle();
-			},
 			onkeydown: function(e) {
 				var field = this.getField();
 				if(e.keyCode == 13) {
