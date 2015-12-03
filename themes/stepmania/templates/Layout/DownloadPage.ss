@@ -19,8 +19,6 @@
 				<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
 				<img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
 			</form>
-			<p>We've got a <a href="http://bitcoin.org">Bitcoin</a> address too, if you'd prefer!</p>
-			<p><button class="bitcoinate" data-size="20" data-address="1TuoKCcPUtKvh7cjhMT4wTCL17Bkuo8qL"><span></span>Donate</button></p>
 			$GibMoneyPls
 		</div>
 	</div>
