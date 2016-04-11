@@ -1,0 +1,11 @@
+fi:
+  GridFieldSiteTreeAddNewButton:
+    Add: 'Lisää uusi {name}'
+    AddMultipleOptions: 'Lisää uusi'
+  GridFieldSiteTreeState:
+    Draft: '<i class="btn-icon gridfield-icon btn-icon-pencil"></i> Tallennettu luonnoksena {date}'
+    Modified: Muokattu
+    Published: '<i class="btn-icon gridfield-icon btn-icon-accept"></i> Julkaistu {date}'
+    StateTitle: Tila
+  Lumberjack:
+    TabTitle: 'Alasivut'

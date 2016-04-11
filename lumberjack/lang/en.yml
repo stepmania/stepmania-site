@@ -1,0 +1,11 @@
+en:
+  GridFieldSiteTreeAddNewButton:
+    Add: 'Add new {name}'
+    AddMultipleOptions: 'Add new'
+  GridFieldSiteTreeState:
+    Draft: '<i class="btn-icon gridfield-icon btn-icon-pencil"></i> Saved as Draft on {date}'
+    Modified: Modified
+    Published: '<i class="btn-icon gridfield-icon btn-icon-accept"></i> Published on {date}'
+    StateTitle: State
+  Lumberjack:
+    TabTitle: 'Child Pages'

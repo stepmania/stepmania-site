@@ -1,0 +1,11 @@
+de:
+  GridFieldSiteTreeAddNewButton:
+    Add: 'Neuen {name} hinzufügen'
+    AddMultipleOptions: 'Neuen hinzufügen'
+  GridFieldSiteTreeState:
+    Draft: '<i class="btn-icon gridfield-icon btn-icon-pencil"></i> Als Entwurf am {date} gespeichert'
+    Modified: Geändert
+    Published: '<i class="btn-icon gridfield-icon btn-icon-accept"></i> Veröffentlicht am {date}'
+    StateTitle: Status
+  Lumberjack:
+    TabTitle: 'Unterseiten'

@@ -1,0 +1,10 @@
+sk:
+  GridFieldSiteTreeAddNewButton:
+    Add: 'Pridať {name}'
+  GridFieldSiteTreeState:
+    Draft: '<i class="btn-icon gridfield-icon btn-icon-pencil"></i> Uložený ako koncept: {date}'
+    Modified: zmenené
+    Published: '<i class="btn-icon gridfield-icon btn-icon-accept"></i> Publikovaný: {date}'
+    StateTitle: Stav
+  Lumberjack:
+    TabTitle: 'Podstránky'
