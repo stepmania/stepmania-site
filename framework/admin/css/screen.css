@@ -17,8 +17,8 @@ a img { border: none; }
 
 article, aside, details, figcaption, figure, footer, header, hgroup, main, menu, nav, section, summary { display: block; }
 
-/*$experimental-support-for-svg variable comes from 
-imported compass/support file and enables svg gradients in IE9. 
+/*$experimental-support-for-svg variable comes from
+imported compass/support file and enables svg gradients in IE9.
 It was put here because there didn't seem to be a more logical place to put it.
 If more variables exist in the future, consider creating a variables file.*/
 /** ----------------------------- Theme ------------------------------ */
@@ -346,8 +346,10 @@ form.small .field input.text, form.small .field textarea, form.small .field sele
 .cms .ss-ui-button[class*="font-icon-"].active, .cms .ss-ui-button[class*="font-icon-"]:active, .cms .ss-ui-button[class^="font-icon-"].active, .cms .ss-ui-button[class^="font-icon-"]:active, .cms .ss-ui-button.ss-ui-button-constructive[class*="font-icon-"].active, .cms .ss-ui-button.ss-ui-button-constructive[class*="font-icon-"]:active { -moz-box-shadow: 0 0 3px rgba(191, 194, 196, 0.9) inset; -webkit-box-shadow: 0 0 3px rgba(191, 194, 196, 0.9) inset; box-shadow: 0 0 3px rgba(191, 194, 196, 0.9) inset; background: #dee3e8; color: #4f5861; border: 0; }
 .cms .ss-ui-button[class*="font-icon-"] .ui-button-text, .cms .ss-ui-button[class^="font-icon-"] .ui-button-text, .cms .ss-ui-button.ss-ui-button-constructive[class*="font-icon-"] .ui-button-text { display: inline-block; vertical-align: middle; *vertical-align: auto; *zoom: 1; *display: inline; padding: 0; }
 .cms .ss-ui-button[class*="font-icon-"] .ui-icon, .cms .ss-ui-button[class^="font-icon-"] .ui-icon, .cms .ss-ui-button.ss-ui-button-constructive[class*="font-icon-"] .ui-icon { display: none; }
+.cms .ss-ui-button[class*="font-icon-"].no-text, .cms .ss-ui-button[class^="font-icon-"].no-text, .cms .ss-ui-button.ss-ui-button-constructive[class*="font-icon-"].no-text { padding: 5px 6px; color: #66727d; }
+.cms .ss-ui-button[class*="font-icon-"].no-text.active, .cms .ss-ui-button[class*="font-icon-"].no-text:active, .cms .ss-ui-button[class*="font-icon-"].no-text:focus, .cms .ss-ui-button[class*="font-icon-"].no-text:hover, .cms .ss-ui-button[class^="font-icon-"].no-text.active, .cms .ss-ui-button[class^="font-icon-"].no-text:active, .cms .ss-ui-button[class^="font-icon-"].no-text:focus, .cms .ss-ui-button[class^="font-icon-"].no-text:hover, .cms .ss-ui-button.ss-ui-button-constructive[class*="font-icon-"].no-text.active, .cms .ss-ui-button.ss-ui-button-constructive[class*="font-icon-"].no-text:active, .cms .ss-ui-button.ss-ui-button-constructive[class*="font-icon-"].no-text:focus, .cms .ss-ui-button.ss-ui-button-constructive[class*="font-icon-"].no-text:hover { background: none; box-shadow: none; color: #383f45; }
 .cms .ss-ui-buttonset .ui-button { margin-left: -1px; }
-.cms .ss-ui-buttonset { margin-left: 1px; }
+.cms .ss-ui-buttonset { margin: 0 8px 0 0; }
 .cms .ss-ui-loading-icon { background: url(../../images/network-save.gif) no-repeat; display: block; width: 16px; height: 16px; }
 
 /** ---------------------------------------------------- Grouped form fields ---------------------------------------------------- */
@@ -472,6 +474,8 @@ fieldset.switch-states.size_5 input:checked:nth-of-type(5) ~ .slide-button { lef
 .cms-content-filters .field .chzn-container { width: 100% !important; max-width: 100%; }
 .cms-content-filters .field input.text { max-width: 100%; }
 .cms-content-filters .field.checkbox { display: block; }
+.cms-content-filters .field.datetime > label.left { float: none; }
+.cms-content-filters .field.datetime input.fieldgroup-field { width: 96%; padding: 7px; }
 .cms-content-filters .importSpec { margin-bottom: 8px; padding-left: 16px; }
 .cms-content-filters .description { margin-left: 0; }
 .cms-content-filters .middleColumn { width: 100%; margin-left: 0; max-width: 100%; }
@@ -519,8 +523,11 @@ body.cms { overflow: hidden; }
 .cms-content-header h2 * { vertical-align: middle; }
 .cms-content-header .cms-content-header-info { float: left; padding-top: 7px; }
 .cms-content-header .cms-content-header-info * { display: inline-block; }
+.cms-content-header .cms-content-header-info .breadcrumbs-wrapper { vertical-align: middle; }
 .cms-content-header .cms-content-header-info .section-icon { opacity: 0.2; margin-right: 4px; background-repeat: no-repeat; }
 .cms-content-header .cms-content-header-info .cms_backlink { vertical-align: middle; }
+.cms-content-header .cms-content-header-info .cms_backlink .ss-ui-button { margin-bottom: 8px; margin-left: -8px; line-height: 22px; }
+.cms-content-header .cms-content-header-info .cms_backlink .ss-ui-button:before { margin-right: 0; font-size: 22px; }
 .cms-content-header .ss-ui-button { line-height: 24px; }
 .cms-content-header .ss-ui-button .ui-button-text { line-height: 1.4; }
 
@@ -563,8 +570,6 @@ body.cms { overflow: hidden; }
 .cms a.icon-button:hover, .cms .ui-tabs .ui-tabs-nav li a.icon-button:hover, .ui-tabs .ui-tabs-nav li .cms a.icon-button:hover, .cms a.icon-button:active, .cms .ui-tabs .ui-tabs-nav li a.icon-button:active, .ui-tabs .ui-tabs-nav li .cms a.icon-button:active, .cms a.icon-button:focus, .cms .ui-tabs .ui-tabs-nav li a.icon-button:focus, .ui-tabs .ui-tabs-nav li .cms a.icon-button:focus, .cms button.ss-ui-button.icon-button:hover, .cms button.ss-ui-button.icon-button:active, .cms button.ss-ui-button.icon-button:focus { border: 0; box-shadow: none; background-image: none; text-decoration: none; }
 .cms a.icon-button:hover, .cms .ui-tabs .ui-tabs-nav li a.icon-button:hover, .ui-tabs .ui-tabs-nav li .cms a.icon-button:hover, .cms button.ss-ui-button.icon-button:hover { background-color: #d4dbe1; }
 .cms a.icon-button.active, .cms .ui-tabs .ui-tabs-nav li a.active.icon-button, .ui-tabs .ui-tabs-nav li .cms a.active.icon-button, .cms a.icon-button:active, .cms .ui-tabs .ui-tabs-nav li a.icon-button:active, .ui-tabs .ui-tabs-nav li .cms a.icon-button:active, .cms button.ss-ui-button.icon-button.active, .cms button.ss-ui-button.icon-button:active { background-color: #d4dbe1; }
-.cms a.icon-button.font-icon-search, .cms .ui-tabs .ui-tabs-nav li a.font-icon-search.icon-button, .ui-tabs .ui-tabs-nav li .cms a.font-icon-search.icon-button, .cms button.ss-ui-button.icon-button.font-icon-search { padding: 5px 6px; color: #66727d; }
-.cms a.icon-button.font-icon-search.active, .cms a.icon-button.font-icon-search:active, .cms a.icon-button.font-icon-search:focus, .cms a.icon-button.font-icon-search:hover, .cms button.ss-ui-button.icon-button.font-icon-search.active, .cms button.ss-ui-button.icon-button.font-icon-search:active, .cms button.ss-ui-button.icon-button.font-icon-search:focus, .cms button.ss-ui-button.icon-button.font-icon-search:hover { background: none; box-shadow: none; color: #383f45; }
 .cms a.icon-button.font-icon-search:before, .cms button.ss-ui-button.icon-button.font-icon-search:before { font-size: 18px; margin-left: 1px; margin-right: 0; }
 .cms a.icon-button .ui-button-text, .cms .ui-tabs .ui-tabs-nav li a.icon-button .ui-button-text, .ui-tabs .ui-tabs-nav li .cms a.icon-button .ui-button-text, .cms button.ss-ui-button.icon-button .ui-button-text { display: none; }
 .ModelAdmin .cms a.icon-button, .ModelAdmin .cms .ui-tabs .ui-tabs-nav li a.icon-button, .ui-tabs .ui-tabs-nav li .ModelAdmin .cms a.icon-button, .ModelAdmin .cms button.ss-ui-button.icon-button { margin-top: -11px; }
@@ -958,7 +963,7 @@ form.import-form label.left { width: 250px; }
 /** -------------------------------------------- Hide preview toggle link by default. May be shown  in IE7 stylesheet and forced to show with js if needed -------------------------------------------- */
 .cms .Actions > .cms-preview-toggle-link, .cms .cms-navigator > .cms-preview-toggle-link { display: none; }
 
-/** This file defines the jstree base styling (see http://jstree.com), as well as any customizations (see bottom of file).  The styles are usually added through jstree.js on DOM load,  but we need it earlier in order to correctly display the uninitialized tree. */
+/** This file defines the jstree base styling (see http://jstree.com), as well as any customizations (see bottom of file).  The styles are usually added through jstree.js on DOM load, but we need it earlier in order to correctly display the uninitialized tree. */
 .cms .jstree > ul > li, .TreeDropdownField .treedropdownfield-panel .jstree > ul > li { margin-left: 0px; }
 .cms .jstree ul, .cms .jstree li, .TreeDropdownField .treedropdownfield-panel .jstree ul, .TreeDropdownField .treedropdownfield-panel .jstree li { display: block; margin: 0; padding: 0; background: none; list-style-type: none; }
 .cms .jstree li, .TreeDropdownField .treedropdownfield-panel .jstree li { min-height: 18px; line-height: 25px; white-space: nowrap; margin-left: 18px; min-width: 18px; }
@@ -1130,7 +1135,7 @@ li.class-ErrorPage > a .jstree-pageicon { background-position: 0 -112px; }
 .cms-tree a.jstree-loading .jstree-icon { background-image: none !important; }
 .cms-tree a.jstree-loading .jstree-pageicon { background: url(../images/throbber.gif) top left no-repeat; }
 
-/** Styles for the left hand side menu and header for the admin panels.  Take into consideration CSS selector performance.   @package framework @subpackage admin */
+/** Styles for the left hand side menu and header for the admin panels.  Take into consideration CSS selector performance.  @package framework @subpackage admin */
 .cms-logo-header { position: relative !important; top: auto !important; height: auto !important; padding: 0 8px; line-height: 24px; background-color: #22385b; background-image: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4gPHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJncmFkIiBncmFkaWVudFVuaXRzPSJvYmplY3RCb3VuZGluZ0JveCIgeDE9IjAuNSIgeTE9IjAuMCIgeDI9IjAuNSIgeTI9IjEuMCI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzMwNGU4MCIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzE0MjEzNiIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JhZCkiIC8+PC9zdmc+IA=='); background-size: 100%; background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #304e80), color-stop(100%, #142136)); background-image: -moz-linear-gradient(#304e80, #142136); background-image: -webkit-linear-gradient(#304e80, #142136); background-image: linear-gradient(#304e80, #142136); }
 .cms-logo-header span { color: white; display: block; padding-left: 26px; }
 .cms-logo-header span a { color: #3EBAE0; display: inline; }
@@ -1272,22 +1277,22 @@ li.class-ErrorPage > a .jstree-pageicon { background-position: 0 -112px; }
 /********************************************
 * Defines the styles for .ss-ui-action-tabset:
 * * Site tree action tabs (to perform actions on the site tree)
-* * Actions menu (Edit page actions) 
+* * Actions menu (Edit page actions)
 *
 * Reliant on TabSet.js to apply and remove some classes.
 *
-* Note: This is a special use case of tabs, so the default tab 
-* styling should not apply 
+* Note: This is a special use case of tabs, so the default tab
+* styling should not apply
 *
 **********************************************/
 .cms .ss-ui-action-tabset { float: left; position: relative; /*
-	Styles for the tab-nav of the site tree implementation 
-	of ss-ui-action-tabset 
+	Styles for the tab-nav of the site tree implementation
+	of ss-ui-action-tabset
 */ /* position a checkbox & icon within a tab */ /* Styles for the cms-actions in tree view, to use more limited space.
-Title hidden in tree view, until hover/active state added. Active is applied 
-to the first tab within the template, so there should always be one title 
+Title hidden in tree view, until hover/active state added. Active is applied
+to the first tab within the template, so there should always be one title
 visible. Added and removed with js in TabSet.js  */ /****************************************************************
-	Styles for the actions-menu implementation 
+	Styles for the actions-menu implementation
 	of ss-ui-action-tabset
 ****************************************************************/ }
 .cms .ss-ui-action-tabset.multi { /* Style the tab panels */ }
@@ -1309,7 +1314,7 @@ visible. Added and removed with js in TabSet.js  */ /***************************
 .cms .ss-ui-action-tabset.multi .ss-ui-action-tab.ui-tabs-panel h3 { font-size: 13px; }
 .cms .ss-ui-action-tabset.multi .ss-ui-action-tab.ui-tabs-panel h4 { font-size: 12px; margin: 5px 0; }
 .cms .ss-ui-action-tabset.multi .ss-ui-action-tab.ui-tabs-panel .ui-widget-content { background: none; }
-.cms .ss-ui-action-tabset.multi .ss-ui-action-tab.ui-tabs-panel .field { /*  Fields are more compressed in some areas compared to the main content editing window so the below alters the internal spacing of the fields so we can move that spacing to between the form fields rather than padding */ border-bottom: none; -moz-box-shadow: none; -webkit-box-shadow: none; box-shadow: none; }
+.cms .ss-ui-action-tabset.multi .ss-ui-action-tab.ui-tabs-panel .field { /* Fields are more compressed in some areas compared to the main content editing window so the below alters the internal spacing of the fields so we can move that spacing to between the form fields rather than padding */ border-bottom: none; -moz-box-shadow: none; -webkit-box-shadow: none; box-shadow: none; }
 .cms .ss-ui-action-tabset.multi .ss-ui-action-tab.ui-tabs-panel .field label { float: none; width: auto; font-size: 12px; padding: 0 8px 4px 0; }
 .cms .ss-ui-action-tabset.multi .ss-ui-action-tab.ui-tabs-panel .field label.extra-details { overflow: hidden; margin-top: 10px; display: block; color: #a9b1b9; font-style: italic; font-weight: normal; font-size: 1em; float: left; text-shadow: none; }
 .cms .ss-ui-action-tabset.multi .ss-ui-action-tab.ui-tabs-panel .field label.extra-details.fill:before { color: #fff; content: '?'; font-size: 12px; -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; padding-left: 3px; padding-right: 3px; display: block; float: left; text-shadow: none; -moz-border-radius: 50px; -webkit-border-radius: 50px; border-radius: 50px; background-color: #c5cbd0; width: 15px; height: 15px; margin-right: 5px; margin-bottom: 5px; }
@@ -1366,7 +1371,7 @@ visible. Added and removed with js in TabSet.js  */ /***************************
 .cms .ss-ui-action-tabset.action-menus.ss-tabset .ui-tabs-panel h3 { font-size: 13px; }
 .cms .ss-ui-action-tabset.action-menus.ss-tabset .ui-tabs-panel h4 { font-size: 12px; margin: 5px 0; }
 .cms .ss-ui-action-tabset.action-menus.ss-tabset .ui-tabs-panel .ui-widget-content { background: none; }
-.cms .ss-ui-action-tabset.action-menus.ss-tabset .ui-tabs-panel .field { /*  Fields are more compressed in some areas compared to the main content editing window so the below alters the internal spacing of the fields so we can move that spacing to between the form fields rather than padding */ border-bottom: none; -moz-box-shadow: none; -webkit-box-shadow: none; box-shadow: none; }
+.cms .ss-ui-action-tabset.action-menus.ss-tabset .ui-tabs-panel .field { /* Fields are more compressed in some areas compared to the main content editing window so the below alters the internal spacing of the fields so we can move that spacing to between the form fields rather than padding */ border-bottom: none; -moz-box-shadow: none; -webkit-box-shadow: none; box-shadow: none; }
 .cms .ss-ui-action-tabset.action-menus.ss-tabset .ui-tabs-panel .field label { float: none; width: auto; font-size: 12px; padding: 0 8px 4px 0; }
 .cms .ss-ui-action-tabset.action-menus.ss-tabset .ui-tabs-panel .field label.extra-details { overflow: hidden; margin-top: 10px; display: block; color: #a9b1b9; font-style: italic; font-weight: normal; font-size: 1em; float: left; text-shadow: none; }
 .cms .ss-ui-action-tabset.action-menus.ss-tabset .ui-tabs-panel .field label.extra-details.fill:before { color: #fff; content: '?'; font-size: 12px; -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; padding-left: 3px; padding-right: 3px; display: block; float: left; text-shadow: none; -moz-border-radius: 50px; -webkit-border-radius: 50px; border-radius: 50px; background-color: #c5cbd0; width: 15px; height: 15px; margin-right: 5px; margin-bottom: 5px; }
@@ -1405,7 +1410,7 @@ visible. Added and removed with js in TabSet.js  */ /***************************
 .permissioncheckboxset .optionset, .permissioncheckboxsetfield_readonly .optionset { overflow: auto; }
 .permissioncheckboxset .optionset li, .permissioncheckboxsetfield_readonly .optionset li { float: none; width: auto; clear: both; }
 
-/* For user permissions the readonly checkboxes are set as display none and are replaced with a <span> that has a 
+/* For user permissions the readonly checkboxes are set as display none and are replaced with a <span> that has a
 green tick icon as a background this is created using compass generated classes and hardcoded in the php */
 .permissioncheckboxsetfield_readonly .optionset li.odd, .permissioncheckboxsetfield_readonly .optionset li.even { margin-left: 16px; }
 .permissioncheckboxsetfield_readonly .optionset li.help { width: 384px; }
@@ -1441,6 +1446,15 @@ green tick icon as a background this is created using compass generated classes 
   .ui-dialog.loading { background-image: url(../images/spinner@2x.gif); background-size: 43px 43px; }
   /* Default CMS logo */
   .cms-logo a { background-image: url("../images/logo_small@2x.png"); background-size: 22px 22px; }
+  /* Logout button */
+  .cms-login-status .logout-link { background-image: url('../images/sprites-32x32-2x-s6ccfbe50f9.png'); background-position: 0 -184px; background-size: 30px auto; }
+  .cms-content-controls .icon-auto:before { background-image: url('../images/sprites-32x32-2x-s6ccfbe50f9.png'); background-position: 0 -274px; background-size: 30px auto; }
+  .cms-content-controls .icon-desktop:before { background-image: url('../images/sprites-32x32-2x-s6ccfbe50f9.png'); background-position: 0 -301px; background-size: 30px auto; }
+  .cms-content-controls .icon-tablet:before { background-image: url('../images/sprites-32x32-2x-s6ccfbe50f9.png'); background-position: 0 -436px; background-size: 30px auto; }
+  .cms-content-controls .icon-mobile:before { background-image: url('../images/sprites-32x32-2x-s6ccfbe50f9.png'); background-position: 0 -355px; background-size: 30px auto; }
+  .cms-content-controls .icon-split:before { background-image: url('../images/sprites-32x32-2x-s6ccfbe50f9.png'); background-position: 0 -409px; background-size: 30px auto; }
+  .cms-content-controls .icon-edit:before { background-image: url('../images/sprites-32x32-2x-s6ccfbe50f9.png'); background-position: 0 -328px; background-size: 30px auto; }
+  .cms-content-controls .icon-preview:before { background-image: url('../images/sprites-32x32-2x-s6ccfbe50f9.png'); background-position: 0 -382px; background-size: 30px auto; }
   .cms .ss-ui-action-tabset.action-menus.ss-tabset ul.ui-tabs-nav li a:after { background-image: url('../images/sprites-32x32-2x-s6ccfbe50f9.png'); background-position: 0 -26px; background-size: 30px auto; }
   .cms .ss-ui-action-tabset.action-menus.ss-tabset ul.ui-tabs-nav li a:hover:after { background-image: url('../images/sprites-32x32-2x-s6ccfbe50f9.png'); background-position: 0 0; background-size: 30px auto; }
   .cms .ss-ui-action-tabset.action-menus.ss-tabset ul.ui-tabs-nav li.ui-state-active a:after { background-image: url('../images/sprites-32x32-2x-s6ccfbe50f9.png'); background-position: 0 -78px; background-size: 30px auto; }

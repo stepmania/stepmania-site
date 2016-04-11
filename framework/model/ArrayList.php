@@ -448,7 +448,7 @@ class ArrayList extends ViewableData implements SS_List, SS_Filterable, SS_Sorta
 		}
 
 		$multisortArgs[] = &$originalKeys;
-		
+
 		$list = clone $this;
 		// As the last argument we pass in a reference to the items that all the sorting will be applied upon
 		$multisortArgs[] = &$list->items;
@@ -548,7 +548,7 @@ class ArrayList extends ViewableData implements SS_List, SS_Filterable, SS_Sorta
 			));
 		}
 
-		$output = ArrayList::create();
+		$output = static::create();
 
 		foreach($this as $item) {
 			if(call_user_func($callback, $item, $this)) $output->push($item);

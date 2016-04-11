@@ -385,20 +385,22 @@ class GridFieldDetailForm_ItemRequest extends RequestHandler {
 				$actions->push(new LiteralField('cancelbutton', $text));
 			}
 		}
+		
+		// If we are creating a new record in a has-many list, then
+		// pre-populate the record's foreign key.
+		if($list instanceof HasManyList && !$this->record->isInDB()) {
+			$key = $list->getForeignKey();
+			$id = $list->getForeignID();
+			$this->record->$key = $id;
+		}
 
 		$fields = $this->component->getFields();
 		if(!$fields) $fields = $this->record->getCMSFields();
 
 		// If we are creating a new record in a has-many list, then
-		// pre-populate the record's foreign key. Also disable the form field as
-		// it has no effect.
+		// Disable the form field as it has no effect.
 		if($list instanceof HasManyList) {
 			$key = $list->getForeignKey();
-			$id = $list->getForeignID();
-
-			if(!$this->record->isInDB()) {
-				$this->record->$key = $id;
-			}
 
 			if($field = $fields->dataFieldByName($key)) {
 				$fields->makeFieldReadonly($field);
@@ -495,14 +497,14 @@ class GridFieldDetailForm_ItemRequest extends RequestHandler {
 
 		return $backlink;
 	}
-	
+
 	/**
 	 * Get the list of extra data from the $record as saved into it by
 	 * {@see Form::saveInto()}
-	 * 
+	 *
 	 * Handles detection of falsey values explicitly saved into the
 	 * DataObject by formfields
-	 * 
+	 *
 	 * @param DataObject $record
 	 * @param SS_List $list
 	 * @return array List of data to write to the relation
@@ -512,7 +514,7 @@ class GridFieldDetailForm_ItemRequest extends RequestHandler {
 		if(!($list instanceof ManyManyList)) {
 			return null;
 		}
-		
+
 		$data = array();
 		foreach($list->getExtraFields() as $field => $dbSpec) {
 			$savedField = "ManyMany[{$field}]";
@@ -565,8 +567,8 @@ class GridFieldDetailForm_ItemRequest extends RequestHandler {
 
 		// TODO Save this item into the given relationship
 
-		$link = '<a href="' . $this->Link('edit') . '">"' 
-			. htmlspecialchars($this->record->Title, ENT_QUOTES) 
+		$link = '<a href="' . $this->Link('edit') . '">"'
+			. htmlspecialchars($this->record->Title, ENT_QUOTES)
 			. '"</a>';
 		$message = _t(
 			'GridFieldDetailForm.Saved',
@@ -678,8 +680,9 @@ class GridFieldDetailForm_ItemRequest extends RequestHandler {
 
 		$items = $this->popupController->Breadcrumbs($unlinked);
 		if($this->record && $this->record->ID) {
+			$title = ($this->record->Title) ? $this->record->Title : "#{$this->record->ID}";
 			$items->push(new ArrayData(array(
-				'Title' => $this->record->Title,
+				'Title' => $title,
 				'Link' => $this->Link()
 			)));
 		} else {

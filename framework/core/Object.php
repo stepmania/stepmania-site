@@ -816,7 +816,9 @@ abstract class Object {
 		}
 
 		if(method_exists($extension, 'allMethodNames')) {
+			if ($extension instanceof Extension) $extension->setOwner($this);
 			$methods = $extension->allMethodNames(true);
+			if ($extension instanceof Extension) $extension->clearOwner();
 
 		} else {
 			if(!isset(self::$built_in_methods[$extension->class])) {
@@ -970,7 +972,7 @@ abstract class Object {
 
 		if(!empty($this->beforeExtendCallbacks[$method])) {
 			foreach(array_reverse($this->beforeExtendCallbacks[$method]) as $callback) {
-				$value = call_user_func($callback, $a1, $a2, $a3, $a4, $a5, $a6, $a7);
+				$value = call_user_func_array($callback, array(&$a1, &$a2, &$a3, &$a4, &$a5, &$a6, &$a7));
 				if($value !== null) $values[] = $value;
 			}
 			$this->beforeExtendCallbacks[$method] = array();
@@ -987,7 +989,7 @@ abstract class Object {
 
 		if(!empty($this->afterExtendCallbacks[$method])) {
 			foreach(array_reverse($this->afterExtendCallbacks[$method]) as $callback) {
-				$value = call_user_func($callback, $a1, $a2, $a3, $a4, $a5, $a6, $a7);
+				$value = call_user_func_array($callback, array(&$a1, &$a2, &$a3, &$a4, &$a5, &$a6, &$a7));
 				if($value !== null) $values[] = $value;
 			}
 			$this->afterExtendCallbacks[$method] = array();

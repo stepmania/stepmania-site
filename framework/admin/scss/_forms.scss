@@ -52,12 +52,12 @@ form.nostyle {
 		clear:none;
 	}
 	label {
-	  &.left {
-	    float: left;
-	    display: block;
-	    width: $grid-x * 22;
-	    padding: $grid-y $grid-x $grid-y 0;
-	    line-height: $grid-y * 2;
+		&.left {
+			float: left;
+			display: block;
+			width: $grid-x * 22;
+			padding: $grid-y $grid-x $grid-y 0;
+			line-height: $grid-y * 2;
 		}
 		&.right {
 			cursor: pointer;
@@ -638,6 +638,20 @@ form.small .field, .field.small {
 			.ui-icon {
 				display: none;
 			}
+			
+			&.no-text {
+				padding: 5px 6px;
+				color: lighten($color-text, 10%);
+				
+				&.active,
+				&:active,
+				&:focus,
+				&:hover {
+					background: none;
+					box-shadow: none;
+					color: darken($color-text, 10%);
+				}
+			}
 		}
 	}
 
@@ -648,7 +662,7 @@ form.small .field, .field.small {
 	}
 
 	.ss-ui-buttonset {
-		margin-left: 1px;
+		margin: 0 $grid-x 0 0;
 	}
 
 	.ss-ui-loading-icon {
@@ -1066,6 +1080,17 @@ fieldset.switch-states{
 
 		&.checkbox {
 			display: block;
+		}
+
+		&.datetime {
+			> label.left {
+				float: none;
+			}
+
+			input.fieldgroup-field {
+				width: 96%;
+				padding: 7px;
+			}
 		}
 	}
 

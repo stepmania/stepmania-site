@@ -946,7 +946,7 @@ class UploadField extends FileField {
 			$config['maxFileSize'] = $allowedMaxFileSize;
 			$config['errorMessages']['maxFileSize'] = _t(
 				'File.TOOLARGESHORT',
-				'Filesize exceeds {size}',
+				'File size exceeds {size}',
 				array('size' => File::format_size($config['maxFileSize']))
 			);
 		}
@@ -1437,7 +1437,7 @@ class UploadField_ItemHandler extends RequestHandler {
 		if(!$file) return $this->httpError(404);
 		if($file instanceof Folder) return $this->httpError(403);
 		if(!$file->canEdit()) return $this->httpError(403);
-		
+
 		// Get form components
 		$fields = $this->parent->getFileEditFields($file);
 		$actions = $this->parent->getFileEditActions($file);
@@ -1497,6 +1497,14 @@ class UploadField_SelectHandler extends RequestHandler {
 	 * @var string
 	 */
 	protected $folderName;
+
+	/**
+	 * Set pagination quantity for file list field
+	 *
+	 * @config
+	 * @var int
+	 */
+	private static $page_size = 11; 
 
 	private static $url_handlers = array(
 		'$Action!' => '$Action',
@@ -1580,7 +1588,10 @@ class UploadField_SelectHandler extends RequestHandler {
 		$colsComponent->setFieldCasting(array(
 			'Created' => 'SS_Datetime->Nice'
 		));
-		$config->addComponent(new GridFieldPaginator(11));
+
+ 		// Set configurable pagination for file list field  
+		$pageSize = Config::inst()->get(get_class($this), 'page_size');
+		$config->addComponent(new GridFieldPaginator($pageSize));
 
 		// If relation is to be autoset, we need to make sure we only list compatible objects.
 		$baseClass = $this->parent->getRelationAutosetClass();

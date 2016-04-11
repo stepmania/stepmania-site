@@ -347,8 +347,8 @@ class DataList extends ViewableData implements SS_List, SS_Filterable, SS_Sortab
 	 *
 	 * @example $list = $list->filter('Name', 'bob'); // only bob in the list
 	 * @example $list = $list->filter('Name', array('aziz', 'bob'); // aziz and bob in list
-	 * @example $list = $list->filter(array('Name'=>'bob, 'Age'=>21)); // bob with the age 21
-	 * @example $list = $list->filter(array('Name'=>'bob, 'Age'=>array(21, 43))); // bob with the Age 21 or 43
+	 * @example $list = $list->filter(array('Name'=>'bob', 'Age'=>21)); // bob with the age 21
+	 * @example $list = $list->filter(array('Name'=>'bob', 'Age'=>array(21, 43))); // bob with the Age 21 or 43
 	 * @example $list = $list->filter(array('Name'=>array('aziz','bob'), 'Age'=>array(21, 43)));
 	 *          // aziz with the age 21 or 43 and bob with the Age 21 or 43
 	 *
@@ -916,7 +916,9 @@ class DataList extends ViewableData implements SS_List, SS_Filterable, SS_Sortab
 
 	/**
 	 * Returns an array with both the keys and values set to the IDs of the records in this list.
+	 * Does not respect sort order. Use ->column("ID") to get an ID list with the current sort.
 	 *
+	 * @return array
 	 */
 	public function getIDList() {
 		$ids = $this->column("ID");

@@ -19,7 +19,7 @@ class FormTest extends FunctionalTest {
 		Config::inst()->update('Director', 'rules', array(
 			'FormTest_Controller' => 'FormTest_Controller'
 		));
-		
+
 		// Suppress themes
 		Config::inst()->remove('SSViewer', 'theme');
 	}
@@ -179,6 +179,34 @@ class FormTest extends FunctionalTest {
 		);
 	}
 
+	public function testLookupFieldDisabledSaving() {
+		$object = new DataObjectTest_Team();
+		$form = new Form(
+			new Controller(),
+			'Form',
+			new FieldList(
+				new LookupField('Players', 'Players')
+			),
+			new FieldList()
+		);
+		$form->loadDataFrom(array(
+			'Players' => array(
+				14,
+				18,
+				22
+			),
+		));
+		$form->saveInto($object);
+		$playersIds = $object->Players()->getIDList();
+
+		$this->assertTrue($form->validate());
+		$this->assertEquals(
+			$playersIds,
+			array(),
+			'saveInto() should not save into the DataObject for the LookupField'
+		);
+	}
+
 	public function testLoadDataFromIgnoreFalseish() {
 		$form = new Form(
 			new Controller(),
@@ -324,7 +352,7 @@ class FormTest extends FunctionalTest {
 	public function testDisableSecurityTokenAcceptsSubmissionWithoutToken() {
 		SecurityToken::enable();
 		$expectedToken = SecurityToken::inst()->getValue();
-		
+
 		$response = $this->get('FormTest_ControllerWithSecurityToken');
 		// can't use submitForm() as it'll automatically insert SecurityID into the POST data
 		$response = $this->post(
@@ -622,7 +650,7 @@ class FormTest extends FunctionalTest {
         $formData = $form->getData();
         $this->assertEmpty($formData['ExtraFieldCheckbox']);
     }
-	
+
 	protected function getStubForm() {
 		return new Form(
 			new FormTest_Controller(),

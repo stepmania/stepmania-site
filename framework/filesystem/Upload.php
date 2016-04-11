@@ -128,7 +128,7 @@ class Upload extends Controller {
 		}
 
 		if(!$tmpFile['size']) {
-			$this->errors[] = _t('File.NOFILESIZE', 'Filesize is zero bytes.');
+			$this->errors[] = _t('File.NOFILESIZE', 'File size is zero bytes.');
 			return false;
 		}
 
@@ -210,10 +210,10 @@ class Upload extends Controller {
 			$this->file->Name = basename($relativeFilePath);
 			$this->file->write();
 			$this->file->onAfterUpload();
-			$this->extend('onAfterLoad', $this->file);   //to allow extensions to e.g. create a version after an upload
+			$this->extend('onAfterLoad', $this->file, $tmpFile);   //to allow extensions to e.g. create a version after an upload
 			return true;
 		} else {
-			$this->errors[] = _t('File.NOFILESIZE', 'Filesize is zero bytes.');
+			$this->errors[] = _t('File.NOFILESIZE', 'File size is zero bytes.');
 			return false;
 		}
 	}
@@ -391,7 +391,7 @@ class Upload_Validator {
 	 * @return int Filesize in bytes
 	 */
 	public function getAllowedMaxFileSize($ext = null) {
-		
+
 		// Check if there is any defined instance max file sizes
 		if (empty($this->allowedMaxFileSize)) {
 			// Set default max file sizes if there isn't
@@ -405,18 +405,18 @@ class Upload_Validator {
 				$this->setAllowedMaxFileSize(min($maxUpload, $maxPost));
 			}
 		}
-		
+
 		$ext = strtolower($ext);
 		if ($ext) {
 			if (isset($this->allowedMaxFileSize[$ext])) {
 				return $this->allowedMaxFileSize[$ext];
 			}
-			
+
 			$category = File::get_app_category($ext);
 			if ($category && isset($this->allowedMaxFileSize['[' . $category . ']'])) {
 				return $this->allowedMaxFileSize['[' . $category . ']'];
 			}
-			
+
 			return false;
 		} else {
 			return (isset($this->allowedMaxFileSize['*'])) ? $this->allowedMaxFileSize['*'] : false;
@@ -441,17 +441,17 @@ class Upload_Validator {
 			$rules = array_change_key_case($rules, CASE_LOWER);
 			$finalRules = array();
 			$tmpSize = 0;
-			
+
 			foreach ($rules as $rule => $value) {
 				if (is_numeric($value)) {
 					$tmpSize = $value;
 				} else {
 					$tmpSize = File::ini2bytes($value);
 				}
-			
+
 				$finalRules[$rule] = (int)$tmpSize;
 			}
-			
+
 			$this->allowedMaxFileSize = $finalRules;
 		} elseif(is_string($rules)) {
 			$this->allowedMaxFileSize['*'] = File::ini2bytes($rules);
@@ -540,8 +540,8 @@ class Upload_Validator {
 			$arg = File::format_size($this->getAllowedMaxFileSize($ext));
 			$this->errors[] = _t(
 				'File.TOOLARGE',
-				'Filesize is too large, maximum {size} allowed',
-				'Argument 1: Filesize (e.g. 1MB)',
+				'File size is too large, maximum {size} allowed',
+				'Argument 1: File size (e.g. 1MB)',
 				array('size' => $arg)
 			);
 			return false;

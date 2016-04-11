@@ -444,6 +444,9 @@ class LeftAndMain extends Controller implements PermissionProvider {
 		// The user's theme shouldn't affect the CMS, if, for example, they have
 		// replaced TableListField.ss or Form.ss.
 		Config::inst()->update('SSViewer', 'theme_enabled', false);
+
+		//set the reading mode for the admin to stage
+		Versioned::reading_stage('Stage');
 	}
 
 	public function handleRequest(SS_HTTPRequest $request, DataModel $model = null) {
@@ -1298,7 +1301,9 @@ class LeftAndMain extends Controller implements PermissionProvider {
 				// The clientside (mainly LeftAndMain*.js) rely on ajax responses
 				// which can be evaluated as javascript, hence we need
 				// to override any global changes to the validation handler.
-				$form->setValidator($validator);
+				if($validator != NULL){
+					$form->setValidator($validator);
+				}
 			} else {
 				$form->unsetValidator();
 			}

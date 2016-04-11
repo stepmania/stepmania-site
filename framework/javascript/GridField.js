@@ -149,7 +149,39 @@
 
 				this.getGridField().reload({data: [{name: this.attr('name'), value: this.val(), filter: filterState}]});
 				e.preventDefault();
+			},
+			/**
+			 * Get the url this action should submit to
+			 */
+			actionurl: function() {
+				var btn = this.closest(':button'), grid = this.getGridField(),
+					form = this.closest('form'), data = form.find(':input.gridstate').serialize(),
+					csrf = form.find('input[name="SecurityID"]').val();
+
+				// Add current button
+				data += "&" + encodeURIComponent(btn.attr('name')) + '=' + encodeURIComponent(btn.val());
+
+				// Add csrf
+				if(csrf) {
+					data += "&SecurityID=" + encodeURIComponent(csrf);
 			}
+
+				// Include any GET parameters from the current URL, as the view
+				// state might depend on it. For example, a list pre-filtered
+				// through external search criteria might be passed to GridField.
+				if(window.location.search) {
+					data = window.location.search.replace(/^\?/, '') + '&' + data;
+				}
+
+				// decide whether we should use ? or & to connect the URL
+				var connector = grid.data('url').indexOf('?') == -1 ? '?' : '&';
+
+				return $.path.makeUrlAbsolute(
+					grid.data('url') + connector + data,
+					$('base').attr('href')
+				);
+			}
+
 		});
 
 		/**
@@ -202,30 +234,9 @@
 				this._super();
 			},
 			onclick: function(e){
-				var btn = this.closest(':button'), grid = this.getGridField(),
-					form = this.closest('form'), data = form.find(':input.gridstate').serialize();;
-
-				// Add current button
-				data += "&" + encodeURIComponent(btn.attr('name')) + '=' + encodeURIComponent(btn.val());
-
-				// Include any GET parameters from the current URL, as the view
-				// state might depend on it.
-				// For example, a list prefiltered through external search criteria
-				// might be passed to GridField.
-				if(window.location.search) {
-					data = window.location.search.replace(/^\?/, '') + '&' + data;
-				}
-
-				// decide whether we should use ? or & to connect the URL
-				var connector = grid.data('url').indexOf('?') == -1 ? '?' : '&';
-
-				var url = $.path.makeUrlAbsolute(
-					grid.data('url') + connector + data,
-					$('base').attr('href')
-				);
-
-				var newWindow = window.open(url);
-
+				var url = this.actionurl();
+				window.open(url);
+				e.preventDefault();
 				return false;
 			}
 		});
@@ -253,27 +264,8 @@
 		 */
 		$('.ss-gridfield .action.no-ajax').entwine({
 			onclick: function(e){
-				var self = this, btn = this.closest(':button'), grid = this.getGridField(), 
-					form = this.closest('form'), data = form.find(':input.gridstate').serialize();
-
-				// Add current button
-				data += "&" + encodeURIComponent(btn.attr('name')) + '=' + encodeURIComponent(btn.val());
-
-				// Include any GET parameters from the current URL, as the view
-				// state might depend on it. For example, a list pre-filtered
-				// through external search criteria might be passed to GridField.
-				if(window.location.search) {
-					data = window.location.search.replace(/^\?/, '') + '&' + data;
-				}
-
-				// decide whether we should use ? or & to connect the URL
-				var connector = grid.data('url').indexOf('?') == -1 ? '?' : '&';
-
-				window.location.href = $.path.makeUrlAbsolute(
-					grid.data('url') + connector + data,
-					$('base').attr('href')
-				);
-
+				window.location.href = this.actionurl();
+				e.preventDefault();
 				return false;
 			}
 		});
