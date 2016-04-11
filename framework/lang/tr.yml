@@ -47,6 +47,8 @@ tr:
     ERRORNOTREC: 'Kullanıcı adı / şifre hatalı'
   Boolean:
     ANY: Herhangi
+    NOANSWER: 'Hayır'
+    YESANSWER: 'Evet'
   CMSMain:
     ACCESSALLINTERFACES: 'Tüm İYS arayüzlerine erişim'
     SAVE: Kaydet
@@ -56,6 +58,9 @@ tr:
     EMAIL: E-Posta
     HELLO: Merhaba
     PASSWORD: Parola
+  CheckboxField:
+    NOANSWER: 'Hayır'
+    YESANSWER: 'Evet'
   ConfirmedPasswordField:
     SHOWONCLICKTITLE: 'Parola Değiştir'
   CreditCardField:
@@ -87,6 +92,7 @@ tr:
     TEXT2: 'şifre sıfırlama linki'
     TEXT3: için
   Form:
+    SubmitBtnLabel: Başla
     VALIDATIONNOTUNIQUE: 'Girilen değer benzersiz olmalıdır'
     VALIDATIONPASSWORDSDONTMATCH: 'Şifre tekrarı hatalı'
     VALIDATIONPASSWORDSNOTEMPTY: 'Şifreler boş geçilemez'
@@ -104,10 +110,10 @@ tr:
     has_many_Permissions: İzinler
     many_many_Members: Üyeler
   HtmlEditorField:
-    ANCHORVALUE: Anchor(çapa)
+    ANCHORVALUE: Çapa
     BUTTONINSERTLINK: 'Bağlantı ekle'
     BUTTONREMOVELINK: 'Bağlantıyı sil'
-    CSSCLASS: 'Hizalama / stil'
+    CSSCLASS: 'Hizalama / biçem'
     CSSCLASSCENTER: 'Ortalanmış, kendi başına'
     CSSCLASSLEFT: 'Sol tarafta, metin ile çevrili.'
     CSSCLASSLEFTALONE: 'Solda, kendisinde.'
@@ -119,7 +125,7 @@ tr:
     IMAGEHEIGHTPX: Yükseklik
     IMAGEWIDTHPX: Genişlik
     LINK: 'Link'
-    LINKANCHOR: 'Bu sayfadaki Anchor(çapa)'
+    LINKANCHOR: 'Bu sayfadaki çapa'
     LINKDESCR: 'Bağlantı açıklaması'
     LINKEMAIL: 'Eposta adresi'
     LINKEXTERNAL: 'Başka bir sitedeki sayfa (dış bağlantı)'
@@ -133,15 +139,11 @@ tr:
   LeftAndMain:
     DELETED: Silinmiş.
     HELP: Yardım
-    PAGETYPE: 'Sayfa tipi:'
     PERMAGAIN: 'İYS yönetiminden çıkış yaptınız.  Eğer tekrar giriş yapmak isterseniz, aşağıya kullanıcı adı ve şifrenizi giriniz.'
-    PERMALREADY: 'Üzgünüm ama İYS''nin bu bölümüne erişim hakkınız yok. Başka bir kullanıcı olarak giriş yapmak istiyorsanız aşağıdan bunu yapabilirsiniz'
-    PERMDEFAULT: 'İYS erişimi için eposta adresinizi ve parolanızı giriniz.e kolaylık sağlama'
-    PLEASESAVE: 'Lütfen Sayfayı Kaydedin: Bu sayfa henüz kaydedilmediği için güncellenemedi.'
     PreviewButton: Önizleme
-    SAVEDUP: Kaydedilmiş.
+    SAVEDUP: Kaydedildi.
   LoginAttempt:
-    Email: 'Eposta Adresi'
+    Email: 'E-posta Adresi'
     IP: 'IP Adresi'
     Status: Durum
   Member:
@@ -179,12 +181,12 @@ tr:
   MemberAuthenticator:
     TITLE: 'E-posta & Şifre'
   MemberDatetimeOptionsetField:
-    DATEFORMATBAD: 'Tarih formatı yanlış'
+    DATEFORMATBAD: 'Tarih biçimi geçersiz'
   ModelAdmin:
     DELETE: Sil
     IMPORT: 'CSV''den içer aktar'
     NOCSVFILE: 'CSV dosyası ekleme'
-    NOIMPORT: 'İçe aktarılacak birşey yok'
+    NOIMPORT: 'İçe aktarılacak bir şey yok'
     RESET: Sıfırla
   NullableField:
     IsNullLabel: 'Boş değer'
@@ -232,7 +234,7 @@ tr:
     EDITINFO: 'Dosyayı düzenle'
     FIELDNOTSET: 'Dosya bilgisi bulunamadı'
     FROMCOMPUTER: 'Kendi makinenizden'
-    FROMFILES: 'Kimden dosyaları'
+    FROMFILES: 'Dosyalardan'
     STARTALL: 'Tümünü başlat'
     Saved: Kaydedilmiş
   Versioned:

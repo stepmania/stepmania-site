@@ -1,0 +1,15 @@
+lv:
+  SiteConfig:
+    DEFAULTTHEME: '(Lietot noklusēto tēmu)'
+    EDITHEADER: 'Kurš var labot šīs vietnes lapas?'
+    EDIT_PERMISSION: 'Pārvaldīt vietnes konfigurāciju'
+    EDIT_PERMISSION_HELP: 'Iespēja labot globālus piekļuves uzstādījumus/augstākā līmeņa lapu atļaujas.'
+    SITENAMEDEFAULT: 'Jūsu vietnes nosaukums'
+    SITETAGLINE: 'Vietnes apakšvirsraksts/sauklis'
+    SITETITLE: 'Vietnes nosaukums'
+    TABACCESS: Piekļuves tiesības
+    TABMAIN: Sākums
+    TAGLINEDEFAULT: 'Apakšvirsraksts/sauklis'
+    THEME: Tēma
+    TOPLEVELCREATE: 'Kurš drīkst izveidot lapas vietnes saknes direktorijā?'
+    VIEWHEADER: 'Kurš drīkst aplūkot lapas šajā vietnē?'

@@ -1,0 +1,19 @@
+sr:
+  CMSSettingsController:
+    MENUTITLE: Подешавања
+  SiteConfig:
+    DEFAULTTHEME: '(Користи подразумевану тему)'
+    EDITHEADER: 'Ко може да мења странице на овом сајту?'
+    EDIT_PERMISSION: 'Управљање конфигурацијом сајта'
+    EDIT_PERMISSION_HELP: 'Могућност измене подешавања глобалног приступа/дозволâ за приступ страницама вршног нивоа'
+    PLURALNAME: 'Конфигурације сајта'
+    SINGULARNAME: 'Конфигурација сајта'
+    SITENAMEDEFAULT: 'Назив сајта'
+    SITETAGLINE: 'Слоган'
+    SITETITLE: 'Наслов сајта'
+    TABACCESS: Приступ
+    TABMAIN: Главно
+    TAGLINEDEFAULT: 'Ваш слоган'
+    THEME: Тема
+    TOPLEVELCREATE: 'Ко може креирати странице вршног нивоа на сајту?'
+    VIEWHEADER: 'Ко може да види странице овог сајта?'

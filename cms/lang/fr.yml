@@ -19,12 +19,12 @@ fr:
     FROMYOURCOMPUTER: 'Depuis votre ordinateur'
     Filetype: 'Type de fichier'
     ListView: 'Liste'
+    MENUTITLE: Fichiers
     NEWFOLDER: Nouveau dossier
     SIZE: Taille
     THUMBSDELETED: '{count} miniatures inutilisées ont été supprimées'
     TreeView: 'Arbre'
     Upload: Télécharger
-    MENUTITLE: Fichiers
   AssetAdmin_DeleteBatchAction:
     TITLE: 'Supprimer dossiers'
   AssetAdmin_Tools:
@@ -61,20 +61,27 @@ fr:
   CMSAddPageController:
     Title: 'Ajouter page'
   CMSBatchActions:
+    ARCHIVE: Archive
+    ARCHIVED_PAGES: '%d pages archivées'
     DELETED_DRAFT_PAGES: '%d pages supprimées du site brouillon, %d échecs'
     DELETED_PAGES: '%d pages supprimées du site, %d échecs'
     DELETE_DRAFT_PAGES: 'Supprimer du site brouillion'
     DELETE_PAGES: 'Supprimer du site publié'
     PUBLISHED_PAGES: '%d pages publiées, %d échecs'
     PUBLISH_PAGES: Publier
-    UNPUBLISHED_PAGES: '%d pages non publiées'
-    UNPUBLISH_PAGES: Non publiées
+    RESTORE: Restaurer
+    RESTORED_PAGES: '%d pages restaurées'
+  CMSFileAddController:
+    MENUTITLE: Fichiers
   CMSMain:
     ACCESS: 'Droits d’accès à la section « {title} »'
     ACCESS_HELP: 'Permettre l''affichage de la section contenant l''arborescence et le contenu. La gestion des permissions de visualisation et d''édition peut se faire à travers des liste spécifiques à chaque page. Et aussi la "Permission de contenu" séparé.'
+    ARCHIVE: Archive
+    ARCHIVEDPAGE: 'Page ''%s'' archivée'
     AddNew: 'Ajouter page'
     AddNewButton: 'Ajouter'
     AddPageRestriction: 'Note : certains types de page ne sont pas autorisés pour cette sélection'
+    Cancel: Annuler
     ChoosePageParentMode: 'Choisissez où créer cette page'
     ChoosePageType: 'Choisir le type de page'
     Create: Créer
@@ -85,12 +92,10 @@ fr:
     DUPLICATEDWITHCHILDREN: '''{title}'' et ses enfants dupliqués avec succès'
     EMAIL: Email
     EditTree: 'Editer l''arbre'
-    ListFiltered: 'Filtrelenmiş liste.'
+    MENUTITLE: 'Éditer la page'
     NEWPAGE: 'Nouveau {pagetype}'
     PAGENOTEXISTS: 'Cette page n''existe pas'
-    PAGES: Pages
     PAGETYPEANYOPT: Tous
-    PAGETYPEOPT: 'Type de page'
     PUBALLCONFIRM: 'Publier chaque page du site en copiant le contenu à partir du site brouillon s''il vous plaît'
     PUBALLFUN: 'Fonctionnalité "Tout Publier"'
     PUBALLFUN2: "Presser ce boutton fera la même chose que d'aller sur chaque page et d'appuer sur \"publier\"."
@@ -99,7 +104,6 @@ fr:
     REMOVED: '''{title}''{description} supprimé du site live'
     REMOVEDPAGE: '« {title} » a été éliminée du site public '
     REMOVEDPAGEFROMDRAFT: 'Supprimé ''%s'' du site de test'
-    RESTORE: Restaurer
     RESTORED: '« {title} » restaurée avec succès'
     ROLLBACK: 'Retourner à cette version'
     ROLLEDBACKPUBv2: 'Revenir à la version publiée'
@@ -109,51 +113,48 @@ fr:
     TabContent: Contenu
     TabHistory: Historique
     TabSettings: Paramètres
-    TreeFiltered: 'Filtrelenmiş ağaç liste.'
-    TreeFilteredClear: 'Filtreyi temizle'
-    MENUTITLE: 'Éditer la page'
   CMSMain_left_ss:
-    APPLY_FILTER: 'Appliquer le filtre'
     RESET: Réinitialiser
   CMSPageAddController:
+    MENUTITLE: 'Ajouter page'
     ParentMode_child: 'Sous une autre page'
     ParentMode_top: 'Premier niveau'
-    MENUTITLE: 'Ajouter page'
+  CMSPageEditController:
+    MENUTITLE: 'Éditer la page'
   CMSPageHistoryController:
     COMPAREMODE: 'Comparer (choisissez deux)'
     COMPAREVERSIONS: 'Comparer les versions'
     COMPARINGVERSION: 'Comparaison entre les versions {version1} et {version2}.'
+    MENUTITLE: Historique
     REVERTTOTHISVERSION: 'Revenir à cette version'
     SHOWUNPUBLISHED: 'Afficher les versions non publiées'
     SHOWVERSION: 'Afficher cette version'
     VIEW: Afficher
     VIEWINGLATEST: 'Vous regardez la dernière version'
     VIEWINGVERSION: 'Version affichée : {version}.'
-    MENUTITLE: Historique
   CMSPageHistoryController_versions_ss:
     AUTHOR: Auteur
     NOTPUBLISHED: 'Non publiée'
     PUBLISHER: Éditeur
     UNKNOWN: Inconnu
     WHEN: Date
+  CMSPageSettingsController:
+    MENUTITLE: 'Éditer la page'
   CMSPagesController:
     GalleryView: 'Galerie'
     ListView: 'Liste'
     MENUTITLE: Pages
     TreeView: 'Arbre'
-  CMSPagesController_ContentToolbar_ss:
-    MULTISELECT: Choix multiple
   CMSPagesController_Tools_ss:
     FILTER: Filtrer
+  CMSSIteTreeFilter_PublishedPages:
+    Title: 'Pages publiées'
   CMSSearch:
     FILTERDATEFROM: De
     FILTERDATEHEADING: Date
     FILTERDATETO: A
-    FILTERLABELTEXT: Terme
-  CMSSiteTreeFilter_ChangedPages:
-    Title: 'Pages modifiées'
-  CMSSiteTreeFilter_DeletedPages:
-    Title: 'Toutes les pages, y compris les supprimées'
+  CMSSettingsController:
+    MENUTITLE: Paramètres
   CMSSiteTreeFilter_Search:
     Title: 'Toutes les pages'
   ContentControl:
@@ -212,7 +213,6 @@ fr:
     DEFAULTSERVERERRORPAGETITLE: 'Erreur du serveur'
     DESCRIPTION: 'Contenu personnalisé pour diverses erreurs (p. ex. « Page introuvable »)'
     ERRORFILEPROBLEM: ' L’ouverture du fichier « {filename} » afin de le modifier a provoqué une erreur ; vérifiez les droits d’accès au fichier. '
-    PLURALNAME: 'Pages d’erreur'
     SINGULARNAME: 'Page d’erreur'
   Folder:
     AddFolderButton: 'Ajouter un dossier'
@@ -235,15 +235,14 @@ fr:
     HASBEENSETUP: 'Une page de redirection sans adresse de redirection a été créée.'
     HEADER: 'Cette page va rediriger les utilisateurs vers une autre page'
     OTHERURL: 'Autre URL de site web'
-    PLURALNAME: 'Pages de redirection'
     REDIRECTTO: 'Rediriger vers'
     REDIRECTTOEXTERNAL: 'Autre site web'
     REDIRECTTOPAGE: 'Une page de votre site web'
     SINGULARNAME: 'Page de redirection'
     YOURPAGE: 'Page de votre site web'
   ReportAdmin:
-    ReportTitle: Titre
     MENUTITLE: Rapports
+    ReportTitle: Titre
   ReportAdminForm:
     FILTERBY: 'Filtrer par'
   SITETREE:
@@ -269,7 +268,6 @@ fr:
   SilverStripeNavigator:
     ARCHIVED: Archivé
   SilverStripeNavigatorLink:
-    ShareInstructions: 'Pour partager cette page, copiez et collez le lien ci-dessous.'
     ShareLink: 'Partager le lien'
   SilverStripeNavigatorLinkl:
     CloseLink: Fermer
@@ -298,6 +296,7 @@ fr:
     ADDEDTODRAFTSHORT: Brouillon
     ALLOWCOMMENTS: 'Autoriser les commentaires sur cette page ?'
     APPEARSVIRTUALPAGES: 'Ce contenu apparaît aussi dans les sections {title} des pages virtuelles.'
+    ARCHIVEDPAGESHORT: Archivé
     BUTTONCANCELDRAFT: 'Annuler les changements brouillons'
     BUTTONCANCELDRAFTDESC: 'Supprimer votre brouillon et revenir à la page actuellement publiée'
     BUTTONPUBLISHED: Publié
@@ -311,7 +310,7 @@ fr:
     DEFAULTABOUTTITLE: 'Qui sommes nous ?'
     DEFAULTCONTACTCONTENT: '<p>Vous pouvez éditer cette page avec votre propre contenu ou supprimer celle-ci et créer vos propres pages.<br></p>'
     DEFAULTCONTACTTITLE: 'Contactez-nous'
-    DEFAULTHOMECONTENT: '<p>Bienvenue sur SilverStripe&nbsp;! Ceci est la page d’accueil par défaut. Vous pouvez la modifier dans le <a href="admin/">panneau d’administration</a> du CMS.  Vous pouvez consulter la <a href="http://doc.silverstripe.com">documentation développeur</a> ou commencer <a href="http://doc.silverstripe.com/doku.php?id=tutorials">les tutoriaux.</a></p>'
+    DEFAULTHOMECONTENT: '<p>Bienvenue dans SilverStripe! Ceci est la page d''accueil par défaut. Vous pouvez éditer cette page en ouvrant <a href="admin/">le CMS</a>.</p><p>Vous pouvez maintenant accéder à la <a href="http://docs.silverstripe.org">documentation développeur</a>, ou commencer les <a href="http://www.silverstripe.org/learn/lessons">leçons SilverStripe</a>.</p>'
     DEFAULTHOMETITLE: Accueil
     DELETEDPAGEHELP: 'La page n’est plus publique '
     DELETEDPAGESHORT: Supprimée
@@ -382,6 +381,9 @@ fr:
     many_many_BackLinkTracking: 'Suivi des liens retour'
     many_many_ImageTracking: 'Suivi des images'
     many_many_LinkTracking: 'Suivi des Liens'
+  SiteTreeFileExtension:
+    BACKLINK_LIST_DESCRIPTION: 'Cette liste affiche toutes les pages où le fichier a été ajouté via l''éditeur WYSIWYG.'
+    EDIT: Éditer
   SiteTreeURLSegmentField:
     EMPTY: 'Merci d''entrer une URL ou cliquez sur Annuler'
     HelpChars: 'Les caractères spéciaux sont automatiquement convertis ou supprimés.'
@@ -398,14 +400,5 @@ fr:
     EditLink: éditer
     HEADER: 'Cette page est virtuelle'
     HEADERWITHLINK: 'Ceci est une page virtuelle copiant le contenu de "{title}" ({link})'
-    PLURALNAME: 'Pages Virtuelles'
     PageTypNotAllowedOnRoot: 'Le type de page d’origine « {type} » n’est pas autorisé au niveau racine pour cette page virtuelle'
     SINGULARNAME: 'Page virtuelle'
-  CMSFileAddController:
-    MENUTITLE: Fichiers
-  CMSPageEditController:
-    MENUTITLE: 'Éditer la page'
-  CMSPageSettingsController:
-    MENUTITLE: 'Éditer la page'
-  CMSSettingsController:
-    MENUTITLE: Paramètres

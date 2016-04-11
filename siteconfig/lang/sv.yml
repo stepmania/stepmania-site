@@ -1,0 +1,19 @@
+sv:
+  CMSSettingsController:
+    MENUTITLE: Inställningar
+  SiteConfig:
+    DEFAULTTHEME: '(Använd standardtema)'
+    EDITHEADER: 'Vem kan redigera sidor på den här sajten?'
+    EDIT_PERMISSION: 'Redigera sajtkonfiguration'
+    EDIT_PERMISSION_HELP: 'Möjlighet att ändra den globala åtkomstinställningar / toppnivåbehörigheter.'
+    PLURALNAME: 'Sajt inställningar'
+    SINGULARNAME: 'Sajt inställning'
+    SITENAMEDEFAULT: 'Din Sajts Namn'
+    SITETAGLINE: 'Din sajts Slogan'
+    SITETITLE: 'Sajttitel'
+    TABACCESS: Tillgång
+    TABMAIN: Allmänt
+    TAGLINEDEFAULT: 'din underrubrik här'
+    THEME: Tema
+    TOPLEVELCREATE: 'Vem kan skapa sidor i sajtroten?'
+    VIEWHEADER: 'Vem kan se sidor på den här sajten?'

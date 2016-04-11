@@ -1,0 +1,14 @@
+es_AR:
+  SiteConfig:
+    DEFAULTTHEME: '(Usar tema por defecto)'
+    EDITHEADER: '¿Quien puede editar páginas en este sitio?'
+    EDIT_PERMISSION: 'Administrar la configuración del sitio'
+    SITENAMEDEFAULT: 'Nombre de su sitio'
+    SITETAGLINE: 'Lema/slogan del sitio'
+    SITETITLE: 'Título del sitio'
+    TABACCESS: Acceso
+    TABMAIN: Principal
+    TAGLINEDEFAULT: 'su lema aquí'
+    THEME: Tema
+    TOPLEVELCREATE: '¿Quien puede crear páginas en la raíz del sitio?'
+    VIEWHEADER: '¿Quien puede ver páginas en este sitio?'

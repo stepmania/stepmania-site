@@ -9,16 +9,42 @@
  *
  * WARNING: This class is experimental and designed specifically for use pre-startup in main.php
  * It will likely be heavily refactored before the release of 3.2
+ *
+ * @package framework
+ * @subpackage misc
  */
 class ParameterConfirmationToken {
+
+	/**
+	 * The name of the parameter
+	 *
+	 * @var string
+	 */
 	protected $parameterName = null;
+
+	/**
+	 * The parameter given
+	 *
+	 * @var string|null The string value, or null if not provided
+	 */
 	protected $parameter = null;
+
+	/**
+	 * The validated and checked token for this parameter
+	 *
+	 * @var string|null A string value, or null if either not provided or invalid
+	 */
 	protected $token = null;
 
 	protected function pathForToken($token) {
 		return TEMP_FOLDER.'/token_'.preg_replace('/[^a-z0-9]+/', '', $token);
 	}
 
+	/**
+	 * Generate a new random token and store it
+	 *
+	 * @return string Token name
+	 */
 	protected function genToken() {
 		// Generate a new random token (as random as possible)
 		require_once(dirname(dirname(dirname(__FILE__))).'/security/RandomGenerator.php');
@@ -31,7 +57,17 @@ class ParameterConfirmationToken {
 		return $token;
 	}
 
+	/**
+	 * Validate a token
+	 *
+	 * @param string $token
+	 * @return boolean True if the token is valid
+	 */
 	protected function checkToken($token) {
+		if(!$token) {
+			return false;
+		}
+		
 		$file = $this->pathForToken($token);
 		$content = null;
 
@@ -43,26 +79,75 @@ class ParameterConfirmationToken {
 		return $content == $token;
 	}
 
+	/**
+	 * Create a new ParameterConfirmationToken
+	 *
+	 * @param string $parameterName Name of the querystring parameter to check
+	 */
 	public function __construct($parameterName) {
 		// Store the parameter name
 		$this->parameterName = $parameterName;
+		
 		// Store the parameter value
 		$this->parameter = isset($_GET[$parameterName]) ? $_GET[$parameterName] : null;
-		// Store the token
-		$this->token = isset($_GET[$parameterName.'token']) ? $_GET[$parameterName.'token'] : null;
 
-		// If a token was provided, but isn't valid, ignore it
-		if ($this->token && (!$this->checkToken($this->token))) $this->token = null;
+		// If the token provided is valid, mark it as such
+		$token = isset($_GET[$parameterName.'token']) ? $_GET[$parameterName.'token'] : null;
+		if ($this->checkToken($token)) {
+			$this->token = $token;
+		}
 	}
 
+	/**
+	 * Get the name of this token
+	 *
+	 * @return string
+	 */
+	public function getName() {
+		return $this->parameterName;
+	}
+
+	/**
+	 * Is the parameter requested?
+	 * ?parameter and ?parameter=1 are both considered requested
+	 * 
+	 * @return bool
+	 */
 	public function parameterProvided() {
 		return $this->parameter !== null;
 	}
 
+	/**
+	 * Is the necessary token provided for this parameter?
+	 * A value must be provided for the token
+	 * 
+	 * @return bool
+	 */
 	public function tokenProvided() {
-		return $this->token !== null;
+		return !empty($this->token);
 	}
 
+	/**
+	 * Is this parameter requested without a valid token?
+	 *
+	 * @return bool True if the parameter is given without a valid token
+	 */
+	public function reloadRequired() {
+		return $this->parameterProvided() && !$this->tokenProvided();
+	}
+
+	/**
+	 * Suppress the current parameter by unsetting it from $_GET
+	 */
+	public function suppress() {
+		unset($_GET[$this->parameterName]);
+	}
+
+	/**
+	 * Determine the querystring parameters to include
+	 *
+	 * @return array List of querystring parameters with name and token parameters
+	 */
 	public function params() {
 		return array(
 			$this->parameterName => $this->parameter,
@@ -76,15 +161,33 @@ class ParameterConfirmationToken {
 	protected function currentAbsoluteURL() {
 		global $url;
 
-		// Are we http or https?
+		// Are we http or https? Replicates Director::is_https() without its dependencies/
 		$proto = 'http';
-
-		if(isset($_SERVER['HTTP_X_FORWARDED_PROTOCOL'])) {
-			if(strtolower($_SERVER['HTTP_X_FORWARDED_PROTOCOL']) == 'https') $proto = 'https';
+		// See https://en.wikipedia.org/wiki/List_of_HTTP_header_fields
+		// See https://support.microsoft.com/?kbID=307347
+		$headerOverride = false;
+		if(TRUSTED_PROXY) {
+			$headers = (defined('SS_TRUSTED_PROXY_PROTOCOL_HEADER')) ? array(SS_TRUSTED_PROXY_PROTOCOL_HEADER) : null;
+			if(!$headers) {
+				// Backwards compatible defaults
+				$headers = array('HTTP_X_FORWARDED_PROTO', 'HTTP_X_FORWARDED_PROTOCOL', 'HTTP_FRONT_END_HTTPS');
+			}
+			foreach($headers as $header) {
+				$headerCompareVal = ($header === 'HTTP_FRONT_END_HTTPS' ? 'on' : 'https');
+				if(!empty($_SERVER[$header]) && strtolower($_SERVER[$header]) == $headerCompareVal) {
+					$headerOverride = true;
+					break;
+				}
+			}
 		}
 
-		if((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off')) $proto = 'https';
-		if(isset($_SERVER['SSL'])) $proto = 'https';
+		if($headerOverride) {
+			$proto = 'https';
+		} else if((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off')) {
+			$proto = 'https';
+		} else if(isset($_SERVER['SSL'])) {
+			$proto = 'https';
+		}
 
 		$parts = array_filter(array(
 			// What's our host
@@ -99,6 +202,10 @@ class ParameterConfirmationToken {
 		return "$proto://" . preg_replace('#/{2,}#', '/', implode('/', $parts));
 	}
 
+	/**
+	 * Forces a reload of the request with the token included
+	 * This method will terminate the script with `die`
+	 */
 	public function reloadWithToken() {
 		$location = $this->currentAbsoluteURL();
 
@@ -118,5 +225,25 @@ You are being redirected. If you are not redirected soon, <a href='$location'>cl
 		}
 		else header('location: '.$location, true, 302);
 		die;
+	}
+
+	/**
+	 * Given a list of token names, suppress all tokens that have not been validated, and
+	 * return the non-validated token with the highest priority
+	 *
+	 * @param array $keys List of token keys in ascending priority (low to high)
+	 * @return ParameterConfirmationToken The token container for the unvalidated $key given with the highest priority
+	 */
+	public static function prepare_tokens($keys) {
+		$target = null;
+		foreach($keys as $key) {
+			$token = new ParameterConfirmationToken($key);
+			// Validate this token
+			if($token->reloadRequired()) {
+				$token->suppress();
+				$target = $token;
+			}
+		}
+		return $target;
 	}
 }

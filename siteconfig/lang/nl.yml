@@ -1,0 +1,19 @@
+nl:
+  CMSSettingsController:
+    MENUTITLE: Instellingen
+  SiteConfig:
+    DEFAULTTHEME: '(Gebruik standaard thema)'
+    EDITHEADER: 'Wie kan pagina''s op de site wijzigen?'
+    EDIT_PERMISSION: 'Aanpassen site configuratie'
+    EDIT_PERMISSION_HELP: 'Bevoegdheid om globale toegangsinstellingen/hoogste niveau pagina rechten te bewerken.'
+    PLURALNAME: 'Website instellingen'
+    SINGULARNAME: 'Website instellingen'
+    SITENAMEDEFAULT: 'Jouw Site Naam'
+    SITETAGLINE: 'Site Slogan/Motto'
+    SITETITLE: 'Site Titel'
+    TABACCESS: Toegang
+    TABMAIN: Hoofd
+    TAGLINEDEFAULT: 'jouw motto hier'
+    THEME: Thema
+    TOPLEVELCREATE: 'Wie kunnen pagina''s in op het hoogste niveau van de site aanmaken?'
+    VIEWHEADER: 'Wie kunnen pagina''s op de site bekijken?'

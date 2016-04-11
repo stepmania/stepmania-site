@@ -196,7 +196,6 @@ bg:
     IMAGETITLETEXT: 'Описание (tooltip)'
     IMAGETITLETEXTDESC: 'Допълнителна информация към изображението'
     IMAGEWIDTHPX: Широчина
-    INSERTMEDIA: 'Вмъкване на медиа'
     LINK: 'Връзка'
     LINKANCHOR: 'Котва на тази страница'
     LINKDESCR: 'Описание на препратка'
@@ -208,23 +207,16 @@ bg:
     LINKTO: 'Препратка към'
     PAGE: Страница
     URLNOTANOEMBEDRESOURCE: 'URL адресът ''{url}'' не може да бъде превърнат в медиен ресурс.'
-    UpdateMEDIA: 'Актуализация на медиа'
   Image_iframe_ss:
     TITLE: 'Iframe за качване на изображение'
   LeftAndMain:
     CANT_REORGANISE: 'Нямаш права да променяш страници от най-горно ниво. Твоите промени не бяха записани.'
     DELETED: Изтрит
-    DropdownBatchActionsDefault: Действия
     HELP: Помощ
-    PAGETYPE: 'Тип на страницата'
     PERMAGAIN: 'Вие излязохте от CMS. Ако искате да влезете отново, моля, въведете потребителско име и парола.'
-    PERMALREADY: 'Съжалявам, но нямате достъп до тази част от CMS. Ако искате да влезете с друго потребителско име, моля, направете го по-долу'
-    PERMDEFAULT: 'Въведете имейл адреса и паролата си, за да влезете в CMS.'
-    PLEASESAVE: 'Съхрани страницата: Тази страница не може да бъде обновена, защото още не е записана.'
     PreviewButton: Преглед
     REORGANISATIONSUCCESSFUL: 'Реорганизацията на дървото на сайта беше успешна.'
     SAVEDUP: Записано
-    VersionUnknown: непозната
   LeftAndMain_Menu_ss:
     Hello: Здравей
     LOGOUT: 'Излизане'

@@ -1,5 +1,7 @@
 cs:
   AssetAdmin:
+    ALLOWEDEXTS: 'Povolené extenze nahraní souboru'
+    HIDEALLOWEDEXTS: 'Skrýt povolené extenze'
     NEWFOLDER: Nová složka
     SHOWALLOWEDEXTS: 'Ukázat povolené extenze'
   AssetTableField:
@@ -7,12 +9,14 @@ cs:
     DIM: Rozměry
     FILENAME: Název souboru
     FOLDER: Složka
+    HEIGHT: Výška
     LASTEDIT: 'Naposledy změněno'
     OWNER: Vlastník
     SIZE: 'Velikost'
     TITLE: Titulek
     TYPE: 'Typ'
     URL: URL
+    WIDTH: Šířka
   AssetUploadField:
     ChooseFiles: 'Vyberte soubory'
     DRAGFILESHERE: 'Táhni soubory sem'
@@ -23,6 +27,8 @@ cs:
     FILES: Soubory
     FROMCOMPUTER: 'Vyberte soubory z vašeho počítače'
     FROMCOMPUTERINFO: 'Nahrát z vašeho počítače'
+    INSERTURL: 'Vložit z URL'
+    REMOVEINFO: 'Odstranit tento soubor z tohoto pole'
     TOTAL: Celkem
     TOUPLOAD: 'Vyberte soubory k nahrání...'
     UPLOADINPROGRESS: 'Prosím čekejte... probíhá nahrávání'
@@ -60,6 +66,8 @@ cs:
     ERRORNOTREC: 'Toto uživatelské jméno / heslo nebylo rozpoznáno'
   Boolean:
     ANY: Jakkýkoliv
+    NOANSWER: 'Ne'
+    YESANSWER: 'Ano'
   CMSLoadingScreen_ss:
     LOADING: Nahrávání...
     REQUIREJS: 'CMS vyžaduje, aby jste měli JavaScript zapnut.'
@@ -68,22 +76,44 @@ cs:
     ACCESSALLINTERFACES: 'Přístup ke všem sekcím CMS'
     ACCESSALLINTERFACESHELP: 'Prepíše více specifické nastavení přístupu.'
     SAVE: Uložit
+  CMSMemberLoginForm:
+    BUTTONFORGOTPASSWORD: 'Zapomenuté heslo?'
+    BUTTONLOGIN: 'Přihlásit se zpět'
+    BUTTONLOGOUT: 'Odhlásit se'
+    PASSWORDEXPIRED: '<p>Vaše heslo expirovalo. <a target="_top" href="{link}">Prosím zvolte nové heslo.</a></p>'
   CMSPageHistoryController_versions_ss:
     PREVIEW: 'Náhled webu'
+  CMSPagesController_Tools_ss:
+    FILTER: Filtr
   CMSProfileController:
     MENUTITLE: 'Můj profil'
+  CMSSecurity:
+    INVALIDUSER: '<p>Neplatný uživatel. <a target="_top" href="{link}">Prosím oveřte se zde</a> pro pokračování.</p>'
+    LoginMessage: '<p>Máte-li jakékoli neuložené práce, můžete se vrátit na místo, kde jste přestali, po přihlášení se zpět níže.</p>'
+    SUCCESS: Úspěch
+    SUCCESSCONTENT: '<p>Úspěšné přihlášení. Pokud nebudete automaticky přesměrován <a target="_top" href="{link}">klikněte sem</a></p>'
+    TimedOutTitleAnonymous: 'Čas Vašeho sezení vypršel.'
+    TimedOutTitleMember: 'Ahoj {name}!<br />Čas Vašeho sezení vypršel.'
   ChangePasswordEmail_ss:
     CHANGEPASSWORDTEXT1: 'Vaše heslo bylo změněno pro'
     CHANGEPASSWORDTEXT2: 'Nyní můžete použít následující přihlašovací údaje pro přihlášení:'
     EMAIL: E-mail
     HELLO: Dobrý den
     PASSWORD: Heslo
+  CheckboxField:
+    NOANSWER: 'Ne'
+    YESANSWER: 'Ano'
+  CheckboxFieldSetField:
+    SOURCE_VALIDATION: 'Prosím vyberte hodnotu v seznamu. {value} není platná volba'
+  CheckboxSetField:
+    SOURCE_VALIDATION: 'Prosím vyberte hodnotu v seznamu. ''{value}'' není platná volba'
   ConfirmedPasswordField:
     ATLEAST: 'Hesla musí být nejméně {min} znaků dlouhé.'
     BETWEEN: 'Hesla musí být {min} až {max} znaků dlouhé.'
     MAXIMUM: 'Hesla musí být nanejvýš {max} znaků dlouhé.'
     SHOWONCLICKTITLE: 'Změnit heslo'
   ContentController:
+    DRAFT_SITE_ACCESS_RESTRICTION: 'Musíte se přihlásit se svým CMS heslem, aby jste mohli prohlížet koncept nebo archivovaný obsah. <a href="%s">Klikněte sem pro návrat na zveřejněný web.</a>'
     NOTLOGGEDIN: 'Nepřihlášen'
   CreditCardField:
     FIRST: první
@@ -124,6 +154,7 @@ cs:
   DropdownField:
     CHOOSE: (Vyberte)
     CHOOSESEARCH: '(Vybrat nebo vyhledat)'
+    SOURCE_VALIDATION: 'Prosím vyberte hodnotu v seznamu. {value} není platná volba'
   EmailField:
     VALIDATION: 'Prosím zadejte e-mailovou adresu'
   Enum:
@@ -171,7 +202,8 @@ cs:
     TEXT2: 'odkaz na reset hesla'
     TEXT3: pro
   Form:
-    CSRF_FAILED_MESSAGE: "Zdá se, že nastal technický problém. Prosím, klikněte na tlačítko zpět, \n\t\t\t\t\taktualizujte prohlížeč a zkuste to znovu."
+    CSRF_EXPIRED_MESSAGE: 'Čas Vašeho sezení vypršel. Prosím znovu odešlete formulář.'
+    CSRF_FAILED_MESSAGE: 'Vypadá to, že to musí být technický problém. Kliněte prosím na tlačítko zpět, obnovte váš prohlížeč a zkuste opět.'
     FIELDISREQUIRED: '{name} je požadováno'
     SubmitBtnLabel: Jdi
     VALIDATIONCREDITNUMBER: 'Prosím ujistěte se, že jste zadal/a {number} číslo kreditní karty správně'
@@ -181,7 +213,6 @@ cs:
     VALIDATIONSTRONGPASSWORD: 'Hesla musí obsahovat alespoň jednu číslici a jedno písmeno.'
     VALIDATOR: Validátor
     VALIDCURRENCY: 'Prosím zadejte platnou měnu'
-    CSRF_EXPIRED_MESSAGE: 'Čas Vašeho sezení vypršel. Prosím znovu odešlete formulář.'
   FormField:
     Example: 'např. %s'
     NONE: žádný
@@ -238,7 +269,7 @@ cs:
     many_many_Members: Členové
   GroupImportForm:
     Help1: '<p>Import jedné nebo více skupin v <em>CSV</em> formátu (čárkou-oddělené hodnoty). <small><a href="#" class="toggle-advanced">Zobrazit rozšířené použití</a></small></p>'
-    Help2: "<div class=\"advanced\">\n<h4>Pokročilé použití</h4>\n<ul>\n<li>Povolené sloupce: <em>%s</em></li>\n<li>Existující skupiny jsou porovnány jejich unikátní vlastností <em>Code</em>, a aktualizovány s novými hodnotami z\nimportovaného souboru.</li>\n<li>Hierarchie skupin může být tvořena použitím sloupce <em>ParentCode</em>.</li>\n<li>Kódy oprávnění mohou být přiřazeny sloupcem <em>PermissionCode</em>. Existující oprávnění nejsou smazána.</li>\n</ul>\n</div>"
+    Help2: '<div class="advanced"> <h4>Pokročilé použití</h4> <ul> <li>Povolené sloupce: <em>%s</em></li> <li>Existující skupiny jsou porovnány jejich unikátním <em>Code</em> hodnotou, a aktualizovány s novými hodnotami z importovaného souboru</li> <li>Hierarchie skupin může být tvořena použitím <em>ParentCode</em> sloupce.<li> <li>Kódy oprávnění mohou být přiřazeny <em>PermissionCode</em> sloupcem. Existující oprávnění nejsou smazána.</li> </ul> </div>'
     ResultCreated: 'Vytvořeno {count} skupin'
     ResultDeleted: 'Smazáno %d skupin'
     ResultUpdated: 'Aktualizováno %d skupin'
@@ -247,6 +278,8 @@ cs:
   HtmlEditorField:
     ADDURL: 'Přidat URL'
     ADJUSTDETAILSDIMENSIONS: 'Detaily &amp; rozměry'
+    ANCHORSCANNOTACCESSPAGE: 'Nemáte povolen přístup k obsahu cílové stránky.'
+    ANCHORSPAGENOTFOUND: 'Cílová stránka nenelazena.'
     ANCHORVALUE: Záložka (kotva)
     BUTTONADDURL: 'Přidat url'
     BUTTONINSERT: Vložit
@@ -268,8 +301,6 @@ cs:
     FROMWEB: 'Z webu'
     FindInFolder: 'Hledat ve složce'
     IMAGEALT: 'Alternativní text (alt)'
-    IMAGEALTTEXT: 'Alternativní text (alt) - ukáže se, když obrázek nemúže být zobrazen'
-    IMAGEALTTEXTDESC: 'Zobrazeno na obrazovce, anebo když obrázek nemůže být zobrazen'
     IMAGEDIMENSIONS: Rozměry
     IMAGEHEIGHTPX: Výška
     IMAGETITLE: 'Titul text (tooltip) - další informace o obrázku'
@@ -287,7 +318,9 @@ cs:
     LINKOPENNEWWIN: 'Otevřít odkaz v novém okně?'
     LINKTO: 'Odkázat na'
     PAGE: Stránku
+    SUBJECT: 'Předmět emailu'
     URL: URL
+    URLDESCRIPTION: 'Vložit videa a obrázky z webu do Vaší stránky, prostým zadáním URL souboru. Ujistěte se, že máte patřičná práva před zdílením médií z webu.<br /><br />Prosím, uvědomte si, že soubory nejsou přidány do úložiště CMS, ale soubor je vestavěn z jeho původního umístění, když z nějakých důvodú soubor není dostupný v jeho původním umístění, nebude zobrazitelný na této stránce.'
     URLNOTANOEMBEDRESOURCE: 'URL ''{url}'' nemůže být vloženo do zdroje médií.'
     UpdateMEDIA: 'Aktualizovat média'
   Image:
@@ -301,23 +334,23 @@ cs:
   LeftAndMain:
     CANT_REORGANISE: 'Nemáte oprávnění měnit stránky nejvyšší úrovně. Vaše změna nebyla uložena.'
     DELETED: Smazáno.
-    DropdownBatchActionsDefault: Akcie
+    DropdownBatchActionsDefault: Akce
     HELP: Nápověda
-    PAGETYPE: 'Typ stránky:'
     PERMAGAIN: 'Byli jste odhlášeni z CMS. Pokud se chcete znovu přihlásit, zadejte níže své uživatelské jméno a heslo.'
-    PERMALREADY: 'Je nám líto, ale nemůžete vstoupit do této části CMS. Pokud se chcete přihlásit jako někdo jiný, udělejte tak níže'
-    PERMDEFAULT: 'Pro přístup do CMS zadejte Vaši e-mailovou adresu a heslo.'
-    PLEASESAVE: 'Prosím uložte stránku: Tato stránka nemohla být aktualizována, protože ještě nebyla uložena.'
+    PERMALREADY: 'Omlouvám se, ale nemůžete vstoupit do této části CMS. Pokud se chcete přihlásit jako někdo jiný, udělejte tak níže.'
+    PERMDEFAULT: 'Musíte být přihlášen/a k přístup do oblasti administrace, níže zadejte vaše přihlašovací údaje, prosím.'
     PreviewButton: Náhled
     REORGANISATIONSUCCESSFUL: 'Strom webu reorganizován úspěšně.'
     SAVEDUP: Uloženo.
     ShowAsList: 'ukázat jako seznam'
     TooManyPages: 'Příliš mnoho stránek'
     ValidationError: 'Chyba platnosti'
-    VersionUnknown: Neznámý
+    VersionUnknown: neznámé
   LeftAndMain_Menu_ss:
     Hello: Ahoj
     LOGOUT: 'Odhlásit se'
+  ListboxField:
+    SOURCE_VALIDATION: 'Prosím vyberte hodnotu v nabídnutém seznamu. %s není platná volba'
   LoginAttempt:
     Email: 'Emailové adresy'
     IP: 'IP adresy'
@@ -350,6 +383,7 @@ cs:
     NEWPASSWORD: 'Nové heslo'
     NoPassword: 'Neni zde heslo pro tohoto člena'
     PASSWORD: Heslo
+    PASSWORDEXPIRED: 'Vaše heslo expirovalo. Prosím, zvolte nové heslo.'
     PLURALNAME: Členové
     REMEMBERME: 'Zapamatovat si mě pro příště?'
     SINGULARNAME: Člen
@@ -392,7 +426,7 @@ cs:
     Toggle: 'Ukázat nápovědu formátování'
   MemberImportForm:
     Help1: '<p>Import členů v <em>CSV formátu</em> (čárkou-oddělené hodnoty). <small><a href="#" class="toggle-advanced">Zobrazit rozšířené použití</a></small></p>'
-    Help2: "<div class=\"advanced\">\n<h4>Pokročilé použití</h4>\n<ul>\n<li>Povolené sloupce: <em>%s</em></li>\n<li>Existující uživatelé jsou porovnáni jejich unikátní vlastností <em>Code</em>, a aktualizováni s novými hodnotami z importovaného souboru.</li>\n<li>Skupiny mohou být přiřazeny sloupcem <em>Groups</em>. Skupiny jsou identifikovány svojí vlastností <em>Code</em>, více skupin může být odděleno čárkou. Existující členství ve skupině nejsou smazána.</li>\n</ul>\n</div>"
+    Help2: '<div class="advanced"> <h4>Pokročilé použití</h4> <ul> <li>Povolené sloupce: <em>%s</em></li> <li>Existující uživatelé jsou porovnáni jejich unikátní vlastností <em>Code</em>, a aktualizováni s novými hodnotami z importovaného souboru.</li> <li>Skupiny mohou být přiřazeny sloupcem <em>Groups</em>. Skupiny jsou identifikovány svojí vlastností <em>Code</em>, více skupin může být odděleno čárkou. Existující členství ve skupině nejsou smazána.</li> </ul> </div>'
     ResultCreated: 'Vytvořeno {count} členů'
     ResultDeleted: 'Smazáno %d členů'
     ResultNone: 'Žádné změny'
@@ -522,6 +556,8 @@ cs:
     Print: Tisk
   TableListField_PageControls_ss:
     OF: z
+  TextField:
+    VALIDATEMAXLENGTH: 'Hodnota pro {name} nesmí překročit {maxLength} v délce znaků'
   TimeField:
     VALIDATEFORMAT: 'Prosím zadejte platný formát času ({format})'
   ToggleField:

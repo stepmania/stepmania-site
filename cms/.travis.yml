@@ -1,32 +1,38 @@
-language: php 
+language: php
 
-php:
-  - 5.3
+sudo: false
+
+addons:
+  apt:
+    packages:
+      - tidy
+
+addons:
+  firefox: "31.0"
 
 env:
   global:
+    - CORE_RELEASE=3
     - "ARTIFACTS_AWS_REGION=us-east-1"
     - "ARTIFACTS_S3_BUCKET=silverstripe-travis-artifacts"
     - secure: "7V20Qk3bIG2AlTJaA5D/uzB8vUVvRwQp+xjRYUxlahtj9FcuqEV3HIyjwwJe0T6Z1bnRYuu28ZnCT2CfP9BBZ3FE7AwSZbPase9c0/at2qDJNqkvIdC1xZ1H6Fcy2LSwNB9wLQPe613ItVdanitEuwE41iowxBPslxUUTnwx7eY="
     - secure: "f/GWlbnNri2YpCOrJfZl7tkhpMmcRVUbCdmb+beAY90gFBJQPHtljzf8M4KaCP0OkLOtRFuGoMFdIcpadl4J6IG1XP18IJNz+nKzCL/sJj/FF9y77RdMHWE9jr21G9ar5tywkn7JM6vrnTCY89OnHeQx67SKvxqX5CpVx+rdcEU="
-  matrix:
-    - DB=MYSQL CORE_RELEASE=3.1
 
 matrix:
   include:
     - php: 5.3
-      env: DB=PGSQL CORE_RELEASE=3.1
-    - php: 5.3
-      env: DB=SQLITE CORE_RELEASE=3.1
+      env: DB=MYSQL
     - php: 5.4
-      env: DB=MYSQL CORE_RELEASE=3.1
+      env: DB=PGSQL
     - php: 5.5
-      env: DB=MYSQL CORE_RELEASE=3.1
-    - php: 5.4
-      env: DB=MYSQL CORE_RELEASE=3.1 BEHAT_TEST=1
+      env: DB=SQLITE
+    - php: 5.6
+      env: DB=MYSQL PDO=1
+    - php: 5.6
+      env: DB=MYSQL BEHAT_TEST=1
 
 before_script:
- - composer self-update
+ - composer self-update || true
  - phpenv rehash
  - git clone git://github.com/silverstripe-labs/silverstripe-travis-support.git ~/travis-support
  - "if [ \"$BEHAT_TEST\" = \"\" ]; then php ~/travis-support/travis_setup.php --source `pwd` --target ~/builds/ss; fi"
@@ -36,7 +42,7 @@ before_script:
  - php ~/travis-support/travis_setup_php54_webserver.php --if-env BEHAT_TEST
 
 script: 
- - "if [ \"$BEHAT_TEST\" = \"\" ]; then phpunit cms/tests; fi"
+ - "if [ \"$BEHAT_TEST\" = \"\" ]; then vendor/bin/phpunit cms/tests; fi"
  - "if [ \"$BEHAT_TEST\" = \"1\" ]; then vendor/bin/behat @cms; fi"
 
 after_failure:
@@ -48,8 +54,3 @@ branches:
     - 2.2
     - 2.3
     - translation-staging
-
-notifications:
-  irc:
-    channels:
-     - "irc.freenode.org#silverstripe"

@@ -1,0 +1,19 @@
+sk:
+  CMSSettingsController:
+    MENUTITLE: Nastavenia
+  SiteConfig:
+    DEFAULTTHEME: '(Použi predvolenú tému)'
+    EDITHEADER: 'Kto môže editovať stránky na tomto webe?'
+    EDIT_PERMISSION: 'Spravovať konfiguráciu webu'
+    EDIT_PERMISSION_HELP: 'Možnosť meniť globálne prístupové nastavenia/právomoci pre hlavné stránky.'
+    PLURALNAME: 'Konfigurácie webu'
+    SINGULARNAME: 'Konfigurácia webu'
+    SITENAMEDEFAULT: 'Názov vášho webu'
+    SITETAGLINE: 'Slogan stránky'
+    SITETITLE: 'Titulok webu'
+    TABACCESS: Prístup
+    TABMAIN: Hlavné
+    TAGLINEDEFAULT: 'váš citát sem'
+    THEME: Téma
+    TOPLEVELCREATE: 'Kto môže vytvárať koreňové stránky webu?'
+    VIEWHEADER: 'Kto môže vidieť stránky na tomto webe?'

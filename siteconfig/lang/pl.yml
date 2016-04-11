@@ -1,0 +1,19 @@
+pl:
+  CMSSettingsController:
+    MENUTITLE: Ustawienia
+  SiteConfig:
+    DEFAULTTHEME: '(Użyj domyślnego szablonu)'
+    EDITHEADER: 'Kto może edytować strony tego serwisu?'
+    EDIT_PERMISSION: 'Zarządzanie konfiguracją serwisu'
+    EDIT_PERMISSION_HELP: 'Możliwość edycji globalnych ustawień bezpieczeństwa/uprawnień do stron pierwszego poziomu.'
+    PLURALNAME: 'Konfiguracje strony'
+    SINGULARNAME: 'Konfiguracja strony'
+    SITENAMEDEFAULT: 'Nazwa twojego serwisu'
+    SITETAGLINE: 'Slogan serwisu'
+    SITETITLE: 'Tytuł serwisu'
+    TABACCESS: Dostęp
+    TABMAIN: Główny
+    TAGLINEDEFAULT: 'napisz swój slogan tutaj'
+    THEME: Szablon
+    TOPLEVELCREATE: 'Kto może tworzyć strony w korzeniu serwisu?'
+    VIEWHEADER: 'Kto może oglądać strony serwisu?'

@@ -24,7 +24,6 @@ sr:
     FROMCOMPUTER: 'Изаберите датотеке са Вашег рачунара'
     FROMCOMPUTERINFO: 'Постави са Вашег рачунара'
     TOTAL: Укупно
-    TOUPLOAD: 'Изаберите датотеке за постављање...'
     UPLOADINPROGRESS: 'Молимо Вас да сачекате... Постављање је у току'
     UPLOADOR: ИЛИ
   BBCodeParser:
@@ -123,7 +122,6 @@ sr:
     INVALID_REQUEST: 'Погрешан захтев'
   DropdownField:
     CHOOSE: (изаберите)
-    CHOOSESEARCH: '(Изабери или Пронађи)'
   EmailField:
     VALIDATION: 'Унесите адресу е-поште'
   Enum:
@@ -236,7 +234,6 @@ sr:
     many_many_Members: Чланови
   GroupImportForm:
     Help1: '<p>Увези једну или више група у <em>CSV</em> формату (зарезима раздвојене вредности). <small><a href="#" class="toggle-advanced">Прикажи напредно коришћење</a></small></p>'
-    Help2: "<div class=\"advanced\">\n<h4>Напредно коришћење</h4>\n<ul>\n<li>Дозвољене колоне: <em>%s</em></li>\n<li>Постојеће групе се препознају по њиховом јединственом <em>коду</em> и ажурирају новим вредностима из увезене датотеке</li>\n<li>Хијерархије група могу се креирати коришћењем колоне <em>РодитељскиКод</em>.</li>\n<li>Кодови дозвола могу бити додељени помоћу колоне <em>КодДозволе</em>. Постојећи кодови дозволе се не бришу.</li>\n</ul>\n</div>"
     ResultCreated: 'Креирано {count} група'
     ResultDeleted: 'Избрисао %d група'
     ResultUpdated: 'Ажурирано %d група'
@@ -266,15 +263,12 @@ sr:
     FROMWEB: 'Са веба'
     FindInFolder: 'Пронађи у фасцикли'
     IMAGEALT: 'Алтернативни текст (alt)'
-    IMAGEALTTEXT: 'Алтернативни текст (alt) - приказује се ако слика не може бити приказана'
-    IMAGEALTTEXTDESC: 'Приказује се читачима екрана или ако слика не може бити приказана'
     IMAGEDIMENSIONS: Димензије
     IMAGEHEIGHTPX: Висина
     IMAGETITLE: 'Текст наслова (tooltip) - за додатне информације о слици'
     IMAGETITLETEXT: 'Текст наслова (tooltip)'
     IMAGETITLETEXTDESC: 'За додатне информације о слици'
     IMAGEWIDTHPX: Ширина
-    INSERTMEDIA: 'Уметни медијски ресурс'
     LINK: 'Линк'
     LINKANCHOR: 'Сидро на овој страни'
     LINKDESCR: 'Опис линка'
@@ -287,7 +281,6 @@ sr:
     PAGE: Страница
     URL: URL
     URLNOTANOEMBEDRESOURCE: 'URL ''{url}'' не може бити претворен у медијски ресурс.'
-    UpdateMEDIA: 'Ажурирај медијски ресурс'
   Image:
     PLURALNAME: Датотеке
     SINGULARNAME: Датотека
@@ -299,20 +292,14 @@ sr:
   LeftAndMain:
     CANT_REORGANISE: 'Немате право да мењате странице вршног нивоа. Ваше измене нису сачуване.'
     DELETED: Избрисано
-    DropdownBatchActionsDefault: Акције
     HELP: Помоћ
-    PAGETYPE: 'Тип странице'
     PERMAGAIN: 'Одјављени сте са CMS-а. Уколико желите да се поново пријавите, унесите корисничко име и лозинку.'
-    PERMALREADY: 'Не можете да приступите овом делу CMS-а. Ако желите да се пријавите као неко други, урадите то испод'
-    PERMDEFAULT: 'Изаберите методу аутентификације и унесите податке за приступ CMS-у.'
-    PLEASESAVE: 'Сачувајте страну: ова страна не може да буде ажурирана јер још увек није сачувана.'
     PreviewButton: Претходни преглед
     REORGANISATIONSUCCESSFUL: 'Стабло сајта је успешно реорганизовано.'
     SAVEDUP: Сачувано.
     ShowAsList: 'прикажи у виду листе'
     TooManyPages: 'Превише страница'
     ValidationError: 'Грешла при провери исправности'
-    VersionUnknown: Непознато
   LeftAndMain_Menu_ss:
     Hello: Здраво
     LOGOUT: 'Одјави се'
@@ -390,7 +377,6 @@ sr:
     Toggle: 'Прикажи помоћ за форматирање'
   MemberImportForm:
     Help1: '<p>Увези кориснике у <em>CSV</em> формату (зарезима раздвојене вредности). <small><a href="#" class="toggle-advanced">Прикажи напредно коришћење</a></small></p>'
-    Help2: "<div class=\"advanced\"> <h4>Напредно коришћење</h4> <ul> <li>Дозвољене колоне: <em>%s</em></li> <li>Постојеће корисници се препознају по сопственом јединственом својству <em>Кôд</em> и ажурирају новим вредностима из увезене датотеке</li> <li>Групе могу бити додељене помоћу колоне  <em>Групе</em>. Групе се идентификују путем њиховог својства <em>Кôд</em>, а више група се раздваја зарезом. Постојеће чланство у групама се не брише.</li>\n</ul></div>"
     ResultCreated: 'Креирано {count} чланова'
     ResultDeleted: 'Избрисано %d чланова'
     ResultNone: 'Без промена'
@@ -454,7 +440,6 @@ sr:
     SINGULARNAME: Улога
     Title: Наслов
   PermissionRoleCode:
-    PLURALNAME: 'Кодови улога за дозволе'
     PermsError: 'Није могуће доделити кôд  "%s" са привилегованим дозволама (захтева Администраторски приступ)'
     SINGULARNAME: 'Кôд улоге за дозволе'
   Permissions:

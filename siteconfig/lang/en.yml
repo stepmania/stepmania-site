@@ -1,0 +1,23 @@
+en:
+  CMSSettingsController:
+    MENUTITLE: Settings
+  SiteConfig:
+    DEFAULTTHEME: '(Use default theme)'
+    EDITHEADER: 'Who can edit pages on this site?'
+    EDIT_PERMISSION: 'Manage site configuration'
+    EDIT_PERMISSION_HELP: 'Ability to edit global access settings/top-level page permissions.'
+    PLURALNAME: 'Site Configs'
+    SINGULARNAME: 'Site Config'
+    SITENAMEDEFAULT: 'Your Site Name'
+    SITETAGLINE: 'Site Tagline/Slogan'
+    SITETITLE: 'Site title'
+    TABACCESS: Access
+    TABMAIN: Main
+    TAGLINEDEFAULT: 'your tagline here'
+    THEME: Theme
+    TOPLEVELCREATE: 'Who can create pages in the root of the site?'
+    VIEWHEADER: 'Who can view pages on this site?'
+  SiteConfigLeftAndMain:
+    MENUTITLE: Settings
+  SiteTree:
+    TOPLEVELCREATORGROUPS: 'Top level creators'

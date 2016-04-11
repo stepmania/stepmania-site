@@ -121,7 +121,7 @@
 				var compare, selected;
 				
 				// compare mode
-				compare = this.parents("form").find(':input[name=CompareMode]').attr("checked"),
+				compare = this.parents("form").find(':input[name=CompareMode]').attr("checked");
 				selected = this.siblings(".active");
 				
 				if(compare && this.hasClass('active')) {
@@ -132,7 +132,7 @@
 				else if(compare) {
 					// check if we have already selected more than two.
 					if(selected.length > 1) {
-						return alert(ss.i18n._t('ONLYSELECTTWO', 'Can only compare two versions at at time.'));
+						return alert(ss.i18n._t('ONLYSELECTTWO', 'You can only compare two versions at this time.'));
 					}
 				
 					this._select();
@@ -172,6 +172,6 @@
 				this.find(":input[type=checkbox]").attr("checked", true);
 			}
 			
-		})
+		});
 	});
 })(jQuery);

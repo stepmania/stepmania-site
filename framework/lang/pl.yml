@@ -24,7 +24,6 @@ pl:
     FROMCOMPUTER: 'Wybierz pliki z komputera'
     FROMCOMPUTERINFO: 'Załaduj z twojego komputera'
     TOTAL: Razem
-    TOUPLOAD: 'Wybierz pliki do załadowania...'
     UPLOADINPROGRESS: 'Pliki są przesyłane... proszę czekać'
     UPLOADOR: LUB
   BBCodeParser:
@@ -123,7 +122,6 @@ pl:
     INVALID_REQUEST: 'Nieprawidłowe żądanie'
   DropdownField:
     CHOOSE: (wybierz)
-    CHOOSESEARCH: '(Wybierz lub szukaj)'
   EmailField:
     VALIDATION: 'Proszę podaj adres e-mail'
   Enum:
@@ -236,7 +234,6 @@ pl:
     many_many_Members: Użytkownicy
   GroupImportForm:
     Help1: '<p>Zaimportuj użytkowników w <em>formacie CSV</em> (tekst rozdzielany przecinkami). <small><a href="#" class="toggle-advanced">Zaawansowane</a></small></p>'
-    Help2: "<div class=\"advanced\">\n⇥<h4>Użycie zaawansowane</h4>\n⇥<ul>\n⇥<li>Rozpoznawane pola: <em>%s</em></li>\n⇥<li>Istniejące grupy zostaną uaktualnione nowymi wartościami z importowanego pliku. Dopasowanie nastąpi poprzez porównanie z unikalną wartością w polu <em>Code</em>.</li>\n⇥<li>Grupy hierarchiczne mogą zostać utworzone przy pomocy pola <em>ParentCode</em>.</li>\n⇥<li>Kody zezwoleń mogą zostać dodane przy użyciu pola <em>PermissionCode</em>. Istniejące zezwolenia nie zostaną usunięte.</li>\n⇥</ul>\n</div>"
     ResultCreated: 'Stworzono grup: {count}'
     ResultDeleted: 'Usunięto grup: %d'
     ResultUpdated: 'Zaktualizowano grup: %d'
@@ -266,15 +263,12 @@ pl:
     FROMWEB: 'Z WWW'
     FindInFolder: 'Znajdź w Folderze'
     IMAGEALT: 'Tekst alternatywny (alt)'
-    IMAGEALTTEXT: 'Alternatywny tekst (alt) - pokazuje się gdy zdjęcie nie może się wyświetlić'
-    IMAGEALTTEXTDESC: 'Używane przez czytniki ekranu lub gdy obraz nie może zostać wyświetlony'
     IMAGEDIMENSIONS: Rozmiar
     IMAGEHEIGHTPX: Wysokość (px)
     IMAGETITLE: 'Tytuł (tooltip) - dodatkowe informacje o obrazku'
     IMAGETITLETEXT: 'Tytuł (wyskakujący dymek)'
     IMAGETITLETEXTDESC: 'Po dodatkowe informacje o obrazku'
     IMAGEWIDTHPX: Szerokość (px)
-    INSERTMEDIA: 'Wstaw Media'
     LINK: 'Wstaw/edytuj link z podświetlonego tekstu '
     LINKANCHOR: 'Odnośnik na tej stronie'
     LINKDESCR: 'Opis linku'
@@ -287,7 +281,6 @@ pl:
     PAGE: Strona
     URL: Adres URL
     URLNOTANOEMBEDRESOURCE: 'Adres URL ''{url}'' nie mógł zostać przekształcony w zasób medialny'
-    UpdateMEDIA: 'Zaktualizuj Media'
   Image:
     PLURALNAME: Pliki
     SINGULARNAME: Plik
@@ -299,20 +292,14 @@ pl:
   LeftAndMain:
     CANT_REORGANISE: 'Nie masz uprawnień by zmieniać strony na najwyższym poziomie. Twoje zmiany nie zostały zapisane.'
     DELETED: Usunięto.
-    DropdownBatchActionsDefault: Akcje
     HELP: Pomoc
-    PAGETYPE: 'Rodzaj strony:'
     PERMAGAIN: 'Zostałeś wylogowany z CMSa. Jeśli chcesz zalogować się ponownie, wpisz login i hasło poniżej.'
-    PERMALREADY: 'Niestety nie masz dostępu do tej części CMS. Jeśli chcesz zalogować się jako ktoś inny, zrób to poniżej'
-    PERMDEFAULT: 'Proszę wybrać metodę identyfikacji i wpisać swoje dane, aby uruchomić CMSa.'
-    PLEASESAVE: 'Proszę zapisać stronę. Ta strona nie mogła zostać uaktualniona, ponieważ nie została jeszcze zapisana.'
     PreviewButton: Podgląd
     REORGANISATIONSUCCESSFUL: 'Pomyślnie zreorganizowano drzewo serwisu.'
     SAVEDUP: Zapisano.
     ShowAsList: 'pokaż jako listę'
     TooManyPages: 'Zbyt wiele stron'
     ValidationError: 'Błąd walidacji'
-    VersionUnknown: Nieznany
   LeftAndMain_Menu_ss:
     Hello: Witaj
     LOGOUT: 'Wyloguj się'
@@ -390,7 +377,6 @@ pl:
     Toggle: 'Pokaż pomoc formatowania'
   MemberImportForm:
     Help1: '<p>Zaimportuj użytkowników w <em>formacie CSV</em> (tekst rozdzielany przecinkami). <small><a href="#" class="toggle-advanced">Zaawansowane</a></small></p>'
-    Help2: "<div class=\"advanced\">\n⇥<h4>Użycie zaawansowane</h4>\n⇥<ul>\n⇥<li>Rozpoznawane pola: <em>%s</em></li>\n⇥<li>Istniejący użytkownicy zostaną uaktualnieni nowymi wartościami z importowanego pliku. Dopasowanie nastąpi poprzez porównanie z unikalną wartością w polu <em>Code</em>.</li>\n⇥<li>Grupy mogą zostać przydzielone przy użyciu pola <em>Groups</em>. Do grup należy odnieść się poprzez ich własność <em>Code</em>. Jeśli dodawanych jest wiele grup, należy je oddzielić przecinkiem. Istniejące przynależności do grup nie zostaną usunięte.</li>\n⇥</ul>\n</div>"
     ResultCreated: 'Utworzono {count} użytkowników'
     ResultDeleted: 'Usunięto %d użytkowników'
     ResultNone: 'Bez zmian'
@@ -454,7 +440,6 @@ pl:
     SINGULARNAME: Rola
     Title: Tytuł
   PermissionRoleCode:
-    PLURALNAME: 'Kod roli uprawnień'
     PermsError: 'Nie można przyporządkować uprzywilejowanego uprawnienia "%s" (wymagane uprawnienie ADMIN)'
     SINGULARNAME: 'Kod roli uprawnienia'
   Permissions:
@@ -471,6 +456,7 @@ pl:
     ERRORPASSWORDPERMISSION: 'Musisz być zalogowany aby zmienić hasło'
     LOGGEDOUT: 'Zostałeś wylogowany. Jeśli chcesz się zalogować ponownie wpisz dane poniżej'
     LOGIN: 'Logowanie'
+    LOSTPASSWORDHEADER: 'Nie pamiętam hasła'
     NOTEPAGESECURED: 'Ta strona jest zabezpieczona. Wpisz swoje dane a my wyślemy Ci potwierdzenie niebawem'
     NOTERESETLINKINVALID: '<p>Link resetujący hasło wygasł lub jest nieprawidłowy.</p><p>Możesz poprosić o nowy <a href="{link1}">tutaj</a> lub zmień swoje hasło po <a href="{link2}">zalogowaniu się</a>.</p>'
     NOTERESETPASSWORD: 'Wpisz adres e-mail, na który mamy wysłać link gdzie możesz zresetować swoje hasło'

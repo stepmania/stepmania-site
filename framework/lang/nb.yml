@@ -24,7 +24,6 @@ nb:
     FROMCOMPUTER: 'Velg filer fra din pc'
     FROMCOMPUTERINFO: 'Last opp fra din pc'
     TOTAL: Total
-    TOUPLOAD: 'Velg filer til opplasting ...'
     UPLOADINPROGRESS: 'Vennligst vent... opplasting pågår'
     UPLOADOR: ELLER
   BBCodeParser:
@@ -192,7 +191,7 @@ nb:
     FilterBy: 'Filtrer på '
     Find: Finn
     LEVELUP: 'Opp ett nivå'
-    LinkExisting: 'Eksisterende lenke'
+    LinkExisting: 'Knytt til eksisterende'
     NewRecord: 'Ny %s'
     NoItemsFound: 'Ingen elementer ble funnet'
     PRINTEDAT: 'Skrevet ut ved'
@@ -223,6 +222,7 @@ nb:
     DefaultGroupTitleContentAuthors: 'Innholdsforfattere'
     Description: Beskrivelse
     GroupReminder: 'Hvis du velger en overordnet gruppe, vil denne gruppen arve alle rollene'
+    HierarchyPermsError: 'Kan ikke angi overordnet gruppe "%s" med administratorrettigheter (krever ADMIN-tilgang)'
     Locked: 'Låst?'
     NoRoles: 'Ingen roller funnet'
     PLURALNAME: Grupper
@@ -234,7 +234,6 @@ nb:
     many_many_Members: Medlemmer
   GroupImportForm:
     Help1: '<p>Importer en eller flere grupper i <em>CSV</em>-format (kommaseparerte verdier). <small><a href="#" class="toggle-advanced">Vis avanserte alternativer</a></small></p>'
-    Help2: "<div class=\"advanced\">\n<h4>Avanserte alternativer</h4>\n<ul>\n<li>Tillatte kolonner: <em>%s</em></li>\n<li>Eksisterende grupper matches mot deres <em>Code</em>-verdi og oppdateres med nye verdier fra den importerte filen.</li>\n<li>Gruppehierarkier kan bli opprettet ved å benytte en <em>ParentCode</em>-kolonne.</li>\n<li>Tillatelseskoder kan bli angitt med <em>PermissionCode</em>-kolonnen. Eksisterende tillatelselskoder blir ikke fjernet.</li>\n</ul>\n</div>"
     ResultCreated: 'Opprettet {count} grupper'
     ResultDeleted: 'Slettet %d grupper'
     ResultUpdated: 'Oppdaterte %d grupper'
@@ -270,7 +269,6 @@ nb:
     IMAGETITLETEXT: 'Titteltekst (tooltip)'
     IMAGETITLETEXTDESC: 'For tilleggsinformasjon om bilde'
     IMAGEWIDTHPX: Bredde
-    INSERTMEDIA: 'Sett inn media'
     LINK: 'Sett inn/rediger lenke i fremhevet tekst'
     LINKANCHOR: 'Lenke på denne siden'
     LINKDESCR: 'Lenkebeskrivelse'
@@ -283,7 +281,6 @@ nb:
     PAGE: Side
     URL: Nettadresse
     URLNOTANOEMBEDRESOURCE: 'Nettadressen ''{url}'' kunne ikke bli omgjort til en medieressurs.'
-    UpdateMEDIA: 'Oppdater media'
   Image:
     PLURALNAME: Filer
     SINGULARNAME: Fil
@@ -295,20 +292,14 @@ nb:
   LeftAndMain:
     CANT_REORGANISE: 'Du har ikke tilgang til å endre toppnivåsider. Endringen din ble ikke lagret.'
     DELETED: Slettet.
-    DropdownBatchActionsDefault: Handlinger
     HELP: Hjelp
-    PAGETYPE: 'Side-type'
     PERMAGAIN: 'Du har blitt logget ut av publiseringssystemet. Hvis du vil logge deg på igjen, skriv inn brukernavn og passord under.'
-    PERMALREADY: 'Beklager, men du har ikke tilgang til denne delen av publiseringssystemet. Hvis du vil logge inn som en annen bruker, gjør det nedenfor.'
-    PERMDEFAULT: 'Vennligst velg en autentiseringsmetode og skriv inn brukernavn og passord for å få tilgang til publiseringssystemet.'
-    PLEASESAVE: 'Vennligst lagre siden: Denne siden kunne ikke oppdateres fordi den ikke har blitt lagret ennå.'
     PreviewButton: Forhåndsvisning
     REORGANISATIONSUCCESSFUL: 'Omorganisering av sidetreet vellykket'
     SAVEDUP: Lagret.
     ShowAsList: 'vis som liste'
     TooManyPages: 'For mange sider'
     ValidationError: 'Valideringsfeil'
-    VersionUnknown: Ukjent
   LeftAndMain_Menu_ss:
     Hello: Hei
     LOGOUT: 'Logg ut'
@@ -336,6 +327,7 @@ nb:
     ERRORLOCKEDOUT2: 'Din konto har blitt midlertidig sperret på grunn av for mange mislykkede forsøk på å logge inn. Vennligst prøv igjen om {count} minutter.'
     ERRORNEWPASSWORD: 'Du har tastet inn nye passord forskjellig, vennligst prøv igjen.'
     ERRORPASSWORDNOTMATCH: 'Passordene stemmer ikke overens, vennligst prøv igjen.'
+    ERRORWRONGCRED: 'Det ser ikke ut til å være riktig epostadresse eller passord. Vennligst prøv igjen.'
     FIRSTNAME: 'Fornavn'
     INTERFACELANG: 'Språk på grensesnitt'
     INVALIDNEWPASSWORD: 'Vi kunne ikke godkjenne passordet: {password}'
@@ -385,7 +377,6 @@ nb:
     Toggle: 'Vis formateringshjelp'
   MemberImportForm:
     Help1: '<p>Importer brukere i <em>CSV-format</em> (verdier adskilt med komma). <small><a href="#" class="toggle-advanced">Vis avanserte alternativer</a></small></p>'
-    Help2: "<div class=\"advanced\">\n<h4>Avanserte alternativer</h4>\n<ul>\n<li>Tillatte kolonner: <em>%s</em></li>\n<li>Eksisterende brukere blir matchet mot deres unike <em>Code</em> og oppdatert med nye verdier fra den importerte filen.</li>\n<li>Grupper kan angis med  <em>Groups</em>-kolonnen. Grupper er identifisert ved deres <em>Code</em>. Grupper kan adskilles med komma. Eksisterende gruppemedlemskap blir ikke fjernet.</li>\n</ul>\n</div>"
     ResultCreated: 'Opprettet {count} medlemmer'
     ResultDeleted: 'Slettet %d medlemmer'
     ResultNone: 'Ingen endringer'
@@ -449,7 +440,7 @@ nb:
     SINGULARNAME: Rolle
     Title: Tittel
   PermissionRoleCode:
-    PLURALNAME: 'Koder for tillatelser'
+    PermsError: 'Kan ikke angi kode "%s" med administratorrettigheter (krever ADMIN-tilgang)'
     SINGULARNAME: 'Tillatelseskode'
   Permissions:
     PERMISSIONS_CATEGORY: 'Rolle- og tilgangstillatelser'
@@ -465,6 +456,7 @@ nb:
     ERRORPASSWORDPERMISSION: 'Du må logge inn for å bytte passord.'
     LOGGEDOUT: 'Du har blitt logget ut. Hvis du vil logge inn igjen, så gjør du det under.'
     LOGIN: 'Logg inn'
+    LOSTPASSWORDHEADER: 'Mistet passord'
     NOTEPAGESECURED: 'Den siden er sikret. Skriv inn gyldig innloggingsinfo så kommer du inn.'
     NOTERESETLINKINVALID: '<p>Lenken for å nullstille passordet er ugyldig eller utgått.</p><p>Du kan kreve en ny <a href="{link1}">her</a> eller endre passordet etter at du har <a href="{link2}">logget inn</a>.</p>'
     NOTERESETPASSWORD: 'Skriv inn epostadressen din og vi vil sende deg en lenke som nullstiller passordet.'

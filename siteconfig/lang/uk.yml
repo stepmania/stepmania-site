@@ -1,0 +1,17 @@
+uk:
+  CMSSettingsController:
+    MENUTITLE: Налаштування
+  SiteConfig:
+    DEFAULTTHEME: '(Використовувати тему за замовчуванням)'
+    EDITHEADER: 'Хто може редагувати сторінки на цьому сайті?'
+    EDIT_PERMISSION: 'Керувати конфігурацією сайту'
+    EDIT_PERMISSION_HELP: 'Можливість редагування глобальних налаштувань доступу / дозволів сторінок верхнього рівня.'
+    SITENAMEDEFAULT: 'Назва Вашого Сайту'
+    SITETAGLINE: 'Гасло сайту'
+    SITETITLE: 'Заголовок сайту'
+    TABACCESS: Доступ
+    TABMAIN: Головна
+    TAGLINEDEFAULT: 'тут ваш слоган'
+    THEME: Тема оформлення
+    TOPLEVELCREATE: 'Хто може створювати сторінки верхнього рівня на сайті?'
+    VIEWHEADER: 'Хто може переглядати сторінки на цьому сайті?'

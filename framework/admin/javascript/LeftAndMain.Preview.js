@@ -1,4 +1,5 @@
 (function($) {
+
 	$.entwine('ss.preview', function($){
 
 		/**
@@ -179,18 +180,14 @@
 			 * Store the preview options for this page.
 			 */
 			saveState : function(name, value) {
-				if(!window.localStorage) return;
-				
-				window.localStorage.setItem('cms-preview-state-' + name, value);
+				if(this._supportsLocalStorage()) window.localStorage.setItem('cms-preview-state-' + name, value);
 			},
 
 			/**
 			 * Load previously stored preferences
 			 */
 			loadState : function(name) {
-				if(!window.localStorage) return;
-				
-				return window.localStorage.getItem('cms-preview-state-' + name);
+				if(this._supportsLocalStorage()) return window.localStorage.getItem('cms-preview-state-' + name);
 			}, 
 
 			/**
@@ -276,6 +273,37 @@
 
 				this._super();
 			},
+			
+			/**
+			* Detect and use localStorage if available. In IE11 windows 8.1 call to window.localStorage was throwing out an access denied error in some cases which was causing the preview window not to display correctly in the CMS admin area.
+			*/
+			_supportsLocalStorage: function() {
+				var uid = new Date;
+				var storage;
+				var result;
+				try {
+					(storage = window.localStorage).setItem(uid, uid);
+					result = storage.getItem(uid) == uid;
+					storage.removeItem(uid);
+					return result && storage;
+				} catch (exception) {
+					console.warn('localStorge is not available due to current browser / system settings.');
+				}
+			},
+
+			onenable: function () {
+				var $viewModeSelector = $('.preview-mode-selector');
+
+				$viewModeSelector.removeClass('split-disabled');
+				$viewModeSelector.find('.disabled-tooltip').hide();
+			},
+
+			ondisable: function () {
+				var $viewModeSelector = $('.preview-mode-selector');
+
+				$viewModeSelector.addClass('split-disabled');
+				$viewModeSelector.find('.disabled-tooltip').show();
+			},
 
 			/**
 			 * Set the preview to unavailable - could be still visible. This is purely visual.
@@ -326,7 +354,10 @@
 			 * Update preview whenever any panels are reloaded.
 			 */
 			'from .cms-container': {
-				onafterstatechange: function(){
+				onafterstatechange: function(e, data) {
+					// Don't update preview if we're dealing with a custom redirect
+					if(data.xhr.getResponseHeader('X-ControllerURL')) return;
+
 					this._initialiseFromContent();
 				}
 			},
@@ -517,7 +548,8 @@
 		});
 
 		$('.cms-edit-form').entwine({
-			onadd: function() {	
+			onadd: function() {
+				this._super();
 				$('.cms-preview')._initialiseFromContent();
 			}
 		});
@@ -564,7 +596,7 @@
 					.trigger('liszt:updated')
 					._addIcon();
 			}
-		});	
+		});
 
 		$('.preview-mode-selector select').entwine({
 			/**
@@ -585,7 +617,7 @@
 			 *  IE8 doesn't support programatic access to onchange event 
 			 *	so react on click
 			 */
-			onclick:function(e){				
+			onclick:function(e){
 				if ($.browser.msie) {
 					e.preventDefault();					
 					var index = this.index();
@@ -603,8 +635,16 @@
 		$('.cms-preview.column-hidden').entwine({
 			onmatch: function() {
 				$('#preview-mode-dropdown-in-content').show();
+				// Alert the user as to why the preview is hidden
+				if ($('.cms-preview .result-selected').hasClass('font-icon-columns')) {
+					statusMessage(ss.i18n._t(
+						'LeftAndMain.DISABLESPLITVIEW',
+						"Screen too small to show site preview in split mode"),
+					"error");
+				}
 				this._super();
 			},
+
 			onunmatch: function() {
 				$('#preview-mode-dropdown-in-content').hide();
 				this._super();
@@ -754,6 +794,16 @@
 			}
 		}); */
 
+		$('.preview-mode-selector .chzn-drop li:last-child').entwine({
+			onmatch: function () {
+				if ($('.preview-mode-selector').hasClass('split-disabled')) {
+					this.parent().append('<div class="disabled-tooltip"></div>');
+				} else {
+					this.parent().append('<div class="disabled-tooltip" style="display: none;"></div>');
+				}
+			}
+		});
+
 		/**
 		 * Recalculate the preview space to allow for horizontal scrollbar and the preview actions panel
 		 */
@@ -786,11 +836,9 @@
 		/**
 		 * Rotate preview to landscape
 		 */
-		$('.preview-device-outer').click(function() {
-			if(!$('.preview-device-outer').hasClass('rotate')) {
-				$('.preview-device-outer').addClass('rotate');
-			} else {
-				$('.preview-device-outer').removeClass('rotate');
+		$('.preview-device-outer').entwine({
+			onclick: function () {
+				this.toggleClass('rotate');
 			}
 		});
 	});

@@ -1,0 +1,19 @@
+th:
+  CMSSettingsController:
+    MENUTITLE: ตั้งค่า
+  SiteConfig:
+    DEFAULTTHEME: '(ใช้ชุดธีมเริ่มต้น)'
+    EDITHEADER: 'ใครสามารถแก้ไขหน้าเว็บบนเว็บไซต์นี้ได้บ้าง?'
+    EDIT_PERMISSION: 'การจัดการการกำหนดค่าของเว็บไซต์'
+    EDIT_PERMISSION_HELP: 'สามารถแก้ไขการตั้งค่าการเข้าถึงระบบโดยรวมได้/แก้ไขสิทธิ์หน้าเว็บในระดับสูงสุดได้'
+    PLURALNAME: 'กำหนดค่าเว็บไซต์'
+    SINGULARNAME: 'กำหนดค่าเว็บไซต์'
+    SITENAMEDEFAULT: 'ชื่อเว็บไซต์ของคุณ'
+    SITETAGLINE: 'สโลแกนของเว็บไซต์'
+    SITETITLE: 'ชื่อเว็บไซต์'
+    TABACCESS: เข้าถึง
+    TABMAIN: หน้าหลัก
+    TAGLINEDEFAULT: 'กรอกสโลแกนของคุณลงที่นี่'
+    THEME: ชุดธีม
+    TOPLEVELCREATE: 'ใครบ้างที่สามารถสร้างหน้าเว็บที่ตำแหน่ง root ของเว็บไซต์ได้?'
+    VIEWHEADER: 'ใครบ้่างที่สามารถเปิดดูหน้าเว็บบนเว็บไซต์นี้ได้?'

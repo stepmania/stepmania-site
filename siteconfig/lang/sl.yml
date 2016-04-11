@@ -1,0 +1,15 @@
+sl:
+  SiteConfig:
+    DEFAULTTHEME: '(Uporabi privzeto temo)'
+    EDITHEADER: 'Kdo lahko ureja strani na tem spletnem mestu?'
+    EDIT_PERMISSION: 'Upravljanje nastavitev spletnega mesta'
+    EDIT_PERMISSION_HELP: 'Možnost upravljanja z dostopom na najvišji ravni'
+    SITENAMEDEFAULT: 'Naziv vašega spletnega mesta'
+    SITETAGLINE: 'Slogan'
+    SITETITLE: 'Naslov spletnega mesta (title)'
+    TABACCESS: Dostop
+    TABMAIN: Domov
+    TAGLINEDEFAULT: 'sem vpišite slogan'
+    THEME: Tema
+    TOPLEVELCREATE: 'Kdo lahko ustvarja glavne strani (na prvem nivoju)?'
+    VIEWHEADER: 'Kdo lahko vidi strani na tem spletnem mestu?'

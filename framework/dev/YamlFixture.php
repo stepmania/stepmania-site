@@ -126,13 +126,13 @@ class YamlFixture extends Object {
 	/**
 	 * Get the ID of an object from the fixture.
 	 *
-	 * @deprecated 3.1 Use writeInto() and FixtureFactory accessors instead
+	 * @deprecated 4.0 Use writeInto() and FixtureFactory accessors instead
 	 * 
 	 * @param $className The data class, as specified in your fixture file.  Parent classes won't work
 	 * @param $identifier The identifier string, as provided in your fixture file
 	 */
 	public function idFromFixture($className, $identifier) {
-		Deprecation::notice('3.1', 'Use writeInto() and FixtureFactory accessors instead');
+		Deprecation::notice('4.0', 'Use writeInto() and FixtureFactory accessors instead');
 
 		if(!$this->factory) $this->factory = Injector::inst()->create('FixtureFactory');
 		return $this->factory->getId($className, $identifier);
@@ -142,12 +142,12 @@ class YamlFixture extends Object {
 	/**
 	 * Return all of the IDs in the fixture of a particular class name.
 	 *
-	 * @deprecated 3.1 Use writeInto() and FixtureFactory accessors instead
+	 * @deprecated 4.0 Use writeInto() and FixtureFactory accessors instead
 	 * 
 	 * @return A map of fixture-identifier => object-id
 	 */
 	public function allFixtureIDs($className) {
-		Deprecation::notice('3.1', 'Use writeInto() and FixtureFactory accessors instead');
+		Deprecation::notice('4.0', 'Use writeInto() and FixtureFactory accessors instead');
 
 		if(!$this->factory) $this->factory = Injector::inst()->create('FixtureFactory');
 		return $this->factory->getIds($className);
@@ -156,13 +156,13 @@ class YamlFixture extends Object {
 	/**
 	 * Get an object from the fixture.
 	 *
-	 * @deprecated 3.1 Use writeInto() and FixtureFactory accessors instead
+	 * @deprecated 4.0 Use writeInto() and FixtureFactory accessors instead
 	 * 
 	 * @param $className The data class, as specified in your fixture file.  Parent classes won't work
 	 * @param $identifier The identifier string, as provided in your fixture file
 	 */
 	public function objFromFixture($className, $identifier) {
-		Deprecation::notice('3.1', 'Use writeInto() and FixtureFactory accessors instead');
+		Deprecation::notice('4.0', 'Use writeInto() and FixtureFactory accessors instead');
 
 		if(!$this->factory) $this->factory = Injector::inst()->create('FixtureFactory');
 		return $this->factory->get($className, $identifier);
@@ -176,10 +176,10 @@ class YamlFixture extends Object {
 	 * the record is written twice: first after populating all non-relational fields,
 	 * then again after populating all relations (has_one, has_many, many_many).
 	 *
-	 * @deprecated 3.1 Use writeInto() and FixtureFactory instance instead
+	 * @deprecated 4.0 Use writeInto() and FixtureFactory instance instead
 	 */
 	public function saveIntoDatabase(DataModel $model) {
-		Deprecation::notice('3.1', 'Use writeInto() and FixtureFactory instance instead');
+		Deprecation::notice('4.0', 'Use writeInto() and FixtureFactory instance instead');
 
 		if(!$this->factory) $this->factory = Injector::inst()->create('FixtureFactory');
 		$this->writeInto($this->factory);

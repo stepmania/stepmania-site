@@ -27,6 +27,9 @@ error_reporting(E_ALL | E_STRICT);
  */
 require_once dirname(__FILE__).'/Constants.php';
 
+global $_increase_time_limit_max;
+$_increase_time_limit_max = -1;
+
 /**
  * Priorities definition. These constants are used in calls to _t() as an optional argument
  */
@@ -82,11 +85,9 @@ require_once 'core/manifest/TemplateManifest.php';
 require_once 'core/manifest/TokenisedRegularExpression.php';
 require_once 'control/injector/Injector.php';
 
-// Initialise the dependency injector as soon as possible, as it is 
+// Initialise the dependency injector as soon as possible, as it is
 // subsequently used by some of the following code
 $injector = new Injector(array('locator' => 'SilverStripeServiceConfigurationLocator'));
-$injector->registerService(Config::inst());
-
 Injector::set_inst($injector);
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -95,9 +96,9 @@ Injector::set_inst($injector);
 // Regenerate the manifest if ?flush is set, or if the database is being built.
 // The coupling is a hack, but it removes an annoying bug where new classes
 // referenced in _config.php files can be referenced during the build process.
-$flush = (isset($_GET['flush']) || isset($_REQUEST['url']) && (
-	$_REQUEST['url'] == 'dev/build' || $_REQUEST['url'] == BASE_URL . '/dev/build'
-));
+$requestURL = isset($_REQUEST['url']) ? trim($_REQUEST['url'], '/') : false;
+$flush = (isset($_GET['flush']) || $requestURL === trim(BASE_URL . '/dev/build', '/'));
+
 global $manifest;
 $manifest = new SS_ClassManifest(BASE_PATH, false, $flush);
 
@@ -111,16 +112,17 @@ if(file_exists(BASE_PATH . '/vendor/autoload.php')) {
 	require_once BASE_PATH . '/vendor/autoload.php';
 }
 
-// Now that the class manifest is up, load the configuration
+// Now that the class manifest is up, load the static configuration
 $configManifest = new SS_ConfigStaticManifest(BASE_PATH, false, $flush);
 Config::inst()->pushConfigStaticManifest($configManifest);
 
-// Now that the class manifest is up, load the configuration
+// And then the yaml configuration
 $configManifest = new SS_ConfigManifest(BASE_PATH, false, $flush);
 Config::inst()->pushConfigYamlManifest($configManifest);
 
+// Load template manifest
 SS_TemplateLoader::instance()->pushManifest(new SS_TemplateManifest(
-	BASE_PATH, project(), false, isset($_GET['flush'])
+	BASE_PATH, project(), false, $flush
 ));
 
 // If in live mode, ensure deprecation, strict and notices are not reported
@@ -174,21 +176,21 @@ function _t($entity, $string = "", $context = "", $injection = "") {
  * Increase the memory limit to the given level if it's currently too low.
  * Only increases up to the maximum defined in {@link set_increase_memory_limit_max()},
  * and defaults to the 'memory_limit' setting in the PHP configuration.
- * 
+ *
  * @param A memory limit string, such as "64M".  If omitted, unlimited memory will be set.
  * @return Boolean TRUE indicates a successful change, FALSE a denied change.
  */
 function increase_memory_limit_to($memoryLimit = -1) {
 	$curLimit = ini_get('memory_limit');
-	
+
 	// Can't go higher than infinite
 	if($curLimit == -1 ) return true;
-	
+
 	// Check hard maximums
 	$max = get_increase_memory_limit_max();
 
 	if($max && $max != -1 && trANSLATE_MEMSTRING($memoryLimit) > translate_memstring($max)) return false;
-	
+
 	// Increase the memory limit if it's too low
 	if($memoryLimit == -1 || translate_memstring($memoryLimit) > translate_memstring($curLimit)) {
 		ini_set('memory_limit', $memoryLimit);
@@ -203,7 +205,7 @@ $_increase_memory_limit_max = ini_get('memory_limit');
  * Set the maximum allowed value for {@link increase_memory_limit_to()}.
  * The same result can also be achieved through 'suhosin.memory_limit'
  * if PHP is running with the Suhosin system.
- * 
+ *
  * @param Memory limit string
  */
 function set_increase_memory_limit_max($memoryLimit) {
@@ -234,7 +236,7 @@ function increase_xdebug_nesting_level_to($limit) {
 
 /**
  * Turn a memory string, such as 512M into an actual number of bytes.
- * 
+ *
  * @param A memory limit string, such as "64M"
  */
 function translate_memstring($memString) {
@@ -250,14 +252,14 @@ function translate_memstring($memString) {
  * Increase the time limit of this script. By default, the time will be unlimited.
  * Only works if 'safe_mode' is off in the PHP configuration.
  * Only values up to {@link get_increase_time_limit_max()} are allowed.
- * 
+ *
  * @param $timeLimit The time limit in seconds.  If omitted, no time limit will be set.
  * @return Boolean TRUE indicates a successful change, FALSE a denied change.
  */
 function increase_time_limit_to($timeLimit = null) {
 	$max = get_increase_time_limit_max();
-	if($max != -1 && $timeLimit > $max) return false;
-	
+	if($max != -1 && $max != null && $timeLimit > $max) return false;
+
 	if(!ini_get('safe_mode')) {
 		if(!$timeLimit) {
 			set_time_limit(0);
@@ -267,7 +269,7 @@ function increase_time_limit_to($timeLimit = null) {
 			// Only increase if its smaller
 			if($currTimeLimit && $currTimeLimit < $timeLimit) {
 				set_time_limit($timeLimit);
-			} 
+			}
 			return true;
 		}
 	} else {
@@ -275,11 +277,9 @@ function increase_time_limit_to($timeLimit = null) {
 	}
 }
 
-$_increase_time_limit_max = -1;
-
 /**
  * Set the maximum allowed value for {@link increase_timeLimit_to()};
- * 
+ *
  * @param Int Limit in seconds
  */
 function set_increase_time_limit_max($timeLimit) {

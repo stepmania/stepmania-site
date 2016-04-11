@@ -1,0 +1,19 @@
+nb:
+  CMSSettingsController:
+    MENUTITLE: Innstillinger
+  SiteConfig:
+    DEFAULTTHEME: '(Bruk standard utseende)'
+    EDITHEADER: 'Hvem kan redigere sider på dette nettstedet?'
+    EDIT_PERMISSION: 'Behandle nettstedskonfigurasjon'
+    EDIT_PERMISSION_HELP: 'Lar deg endre globale adgangsinnstillinger og tillatelser for toppnivåsider.'
+    PLURALNAME: 'Nettstedskonfigurasjoner'
+    SINGULARNAME: 'Nettstedskonfigurasjon'
+    SITENAMEDEFAULT: 'Nettstedsnavn'
+    SITETAGLINE: 'Slagord for nettstedet'
+    SITETITLE: 'Tittel for nettstedet'
+    TABACCESS: Tilgang
+    TABMAIN: Hovedinnstillinger
+    TAGLINEDEFAULT: 'slagordet ditt her'
+    THEME: Utseende
+    TOPLEVELCREATE: 'Hvem kan opprette toppnivåsider på dette nettstedet?'
+    VIEWHEADER: 'Hvem kan se sider på dette nettstedet?'

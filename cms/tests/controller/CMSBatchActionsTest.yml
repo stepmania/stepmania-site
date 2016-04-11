@@ -1,0 +1,15 @@
+SiteTree:
+  published:
+    Title: Published
+  archived:
+    Title: 'Parent Archived'
+  unpublished:
+    Title: unpublished
+  modified:
+    Title: modified1
+  archivedx:
+    Title: 'Archived: Child1'
+    Parent: =>SiteTree.archived
+  archivedy:
+    Title: 'Archived: Child2'
+    Parent: =>SiteTree.archived

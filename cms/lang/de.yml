@@ -19,12 +19,12 @@ de:
     FROMYOURCOMPUTER: 'Von Ihrem Computer'
     Filetype: 'Dateityp'
     ListView: 'Listenansicht'
+    MENUTITLE: Dateien
     NEWFOLDER: Neuer Ordner
     SIZE: Größe
     THUMBSDELETED: '{count} unbenutzte Vorschaubilder wurden gelöscht'
     TreeView: 'Baumansicht'
     Upload: Hochladen
-    MENUTITLE: Dateien
   AssetAdmin_DeleteBatchAction:
     TITLE: 'Ordner löschen'
   AssetAdmin_Tools:
@@ -61,20 +61,27 @@ de:
   CMSAddPageController:
     Title: 'Seite hinzufügen'
   CMSBatchActions:
+    ARCHIVE: Archivieren
+    ARCHIVED_PAGES: '%d Seiten archiviert'
     DELETED_DRAFT_PAGES: '%d Seiten wurden von der Entwurfs-Site gelöscht, %d Fehler'
     DELETED_PAGES: '%d Seiten wurden von der veröffentlichten Site gelöscht, %d Fehler'
     DELETE_DRAFT_PAGES: 'Von der Entwurfsansicht löschen'
     DELETE_PAGES: 'Von veröffentlichter Site löschen'
     PUBLISHED_PAGES: '%d Seiten veröffentlicht, %d Fehler'
     PUBLISH_PAGES: Veröffentlichen
-    UNPUBLISHED_PAGES: 'Veröffentlichung von %d Seiten zurückgenommen'
-    UNPUBLISH_PAGES: Veröffentlichung zurücknehmen
+    RESTORE: Wiederherstellen
+    RESTORED_PAGES: '%d Seiten wiederhergestellt'
+  CMSFileAddController:
+    MENUTITLE: Dateien
   CMSMain:
     ACCESS: 'Zugang zum Bereich ''{title}'''
     ACCESS_HELP: 'Seiteninhalt im CMS anzeigen. Anzeige- und Bearbeitungsberechtigungen können sowohl seitenspezifische als auch über die globalen Inhaltsberechtigungen gesetzt werden.'
+    ARCHIVE: Archiv
+    ARCHIVEDPAGE: 'Seite ''%s'' archiviert'
     AddNew: 'Neue Seite hinzufügen'
     AddNewButton: 'Hinzufügen'
     AddPageRestriction: 'Hinweis: einige Seitentypen sind in diesem Bereich nicht erlaubt.'
+    Cancel: Abbrechen
     ChoosePageParentMode: 'Wo soll diese Seite erstellt werden?'
     ChoosePageType: 'Seitentyp auswählen'
     Create: Erstellen
@@ -85,12 +92,10 @@ de:
     DUPLICATEDWITHCHILDREN: '''{title}'' und alle Unterseiten wurden erfolgreich dupliziert'
     EMAIL: E-Mail
     EditTree: 'Seitenbaum bearbeiten'
-    ListFiltered: 'Gefilterte Liste'
+    MENUTITLE: 'Seite bearbeiten'
     NEWPAGE: 'Neue {pagetype}'
     PAGENOTEXISTS: 'Diese Seite existiert nicht'
-    PAGES: Seiten
     PAGETYPEANYOPT: Alle
-    PAGETYPEOPT: 'Seitentyp'
     PUBALLCONFIRM: 'Veröffentlicht jede Seite des Seitenbaumes und kopiert den Inhalt von Entwurf zu Live.'
     PUBALLFUN: '"Alle veröffentlichen"-Funktion'
     PUBALLFUN2: "Dieser Button bewirkt dasselbe wie auf jeder Seite \"veröffentlichen\" zu wählen. Sie sollten diese Funktion nutzen, wenn grössere Inhaltsänderungen stattgefunden haben, zum Beispiel wenn die Seite erstellt wurde."
@@ -99,8 +104,10 @@ de:
     REMOVED: 'Lösche ''{title}''{description} von Live Umgebung'
     REMOVEDPAGE: '''{title}'' wurde von der veröffentlichten Site entfernt'
     REMOVEDPAGEFROMDRAFT: 'Lösche ''%s'' von der Entwurfs-Site'
-    RESTORE: Wiederherstellen
     RESTORED: '''{title}'' wurde wiederhergestellt'
+    RESTORE_DESC: 'Entwurf aus archivierter Version wiederherstellen'
+    RESTORE_TO_ROOT: 'Entwurf in oberster Ebene wiederherstellen'
+    RESTORE_TO_ROOT_DESC: 'Archivierte Version als Entwurf in oberster Ebene wiederherstellen'
     ROLLBACK: 'Diese Version wiederherstellen'
     ROLLEDBACKPUBv2: 'Veröffentlichte Version wiederhergestellt'
     ROLLEDBACKVERSIONv2: 'Version #%d wiederhergestellt.'
@@ -109,53 +116,53 @@ de:
     TabContent: Inhalt
     TabHistory: Historie
     TabSettings: Einstellungen
-    TreeFiltered: 'Seitenbaum gefiltert'
-    TreeFilteredClear: 'Filter zurücksetzen'
-    MENUTITLE: 'Seite bearbeiten'
   CMSMain_left_ss:
-    APPLY_FILTER: 'Filter anwenden'
     RESET: Zurücksetzen
   CMSPageAddController:
+    MENUTITLE: 'Seite hinzufügen'
     ParentMode_child: 'Einer anderen Seite untergeordnet'
     ParentMode_top: 'Auf der obersten Ebene'
-    MENUTITLE: 'Seite hinzufügen'
+  CMSPageEditController:
+    MENUTITLE: 'Seite bearbeiten'
   CMSPageHistoryController:
     COMPAREMODE: 'Vergleichsmodus (wähle zwei)'
     COMPAREVERSIONS: 'Versionen vergleichen'
     COMPARINGVERSION: 'Vergleiche Versionen {version1} und {version2}.'
+    MENUTITLE: Historie
     REVERTTOTHISVERSION: 'Zurück zu dieser Version'
     SHOWUNPUBLISHED: 'Zeige unveröffentlichte Versionen'
     SHOWVERSION: 'Zeige Version'
     VIEW: anzeigen
     VIEWINGLATEST: 'Momentan wird die aktuellste Version angezeigt.'
     VIEWINGVERSION: 'Momentan angezeigte Version: {version}.'
-    MENUTITLE: Historie
   CMSPageHistoryController_versions_ss:
     AUTHOR: Autor
     NOTPUBLISHED: 'Nicht veröffentlicht'
     PUBLISHER: Herausgeber
     UNKNOWN: Unbekannt
     WHEN: Wann
+  CMSPageSettingsController:
+    MENUTITLE: 'Seite bearbeiten'
   CMSPagesController:
     GalleryView: 'Galerieansicht '
     ListView: 'Listenansicht'
     MENUTITLE: Seiten
     TreeView: 'Baumansicht'
-  CMSPagesController_ContentToolbar_ss:
-    MULTISELECT: Mehrfachauswahl
   CMSPagesController_Tools_ss:
     FILTER: Filter
+  CMSSIteTreeFilter_PublishedPages:
+    Title: 'Veröffentlichte Seiten'
   CMSSearch:
     FILTERDATEFROM: Von
     FILTERDATEHEADING: Datum
     FILTERDATETO: Bis
-    FILTERLABELTEXT: Inhalt
-  CMSSiteTreeFilter_ChangedPages:
-    Title: 'Veränderte Seiten'
-  CMSSiteTreeFilter_DeletedPages:
-    Title: 'Alle Seiten, auch gelöschte.'
+    PAGEFILTERDATEHEADING: 'Zuletzt bearbeitet'
+  CMSSettingsController:
+    MENUTITLE: Einstellungen
   CMSSiteTreeFilter_Search:
     Title: 'Alle Seiten'
+  CMSSiteTreeFilter_StatusRemovedFromDraftPages:
+    Title: 'Veröffentlicht aber aus Entwurf entfernt'
   ContentControl:
     NOTEWONTBESHOWN: 'Achtung: Diese Nachricht wird Ihren Besuchern nicht gezeigt.'
   ContentController:
@@ -199,6 +206,8 @@ de:
     415: '415 - nicht-unterstützer Medientyp'
     416: '416 - Anfragebereich nicht erfüllbar'
     417: '417 - Erwartung nicht erfüllt'
+    422: '422 - Verarbeitung abgelehnt'
+    429: '429 - Zu viele Anfragen'
     500: '500 - Interner Serverfehler'
     501: '501 - nicht implementiert'
     502: '502 - Fehlerhafter Gateway'
@@ -212,8 +221,10 @@ de:
     DEFAULTSERVERERRORPAGETITLE: 'Serverfehler'
     DESCRIPTION: 'Spezieller Inhalt für andere Fehlerfälle (z.B. "Seite nicht gefunden")'
     ERRORFILEPROBLEM: 'Die Datei "{filename}" konnte nicht zum Schreiben geöffnet werden. Bitte überprüfen Sie die Dateiberechtigungen.'
-    PLURALNAME: 'Fehlerseiten'
+    PLURALNAME: 'Fehlerseite'
     SINGULARNAME: 'Fehlerseite'
+  File:
+    Title: Titel
   Folder:
     AddFolderButton: 'Ordner hinzufügen'
     DELETEUNUSEDTHUMBNAILS: 'Unbenutzte Vorschaubilder löschen'
@@ -235,15 +246,15 @@ de:
     HASBEENSETUP: 'Eine Weiterleitungsseite wurde erstellt ohne das eine Weiterleitung definiert wurde.'
     HEADER: 'Diese Seite wird Nutzer auf eine andere Seite weiterleiten'
     OTHERURL: 'Andere Webseiten URL'
-    PLURALNAME: 'Umleitungsseite'
+    PLURALNAME: 'Weiterleitungsseite'
     REDIRECTTO: 'Weiterleiten zu'
     REDIRECTTOEXTERNAL: 'Andere Website'
     REDIRECTTOPAGE: 'Eine Seite auf Ihrer Website'
     SINGULARNAME: 'Weiterleitungsseite'
     YOURPAGE: 'Seite auf Ihrer Website'
   ReportAdmin:
-    ReportTitle: Titel
     MENUTITLE: Berichte
+    ReportTitle: Titel
   ReportAdminForm:
     FILTERBY: 'Filtern nach'
   SITETREE:
@@ -269,7 +280,6 @@ de:
   SilverStripeNavigator:
     ARCHIVED: Archiviert
   SilverStripeNavigatorLink:
-    ShareInstructions: 'Kopieren Sie den folgenden Link, um diesen jemanden mitzuteilen.'
     ShareLink: 'Link teilen'
   SilverStripeNavigatorLinkl:
     CloseLink: schließen
@@ -298,6 +308,9 @@ de:
     ADDEDTODRAFTSHORT: Entwurf
     ALLOWCOMMENTS: 'Kommentare auf dieser Seite erlauben?'
     APPEARSVIRTUALPAGES: 'Dieser Inhalt erscheint außerdem auf virtuellen Seiten im {title} Bereich.'
+    ARCHIVEDPAGEHELP: 'Die Seite wird von Entwurf und Live entfernt'
+    ARCHIVEDPAGESHORT: Archiviert
+    BUTTONARCHIVEDESC: 'Veröffentlichung zurücknehmen und in das Archiv verschieben'
     BUTTONCANCELDRAFT: 'Verwerfe Entwurfsänderungen'
     BUTTONCANCELDRAFTDESC: 'Löschen Sie Ihren Entwurf und kehren Sie zur derzeit veröffentlichten Seite zurück.'
     BUTTONPUBLISHED: Veröffentlicht
@@ -311,7 +324,7 @@ de:
     DEFAULTABOUTTITLE: 'Über uns'
     DEFAULTCONTACTCONTENT: '<p>Sie können diese Seite mit Ihren eigenen Inhalten füllen, oder sie löschen und Ihre eigenen Seiten erstellen.<br /></p>'
     DEFAULTCONTACTTITLE: 'Kontakt'
-    DEFAULTHOMECONTENT: '<p>Willkommen bei SilverStripe! Dies ist die Standard-Startseite. Sie können diese Seite bearbeiten, indem Sie <a href="admin/">das CMS</a> öffnen. Sie können außerdem die  <a href="http://doc.silverstripe.com">Entwicker-Dokumentation</a> oder die <a href="http://doc.silverstripe.com/doku.php?id=tutorials">Einführungskurse und Tutorien</a> aufrufen.</p>'
+    DEFAULTHOMECONTENT: '<p>Willkommen bei SilverStripe! Sie sehen hier die standard Homepage. Diese können Sie im <a href="admin/">CMS</a> bearbeiten.</p><p>Sie können auch die englische  <a href="http://docs.silverstripe.org">Dokumentation für Entwickler</a> lesen oder mit den <a href="http://www.silverstripe.org/learn/lessons">SilverStripe lessons</a> lernen, wie Sie das CMS an Ihre Bedürfnisse anpassen.</p>'
     DEFAULTHOMETITLE: Startseite
     DELETEDPAGEHELP: 'Die Seite ist nicht länger veröffentlicht'
     DELETEDPAGESHORT: Gelöscht
@@ -382,6 +395,9 @@ de:
     many_many_BackLinkTracking: 'Rückverweis-Verfolgung'
     many_many_ImageTracking: 'Bild-Verfolgung'
     many_many_LinkTracking: 'Link-Verfolgung'
+  SiteTreeFileExtension:
+    BACKLINK_LIST_DESCRIPTION: 'Diese Liste zeigt alle Seiten, bei denen eine Datei mit dem WYSIWIG-Editor hinzugefügt wurde'
+    EDIT: Bearbeiten
   SiteTreeURLSegmentField:
     EMPTY: 'Bitte geben Sie ein URL-Segment ein oder drücken Sie auf Abbrechen'
     HelpChars: 'Sonderzeichen werden automatisch umgewandelt oder entfernt.'
@@ -398,14 +414,6 @@ de:
     EditLink: Bearbeiten
     HEADER: 'Dies ist eine virtuelle Seite'
     HEADERWITHLINK: 'Dies ist eine virtuelle Seite, die den Inhalt von "{title}" ({link}) kopiert'
-    PLURALNAME: 'Virtuelle Seiten'
+    PLURALNAME: 'Virtuelle Seite'
     PageTypNotAllowedOnRoot: 'Der ursprüngliche Seitentyp "{type}" ist nicht zulässig für diese virtuelle Seite. '
     SINGULARNAME: 'Virtuelle Seite'
-  CMSFileAddController:
-    MENUTITLE: Dateien
-  CMSPageEditController:
-    MENUTITLE: 'Seite bearbeiten'
-  CMSPageSettingsController:
-    MENUTITLE: 'Seite bearbeiten'
-  CMSSettingsController:
-    MENUTITLE: Einstellungen

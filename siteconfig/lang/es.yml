@@ -1,0 +1,19 @@
+es:
+  CMSSettingsController:
+    MENUTITLE: Ajustes
+  SiteConfig:
+    DEFAULTTHEME: '(Usar tema por defecto)'
+    EDITHEADER: '¿Quién puede editar páginas en este sitio?'
+    EDIT_PERMISSION: 'Gestionar configuración del sitio'
+    EDIT_PERMISSION_HELP: 'Capacidad de editar el acceso de configuración global/permisos de página de nivel superior.'
+    PLURALNAME: 'Configuraciones del sitio'
+    SINGULARNAME: 'Configuración del sitio'
+    SITENAMEDEFAULT: 'Nombre de tu Sitio'
+    SITETAGLINE: 'Lema/Eslogan del Sitio'
+    SITETITLE: 'Título de tu sitio'
+    TABACCESS: Acceso
+    TABMAIN: Principal
+    TAGLINEDEFAULT: 'tu lema aquí'
+    THEME: Tema
+    TOPLEVELCREATE: '¿Quién puede crear páginas en este sitio?'
+    VIEWHEADER: '¿Quién puede ver páginas en este sitio?'

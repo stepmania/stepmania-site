@@ -4,7 +4,7 @@
  ************************************************************************************
  **                                                                                **
  **  If you can read this text in your browser then you don't have PHP installed.  **
- **  Please install PHP 5.3.2 or higher, preferably PHP 5.3.4+.                    **
+ **  Please install PHP 5.3.3 or higher, preferably PHP 5.3.4+.                    **
  **                                                                                **
  ************************************************************************************
  ************************************************************************************/
@@ -31,60 +31,11 @@ if(function_exists('session_start') && !session_id()) {
 	session_start();
 }
 
-/**
- * Include _ss_environment.php file
- */
-$usingEnv = false;
-$envFileExists = false;
-//define the name of the environment file
-$envFile = '_ss_environment.php';
-//define the dirs to start scanning from (have to add the trailing slash)
-// we're going to check the realpath AND the path as the script sees it
-$dirsToCheck = array(
-	realpath('.'),
-	dirname($_SERVER['SCRIPT_FILENAME'])
-);
-//if they are the same, remove one of them
-if($dirsToCheck[0] == $dirsToCheck[1]) {
-	unset($dirsToCheck[1]);
-}
-foreach($dirsToCheck as $dir) {
-//check this dir and every parent dir (until we hit the base of the drive)
-	// or until we hit a dir we can't read
-	do {
-		//add the trailing slash we need to concatenate properly
-		$dir .= DIRECTORY_SEPARATOR;
-		//if it's readable, go ahead
-		if(@is_readable($dir)) {
-			//if the file exists, then we include it, set relevant vars and break out
-			if(file_exists($dir . $envFile)) {
-				include_once($dir . $envFile);
-				$envFileExists = true;
-				//legacy variable assignment
-				$usingEnv = true;
-				//break out of BOTH loops because we found the $envFile
-				break(2);
-			}
-		} else {
-			//break out of the while loop, we can't read the dir
-			break;
-		}
-		//go up a directory
-		$dir = dirname($dir);
-		//here we need to check that the path of the last dir and the next one are
-// not the same, if they are, we have hit the root of the drive
-	} while(dirname($dir) != $dir);
-}
+require_once FRAMEWORK_NAME . '/core/Constants.php'; // this also includes TempPath.php;
 
-if($envFileExists) {
-	if(!empty($_REQUEST['useEnv'])) {
-		$usingEnv = true;
-	} else {
-		$usingEnv = false;
-	}
-}
+$envFileExists = defined('SS_ENVIRONMENT_FILE');
+$usingEnv = $envFileExists && !empty($_REQUEST['useEnv']);
 
-require_once FRAMEWORK_NAME . '/core/Constants.php'; // this also includes TempPath.php
 require_once FRAMEWORK_NAME . '/dev/install/DatabaseConfigurationHelper.php';
 require_once FRAMEWORK_NAME . '/dev/install/DatabaseAdapterRegistry.php';
 
@@ -165,8 +116,11 @@ foreach(DatabaseAdapterRegistry::get_adapters() as $class => $details) {
 
 // Load database config
 if(isset($_REQUEST['db'])) {
-	if(isset($_REQUEST['db']['type'])) $type = $_REQUEST['db']['type'];
-	else $type = $_REQUEST['db']['type'] = defined('SS_DATABASE_CLASS') ? SS_DATABASE_CLASS : 'MySQLDatabase';
+	if(isset($_REQUEST['db']['type'])) {
+		$type = $_REQUEST['db']['type'];
+	} else {
+		$type = $_REQUEST['db']['type'] = defined('SS_DATABASE_CLASS') ? SS_DATABASE_CLASS : 'MySQLDatabase';
+	}
 
 	// Disabled inputs don't submit anything - we need to use the environment (except the database name)
 	if($usingEnv) {
@@ -301,9 +255,13 @@ class InstallRequirements {
 	 * Check the database configuration. These are done one after another
 	 * starting with checking the database function exists in PHP, and
 	 * continuing onto more difficult checks like database permissions.
+	 *
+	 * @param array $databaseConfig The list of database parameters
+	 * @return boolean Validity of database configuration details
 	 */
-	function checkDatabase($databaseConfig) {
-		if($this->requireDatabaseFunctions(
+	public function checkDatabase($databaseConfig) {
+		// Check if support is available
+		if(!$this->requireDatabaseFunctions(
 			$databaseConfig,
 			array(
 				"Database Configuration",
@@ -311,48 +269,66 @@ class InstallRequirements {
 				"Database support in PHP",
 				$this->getDatabaseTypeNice($databaseConfig['type'])
 			)
-		)) {
-			if($this->requireDatabaseServer(
-				$databaseConfig,
-				array(
-					"Database Configuration",
-					"Database server",
-					$databaseConfig['type'] == 'SQLiteDatabase' ? "I couldn't write to path '$databaseConfig[path]'" : "I couldn't find a database server on '$databaseConfig[server]'",
-					$databaseConfig['type'] == 'SQLiteDatabase' ? $databaseConfig['path'] : $databaseConfig['server']
-				)
-			)) {
-				if($this->requireDatabaseConnection(
-					$databaseConfig,
-					array(
-						"Database Configuration",
-						"Database access credentials",
-						"That username/password doesn't work"
-					)
-				)) {
-					if($this->requireDatabaseVersion(
-						$databaseConfig,
-						array(
-							"Database Configuration",
-							"Database server version requirement",
-							'',
-							'Version ' . $this->getDatabaseConfigurationHelper($databaseConfig['type'])->getDatabaseVersion($databaseConfig)
-						)
-					)) {
-						$this->requireDatabaseOrCreatePermissions(
-							$databaseConfig,
-							array(
-								"Database Configuration",
-								"Can I access/create the database",
-								"I can't create new databases and the database '$databaseConfig[database]' doesn't exist"
-							)
-						);
-					}
-				}
-			}
-		}
+		)) return false;
+
+		// Check if the server is available
+		$usePath = !empty($databaseConfig['path']) && empty($databaseConfig['server']);
+		if(!$this->requireDatabaseServer(
+			$databaseConfig,
+			array(
+				"Database Configuration",
+				"Database server",
+				$usePath ? "I couldn't write to path '$databaseConfig[path]'" : "I couldn't find a database server on '$databaseConfig[server]'",
+				$usePath ? $databaseConfig['path'] : $databaseConfig['server']
+			)
+		)) return false;
+
+		// Check if the connection credentials allow access to the server / database
+		if(!$this->requireDatabaseConnection(
+			$databaseConfig,
+			array(
+				"Database Configuration",
+				"Database access credentials",
+				"That username/password doesn't work"
+			)
+		)) return false;
+
+		// Check the necessary server version is available
+		if(!$this->requireDatabaseVersion(
+			$databaseConfig,
+			array(
+				"Database Configuration",
+				"Database server version requirement",
+				'',
+				'Version ' . $this->getDatabaseConfigurationHelper($databaseConfig['type'])->getDatabaseVersion($databaseConfig)
+			)
+		)) return false;
+
+		// Check that database creation permissions are available
+		if(!$this->requireDatabaseOrCreatePermissions(
+			$databaseConfig,
+			array(
+				"Database Configuration",
+				"Can I access/create the database",
+				"I can't create new databases and the database '$databaseConfig[database]' doesn't exist"
+			)
+		)) return false;
+
+		// Check alter permission (necessary to create tables etc)
+		if(!$this->requireDatabaseAlterPermissions(
+			$databaseConfig,
+			array(
+				"Database Configuration",
+				"Can I ALTER tables",
+				"I don't have permission to ALTER tables"
+			)
+		)) return false;
+
+		// Success!
+		return true;
 	}
 
-	function checkAdminConfig($adminConfig) {
+	public function checkAdminConfig($adminConfig) {
 		if(!$adminConfig['username']) {
 			$this->error(array('', 'Please enter a username!'));
 		}
@@ -365,14 +341,14 @@ class InstallRequirements {
 	 * Check if the web server is IIS and version greater than the given version.
 	 * @return boolean
 	 */
-	function isIIS($fromVersion = 7) {
+	public function isIIS($fromVersion = 7) {
 		if(strpos($this->findWebserver(), 'IIS/') === false) {
 			return false;
 		}
 		return substr(strstr($this->findWebserver(), '/'), -3, 1) >= $fromVersion;
 	}
 
-	function isApache() {
+	public function isApache() {
 		if(strpos($this->findWebserver(), 'Apache') !== false) {
 			return true;
 		} else {
@@ -384,25 +360,29 @@ class InstallRequirements {
 	 * Find the webserver software running on the PHP host.
 	 * @return string|boolean Server software or boolean FALSE
 	 */
-	function findWebserver() {
+	public function findWebserver() {
 		// Try finding from SERVER_SIGNATURE or SERVER_SOFTWARE
-		$webserver = @$_SERVER['SERVER_SIGNATURE'];
-		if(!$webserver) $webserver = @$_SERVER['SERVER_SOFTWARE'];
+		if(!empty($_SERVER['SERVER_SIGNATURE'])) {
+			$webserver = $_SERVER['SERVER_SIGNATURE'];
+		} elseif(!empty($_SERVER['SERVER_SOFTWARE'])) {
+			$webserver = $_SERVER['SERVER_SOFTWARE'];
+		} else {
+			return false;
+		}
 
-		if($webserver) return strip_tags(trim($webserver));
-		else return false;
+		return strip_tags(trim($webserver));
 	}
 
 	/**
 	 * Check everything except the database
 	 */
-	function check() {
+	public function check() {
 		$this->errors = null;
 		$isApache = $this->isApache();
 		$isIIS = $this->isIIS();
 		$webserver = $this->findWebserver();
 
-		$this->requirePHPVersion('5.3.4', '5.3.2', array(
+		$this->requirePHPVersion('5.3.4', '5.3.3', array(
 			"PHP Configuration",
 			"PHP5 installed",
 			null,
@@ -435,6 +415,13 @@ class InstallRequirements {
 			"Is the mysite/_config.php file writeable?",
 			null
 		));
+
+		$this->requireWriteable('mysite/_config/config.yml', array(
+			"File permissions",
+			"Is the mysite/_config/config.yml file writeable?",
+			null
+		));
+
 		if(!$this->checkModuleExists('cms')) {
 			$this->requireWriteable('mysite/code/RootURLController.php', array(
 				"File permissions",
@@ -644,7 +631,7 @@ class InstallRequirements {
 		return $this->errors;
 	}
 
-	function suggestPHPSetting($settingName, $settingValues, $testDetails) {
+	public function suggestPHPSetting($settingName, $settingValues, $testDetails) {
 		$this->testing($testDetails);
 
 		// special case for display_errors, check the original value before
@@ -662,7 +649,7 @@ class InstallRequirements {
 		}
 	}
 
-	function requirePHPSetting($settingName, $settingValues, $testDetails) {
+	public function requirePHPSetting($settingName, $settingValues, $testDetails) {
 		$this->testing($testDetails);
 
 		$val = ini_get($settingName);
@@ -672,7 +659,7 @@ class InstallRequirements {
 		}
 	}
 
-	function suggestClass($class, $testDetails) {
+	public function suggestClass($class, $testDetails) {
 		$this->testing($testDetails);
 
 		if(!class_exists($class)) {
@@ -680,7 +667,7 @@ class InstallRequirements {
 		}
 	}
 
-	function suggestFunction($class, $testDetails) {
+	public function suggestFunction($class, $testDetails) {
 		$this->testing($testDetails);
 
 		if(!function_exists($class)) {
@@ -688,7 +675,7 @@ class InstallRequirements {
 		}
 	}
 
-	function requireDateTimezone($testDetails) {
+	public function requireDateTimezone($testDetails) {
 		$this->testing($testDetails);
 
 		$result = ini_get('date.timezone') && in_array(ini_get('date.timezone'), timezone_identifiers_list());
@@ -697,7 +684,7 @@ class InstallRequirements {
 		}
 	}
 
-	function requireMemory($min, $recommended, $testDetails) {
+	public function requireMemory($min, $recommended, $testDetails) {
 		$_SESSION['forcemem'] = false;
 
 		$mem = $this->getPHPMemory();
@@ -722,7 +709,7 @@ class InstallRequirements {
 		}
 	}
 
-	function getPHPMemory() {
+	public function getPHPMemory() {
 		$memString = ini_get("memory_limit");
 
 		switch(strtolower(substr($memString, -1))) {
@@ -740,7 +727,7 @@ class InstallRequirements {
 		}
 	}
 
-	function listErrors() {
+	public function listErrors() {
 		if($this->errors) {
 			echo "<p>The following problems are preventing me from installing SilverStripe CMS:</p>\n\n";
 			foreach($this->errors as $error) {
@@ -749,7 +736,7 @@ class InstallRequirements {
 		}
 	}
 
-	function showTable($section = null) {
+	public function showTable($section = null) {
 		if($section) {
 			$tests = $this->tests[$section];
 			$id = strtolower(str_replace(' ', '_', $section));
@@ -803,7 +790,7 @@ class InstallRequirements {
 		}
 	}
 
-	function requireFunction($funcName, $testDetails) {
+	public function requireFunction($funcName, $testDetails) {
 		$this->testing($testDetails);
 
 		if(!function_exists($funcName)) {
@@ -813,7 +800,7 @@ class InstallRequirements {
 		}
 	}
 
-	function requireClass($className, $testDetails) {
+	public function requireClass($className, $testDetails) {
 		$this->testing($testDetails);
 		if(!class_exists($className)) {
 			$this->error($testDetails);
@@ -825,7 +812,7 @@ class InstallRequirements {
 	/**
 	 * Require that the given class doesn't exist
 	 */
-	function requireNoClasses($classNames, $testDetails) {
+	public function requireNoClasses($classNames, $testDetails) {
 		$this->testing($testDetails);
 		$badClasses = array();
 		foreach($classNames as $className) {
@@ -839,7 +826,7 @@ class InstallRequirements {
 		}
 	}
 
-	function checkApacheVersion($testDetails) {
+	public function checkApacheVersion($testDetails) {
 		$this->testing($testDetails);
 
 		$is1pointx = preg_match('#Apache[/ ]1\.#', $testDetails[3]);
@@ -850,7 +837,7 @@ class InstallRequirements {
 		return true;
 	}
 
-	function requirePHPVersion($recommendedVersion, $requiredVersion, $testDetails) {
+	public function requirePHPVersion($recommendedVersion, $requiredVersion, $testDetails) {
 		$this->testing($testDetails);
 
 		$installedVersion = phpversion();
@@ -878,7 +865,7 @@ class InstallRequirements {
 	/**
 	 * Check that a module exists
 	 */
-	function checkModuleExists($dirname) {
+	public function checkModuleExists($dirname) {
 		$path = $this->getBaseDir() . $dirname;
 		return file_exists($path) && ($dirname == 'mysite' || file_exists($path . '/_config.php'));
 	}
@@ -887,7 +874,7 @@ class InstallRequirements {
 	 * The same as {@link requireFile()} but does additional checks
 	 * to ensure the module directory is intact.
 	 */
-	function requireModule($dirname, $testDetails) {
+	public function requireModule($dirname, $testDetails) {
 		$this->testing($testDetails);
 		$path = $this->getBaseDir() . $dirname;
 		if(!file_exists($path)) {
@@ -900,7 +887,7 @@ class InstallRequirements {
 		}
 	}
 
-	function requireFile($filename, $testDetails) {
+	public function requireFile($filename, $testDetails) {
 		$this->testing($testDetails);
 		$filename = $this->getBaseDir() . $filename;
 		if(!file_exists($filename)) {
@@ -909,7 +896,7 @@ class InstallRequirements {
 		}
 	}
 
-	function requireWriteable($filename, $testDetails, $absolute = false) {
+	public function requireWriteable($filename, $testDetails, $absolute = false) {
 		$this->testing($testDetails);
 
 		if($absolute) {
@@ -961,7 +948,7 @@ class InstallRequirements {
 		}
 	}
 
-	function requireTempFolder($testDetails) {
+	public function requireTempFolder($testDetails) {
 		$this->testing($testDetails);
 
 		try {
@@ -978,7 +965,7 @@ class InstallRequirements {
 		}
 	}
 
-	function requireApacheModule($moduleName, $testDetails) {
+	public function requireApacheModule($moduleName, $testDetails) {
 		$this->testing($testDetails);
 		if(!in_array($moduleName, apache_get_modules())) {
 			$this->error($testDetails);
@@ -988,7 +975,7 @@ class InstallRequirements {
 		}
 	}
 
-	function testApacheRewriteExists($moduleName = 'mod_rewrite') {
+	public function testApacheRewriteExists($moduleName = 'mod_rewrite') {
 		if(function_exists('apache_get_modules') && in_array($moduleName, apache_get_modules())) {
 			return true;
 		} elseif(isset($_SERVER['HTTP_MOD_REWRITE']) && $_SERVER['HTTP_MOD_REWRITE'] == 'On') {
@@ -998,7 +985,7 @@ class InstallRequirements {
 		}
 	}
 
-	function testIISRewriteModuleExists($moduleName = 'IIS_UrlRewriteModule') {
+	public function testIISRewriteModuleExists($moduleName = 'IIS_UrlRewriteModule') {
 		if(isset($_SERVER[$moduleName]) && $_SERVER[$moduleName]) {
 			return true;
 		} else {
@@ -1006,7 +993,7 @@ class InstallRequirements {
 		}
 	}
 
-	function requireApacheRewriteModule($moduleName, $testDetails) {
+	public function requireApacheRewriteModule($moduleName, $testDetails) {
 		$this->testing($testDetails);
 		if($this->testApacheRewriteExists()) {
 			return true;
@@ -1020,11 +1007,11 @@ class InstallRequirements {
 	 * Determines if the web server has any rewriting capability.
 	 * @return boolean
 	 */
-	function hasRewritingCapability() {
+	public function hasRewritingCapability() {
 		return ($this->testApacheRewriteExists() || $this->testIISRewriteModuleExists());
 	}
 
-	function requireIISRewriteModule($moduleName, $testDetails) {
+	public function requireIISRewriteModule($moduleName, $testDetails) {
 		$this->testing($testDetails);
 		if($this->testIISRewriteModuleExists()) {
 			return true;
@@ -1034,7 +1021,7 @@ class InstallRequirements {
 		}
 	}
 
-	function getDatabaseTypeNice($databaseClass) {
+	public function getDatabaseTypeNice($databaseClass) {
 		return substr($databaseClass, 0, -8);
 	}
 
@@ -1042,18 +1029,22 @@ class InstallRequirements {
 	 * Get an instance of a helper class for the specific database.
 	 * @param string $databaseClass e.g. MySQLDatabase or MSSQLDatabase
 	 */
-	function getDatabaseConfigurationHelper($databaseClass) {
+	public function getDatabaseConfigurationHelper($databaseClass) {
 		$adapters = DatabaseAdapterRegistry::get_adapters();
 		if(isset($adapters[$databaseClass])) {
 			$helperPath = $adapters[$databaseClass]['helperPath'];
 			$class = str_replace('.php', '', basename($helperPath));
 		}
-		return (class_exists($class)) ? new $class() : new MySQLDatabaseConfigurationHelper();
+		return (class_exists($class)) ? new $class() : false;
 	}
 
-	function requireDatabaseFunctions($databaseConfig, $testDetails) {
+	public function requireDatabaseFunctions($databaseConfig, $testDetails) {
 		$this->testing($testDetails);
 		$helper = $this->getDatabaseConfigurationHelper($databaseConfig['type']);
+		if (!$helper) {
+			$this->error("Couldn't load database helper code for ". $databaseConfig['type']);
+			return false;
+		}
 		$result = $helper->requireDatabaseFunctions($databaseConfig);
 		if($result) {
 			return true;
@@ -1063,7 +1054,7 @@ class InstallRequirements {
 		}
 	}
 
-	function requireDatabaseConnection($databaseConfig, $testDetails) {
+	public function requireDatabaseConnection($databaseConfig, $testDetails) {
 		$this->testing($testDetails);
 		$helper = $this->getDatabaseConfigurationHelper($databaseConfig['type']);
 		$result = $helper->requireDatabaseConnection($databaseConfig);
@@ -1076,7 +1067,7 @@ class InstallRequirements {
 		}
 	}
 
-	function requireDatabaseVersion($databaseConfig, $testDetails) {
+	public function requireDatabaseVersion($databaseConfig, $testDetails) {
 		$this->testing($testDetails);
 		$helper = $this->getDatabaseConfigurationHelper($databaseConfig['type']);
 		if(method_exists($helper, 'requireDatabaseVersion')) {
@@ -1093,7 +1084,7 @@ class InstallRequirements {
 		return true;
 	}
 
-	function requireDatabaseServer($databaseConfig, $testDetails) {
+	public function requireDatabaseServer($databaseConfig, $testDetails) {
 		$this->testing($testDetails);
 		$helper = $this->getDatabaseConfigurationHelper($databaseConfig['type']);
 		$result = $helper->requireDatabaseServer($databaseConfig);
@@ -1106,7 +1097,7 @@ class InstallRequirements {
 		}
 	}
 
-	function requireDatabaseOrCreatePermissions($databaseConfig, $testDetails) {
+	public function requireDatabaseOrCreatePermissions($databaseConfig, $testDetails) {
 		$this->testing($testDetails);
 		$helper = $this->getDatabaseConfigurationHelper($databaseConfig['type']);
 		$result = $helper->requireDatabaseOrCreatePermissions($databaseConfig);
@@ -1116,7 +1107,7 @@ class InstallRequirements {
 			$this->testing($testDetails);
 			return true;
 		} else {
-			if(!@$result['cannotCreate']) {
+			if(empty($result['cannotCreate'])) {
 				$testDetails[2] .= ". Please create the database manually.";
 			} else {
 				$testDetails[2] .= " (user '$databaseConfig[username]' doesn't have CREATE DATABASE permissions.)";
@@ -1127,7 +1118,21 @@ class InstallRequirements {
 		}
 	}
 
-	function requireServerVariables($varNames, $testDetails) {
+	public function requireDatabaseAlterPermissions($databaseConfig, $testDetails) {
+		$this->testing($testDetails);
+		$helper = $this->getDatabaseConfigurationHelper($databaseConfig['type']);
+		$result = $helper->requireDatabaseAlterPermissions($databaseConfig);
+		if ($result['success']) {
+			return true;
+		} else {
+			$testDetails[2] = "Silverstripe cannot alter tables. This won't prevent installation, however it may "
+					. "cause issues if you try to run a /dev/build once installed.";
+			$this->warning($testDetails);
+			return;
+		}
+	}
+
+	public function requireServerVariables($varNames, $testDetails) {
 		$this->testing($testDetails);
 		$missing = array();
 
@@ -1146,7 +1151,7 @@ class InstallRequirements {
 	}
 
 
-	function requirePostSupport($testDetails) {
+	public function requirePostSupport($testDetails) {
 		$this->testing($testDetails);
 
 		if(!isset($_POST)) {
@@ -1158,7 +1163,7 @@ class InstallRequirements {
 		return true;
 	}
 
-	function isRunningWebServer($testDetails) {
+	public function isRunningWebServer($testDetails) {
 		$this->testing($testDetails);
 		if($testDetails[3]) {
 			return true;
@@ -1171,14 +1176,14 @@ class InstallRequirements {
 	// Must be PHP4 compatible
 	var $baseDir;
 
-	function getBaseDir() {
+	public function getBaseDir() {
 		// Cache the value so that when the installer mucks with SCRIPT_FILENAME half way through, this method
 		// still returns the correct value.
 		if(!$this->baseDir) $this->baseDir = realpath(dirname($_SERVER['SCRIPT_FILENAME'])) . DIRECTORY_SEPARATOR;
 		return $this->baseDir;
 	}
 
-	function testing($testDetails) {
+	public function testing($testDetails) {
 		if(!$testDetails) return;
 
 		$section = $testDetails[0];
@@ -1190,39 +1195,39 @@ class InstallRequirements {
 		$this->tests[$section][$test] = array("good", $message);
 	}
 
-	function error($testDetails) {
+	public function error($testDetails) {
 		$section = $testDetails[0];
 		$test = $testDetails[1];
 
-		$this->tests[$section][$test] = array("error", @$testDetails[2]);
+		$this->tests[$section][$test] = array("error", isset($testDetails[2]) ? $testDetails[2] : null);
 		$this->errors[] = $testDetails;
 	}
 
-	function warning($testDetails) {
+	public function warning($testDetails) {
 		$section = $testDetails[0];
 		$test = $testDetails[1];
 
-		$this->tests[$section][$test] = array("warning", @$testDetails[2]);
+		$this->tests[$section][$test] = array("warning", isset($testDetails[2]) ? $testDetails[2] : null);
 		$this->warnings[] = $testDetails;
 	}
 
-	function hasErrors() {
+	public function hasErrors() {
 		return sizeof($this->errors);
 	}
 
-	function hasWarnings() {
+	public function hasWarnings() {
 		return sizeof($this->warnings);
 	}
 
 }
 
 class Installer extends InstallRequirements {
-	function __construct() {
+	public function __construct() {
 		// Cache the baseDir value
 		$this->getBaseDir();
 	}
 
-	function install($config) {
+	public function install($config) {
 		?>
 		<html>
 		<head>
@@ -1276,7 +1281,9 @@ class Installer extends InstallRequirements {
 			$databaseVersion = $config['db']['type'];
 			$helper = $this->getDatabaseConfigurationHelper($dbType);
 			if($helper && method_exists($helper, 'getDatabaseVersion')) {
-				$databaseVersion = urlencode($dbType . ': ' . $helper->getDatabaseVersion($config['db'][$dbType]));
+				$versionConfig = $config['db'][$dbType];
+				$versionConfig['type'] = $dbType;
+				$databaseVersion = urlencode($dbType . ': ' . $helper->getDatabaseVersion($versionConfig));
 			}
 
 			$url = "http://ss2stat.silverstripe.com/Installation/add?SilverStripe=$silverstripe_version&PHP=$phpVersion&Database=$databaseVersion&WebServer=$encWebserver";
@@ -1312,7 +1319,6 @@ class Installer extends InstallRequirements {
 		// Write the config file
 		global $usingEnv;
 		if($usingEnv) {
-
 			$this->statusMessage("Setting up 'mysite/_config.php' for use with _ss_environment.php...");
 			$this->writeToFile("mysite/_config.php", <<<PHP
 <?php
@@ -1327,12 +1333,20 @@ require_once('conf/ConfigureFromEnv.php');
 
 // Set the site locale
 i18n::set_locale('$locale');
+
 PHP
 			);
 
 		} else {
 			$this->statusMessage("Setting up 'mysite/_config.php'...");
-			$escapedPassword = addslashes($dbConfig['password']);
+			// Create databaseConfig
+			$lines = array(
+				$lines[] = "\t'type' => '$type'"
+			);
+			foreach($dbConfig as $key => $value) {
+				$lines[] = "\t'{$key}' => '$value'";
+			}
+			$databaseConfigContent = implode(",\n", $lines);
 			$this->writeToFile("mysite/_config.php", <<<PHP
 <?php
 
@@ -1341,19 +1355,31 @@ global \$project;
 
 global \$databaseConfig;
 \$databaseConfig = array(
-	"type" => '{$type}',
-	"server" => '{$dbConfig['server']}',
-	"username" => '{$dbConfig['username']}',
-	"password" => '{$escapedPassword}',
-	"database" => '{$dbConfig['database']}',
-	"path" => '{$dbConfig['path']}',
+{$databaseConfigContent}
 );
 
 // Set the site locale
 i18n::set_locale('$locale');
+
 PHP
 			);
 		}
+
+		$this->statusMessage("Setting up 'mysite/_config/config.yml'");
+		$this->writeToFile("mysite/_config/config.yml", <<<YML
+---
+Name: mysite
+After:
+  - 'framework/*'
+  - 'cms/*'
+---
+# YAML configuration for SilverStripe
+# See http://doc.silverstripe.org/framework/en/topics/configuration
+# Caution: Indentation through two spaces, not tabs
+SSViewer:
+  theme: '$theme'
+YML
+		);
 
 		if(!$this->checkModuleExists('cms')) {
 			$this->writeToFile("mysite/code/RootURLController.php", <<<PHP
@@ -1361,7 +1387,7 @@ PHP
 
 class RootURLController extends Controller {
 
-	function index() {
+	public function index() {
 		echo "<html>Your site is now set up. Start adding controllers to mysite to get started.</html>";
 	}
 
@@ -1411,7 +1437,7 @@ PHP
 		$adminMember = Security::findAnAdministrator();
 		$adminMember->Email = $config['admin']['username'];
 		$adminMember->Password = $config['admin']['password'];
-		$adminMember->PasswordEncryption = Security::get_password_encryption_algorithm();
+		$adminMember->PasswordEncryption = Security::config()->encryption_algorithm;
 
 		try {
 			$this->statusMessage('Creating default CMS admin account...');
@@ -1465,7 +1491,7 @@ HTML;
 		return $this->errors;
 	}
 
-	function writeToFile($filename, $content) {
+	public function writeToFile($filename, $content) {
 		$base = $this->getBaseDir();
 		$this->statusMessage("Setting up $base$filename");
 
@@ -1476,7 +1502,7 @@ HTML;
 		}
 	}
 
-	function createHtaccess() {
+	public function createHtaccess() {
 		$start = "### SILVERSTRIPE START ###\n";
 		$end = "\n### SILVERSTRIPE END ###";
 
@@ -1486,42 +1512,55 @@ HTML;
 
 		if($base != '.') $baseClause = "RewriteBase '$base'\n";
 		else $baseClause = "";
+		if(strpos(strtolower(php_sapi_name()), "cgi") !== false) $cgiClause = "RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]\n";
+		else $cgiClause = "";
 		$modulePath = FRAMEWORK_NAME;
 		$rewrite = <<<TEXT
+# Deny access to templates (but allow from localhost)
 <Files *.ss>
 	Order deny,allow
 	Deny from all
 	Allow from 127.0.0.1
 </Files>
 
+# Deny access to IIS configuration
 <Files web.config>
 	Order deny,allow
 	Deny from all
 </Files>
 
-# This denies access to all yml files, since developers might include sensitive
-# information in them. See the docs for work-arounds to serve some yaml files
+# Deny access to YAML configuration files which might include sensitive information
 <Files *.yml>
 	Order allow,deny
 	Deny from all
 </Files>
 
+# Route errors to static pages automatically generated by SilverStripe
 ErrorDocument 404 /assets/error-404.html
 ErrorDocument 500 /assets/error-500.html
 
 <IfModule mod_rewrite.c>
+
+	# Turn off index.php handling requests to the homepage fixes issue in apache >=2.4
+	<IfModule mod_dir.c>
+		DirectoryIndex disabled
+	</IfModule>
+
 	SetEnv HTTP_MOD_REWRITE On
 	RewriteEngine On
 	$baseClause
+	$cgiClause
 
+	# Deny access to potentially sensitive files and folders
 	RewriteRule ^vendor(/|$) - [F,L,NC]
 	RewriteRule silverstripe-cache(/|$) - [F,L,NC]
 	RewriteRule composer\.(json|lock) - [F,L,NC]
 	
+	# Process through SilverStripe if no file with the requested name exists.
+	# Pass through the original path as a query parameter, and retain the existing parameters.
 	RewriteCond %{REQUEST_URI} ^(.*)$
 	RewriteCond %{REQUEST_FILENAME} !-f
-	RewriteCond %{REQUEST_URI} !\.php$
-	RewriteRule .* $modulePath/main.php?url=%1&%{QUERY_STRING} [L]
+	RewriteRule .* $modulePath/main.php?url=%1 [QSA]
 </IfModule>
 TEXT;
 
@@ -1545,7 +1584,7 @@ TEXT;
 	 * Writes basic configuration to the web.config for IIS
 	 * so that rewriting capability can be use.
 	 */
-	function createWebConfig() {
+	public function createWebConfig() {
 		$modulePath = FRAMEWORK_NAME;
 		$content = <<<TEXT
 <?xml version="1.0" encoding="utf-8"?>
@@ -1583,7 +1622,7 @@ TEXT;
 		$this->writeToFile('web.config', $content);
 	}
 
-	function checkRewrite() {
+	public function checkRewrite() {
 		require_once 'core/startup/ParameterConfirmationToken.php';
 		$token = new ParameterConfirmationToken('flush');
 		$params = http_build_query($token->params());
@@ -1628,7 +1667,7 @@ TEXT;
 HTML;
 	}
 
-	function var_export_array_nokeys($array) {
+	public function var_export_array_nokeys($array) {
 		$retval = "array(\n";
 		foreach($array as $item) {
 			$retval .= "\t'";
@@ -1643,7 +1682,7 @@ HTML;
 	 * Show an installation status message.
 	 * The output differs depending on whether this is CLI or web based
 	 */
-	function statusMessage($msg) {
+	public function statusMessage($msg) {
 		echo "<li>$msg</li>\n";
 		flush();
 	}

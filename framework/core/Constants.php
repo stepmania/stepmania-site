@@ -23,6 +23,8 @@
  * - FRAMEWORK_ADMIN_PATH: Absolute filepath, e.g. "/var/www/my-webroot/framework/admin"
  * - THIRDPARTY_DIR: Path relative to webroot, e.g. "framework/thirdparty"
  * - THIRDPARTY_PATH: Absolute filepath, e.g. "/var/www/my-webroot/framework/thirdparty"
+ * - TRUSTED_PROXY: true or false, depending on whether the X-Forwarded-* HTTP
+ *   headers from the given client are trustworthy (e.g. from a reverse proxy).
  *
  * @package framework
  * @subpackage core
@@ -49,14 +51,12 @@ if ($dirsToCheck[0] == $dirsToCheck[1]) {
 foreach ($dirsToCheck as $dir) {
 	//check this dir and every parent dir (until we hit the base of the drive)
 	// or until we hit a dir we can't read
-	do {
-		//add the trailing slash we need to concatenate properly
-		$dir .= DIRECTORY_SEPARATOR;
+	while(true) {
 		//if it's readable, go ahead
 		if (@is_readable($dir)) {
 			//if the file exists, then we include it, set relevant vars and break out
-			if (file_exists($dir . $envFile)) {
-				define('SS_ENVIRONMENT_FILE', $dir . $envFile);
+			if (file_exists($dir . DIRECTORY_SEPARATOR . $envFile)) {
+				define('SS_ENVIRONMENT_FILE', $dir . DIRECTORY_SEPARATOR . $envFile);
 				include_once(SS_ENVIRONMENT_FILE);
 				//break out of BOTH loops because we found the $envFile
 				break(2);
@@ -66,21 +66,54 @@ foreach ($dirsToCheck as $dir) {
 			//break out of the while loop, we can't read the dir
 			break;
 		}
+		if (dirname($dir) == $dir) {
+			// here we need to check that the path of the last dir and the next one are
+			// not the same, if they are, we have hit the root of the drive
+			break;
+		}
 		//go up a directory
 		$dir = dirname($dir);
-		//here we need to check that the path of the last dir and the next one are
-		// not the same, if they are, we have hit the root of the drive
-	} while (dirname($dir) != $dir);
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 // GLOBALS AND DEFINE SETTING
 
 function stripslashes_recursively(&$array) {
+	trigger_error('stripslashes_recursively is deprecated in 3.2', E_USER_DEPRECATED);
 	foreach($array as $k => $v) {
 		if(is_array($v)) stripslashes_recursively($array[$k]);
 		else $array[$k] = stripslashes($v);
 	}
+}
+
+/**
+ * Validate whether the request comes directly from a trusted server or not
+ * This is necessary to validate whether or not the values of X-Forwarded-
+ * or Client-IP HTTP headers can be trusted
+ */
+if(!defined('TRUSTED_PROXY')) {
+	$trusted = true; // will be false by default in a future release
+
+	if(getenv('BlockUntrustedProxyHeaders') // Legacy setting (reverted from documentation)
+		|| getenv('BlockUntrustedIPs') // Documented setting
+		|| defined('SS_TRUSTED_PROXY_IPS')
+	) {
+		$trusted = false;
+
+		if(defined('SS_TRUSTED_PROXY_IPS') && SS_TRUSTED_PROXY_IPS !== 'none') {
+			if(SS_TRUSTED_PROXY_IPS === '*') {
+				$trusted = true;
+			} elseif(isset($_SERVER['REMOTE_ADDR'])) {
+				$trusted = in_array($_SERVER['REMOTE_ADDR'], explode(',', SS_TRUSTED_PROXY_IPS));
+			}
+		}
+	}
+
+	/**
+	 * Declare whether or not the connecting server is a trusted proxy
+	 */
+	define('TRUSTED_PROXY', $trusted);
 }
 
 /**
@@ -89,6 +122,7 @@ function stripslashes_recursively(&$array) {
  */
 if(!isset($_SERVER['HTTP_HOST'])) {
 	// HTTP_HOST, REQUEST_PORT, SCRIPT_NAME, and PHP_SELF
+	global $_FILE_TO_URL_MAPPING;	
 	if(isset($_FILE_TO_URL_MAPPING)) {
 		$fullPath = $testPath = realpath($_SERVER['SCRIPT_FILENAME']);
 		while($testPath && $testPath != '/' && !preg_match('/^[A-Z]:\\\\$/', $testPath)) {
@@ -139,15 +173,28 @@ if(!isset($_SERVER['HTTP_HOST'])) {
 		if($_COOKIE) stripslashes_recursively($_COOKIE);
 		// No more magic_quotes!
 		trigger_error('get_magic_quotes_gpc support is being removed from Silverstripe. Please set this to off in ' .
-		' your php.ini and see http://php.net/manual/en/security.magicquotes.php', E_USER_WARNING);
+		' your php.ini and see http://php.net/manual/en/security.magicquotes.php', E_USER_DEPRECATED);
 	}
 
 	/**
 	 * Fix HTTP_HOST from reverse proxies
 	 */
-	if (isset($_SERVER['HTTP_X_FORWARDED_HOST'])) {
+	$trustedProxyHeader = (defined('SS_TRUSTED_PROXY_HOST_HEADER'))
+		? SS_TRUSTED_PROXY_HOST_HEADER
+		: 'HTTP_X_FORWARDED_HOST';
+
+	if (TRUSTED_PROXY && !empty($_SERVER[$trustedProxyHeader])) {
 		// Get the first host, in case there's multiple separated through commas
-		$_SERVER['HTTP_HOST'] = strtok($_SERVER['HTTP_X_FORWARDED_HOST'], ',');
+		$_SERVER['HTTP_HOST'] = strtok($_SERVER[SS_TRUSTED_PROXY_HOST_HEADER], ',');
+	}
+}
+
+// Filter by configured allowed hosts
+if (defined('SS_ALLOWED_HOSTS') && php_sapi_name() !== "cli") {
+	$all_allowed_hosts = explode(',', SS_ALLOWED_HOSTS);
+	if (!isset($_SERVER['HTTP_HOST']) || !in_array($_SERVER['HTTP_HOST'], $all_allowed_hosts)) {
+		header('HTTP/1.1 400 Invalid Host', true, 400);
+		die();
 	}
 }
 

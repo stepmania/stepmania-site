@@ -17,11 +17,11 @@ abstract class Authenticator extends Object {
 	 * @var array
 	 */
 	private static $authenticators = array('MemberAuthenticator');
-	
+
 	/**
 	 * Used to influence the order of authenticators on the login-screen
 	 * (default shows first).
-	 * 
+	 *
 	 * @var string
 	 */
 	private static $default_authenticator = 'MemberAuthenticator';
@@ -51,6 +51,23 @@ abstract class Authenticator extends Object {
 	public static function get_login_form(Controller $controller) {
 	}
 
+	/**
+	 * Method that creates the re-authentication form for the in-CMS view
+	 *
+	 * @param Controller $controller
+	 */
+	public static function get_cms_login_form(Controller $controller) {
+	}
+
+	/**
+	 * Determine if this authenticator supports in-cms reauthentication
+	 *
+	 * @return bool
+	 */
+	public static function supports_cms() {
+		return false;
+	}
+
 
 	/**
 	 * Get the name of the authentication method
@@ -61,7 +78,7 @@ abstract class Authenticator extends Object {
 	}
 
 	public static function register($authenticator) {
-	self::register_authenticator($authenticator);	
+		self::register_authenticator($authenticator);
 	}
 
 
@@ -95,11 +112,11 @@ abstract class Authenticator extends Object {
 
 		return true;
 	}
-	
+
 	public static function unregister($authenticator) {
 		self::unregister_authenticator($authenticator);
 	}
-	
+
 	/**
 	 * Remove a previously registered authenticator
 	 *
@@ -108,10 +125,10 @@ abstract class Authenticator extends Object {
 	 */
 	public static function unregister_authenticator($authenticator) {
 		if(call_user_func(array($authenticator, 'on_unregister')) === true) {
-					if(in_array($authenticator, self::$authenticators)) {
-						unset(self::$authenticators[array_search($authenticator, self::$authenticators)]);
-					}
-		};
+			if(in_array($authenticator, self::$authenticators)) {
+				unset(self::$authenticators[array_search($authenticator, self::$authenticators)]);
+			}
+		}
 	}
 
 
@@ -142,7 +159,7 @@ abstract class Authenticator extends Object {
 
 		return self::$authenticators;
 	}
-	
+
 	/**
 	 * Set a default authenticator (shows first in tabs)
 	 *
@@ -150,10 +167,10 @@ abstract class Authenticator extends Object {
 	 */
 	public static function set_default_authenticator($authenticator) {
 		self::$default_authenticator = $authenticator;
-		
-		
+
+
 	}
-	
+
 	/**
 	 * @return string
 	 */
@@ -176,7 +193,7 @@ abstract class Authenticator extends Object {
 	protected static function on_register() {
 		return true;
 	}
-	
+
 	/**
 	 * Callback function that is called when an authenticator is removed.
 	 *

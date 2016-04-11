@@ -1,0 +1,9 @@
+hu:
+  SiteConfig:
+    DEFAULTTHEME: '(Alap téma használata)'
+    PLURALNAME: 'Oldal konfigurációk'
+    SINGULARNAME: 'Oldal konfiguráció'
+    SITENAMEDEFAULT: 'Az oldal neve'
+    SITETITLE: 'Oldal címe'
+    TABACCESS: Hozzáférés
+    THEME: Témák

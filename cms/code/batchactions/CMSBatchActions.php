@@ -22,20 +22,95 @@ class CMSBatchAction_Publish extends CMSBatchAction {
 }
 
 /**
- * Un-publish items batch action.
+ * Unpublish items batch action.
  * 
  * @package cms
  * @subpackage batchaction
  */
 class CMSBatchAction_Unpublish extends CMSBatchAction {
 	public function getActionTitle() {
-		return _t('CMSBatchActions.UNPUBLISH_PAGES', 'Un-publish');
+		return _t('CMSBatchActions.UNPUBLISH_PAGES', 'Unpublish');
 	}
 
 	public function run(SS_List $pages) {
 		return $this->batchaction($pages, 'doUnpublish',
-			_t('CMSBatchActions.UNPUBLISHED_PAGES', 'Un-published %d pages')
+			_t('CMSBatchActions.UNPUBLISHED_PAGES', 'Unpublished %d pages')
 		);
+	}
+
+	public function applicablePages($ids) {
+		return $this->applicablePagesHelper($ids, 'canDeleteFromLive', false, true);
+	}
+}
+
+/**
+ * Archives a page, removing it from both live and stage
+ *
+ * @package cms
+ * @subpackage batchaction
+ */
+class CMSBatchAction_Archive extends CMSBatchAction {
+	
+	public function getActionTitle() {
+		return _t('CMSBatchActions.ARCHIVE', 'Archive');
+	}
+
+	public function run(SS_List $pages) {
+		return $this->batchaction($pages, 'doArchive',
+			_t('CMSBatchActions.ARCHIVED_PAGES', 'Archived %d pages')
+		);
+	}
+
+	public function applicablePages($ids) {
+		return $this->applicablePagesHelper($ids, 'canArchive', true, true);
+	}
+
+}
+
+/**
+ * Batch restore of pages
+ * @package cms
+ * @subpackage batchaction
+ */
+class CMSBatchAction_Restore extends CMSBatchAction {
+	
+	public function getActionTitle() {
+		return _t('CMSBatchActions.RESTORE', 'Restore');
+	}
+
+	public function run(SS_List $pages) {
+		// Sort pages by depth
+		$pageArray = $pages->toArray();
+		// because of https://bugs.php.net/bug.php?id=50688
+		foreach($pageArray as $page) {
+			$page->getPageLevel();
+		}
+		usort($pageArray, function($a, $b) {
+			return $a->getPageLevel() - $b->getPageLevel();
+		});
+		$pages = new ArrayList($pageArray);
+
+		// Restore
+		return $this->batchaction($pages, 'doRestoreToStage',
+			_t('CMSBatchActions.RESTORED_PAGES', 'Restored %d pages')
+		);
+	}
+
+	/**
+	 * {@see SiteTree::canEdit()}
+	 *
+	 * @param array $ids
+	 * @return bool
+	 */
+	public function applicablePages($ids) {
+		// Basic permission check based on SiteTree::canEdit
+		if(!Permission::check(array("ADMIN", "SITETREE_EDIT_ALL"))) {
+			return array();
+		}
+		
+		// Get pages that exist in stage and remove them from the restore-able set
+		$stageIDs = Versioned::get_by_stage($this->managedClass, 'Stage')->column('ID');
+		return array_values(array_diff($ids, $stageIDs));
 	}
 }
 
@@ -44,6 +119,7 @@ class CMSBatchAction_Unpublish extends CMSBatchAction {
  * 
  * @package cms
  * @subpackage batchaction
+ * @deprecated since version 4.0
  */
 class CMSBatchAction_Delete extends CMSBatchAction {
 	public function getActionTitle() {
@@ -51,6 +127,7 @@ class CMSBatchAction_Delete extends CMSBatchAction {
 	}
 
 	public function run(SS_List $pages) {
+		Deprecation::notice('4.0', 'Delete is deprecated. Use Archive instead');
 		$status = array(
 			'modified'=>array(),
 			'deleted'=>array(),
@@ -66,9 +143,10 @@ class CMSBatchAction_Delete extends CMSBatchAction {
 
 			// check to see if the record exists on the live site, 
 			// if it doesn't remove the tree node
-			$liveRecord = Versioned::get_one_by_stage( 'SiteTree', 'Live', "\"SiteTree\".\"ID\"=$id");
+			$liveRecord = Versioned::get_one_by_stage( 'SiteTree', 'Live', array(
+				'"SiteTree"."ID"' => $id
+			));
 			if($liveRecord) {
-				$liveRecord->IsDeletedFromStage = true;
 				$status['modified'][$liveRecord->ID] = array(
 					'TreeTitle' => $liveRecord->TreeTitle,
 				);
@@ -91,14 +169,15 @@ class CMSBatchAction_Delete extends CMSBatchAction {
  * 
  * @package cms
  * @subpackage batchaction
+ * @deprecated since version 4.0
  */
 class CMSBatchAction_DeleteFromLive extends CMSBatchAction {
 	public function getActionTitle() {
 		return _t('CMSBatchActions.DELETE_PAGES', 'Delete from published site');
 	}
 
-
 	public function run(SS_List $pages) {
+		Deprecation::notice('4.0', 'Delete From Live is deprecated. Use Unpublish instead');
 		$status = array(
 			'modified'=>array(),
 			'deleted'=>array()
@@ -111,9 +190,10 @@ class CMSBatchAction_DeleteFromLive extends CMSBatchAction {
 			if($page->canDelete()) $page->doDeleteFromLive();
 
 			// check to see if the record exists on the stage site, if it doesn't remove the tree node
-			$stageRecord = Versioned::get_one_by_stage( 'SiteTree', 'Stage', "\"SiteTree\".\"ID\"=$id");
+			$stageRecord = Versioned::get_one_by_stage( 'SiteTree', 'Stage', array(
+				'"SiteTree"."ID"' => $id
+			));
 			if($stageRecord) {
-				$stageRecord->IsAddedToStage = true;
 				$status['modified'][$stageRecord->ID] = array(
 					'TreeTitle' => $stageRecord->TreeTitle,
 				);

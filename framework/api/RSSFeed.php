@@ -16,6 +16,7 @@ class RSSFeed extends ViewableData {
 	private static $casting = array(
 		"Title" => "Varchar",
 		"Description" => "Varchar",
+		"Link" => "Varchar",
 	);
 
 	/**
@@ -120,7 +121,7 @@ class RSSFeed extends ViewableData {
 
 		$this->lastModified = $lastModified;
 		$this->etag = $etag;
-		
+
 		parent::__construct();
 	}
 
@@ -149,7 +150,7 @@ class RSSFeed extends ViewableData {
 			foreach($this->entries as $entry) {
 				$output->push(
 					new RSSFeed_Entry($entry, $this->titleField, $this->descriptionField, $this->authorField));
-			}	
+			}
 		}
 		return $output;
 	}
@@ -201,7 +202,7 @@ class RSSFeed extends ViewableData {
 
 		if(!headers_sent()) {
 			HTTP::add_cache_headers();
-			$response->addHeader("Content-Type", "application/rss+xml");
+			$response->addHeader("Content-Type", "application/rss+xml; charset=utf-8");
 		}
 
 		Config::inst()->update('SSViewer', 'source_file_comments', $prevState);
@@ -276,7 +277,7 @@ class RSSFeed_Entry extends ViewableData {
 		$this->titleField = $titleField;
 		$this->descriptionField = $descriptionField;
 		$this->authorField = $authorField;
-		
+
 		parent::__construct();
 	}
 

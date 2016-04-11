@@ -2,14 +2,14 @@
 
 /**
  * Support class for converting unicode strings into a suitable 7-bit ASCII equivalent.
- * 
+ *
  * Usage:
- * 
+ *
  * <code>
  * $tr = new SS_Transliterator();
  * $ascii = $tr->toASCII($unicode);
  * </code>
- * 
+ *
  * @package framework
  * @subpackage model
  */
@@ -20,7 +20,7 @@ class SS_Transliterator extends Object {
 	 * Even if this variable is true, iconv() won't be used if it's not installed.
 	 */
 	private static $use_iconv = false;
-		
+
 	/**
 	 * Convert the given utf8 string to a safe ASCII source
 	 */
@@ -44,13 +44,14 @@ class SS_Transliterator extends Object {
 			'þ'=>'b', 'ÿ'=>'y', 'Ŕ'=>'R', 'ŕ'=>'r',
 			'Ā'=>'A', 'ā'=>'a', 'Ē'=>'E', 'ē'=>'e', 'Ī'=>'I', 'ī'=>'i', 'Ō'=>'O', 'ō'=>'o', 'Ū'=>'U', 'ū'=>'u',
 			'œ'=>'oe', 'ß'=>'ss', 'ĳ'=>'ij', 'ą'=>'a','ę'=>'e', 'ė'=>'e', 'į'=>'i','ų'=>'u','ū'=>'u', 'Ą'=>'A',
-			'Ę'=>'E', 'Ė'=>'E', 'Į'=>'I','Ų'=>'U','Ū'=>'u',
+			'Ę'=>'E', 'Ė'=>'E', 'Į'=>'I','Ų'=>'U','Ū'=>'U',
 			"ľ"=>"l", "Ľ"=>"L", "ť"=>"t", "Ť"=>"T", "ů"=>"u", "Ů"=>"U",
+			'ł'=>'l', 'Ł'=>'L', 'ń'=>'n', 'Ń'=>'N', 'ś'=>'s', 'Ś'=>'S', 'ź'=>'z', 'Ź'=>'Z', 'ż'=>'z', 'Ż'=>'Z',
 		);
 
 		return strtr($source, $table);
 	}
-	
+
 	/**
 	 * Transliteration using iconv()
 	 */

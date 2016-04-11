@@ -1,0 +1,17 @@
+mi:
+  SiteConfig:
+    DEFAULTTHEME: '(Whakamahia te kaupapa taunoa)'
+    EDITHEADER: 'Mā wai ngā whārangi i tēnei pae e whakatika?'
+    EDIT_PERMISSION: 'Whakahaeretia te whirihora pae'
+    EDIT_PERMISSION_HELP: 'Āhei ki te whakatika i ngā tautuhinga uru aowhānui/ngā whakaaetanga whārangi taumata matua.'
+    PLURALNAME: 'Ngā Whirihoranga Pae'
+    SINGULARNAME: 'Whirihoranga Pae'
+    SITENAMEDEFAULT: 'Tō Ingoa Pae'
+    SITETAGLINE: 'Rārangi Tautuhinga Pae/Peha'
+    SITETITLE: 'Taitara pae'
+    TABACCESS: Uru
+    TABMAIN: Matua
+    TAGLINEDEFAULT: 'tō rārangi tautuhinga ki konei'
+    THEME: Kaupapa
+    TOPLEVELCREATE: 'Mā wai he whārangi i te pūtake o te pae e hanga?'
+    VIEWHEADER: 'Mā wai ngā whārangi i tēnei pae e tiro?'

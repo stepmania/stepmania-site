@@ -1,0 +1,25 @@
+{
+	"name": "silverstripe/siteconfig",
+	"description": "Site wide settings administration.",
+	"type": "silverstripe-module",
+	"keywords": ["silverstripe", "siteconfig"],
+	"authors": [{
+		"name": "Will Rossiter",
+		"email": "will@fullscreen.io"
+	}],
+	"require": {
+		"silverstripe/framework": "*"
+	},
+	"extra": {
+		"installer-name": "siteconfig"
+	},
+	"minimum-stability": "dev",
+	"autoload": {
+		"classmap": ["tests/behat/"]
+	},
+	"extra": {
+		"branch-alias": {
+			"3.x-dev": "3.3.x-dev"
+		}
+	}
+}

@@ -40,6 +40,7 @@ class ToggleField extends ReadonlyField {
 	 * @param value The current value
 	 */
 	public function __construct($name, $title = "", $value = "") {
+		Deprecation::notice('4.0', 'Use custom javascript with a ReadOnlyField');
 		$this->labelMore = _t('ToggleField.MORE', 'more');
 		$this->labelLess = _t('ToggleField.LESS', 'less');
 		

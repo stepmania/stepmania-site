@@ -60,7 +60,7 @@
 			//check the array of existing files to see if we are trying to upload a file that already exists
 			var that = this;
 			var config = this.options;
-			if (config.overwriteWarning) {
+			if (config.overwriteWarning && config.replaceFile) {
 				$.get(
 					config['urlFileExists'],
 					{'filename': data.files[0].name},
@@ -94,7 +94,11 @@
 		},
 		_onAlways: function (jqXHRorResult, textStatus, jqXHRorError, options) {
 			$.blueimpUI.fileupload.prototype._onAlways.call(this, jqXHRorResult, textStatus, jqXHRorError, options);
-			if (this._active === 0) {
+
+			if(typeof(jqXHRorError) === 'string') {
+				$('.fileOverview .uploadStatus .state').text(ss.i18n._t('AssetUploadField.UploadField.UPLOADFAIL', 'Sorry your upload failed'));
+				$('.fileOverview .uploadStatus').addClass("bad").removeClass("good").removeClass("notice");
+			} else if (jqXHRorError.status === 200) {
 				$('.fileOverview .uploadStatus .state').text(ss.i18n._t('AssetUploadField.FILEUPLOADCOMPLETED', 'File upload completed!'));//.hide();
 				$('.ss-uploadfield-item-edit-all').show();
 				$('.fileOverview .uploadStatus').addClass("good").removeClass("notice").removeClass("bad");
@@ -295,18 +299,32 @@
 				dialog.ssdialog('open');
 			},
 			attachFiles: function(ids, uploadedFileId) {
-				var self = this, config = this.getConfig();
-				$.post(
-					config['urlAttach'], 
-					{'ids': ids},
-					function(data, status, xhr) {
+				var self = this,
+					config = this.getConfig(),
+					indicator = $('<div class="loader" />'),
+					target = (uploadedFileId) ? this.find(".ss-uploadfield-item[data-fileid='"+uploadedFileId+"']") : this.find('.ss-uploadfield-addfile');
+
+				target.children().hide();
+				target.append(indicator);
+
+				$.ajax({
+					type: "POST",
+					url: config['urlAttach'],
+					data: {'ids': ids},
+					complete: function(xhr, status) {
+						target.children().show();
+						indicator.remove();
+					},
+					success: function(data, status, xhr) {
+						if (!data || $.isEmptyObject(data)) return;
+
 						self.fileupload('attach', {
 							files: data,
 							options: self.fileupload('option'),
 							replaceFileID: uploadedFileId
 						});
 					}
-				);
+				});
 			}
 		});
 		$('div.ss-upload *').entwine({
@@ -316,11 +334,11 @@
 			}
 		});
 		$('div.ss-upload .ss-uploadfield-files .ss-uploadfield-item').entwine({
-			onmatch: function() {
+			onadd: function() {
 				this._super();
 				this.closest('.ss-upload').find('.ss-uploadfield-addfile').addClass('borderTop');
 			},
-			onunmatch: function() {
+			onremove: function() {
 				$('.ss-uploadfield-files:not(:has(.ss-uploadfield-item))').closest('.ss-upload').find('.ss-uploadfield-addfile').removeClass('borderTop');
 				this._super();
 			}
@@ -353,19 +371,25 @@
 						if(config.changeDetection) {
 							this.closest('form').trigger('dirty');
 						}
-						fileupload._trigger('destroy', e, {
-							context: item,
-							url: this.data('href'),
-							type: 'get',
-							dataType: fileupload.options.dataType
-						});	
+
+						if (fileupload) {
+							fileupload._trigger('destroy', e, {
+								context: item,
+								url: this.data('href'),
+								type: 'get',
+								dataType: fileupload.options.dataType
+							});
+						}
 					}
 				} else {
 					// Removed files will be applied to object on save
 					if(config.changeDetection) {
 						this.closest('form').trigger('dirty');
 					}
-					fileupload._trigger('destroy', e, {context: item});	
+
+					if (fileupload) {
+						fileupload._trigger('destroy', e, {context: item});
+					}
 				}
 				
 				e.preventDefault(); // Avoid a form submit
@@ -427,8 +451,6 @@
 							self._prepareIframe(iframe, editform, itemInfo);
 							iframe.data('src', '');
 						}
-
-						if (editform.hasClass('opened')) editform.fitHeight();
 					});
 				} else {
 					self._prepareIframe(iframe, editform, itemInfo);
@@ -477,32 +499,27 @@
 
 		$('div.ss-upload .ss-uploadfield-item-editform').entwine({
 			fitHeight: function() {
-				var iframe = this.find('iframe'), padding = 32, parentPadding = 2;
-				var h = iframe.contents().find('form').height() + padding;	
+				var iframe = this.find('iframe'),
+					contents = iframe.contents().find('body'),
+					bodyH = contents.find('form').outerHeight(true), // We set the height to match the form's outer height
+					iframeH = bodyH + (iframe.outerHeight(true) - iframe.height()), // content's height + padding on iframe elem
+					containerH = iframeH + (this.outerHeight(true) - this.height()); // iframe height + padding on container elem
 
-				if(this.hasClass('includeParent')){
-					padding=0;
-					parentPadding=12;
-				}		
-				
-				/* Set height of body except in IE8. Setting this in IE8 breaks the 
-				dropdown */
-				if(!$.browser.msie && $.browser.version.slice(0,3) != "8.0"){					
-					iframe.contents().find('body').css({'height':(h-padding)});	
+				/* Set height of body except in IE8. Setting this in IE8 breaks the dropdown */
+				if( ! $.browser.msie && $.browser.version.slice(0,3) != "8.0"){
+					contents.find('body').css({'height': bodyH});	
 				}				
 				
-				// Set iframe to match its contents height
-				iframe.height(h);
-
-				// set container to match the same height
-				iframe.parent().animate({height: h+parentPadding}, 500);
-				iframe.contents().find('body form').css({'width':'98%'});
-
+				iframe.height(iframeH);
+				this.animate({height: containerH}, 500);
 			},
 			toggleEditForm: function() {
 				var itemInfo = this.prev('.ss-uploadfield-item-info'), status = itemInfo.find('.ss-uploadfield-item-status');
-				var iframe = this.find('iframe').contents(), saved=iframe.find('#Form_EditForm_error');
-				var text="";
+
+				var iframe = this.find('iframe').contents(),
+					saved = iframe.find('#Form_EditForm_error');
+
+				var text = "";
 
 				if(this.height() === 0) {
 					text = ss.i18n._t('UploadField.Editing', "Editing ...");

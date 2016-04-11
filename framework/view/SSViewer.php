@@ -48,7 +48,6 @@ class SSViewer_Scope {
 	
 	private $localIndex;
 
-
 	public function __construct($item, $inheritedScope = null) {
 		$this->item = $item;
 		$this->localIndex = 0;
@@ -207,6 +206,7 @@ class SSViewer_BasicIteratorSupport implements TemplateIteratorProvider {
 			'Odd',
 			'EvenOdd',
 			'Pos',
+			'FromEnd',
 			'TotalItems',
 			'Modulus',
 			'MultipleOf',
@@ -311,6 +311,17 @@ class SSViewer_BasicIteratorSupport implements TemplateIteratorProvider {
 	 */
 	public function Pos($startIndex = 1) {
 		return $this->iteratorPos + $startIndex;
+	}
+
+	/**
+	 * Return the position of this item from the last item in the list. The position of the final
+	 * item is $endIndex, which defaults to 1.
+	 *
+	 * @param integer $endIndex Value of the last item
+	 * @return int
+	 */
+	public function FromEnd($endIndex = 1) {
+		return $this->iteratorTotalItems - $this->iteratorPos + $endIndex - 1;
 	}
 
 	/**
@@ -430,6 +441,15 @@ class SSViewer_DataPresenter extends SSViewer_Scope {
 		}
 	}
 
+	/**
+	 * Get the injected value
+	 * 
+	 * @param string $property Name of property
+	 * @param array $params
+	 * @param bool $cast If true, an object is always returned even if not an object.
+	 * @return array Result array with the keys 'value' for raw value, or 'obj' if contained in an object
+	 * @throws InvalidArgumentException
+	 */
 	public function getInjectedValue($property, $params, $cast = true) {
 		$on = $this->itemIterator ? $this->itemIterator->current() : $this->item;
 
@@ -513,31 +533,24 @@ class SSViewer_DataPresenter extends SSViewer_Scope {
 		if (isset($arguments[1]) && $arguments[1] != null) $params = $arguments[1]; 
 		else $params = array();
 
-		$hasInjected = $res = null;
-
-		if ($name == 'hasValue') {
-			if ($val = $this->getInjectedValue($property, $params, false)) {
-				$hasInjected = true; $res = (bool)$val['value'];
-			}
-		}
-		else { // XML_val
-			if ($val = $this->getInjectedValue($property, $params)) {
-				$hasInjected = true;
-				$obj = $val['obj'];
+		$val = $this->getInjectedValue($property, $params);
+		if ($val) {
+			$obj = $val['obj'];
+			if ($name === 'hasValue') {
+				$res = $obj instanceof Object
+					? $obj->exists()
+					: (bool)$obj;
+			} else {
+				// XML_val
 				$res = $obj->forTemplate();
 			}
-		}
-
-		if ($hasInjected) {
 			$this->resetLocalScope();
 			return $res;
-		}
-		else {
+		} else {
 			return parent::__call($name, $arguments);
 		}
 	}
 }
-
 
 /**
  * Parses a template file with an *.ss file extension.
@@ -556,7 +569,7 @@ class SSViewer_DataPresenter extends SSViewer_Scope {
  * <b>Caching</b>
  *
  * Compiled templates are cached via {@link SS_Cache}, usually on the filesystem.  
- * If you put ?flush=all on your URL, it will force the template to be recompiled.  
+ * If you put ?flush=1 on your URL, it will force the template to be recompiled.
  *
  * @see http://doc.silverstripe.org/themes
  * @see http://doc.silverstripe.org/themes:developing
@@ -564,7 +577,7 @@ class SSViewer_DataPresenter extends SSViewer_Scope {
  * @package framework
  * @subpackage view
  */
-class SSViewer {
+class SSViewer implements Flushable {
 	
 	/**
 	 * @config
@@ -573,23 +586,33 @@ class SSViewer {
 	private static $source_file_comments = false;
 
 	/**
+	 * @ignore
+	 */
+	private static $template_cache_flushed = false;
+
+	/**
+	 * @ignore
+	 */
+	private static $cacheblock_cache_flushed = false;
+
+	/**
 	 * Set whether HTML comments indicating the source .SS file used to render this page should be
 	 * included in the output.  This is enabled by default
 	 *
-	 * @deprecated 3.2 Use the "SSViewer.source_file_comments" config setting instead
+	 * @deprecated 4.0 Use the "SSViewer.source_file_comments" config setting instead
 	 * @param boolean $val
 	 */
 	public static function set_source_file_comments($val) {
-		Deprecation::notice('3.2', 'Use the "SSViewer.source_file_comments" config setting instead');
+		Deprecation::notice('4.0', 'Use the "SSViewer.source_file_comments" config setting instead');
 		Config::inst()->update('SSViewer', 'source_file_comments', $val);
 	}
 	
 	/**
-	 * @deprecated 3.2 Use the "SSViewer.source_file_comments" config setting instead
+	 * @deprecated 4.0 Use the "SSViewer.source_file_comments" config setting instead
 	 * @return boolean
 	 */
 	public static function get_source_file_comments() {
-		Deprecation::notice('3.2', 'Use the "SSViewer.source_file_comments" config setting instead');
+		Deprecation::notice('4.0', 'Use the "SSViewer.source_file_comments" config setting instead');
 		return Config::inst()->get('SSViewer', 'source_file_comments');
 	}
 	
@@ -631,30 +654,52 @@ class SSViewer {
 	 */
 	protected $parser;
 
+	/*
+	 * Default prepended cache key for partial caching
+	 * 
+	 * @var string
+	 * @config
+	 */
+	private static $global_key = '$CurrentReadingMode, $CurrentUser.ID';
+
+	/**
+	 * Triggered early in the request when someone requests a flush.
+	 */
+	public static function flush() {
+		self::flush_template_cache(true);
+		self::flush_cacheblock_cache(true);
+	}
+
 	/**
 	 * Create a template from a string instead of a .ss file
-	 * 
+	 *
+	 * @param string $content The template content
+	 * @param bool|void $cacheTemplate Whether or not to cache the template from string
 	 * @return SSViewer
 	 */
-	public static function fromString($content) {
-		return new SSViewer_FromString($content);
+	public static function fromString($content, $cacheTemplate = null) {
+		$viewer = new SSViewer_FromString($content);
+		if ($cacheTemplate !== null) {
+			$viewer->setCacheTemplate($cacheTemplate);
+		}
+		return $viewer;
 	}
 	
 	/**
-	 * @deprecated 3.2 Use the "SSViewer.theme" config setting instead
+	 * @deprecated 4.0 Use the "SSViewer.theme" config setting instead
 	 * @param string $theme The "base theme" name (without underscores). 
 	 */
 	public static function set_theme($theme) {
-		Deprecation::notice('3.2', 'Use the "SSViewer.theme" config setting instead');
+		Deprecation::notice('4.0', 'Use the "SSViewer.theme" config setting instead');
 		Config::inst()->update('SSViewer', 'theme', $theme);
 	}
 	
 	/**
-	 * @deprecated 3.2 Use the "SSViewer.theme" config setting instead
+	 * @deprecated 4.0 Use the "SSViewer.theme" config setting instead
 	 * @return string 
 	 */
 	public static function current_theme() {
-		Deprecation::notice('3.2', 'Use the "SSViewer.theme" config setting instead');
+		Deprecation::notice('4.0', 'Use the "SSViewer.theme" config setting instead');
 		return Config::inst()->get('SSViewer', 'theme');
 	}
 	
@@ -693,10 +738,11 @@ class SSViewer {
 	}
 
 	/**
+	 * @deprecated since version 4.0
 	 * @return string
 	 */
 	public static function current_custom_theme(){
-		Deprecation::notice('3.2', 'Use the "SSViewer.theme" and "SSViewer.theme_enabled" config settings instead');
+		Deprecation::notice('4.0', 'Use the "SSViewer.theme" and "SSViewer.theme_enabled" config settings instead');
 		return Config::inst()->get('SSViewer', 'theme_enabled') ? Config::inst()->get('SSViewer', 'theme') : null;
 	}
 
@@ -721,6 +767,13 @@ class SSViewer {
 		foreach($classes as $class) {
 			$template = $class . $suffix;
 			if(SSViewer::hasTemplate($template)) $templates[] = $template;
+
+			// If the class is "Page_Controller", look for Page.ss
+			if(stripos($class,'_controller') !== false) {
+				$template = str_ireplace('_controller','',$class) . $suffix;
+				if(SSViewer::hasTemplate($template)) $templates[] = $template;
+			}
+
 			if($baseClass && $class == $baseClass) break;
 		}
 		return $templates;
@@ -735,20 +788,10 @@ class SSViewer {
 	 *  </code>
 	 */
 	public function __construct($templateList, TemplateParser $parser = null) {
-        $this->setParser($parser ?: Injector::inst()->get('SSTemplateParser'));
-
-		// flush template manifest cache if requested
-		if (isset($_GET['flush']) && $_GET['flush'] == 'all') {
-			if(Director::isDev() || Director::is_cli() || Permission::check('ADMIN')) {
-				self::flush_template_cache();
-			} else {
-				if(!Security::ignore_disallowed_actions()) {
-					return Security::permissionFailure(null, 'Please log in as an administrator to flush ' .
-						'the template cache.');
-				}
-			}
+		if ($parser) {
+			$this->setParser($parser);
 		}
-		
+
 		if(!is_array($templateList) && substr((string) $templateList,-3) == '.ss') {
 			$this->chosenTemplates['main'] = $templateList;
 		} else {
@@ -765,12 +808,14 @@ class SSViewer {
 		if(!$this->chosenTemplates) {
 			$templateList = (is_array($templateList)) ? $templateList : array($templateList);
 
-			user_error(
-				"None of these templates can be found in theme '"
-				. Config::inst()->get('SSViewer', 'theme') . "': "
-				. implode(".ss, ", $templateList) . ".ss", 
-				E_USER_WARNING
-			);
+			$message = 'None of the following templates could be found';
+			if(!$theme) {
+				$message .= ' (no theme in use)';
+			} else {
+				$message .= ' in theme "' . $theme . '"';
+			}
+
+			user_error($message . ': ' . implode(".ss, ", $templateList) . ".ss", E_USER_WARNING);
 		}
 	}
 
@@ -789,6 +834,9 @@ class SSViewer {
 	 */
 	public function getParser()
 	{
+		if (!$this->parser) {
+			$this->setParser(Injector::inst()->get('SSTemplateParser'));
+		}
 		return $this->parser;
 	}
 
@@ -825,31 +873,31 @@ class SSViewer {
 	 *    links: "<?php echo $_SERVER['REQUEST_URI']; ?>".  This is useful if you're generating a 
 	 *    page that will be saved to a .php file and may be accessed from different URLs.
 	 *
-	 * @deprecated 3.2 Use the "SSViewer.rewrite_hash_links" config setting instead
+	 * @deprecated 4.0 Use the "SSViewer.rewrite_hash_links" config setting instead
 	 * @param string $optionName
 	 * @param mixed $optionVal
 	 */
 	public static function setOption($optionName, $optionVal) {
 		if($optionName == 'rewriteHashlinks') {
-			Deprecation::notice('3.2', 'Use the "SSViewer.rewrite_hash_links" config setting instead');
+			Deprecation::notice('4.0', 'Use the "SSViewer.rewrite_hash_links" config setting instead');
 			Config::inst()->update('SSViewer', 'rewrite_hash_links', $optionVal);
 		} else {
-			Deprecation::notice('3.2', 'Use the "SSViewer.' . $optionName . '" config setting instead');
+			Deprecation::notice('4.0', 'Use the "SSViewer.' . $optionName . '" config setting instead');
 			Config::inst()->update('SSViewer', $optionName, $optionVal);
 		}
 	}
 	
 	/**
- 	 * @deprecated 3.2 Use the "SSViewer.rewrite_hash_links" config setting instead
+ 	 * @deprecated 4.0 Use the "SSViewer.rewrite_hash_links" config setting instead
  	 * @param string
  	 * @return mixed
 	 */
 	public static function getOption($optionName) {
 		if($optionName == 'rewriteHashlinks') {
-			Deprecation::notice('3.2', 'Use the "SSViewer.rewrite_hash_links" config setting instead');
+			Deprecation::notice('4.0', 'Use the "SSViewer.rewrite_hash_links" config setting instead');
 			return Config::inst()->get('SSViewer', 'rewrite_hash_links');
 		} else {
-			Deprecation::notice('3.2', 'Use the "SSViewer.' . $optionName . '" config setting instead');
+			Deprecation::notice('4.0', 'Use the "SSViewer.' . $optionName . '" config setting instead');
 			return Config::inst()->get('SSViewer', $optionName);
 		}
 	}
@@ -905,24 +953,50 @@ class SSViewer {
 			return $founds[0];
 		}
 	}
-
-	/**
-	 * @ignore
-	 */
-	static private $flushed = false;
 	
 	/**
 	 * Clears all parsed template files in the cache folder.
 	 *
 	 * Can only be called once per request (there may be multiple SSViewer instances).
+	 *
+	 * @param bool $force Set this to true to force a re-flush. If left to false, flushing
+	 * may only be performed once a request.
 	 */
-	public static function flush_template_cache() {
-		if (!self::$flushed) {
+	public static function flush_template_cache($force = false) {
+		if (!self::$template_cache_flushed || $force) {
 			$dir = dir(TEMP_FOLDER);
 			while (false !== ($file = $dir->read())) {
-				if (strstr($file, '.cache')) { unlink(TEMP_FOLDER.'/'.$file); }
+				if (strstr($file, '.cache')) unlink(TEMP_FOLDER . '/' . $file);
 			}
-			self::$flushed = true;
+			self::$template_cache_flushed = true;
+		}
+	}
+
+	/**
+	 * Clears all partial cache blocks.
+	 *
+	 * Can only be called once per request (there may be multiple SSViewer instances).
+	 *
+	 * @param bool $force Set this to true to force a re-flush. If left to false, flushing
+	 * may only be performed once a request.
+	 */
+	public static function flush_cacheblock_cache($force = false) {
+		if (!self::$cacheblock_cache_flushed || $force) {
+			$cache = SS_Cache::factory('cacheblock');
+			$backend = $cache->getBackend();
+			
+			if(
+				$backend instanceof Zend_Cache_Backend_ExtendedInterface
+				&& ($capabilities = $backend->getCapabilities())
+				&& $capabilities['tags']
+			) {
+				$cache->clean(Zend_Cache::CLEANING_MODE_MATCHING_TAG, $cache->getTags());
+			} else {
+				$cache->clean(Zend_Cache::CLEANING_MODE_ALL);
+			}
+
+			
+			self::$cacheblock_cache_flushed = true;
 		}
 	}
 
@@ -1012,13 +1086,6 @@ class SSViewer {
 	public function process($item, $arguments = null, $inheritedScope = null) {
 		SSViewer::$topLevel[] = $item;
 
-		if ($arguments && $arguments instanceof Zend_Cache_Core) {
-			Deprecation::notice('3.0', 'Use setPartialCacheStore to override the partial cache storage backend, ' .
-				'the second argument to process is now an array of variables.');
-			$this->setPartialCacheStore($arguments);
-			$arguments = null;
-		}
-
 		if(isset($this->chosenTemplates['main'])) {
 			$template = $this->chosenTemplates['main'];
 		} else {
@@ -1031,7 +1098,7 @@ class SSViewer {
 			. str_replace(array('\\','/',':'), '.', Director::makeRelative(realpath($template)));
 		$lastEdited = filemtime($template);
 
-		if(!file_exists($cacheFile) || filemtime($cacheFile) < $lastEdited || isset($_GET['flush'])) {
+		if(!file_exists($cacheFile) || filemtime($cacheFile) < $lastEdited) {
 			$content = file_get_contents($template);
 			$content = $this->parseTemplateContent($content, $template);
 			
@@ -1046,9 +1113,11 @@ class SSViewer {
 		// through $Content and $Layout placeholders.
 		foreach(array('Content', 'Layout') as $subtemplate) {
 			if(isset($this->chosenTemplates[$subtemplate])) {
-				$subtemplateViewer = new SSViewer($this->chosenTemplates[$subtemplate], $this->parser);
+				$subtemplateViewer = clone $this;
+				// Disable requirements - this will be handled by the parent template
 				$subtemplateViewer->includeRequirements(false);
-				$subtemplateViewer->setPartialCacheStore($this->getPartialCacheStore());
+				// The subtemplate is the only file we want to process, so set it as the "main" template file
+				$subtemplateViewer->chosenTemplates = array('main' => $this->chosenTemplates[$subtemplate]);
 
 				$underlay[$subtemplate] = $subtemplateViewer->process($item, $arguments);
 			}
@@ -1067,10 +1136,10 @@ class SSViewer {
 		$rewrite = Config::inst()->get('SSViewer', 'rewrite_hash_links');
 		if($this->rewriteHashlinks && $rewrite) {
 			if(strpos($output, '<base') !== false) {
-				if($rewrite === 'php') { 
-					$thisURLRelativeToBase = "<?php echo strip_tags(\$_SERVER['REQUEST_URI']); ?>"; 
+				if($rewrite === 'php') {
+					$thisURLRelativeToBase = "<?php echo Convert::raw2att(preg_replace(\"/^(\\\\/)+/\", \"/\", \$_SERVER['REQUEST_URI'])); ?>";
 				} else { 
-					$thisURLRelativeToBase = strip_tags($_SERVER['REQUEST_URI']); 
+					$thisURLRelativeToBase = Convert::raw2att(preg_replace("/^(\\/)+/", "/", $_SERVER['REQUEST_URI']));
 				}
 
 				$output = preg_replace('/(<a[^>]+href *= *)"#/i', '\\1"' . $thisURLRelativeToBase . '#', $output);
@@ -1083,6 +1152,11 @@ class SSViewer {
 	/**
 	 * Execute the given template, passing it the given data.
 	 * Used by the <% include %> template tag to process templates.
+	 * 
+	 * @param string $template Template name
+	 * @param mixed $data Data context
+	 * @param array $arguments Additional arguments
+	 * @return string Evaluated result
 	 */
 	public static function execute_template($template, $data, $arguments = null, $scope = null) {
 		$v = new SSViewer($template);
@@ -1090,9 +1164,26 @@ class SSViewer {
 
 		return $v->process($data, $arguments, $scope);
 	}
+	
+	/**
+	 * Execute the evaluated string, passing it the given data.
+	 * Used by partial caching to evaluate custom cache keys expressed using
+	 * template expressions
+	 * 
+	 * @param string $content Input string
+	 * @param mixed $data Data context
+	 * @param array $arguments Additional arguments
+	 * @return string Evaluated result
+	 */
+	public static function execute_string($content, $data, $arguments = null) {
+		$v = SSViewer::fromString($content);
+		$v->includeRequirements(false);
+		
+		return $v->process($data, $arguments);
+	}
 
 	public function parseTemplateContent($content, $template="") {
-		return $this->parser->compileString(
+		return $this->getParser()->compileString(
 			$content,
 			$template,
 			Director::isDev() && Config::inst()->get('SSViewer', 'source_file_comments')
@@ -1140,31 +1231,71 @@ class SSViewer {
  * @subpackage view
  */
 class SSViewer_FromString extends SSViewer {
+
+	/**
+	 * The global template caching behaviour if no instance override is specified
+	 * @config
+	 * @var bool
+	 */
+	private static $cache_template = true;
+	
+	/**
+	 * The template to use
+	 * @var string
+	 */
 	protected $content;
 	
-	public function __construct($content, TemplateParser $parser = null) {
-        $this->setParser($parser ?: Injector::inst()->get('SSTemplateParser'));
-		$this->content = $content;
-	}
+	/**
+	 * Indicates whether templates should be cached
+	 * @var bool
+	 */
+	protected $cacheTemplate;
 	
-	public function process($item, $arguments = null, $scope = null) {
-		if ($arguments && $arguments instanceof Zend_Cache_Core) {
-			Deprecation::notice('3.0', 'Use setPartialCacheStore to override the partial cache storage backend, ' .
-				'the second argument to process is now an array of variables.');
-			$this->setPartialCacheStore($arguments);
-			$arguments = null;
+	public function __construct($content, TemplateParser $parser = null) {
+		if ($parser) {
+			$this->setParser($parser);
 		}
 
-		$template = $this->parseTemplateContent($this->content, "string sha1=".sha1($this->content));
+		$this->content = $content;
+	}
 
-		$tmpFile = tempnam(TEMP_FOLDER,"");
-		$fh = fopen($tmpFile, 'w');
-		fwrite($fh, $template);
-		fclose($fh);
+	public function process($item, $arguments = null, $scope = null) {
+		$hash = sha1($this->content);
+		$cacheFile = TEMP_FOLDER . "/.cache.$hash";
 
-		$val = $this->includeGeneratedTemplate($tmpFile, $item, $arguments, null, $scope);
+		if(!file_exists($cacheFile) || isset($_GET['flush'])) {
+			$content = $this->parseTemplateContent($this->content, "string sha1=$hash");
+			$fh = fopen($cacheFile,'w');
+			fwrite($fh, $content);
+			fclose($fh);
+		}
 
-		unlink($tmpFile);
+		$val = $this->includeGeneratedTemplate($cacheFile, $item, $arguments, null, $scope);
+
+		if ($this->cacheTemplate !== null) {
+			$cacheTemplate = $this->cacheTemplate;
+		} else {
+			$cacheTemplate = Config::inst()->get('SSViewer_FromString', 'cache_template');
+		}
+		
+		if (!$cacheTemplate) {
+			unlink($cacheFile);
+		}
+
 		return $val;
+	}
+	
+	/**
+	 * @param boolean $cacheTemplate
+	 */
+	public function setCacheTemplate($cacheTemplate) {
+		$this->cacheTemplate = (bool) $cacheTemplate;
+	}
+	
+	/**
+	 * @return boolean
+	 */
+	public function getCacheTemplate() {
+		return $this->cacheTemplate;
 	}
 }

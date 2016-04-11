@@ -1,0 +1,14 @@
+az:
+  SiteConfig:
+    DEFAULTTHEME: '(Susmaya görə olan şablon)'
+    EDITHEADER: 'Bu saytda səhifələri kim redaktə edə bilər?'
+    EDIT_PERMISSION: 'Sayt konfigurasiyasını sazla'
+    SITENAMEDEFAULT: 'Saytın adı'
+    SITETAGLINE: 'Saytın sloqanı'
+    SITETITLE: 'Saytın başlığı'
+    TABACCESS: İcazə
+    TABMAIN: Əsas
+    TAGLINEDEFAULT: 'Sizin sloganınız burda'
+    THEME: Şablon
+    TOPLEVELCREATE: 'Saytın kəlləsində kim səhifə yarada bilər?'
+    VIEWHEADER: 'Bu saytda səhifələri kim görə bilir?'

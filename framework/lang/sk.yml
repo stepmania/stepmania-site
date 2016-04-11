@@ -1,5 +1,7 @@
 sk:
   AssetAdmin:
+    ALLOWEDEXTS: 'Povolené extenzie nahatia súboru'
+    HIDEALLOWEDEXTS: 'Skryť povolené extenzie'
     NEWFOLDER: Nový priečinok
     SHOWALLOWEDEXTS: 'Ukázať povolené extenzie'
   AssetTableField:
@@ -7,12 +9,14 @@ sk:
     DIM: Rozmery
     FILENAME: Názov
     FOLDER: Adresár
+    HEIGHT: Výška
     LASTEDIT: 'Posledne zmenené'
     OWNER: Vlastník
     SIZE: 'Veľkosť'
     TITLE: Titulok
     TYPE: 'Typ'
     URL: URL
+    WIDTH: Šírka
   AssetUploadField:
     ChooseFiles: 'Vyberte súbory'
     DRAGFILESHERE: 'Tiahni súbory tu'
@@ -23,8 +27,10 @@ sk:
     FILES: Súbory
     FROMCOMPUTER: 'Vyberte súbory z vášho počítača'
     FROMCOMPUTERINFO: 'Nahrat z vášho počítača'
+    INSERTURL: 'Vložiť z URL'
+    REMOVEINFO: 'Odstrániť tento soubor z tohto poľa'
     TOTAL: Súhrn
-    TOUPLOAD: 'Vyberte súbory pre nahratie...'
+    TOUPLOAD: 'Vyberte súbory pre nahratie'
     UPLOADINPROGRESS: 'Čakajte prosím… prebieha nahrávanie'
     UPLOADOR: ALEBO
   BBCodeParser:
@@ -60,6 +66,8 @@ sk:
     ERRORNOTREC: 'Toto používateľské meno / heslo nebolo rozpoznané'
   Boolean:
     ANY: Ktorýkoľvek
+    NOANSWER: 'Nie'
+    YESANSWER: 'Áno'
   CMSLoadingScreen_ss:
     LOADING: Načíta sa ...
     REQUIREJS: 'CMS vyžaduje, aby ste mali JavaScript zapnutý.'
@@ -68,22 +76,44 @@ sk:
     ACCESSALLINTERFACES: 'Pristup do všetkých častí CMS.'
     ACCESSALLINTERFACESHELP: 'Prepisuje viac špecifických  nastavení prístupu.'
     SAVE: Uložiť
+  CMSMemberLoginForm:
+    BUTTONFORGOTPASSWORD: 'Zabudnuté heslo?'
+    BUTTONLOGIN: 'Prihlásiť sa späť'
+    BUTTONLOGOUT: 'Odhlásiť sa'
+    PASSWORDEXPIRED: '<p>Vaše heslo bolo expirované. <a target="_top" href="{link}">Prosím zvoľte nové heslo.</a></p>'
   CMSPageHistoryController_versions_ss:
     PREVIEW: 'Náhľad webu'
+  CMSPagesController_Tools_ss:
+    FILTER: Filter
   CMSProfileController:
     MENUTITLE: 'Môj profil'
+  CMSSecurity:
+    INVALIDUSER: '<p>Neplatný užívateľ. <a target="_top" href="{link}">Prosím overte sa znovu tu</a> pre pokračovanie.</p>'
+    LoginMessage: '<p>Ak máte akúkoľvek neuloženú prácu, môžete sa vrátiť na miesto, kde ste prestali, prihlásením sa späť nižšie.</p>'
+    SUCCESS: Úspešné
+    SUCCESSCONTENT: '<p>Úspešné prihlásenie. Ak nebudete automaticky presmerovaní <a target="_top" href="{link}">kliknite tu</a></p>'
+    TimedOutTitleAnonymous: 'Čas Vášho sedenia vypršal.'
+    TimedOutTitleMember: 'Ahoj {name}!<br />Čas Vášho sedenia vypršal.'
   ChangePasswordEmail_ss:
     CHANGEPASSWORDTEXT1: 'Vaše heslo bolo zmenené pre'
     CHANGEPASSWORDTEXT2: 'Teraz môžete použiť nasledujúce prihlasovacie údaje na prihlásenie:'
     EMAIL: E-mail
     HELLO: Dobrý deň
     PASSWORD: Heslo
+  CheckboxField:
+    NOANSWER: 'Nie'
+    YESANSWER: 'Áno'
+  CheckboxFieldSetField:
+    SOURCE_VALIDATION: 'Prosím vyberte hodnotu v zozname. {value} nie je platná voľba'
+  CheckboxSetField:
+    SOURCE_VALIDATION: 'Prosím vyberte hodnotu v zozname. ''{value}'' nie je platná voľba'
   ConfirmedPasswordField:
     ATLEAST: 'Heslá musia byť nejmenej {min} znakov dlhé.'
     BETWEEN: 'Heslá musia byť {min} až {max} znakov dlhé.'
     MAXIMUM: 'Heslá musia byť najviac {max} znakov dlhé.'
     SHOWONCLICKTITLE: 'Zmeniť heslo'
   ContentController:
+    DRAFT_SITE_ACCESS_RESTRICTION: 'Musíte sa prihlásiť so svojím CMS heslom pre zobrazenie návrhu alebo archivovaného obsahu. <a href="%s">Kliknite tu pre návrat na publikovaný web .</a>'
     NOTLOGGEDIN: 'Neprihlásený'
   CreditCardField:
     FIRST: prvý
@@ -124,6 +154,7 @@ sk:
   DropdownField:
     CHOOSE: (Vyberte si)
     CHOOSESEARCH: '(Vybrať alebo vyhľadať)'
+    SOURCE_VALIDATION: 'Prosím vyberte hodnotu v zozname. {value} nie je platná voľba'
   EmailField:
     VALIDATION: 'Prosím zadajte email adresu'
   Enum:
@@ -171,7 +202,8 @@ sk:
     TEXT2: 'odkaz na resetovanie hesla'
     TEXT3: pre
   Form:
-    CSRF_FAILED_MESSAGE: "Zdá sa, že nastal technický problém. Prosím, kliknite na tlačidlo Späť,, \n\t\t\t\t\taktualizujte prehliadač a skúste to znova."
+    CSRF_EXPIRED_MESSAGE: 'Čas Vášho sedenia vypršal. Prosím znova odošlite formulár.'
+    CSRF_FAILED_MESSAGE: 'Zdá sa, že nastal technický problém. Kliknite prosím na tlačítko späť, obnovte váš prehliadač, a skúste to opäť.'
     FIELDISREQUIRED: '{name} je požadované'
     SubmitBtnLabel: Choď
     VALIDATIONCREDITNUMBER: 'Uistite sa, že ste zadali číslo {number} kreditnej karty správne'
@@ -181,7 +213,6 @@ sk:
     VALIDATIONSTRONGPASSWORD: 'Heslá musia obsahovať aspoň jednu číslicu a jedno písmeno'
     VALIDATOR: Validácia
     VALIDCURRENCY: 'Prosím zadajte platnú menu'
-    CSRF_EXPIRED_MESSAGE: 'Čas Vášho sedenia vypršal. Prosím znova odošlite formulár.'
   FormField:
     Example: 'napr. %s'
     NONE: žiadne
@@ -237,8 +268,8 @@ sk:
     has_many_Permissions: Právomoci
     many_many_Members: Členovia
   GroupImportForm:
-    Help1: 'Importovať jednu alebo viac skupín v CSV formáte (čiarkov oddelené hodnoty). Zobraziť pokročilé použitie'
-    Help2: "<div class=\"advanced\">\n<h4>Pokročilé použitie</h4>\n<ul>\n<li>Povolené stĺpce: <em>%s</em></li>\n<li>Existujúce skupiny sú porovnávané ich unikátnou vlastnostou <em>Code</em>, a aktualizované s novými hodnotami z\nimportovaného súboru.</li>\n<li>Hierarchia skupín môže byť tvorená použitím stĺpce <em>ParentCode</em>.</li>\n<li>Kódy oprávnení môžu byť priradené stĺpcom <em>PermissionCode</em>. Existujúce oprávnenia nie sú smazáné.</li>\n</ul>\n</div>"
+    Help1: '<p>Importovať jednu alebo viac skupín v <em>CSV</em> formáte (čiarkou oddelené hodnoty). <small><a href="#" class="toggle-advanced">Zobraziť pokročilé použitie</a></small></p>'
+    Help2: '<div class=''advanced''>\n<h4>Pokročilé použitie</h4>\n<ul>\n<li>Povolené stĺpce: <em>%s</em></li>\n<li>Existujúce skupiny sú porovnávané ich unikátnou vlastnosťou <em>Code</em>, a aktualizované s novými hodnotami z\nimportovaného súboru.</li>\n<li>Hierarchia skupín môže byť tvorená použitím stĺpca <em>ParentCode</em>.</li>\n<li>Kódy oprávnení môžu byť priradené stĺpcom <em>PermissionCode</em>. Existujúce oprávnenia nie sú zmazané.</li>\n</ul>\n</div>'
     ResultCreated: 'Vytvorených {count} skupín'
     ResultDeleted: 'Zmazané %d skupiny'
     ResultUpdated: 'Aktualizované %d skupiny'
@@ -247,6 +278,8 @@ sk:
   HtmlEditorField:
     ADDURL: 'Pridať URL'
     ADJUSTDETAILSDIMENSIONS: 'Detaily &amp; rozmery'
+    ANCHORSCANNOTACCESSPAGE: 'Nemáte povolený prístup k obsahu cieľovej stránky.'
+    ANCHORSPAGENOTFOUND: 'Cielova stránka nebola nájdená.'
     ANCHORVALUE: Odkaz
     BUTTONADDURL: 'Pridať url'
     BUTTONINSERT: Vložiť
@@ -268,8 +301,6 @@ sk:
     FROMWEB: 'Z webu'
     FindInFolder: 'Vyhľadať v priečinku'
     IMAGEALT: 'Atlernatívny text (alt)'
-    IMAGEALTTEXT: 'Atlernatívny text (alt) - zobrazí sa ak obrázok nemože byť zobrazený '
-    IMAGEALTTEXTDESC: 'Zobrazí sa na obrazovke, ak obrázok nemôže byť zobrazený'
     IMAGEDIMENSIONS: Rozmery
     IMAGEHEIGHTPX: Výška
     IMAGETITLE: 'Text titulky (tooltip) - pre doplňujúce informácie o obrázku'
@@ -287,7 +318,9 @@ sk:
     LINKOPENNEWWIN: 'Otvoriť odkaz v novom okne?'
     LINKTO: 'Odkázať na'
     PAGE: Stránku
+    SUBJECT: 'Predmet emailu'
     URL: URL
+    URLDESCRIPTION: 'Vložiť videá a obrázky z webu do Vašej stránky, jednoduchým zadaním URL súboru. Uistite sa, že máte príslušné práva pred zdielaním médií z webu.<br /><br />Prosím, uvedomte si, že súbory nie sú pridané do úložiska CMS, ale súbor je vstavaný z jeho pôvodného umiestenia, ak z nejakých dôvodov súbor nie je dostupný v jeho pôvodnom umiestení, nebude zobraziteľný na tejo stránke.'
     URLNOTANOEMBEDRESOURCE: 'URL ''{url}'' nemôže byť vložené do zdroja médií.'
     UpdateMEDIA: 'Aktualizovať média'
   Image:
@@ -303,21 +336,21 @@ sk:
     DELETED: Zmazané.
     DropdownBatchActionsDefault: Akcie
     HELP: Pomoc
-    PAGETYPE: 'Typ stránky:'
     PERMAGAIN: 'Boli ste odhlásený'
-    PERMALREADY: 'Je mi ľúto, ale nemáte prístup k tejto časti CMS. Ak sa chcete prihlásiť ako niekto iný, urobte tak nižšie'
-    PERMDEFAULT: 'Vyberte si prosím metódu autentifikácie a zadajte svoje prístupové údaje k CMS.'
-    PLEASESAVE: 'Prosím uložte stránku: Táto stránka nemôže byť aktualizovaná, lebo ešte nebola uložená.'
+    PERMALREADY: 'Je nám ľúto, ale k tejto časti CMS nemáte prístup . Ak sa chcete prihlásiť ako niekto iný, urobte tak nižšie.'
+    PERMDEFAULT: 'Musíte byť prihlásený/á k prístupu do oblasti administrácie, zadajte vaše prihlasovacie údaje dole, prosím.'
     PreviewButton: Náhľad
     REORGANISATIONSUCCESSFUL: 'Strom webu bol reorganizovaný úspešne.'
     SAVEDUP: Uložené.
     ShowAsList: 'ukázať ako zoznam'
     TooManyPages: 'Príliž veľa stránok'
     ValidationError: 'Chyba platnosti'
-    VersionUnknown: Neznáme
+    VersionUnknown: neznámé
   LeftAndMain_Menu_ss:
     Hello: Ahoj
     LOGOUT: 'Odhlásiť sa'
+  ListboxField:
+    SOURCE_VALIDATION: 'Prosím vyberte hodnotu v zozname. %s nie je platná voľba'
   LoginAttempt:
     Email: 'Emailová adresa'
     IP: 'IP adreasa'
@@ -342,14 +375,15 @@ sk:
     ERRORLOCKEDOUT2: 'Váš účet bol dočasne zablokovaný, kvôli množstvu neúspešných pokusov o prihlásenie. Prosím skúste to znova za {count} minút.'
     ERRORNEWPASSWORD: 'Zadali ste rozdielne nové heslo, skúste to znovu'
     ERRORPASSWORDNOTMATCH: 'Vaše súčasné heslo nie je správne, prosím skúste to znovu'
-    ERRORWRONGCRED: 'Poskytnuté detaily vyzerajúí byť nesprávne. Prosím skúste opäť.'
-    FIRSTNAME: 'Krstné meno'
+    ERRORWRONGCRED: 'Poskytnuté detaily vyzerajú byť nesprávne. Prosím skúste opäť.'
+    FIRSTNAME: 'Meno'
     INTERFACELANG: 'Jazyk rozhrania'
     INVALIDNEWPASSWORD: 'Nemohli sme pripustiť, že heslo: {password}'
     LOGGEDINAS: 'Ste prihlásený/á ako {name}.'
     NEWPASSWORD: 'Nové heslo'
     NoPassword: 'Nie je tu heslo pre tohto člena.'
     PASSWORD: Heslo
+    PASSWORDEXPIRED: 'Vaše heslo bolo expirované. Zvoľte nové heslo.'
     PLURALNAME: Členovia
     REMEMBERME: 'Pamätať si ma nabudúce?'
     SINGULARNAME: Člen
@@ -358,11 +392,11 @@ sk:
     SURNAME: Priezvisko
     TIMEFORMAT: 'Formát času'
     VALIDATIONMEMBEREXISTS: 'Člen s takýmto e-mailom už existuje'
-    ValidationIdentifierFailed: 'Nemôžte prepísať existujúceho člena #{id} s identickým identifikátorm ({name} = {value}))'
+    ValidationIdentifierFailed: 'Nemôžte prepísať existujúceho člena #{id} s identickým identifikátorm ({name} = {value})'
     WELCOMEBACK: 'Vitajte späť, {firstname}'
     YOUROLDPASSWORD: 'Vaše staré heslo'
     belongs_many_many_Groups: Skupiny
-    db_LastVisited: 'Dátum poslednej navštevy'
+    db_LastVisited: 'Dátum poslednej návštevy'
     db_Locale: 'Lokalizácia rozhrania'
     db_LockedOutUntil: 'Zamknutý až do'
     db_NumVisit: 'Počet návštev'
@@ -391,8 +425,8 @@ sk:
     TWODIGITYEAR: 'Dvojčíslie roka'
     Toggle: 'Ukázať nápovedu formátovania'
   MemberImportForm:
-    Help1: 'Importovať členov v <em>CSV formáte</em> (čiarkov oddelené hodnoty). Zobraziť pokročile použitie'
-    Help2: "<div class=\"advanced\">\n<h4>Pokročilé použitie</h4>\n<ul>\n<li>Povolené stĺpce: <em>%s</em></li>\n<li>Existujúci užívatelia sú porovnávaní ich unikátnou vlastnosťou <em>Code</em>, a aktualizovaní s novými hodnotami z\nimportovaného súboru.</li>\n<li>Skupiny môžu byťt priradené stĺpcom <em>Groups</em>. Skupiny sú identifikované ich vlastnosťou <em>Code</em>,\nviacero skupín môže byť oddelené čiarkou. Existujúce členstvá skupiny nie sú smazané.</li>\n</ul>\n</div>"
+    Help1: '<p>Importovať členov v <em>CSV formáte</em> (čiarkou oddelené hodnoty). <small><a href="#" class="toggle-advanced">Zobraziť pokročile použitie</a></small></p>'
+    Help2: '<div class="advanced">\n<h4>Pokročilé použitie</h4>\n<ul>\n<li>Povolené stĺpce: <em>%s</em></li>\n<li>Existujúci užívatelia sú porovnávaní ich unikátnou vlastnosťou <em>Code</em>, a aktualizovaní s novými hodnotami z\nimportovaného súboru.</li>\n<li>Skupiny môžu byť priradené stĺpcom <em>Groups</em>. Skupiny sú identifikované ich vlastnosťou <em>Code</em>,\nviacero skupín môže byť oddelené čiarkou. Existujúce členstvá skupiny nie sú zmazané.</li>\n</ul>\n</div>'
     ResultCreated: 'Vytvorených {count} členov'
     ResultDeleted: 'Zmazaných %d členov'
     ResultNone: 'Žiadne zmeny'
@@ -430,7 +464,7 @@ sk:
   NullableField:
     IsNullLabel: 'Je Null'
   NumericField:
-    VALIDATION: '''{value}'' nie je číslo, iba čísla môžu byť akceptované pre toto pole'
+    VALIDATION: 'Zadaná hodnota ''{value}'' nie je číslo. Iba čísla môžu byť akceptované pre toto pole!'
   Pagination:
     Page: Stránka
     View: Zobraziť
@@ -490,16 +524,16 @@ sk:
     IMPORTUSERS: 'Importovať požívateľov'
     MEMBERS: Členovia
     MENUTITLE: Bezpečnosť
-    MemberListCaution: 'Upozornenie: Odstánenie členov z tohto zoznamu ich odstráni zo všetkých skupín a databázy.'
+    MemberListCaution: 'Upozornenie: Odstránenie členov z tohto zoznamu ich odstráni zo všetkých skupín a databázy.'
     NEWGROUP: 'Nová skupina'
     PERMISSIONS: Právomoci
     ROLES: Úlohy
     ROLESDESCRIPTION: 'Úlohy sú logické zoskupenia právomocí a môžu byť pridelené k skupinám.<br />Sú zdedené z nadradených skupín, ak je to požadované.'
     TABROLES: Úlohy
-    Users: Bezpečnosť
+    Users: Používatelia
   SecurityAdmin_MemberImportForm:
     BtnImport: 'Importovať'
-    FileFieldLabel: 'CSV súbor <small>(Povoléné koncovki súborov: *.csv)</small>'
+    FileFieldLabel: 'CSV súbor <small>(Povolené koncovky súborov: *.csv)</small>'
   SilverStripeNavigator:
     Auto: Auto
     ChangeViewMode: 'Zmeniť nód zobrazenia'
@@ -522,6 +556,8 @@ sk:
     Print: Tlačiť
   TableListField_PageControls_ss:
     OF: z
+  TextField:
+    VALIDATEMAXLENGTH: 'Hodnota pre {name} nesmie prekročiť {maxLength} v dĺžke znakov'
   TimeField:
     VALIDATEFORMAT: 'Prosím zadajte platný formát času ({format})'
   ToggleField:

@@ -1,0 +1,19 @@
+et_EE:
+  CMSSettingsController:
+    MENUTITLE: Seaded
+  SiteConfig:
+    DEFAULTTHEME: '(Kasuta vaikekujundust)'
+    EDITHEADER: 'Kes saavad sellel saidil lehti redigeerida?'
+    EDIT_PERMISSION: 'Saidi konfiguratsiooni haldamine'
+    EDIT_PERMISSION_HELP: 'Võimalus redigeerida üldiseid juurdepääsuseadeid / kõrgema taseme lehe õigusi.'
+    PLURALNAME: 'Saidi konfiguratsioonid'
+    SINGULARNAME: 'Saidi konfiguratsioon'
+    SITENAMEDEFAULT: 'Teie saidi nimi'
+    SITETAGLINE: 'Saidi reklaamlause'
+    SITETITLE: 'Saidi pealkiri'
+    TABACCESS: Juurdepääs
+    TABMAIN: Sisu
+    TAGLINEDEFAULT: 'teie reklaamlause siin'
+    THEME: Kujundus
+    TOPLEVELCREATE: 'Kes saavad luua lehti saidi juurtasandil?'
+    VIEWHEADER: 'Kes saavad sellel saidil olevaid lehti vaadata?'

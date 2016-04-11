@@ -10,7 +10,7 @@ interface SS_List extends ArrayAccess, Countable, IteratorAggregate {
 	/**
 	 * Returns all the items in the list in an array.
 	 *
-	 * @return arary
+	 * @return array
 	 */
 	public function toArray();
 
@@ -77,7 +77,7 @@ interface SS_List extends ArrayAccess, Countable, IteratorAggregate {
 	 * @return array
 	 */
 	public function column($colName = "ID");
-	
+
 	/**
 	 * Walks the list using the specified callback
 	 *

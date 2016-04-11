@@ -12,6 +12,7 @@ ru:
     SIZE: 'Размер'
     TITLE: Название
     TYPE: 'Тип'
+    URL: URL
   AssetUploadField:
     ChooseFiles: 'Выберите файлы'
     DRAGFILESHERE: 'Перетащите файлы сюда'
@@ -23,7 +24,6 @@ ru:
     FROMCOMPUTER: 'Выберите файлы с диска вашего компьютера'
     FROMCOMPUTERINFO: 'Загрузить с диска вашего компьютера'
     TOTAL: Всего
-    TOUPLOAD: 'Выберите файлы для загрузки...'
     UPLOADINPROGRESS: 'Идет загрузка... Пожалуйста, подождите'
     UPLOADOR: ИЛИ
   BBCodeParser:
@@ -74,6 +74,7 @@ ru:
   ChangePasswordEmail_ss:
     CHANGEPASSWORDTEXT1: 'Вы изменили свой пароль на'
     CHANGEPASSWORDTEXT2: 'Для того, чтобы войти, используйте сейчас следующие учетные данные:'
+    EMAIL: Email
     HELLO: Здравствуйте
     PASSWORD: Пароль
   ConfirmedPasswordField:
@@ -88,6 +89,8 @@ ru:
     FOURTH: четвертая
     SECOND: вторая
     THIRD: третья
+  CurrencyField:
+    CURRENCYSYMBOL: $
   DataObject:
     PLURALNAME: 'Объекты'
     SINGULARNAME: 'Объект'
@@ -119,7 +122,6 @@ ru:
     INVALID_REQUEST: 'Неверный запрос'
   DropdownField:
     CHOOSE: (Выберите)
-    CHOOSESEARCH: '(Выбрать или найти)'
   EmailField:
     VALIDATION: 'Пожалуйста, задайте адрес email.'
   Enum:
@@ -167,6 +169,7 @@ ru:
     TEXT2: 'ссылка переустановки пароля'
     TEXT3: для
   Form:
+    CSRF_EXPIRED_MESSAGE: 'Срок действия сеанса истек. Пожалуйста, отправьте данные формы еще раз.'
     FIELDISREQUIRED: 'Поле {$name} является обязательным'
     SubmitBtnLabel: Выбрать
     VALIDATIONCREDITNUMBER: 'Пожалуйста, убедитесь, что номер кредитной карты {number} задан правильно'
@@ -208,6 +211,7 @@ ru:
     DeletePermissionsFailure: 'Нет прав на удаление'
     Deleted: 'Удалено %s %s'
     Save: Сохранить
+    Saved: 'Сохранено: {name} {link}'
   GridFieldEditButton_ss:
     EDIT: Редактировать
   GridFieldItemEditView:
@@ -230,7 +234,6 @@ ru:
     many_many_Members: Члены группы
   GroupImportForm:
     Help1: '<p>Импорт одной или нескольких групп в формате <em>CSV</em> (comma-separated values). <small><a href="#" class="toggle-advanced">Подробные сведения</a></small></p>'
-    Help2: "<div class=\"advanced\">\n<h4>Расширенное использование</h4>\n<ul>\n<li>Разрешенные столбцы: <em>%s</em></li>\n<li>Существующие группы сверяются с уникальным значением <em>Code</em> и новые значения из \nимпортированного файла вносятся в записи</li>\n<li>Иерархические структуры групп создаются с помощью столбца <em>ParentCode</em>.</li>\n<li>Назначение кодов прав доступа производится с помощью столбца <em>PermissionCode</em>. Существующие коды прав доступа \nне сбрасываются.</li>\n</ul>\n</div>"
     ResultCreated: 'Создано {count} групп'
     ResultDeleted: 'Удалено %d групп'
     ResultUpdated: 'Обновлено %d групп'
@@ -260,14 +263,12 @@ ru:
     FROMWEB: 'Из интернета'
     FindInFolder: 'Найти в папке'
     IMAGEALT: 'Альтернативный текст (alt)'
-    IMAGEALTTEXT: 'Альтернативный текст (alt) - показывается, если изображение недоступно'
     IMAGEDIMENSIONS: Размеры
     IMAGEHEIGHTPX: Высота
     IMAGETITLE: 'Текст (всплывающая подсказка) - для дополнительной информации об изображении'
     IMAGETITLETEXT: 'Текст (всплывающая подсказка)'
     IMAGETITLETEXTDESC: 'Для дополнительных сведений об изображении'
     IMAGEWIDTHPX: Ширина
-    INSERTMEDIA: 'Вставить медиафайл'
     LINK: 'Ссылка'
     LINKANCHOR: 'Якорь на этой странице'
     LINKDESCR: 'Описание ссылки'
@@ -278,8 +279,8 @@ ru:
     LINKOPENNEWWIN: 'Открыть ссылку в новом окне?'
     LINKTO: 'Ссылка на'
     PAGE: Страница
+    URL: URL
     URLNOTANOEMBEDRESOURCE: 'Не удалось преобразовать ссылку ''{url}'' в медиа-ресурс.'
-    UpdateMEDIA: 'Обновить медиафайл'
   Image:
     PLURALNAME: Файлы
     SINGULARNAME: Файл
@@ -291,20 +292,14 @@ ru:
   LeftAndMain:
     CANT_REORGANISE: 'У вас нет права редактировать страницы верхнего уровня. Изменения не были сохранены.'
     DELETED: Удалено.
-    DropdownBatchActionsDefault: Действия
     HELP: Помощь
-    PAGETYPE: 'Тип страницы:'
     PERMAGAIN: 'Вы вышли из Системы Управления Сайтом. Если Вы хотите войти снова, введите внизу имя пользователя и пароль.'
-    PERMALREADY: 'Извините, у вас нет доступа к этому разделу Системы Управления. Если Вы хотите войти под другой учетной записью, сделайте это ниже'
-    PERMDEFAULT: 'Введите ваши адрес электр. почты и пароль для доступа к системе.'
-    PLEASESAVE: 'Пожалуйста, сохраните страницу: ее нельзя обновить, т.к. она еще не была сохранена.'
     PreviewButton: Просмотр
     REORGANISATIONSUCCESSFUL: 'Древесная структура сайта успешно реорганизована.'
     SAVEDUP: Сохранено.
     ShowAsList: 'в виде списка'
     TooManyPages: 'Слишком много страниц'
     ValidationError: 'Ошибка проверки'
-    VersionUnknown: Неизвестно
   LeftAndMain_Menu_ss:
     Hello: Здравствуйте
     LOGOUT: 'Выход'
@@ -326,6 +321,7 @@ ru:
     DATEFORMAT: 'Формат даты'
     DefaultAdminFirstname: 'Администратор по умолчанию '
     DefaultDateTime: по умолч.
+    EMAIL: Email
     EMPTYNEWPASSWORD: 'Поле нового пароля не может быть пустым; пожалуйста, повторите попытку'
     ENTEREMAIL: 'Введите email, чтобы получить ссылку на сброс пароля.'
     ERRORLOCKEDOUT2: 'Ваша учетная запись временно заблокирована из-за слишком большого количества неудачных попыток авторизации. Пожалуйста, попытайтесь снова через {count} минут.'
@@ -337,6 +333,7 @@ ru:
     INVALIDNEWPASSWORD: 'Недопустимый пароль: {password}'
     LOGGEDINAS: 'Вы вошли в систему как {name}.'
     NEWPASSWORD: 'Новый пароль'
+    NoPassword: 'Для этого пользователя не задан пароль.'
     PASSWORD: Пароль
     PLURALNAME: Члены группы
     REMEMBERME: 'Запомнить меня?'
@@ -380,7 +377,6 @@ ru:
     Toggle: 'Отобразить справку по форматированию'
   MemberImportForm:
     Help1: '<p>Импорт пользователей в формате <em>CSV</em> (comma-separated values). <small><a href="#" class="toggle-advanced">Подробные сведения</a></small></p>'
-    Help2: "<div class=\"advanced\">\n<h4>Расширенное использование</h4>\n<ul>\n<li>Разрешенные столбцы: <em>%s</em></li>\n<li>Существующие пользователи сверяются c уникальным атрибутом <em>Code</em>, после чего в записи вносятся новые значения из \nимпортированного файла.</li>\n<li>Назначение групп производится с помощью столбца <em>Groups</em>. Группы идентифицируются по атрибуту <em>Code</em>, \nотдельные группы разделяются запятой. Если участник входит в какую-либо группу, это свойство не обнуляется.</li>\n</ul>\n</div>"
     ResultCreated: 'Создано {count} участников'
     ResultDeleted: 'Удалено %d участников'
     ResultNone: 'Изменений нет'
@@ -444,7 +440,6 @@ ru:
     SINGULARNAME: Роль
     Title: Название
   PermissionRoleCode:
-    PLURALNAME: 'Коды ролей доступа'
     SINGULARNAME: 'Код роли доступа'
   Permissions:
     PERMISSIONS_CATEGORY: 'Роли и права доступа'
@@ -460,6 +455,7 @@ ru:
     ERRORPASSWORDPERMISSION: 'Вы должны войти в систему, чтобы изменить Ваш пароль!'
     LOGGEDOUT: 'Вы вышли. Если Вы хотите войти снова, введите ваши учетные данные ниже.'
     LOGIN: 'Вход'
+    LOSTPASSWORDHEADER: 'Восстановление пароля'
     NOTEPAGESECURED: 'Эта страница защищена. Пожалуйста, введите свои учетные данные для входа.'
     NOTERESETLINKINVALID: '<p>Неверная ссылка переустановки пароля или время действия ссылки истекло.</p><p>Вы можете повторно запросить ссылку, щелкнув <a href="{link1}">здесь</a>, или поменять пароль, <a href="{link2}">войдя в систему</a>.</p> '
     NOTERESETPASSWORD: 'Введите Ваш адрес email, и Вам будет отправлена ссылка, по которой Вы сможете переустановить свой пароль'
@@ -495,9 +491,11 @@ ru:
     EditView: 'Режим редакт.'
     Mobile: Мобильный
     PreviewState: 'Режим предварительного просмотра'
-    PreviewView: 'Режим предварительного просмотра'
+    PreviewView: 'Предв. просмотр'
     Responsive: Адаптивный
+    SplitView: 'Раздел. экр.'
     Tablet: Планшет
+    ViewDeviceWidth: 'Выбрать ширину области просмотра'
     Width: ширина
   SiteTree:
     TABMAIN: Основное
@@ -515,6 +513,7 @@ ru:
     ATTACHFILE: 'Прикрепить файл'
     ATTACHFILES: 'Прикрепить файлы'
     AttachFile: 'Прикрепить файл(ы)'
+    CHOOSEANOTHERFILE: 'Выбрать другой файл'
     CHOOSEANOTHERINFO: 'Заменить этот файл другим из хранилища'
     DELETE: 'Удалить из файлов'
     DELETEINFO: 'Окончательно удалить этот файл с сервера'

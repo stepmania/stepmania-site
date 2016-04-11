@@ -107,7 +107,11 @@ class RedirectorPage extends Page {
 		parent::onBeforeWrite();
 
 		// Prefix the URL with "http://" if no prefix is found
-		if($this->ExternalURL && (strpos($this->ExternalURL, '://') === false)) {
+		if(
+			$this->ExternalURL 
+			&& !parse_url($this->ExternalURL, PHP_URL_SCHEME) 
+			&& !preg_match('#^//#', $this->ExternalURL)
+		) {
 			$this->ExternalURL = 'http://' . $this->ExternalURL;
 		}
 	}
@@ -161,7 +165,8 @@ class RedirectorPage_Controller extends Page_Controller {
 	public function init() {
 		parent::init();
 
-		if($link = $this->redirectionLink()) {
+		// Check we don't already have a redirect code set
+		if(!$this->getResponse()->isFinished() && $link = $this->redirectionLink()) {
 			$this->redirect($link, 301);
 			return;
 		}

@@ -29,8 +29,15 @@ class BrokenLinksReport extends SS_Report {
 				$sort = '';
 			}
 		}
-		if (!isset($_REQUEST['CheckSite']) || $params['CheckSite'] == 'Published') $ret = Versioned::get_by_stage('SiteTree', 'Live', '("SiteTree"."HasBrokenLink" = 1 OR "SiteTree"."HasBrokenFile" = 1)', $sort, $join, $limit);
-		else $ret = DataObject::get('SiteTree', '("SiteTree"."HasBrokenFile" = 1 OR "HasBrokenLink" = 1)', $sort, $join, $limit);
+		$brokenFilter = array(
+			'"SiteTree"."HasBrokenLink" = ? OR "SiteTree"."HasBrokenFile" = ?' => array(true, true)
+		);
+		$isLive = !isset($params['CheckSite']) || $params['CheckSite'] == 'Published';
+		if ($isLive) {
+			$ret = Versioned::get_by_stage('SiteTree', 'Live', $brokenFilter, $sort, $join, $limit);
+		} else {
+			$ret = DataObject::get('SiteTree', $brokenFilter, $sort, $join, $limit);
+		}
 		
 		$returnSet = new ArrayList();
 		if ($ret) foreach($ret as $record) {
@@ -73,20 +80,23 @@ class BrokenLinksReport extends SS_Report {
 		return $returnSet;
 	}
 	public function columns() {
-		if(isset($_REQUEST['CheckSite']) && $_REQUEST['CheckSite'] == 'Draft') {
+		if(isset($_REQUEST['filters']['CheckSite']) && $_REQUEST['filters']['CheckSite'] == 'Draft') {
 			$dateTitle = _t('BrokenLinksReport.ColumnDateLastModified', 'Date last modified');
 		} else {
 			$dateTitle = _t('BrokenLinksReport.ColumnDateLastPublished', 'Date last published');
 		}
 		
-		$linkBase = singleton('CMSPageEditController')->Link('show') . '/';
+		$linkBase = singleton('CMSPageEditController')->Link('show');
 		$fields = array(
 			"Title" => array(
 				"title" => _t('BrokenLinksReport.PageName', 'Page name'),
-				'formatting' => sprintf(
-					'<a href=\"' . $linkBase . '$ID\" title=\"%s\">$value</a>',
-					_t('BrokenLinksReport.HoverTitleEditPage', 'Edit page')
-				)
+				'formatting' => function($value, $item) use ($linkBase) {
+					return sprintf('<a href="%s" title="%s">%s</a>',
+						Controller::join_links($linkBase, $item->ID),
+						_t('BrokenLinksReport.HoverTitleEditPage', 'Edit page'),
+						$value
+					);
+				}
 			),
 			"LastEdited" => array(
 				"title" => $dateTitle,
@@ -129,5 +139,16 @@ class BrokenLinksReport extends SS_Report {
 				)
 			)
 		);
+	}
+}
+
+
+/**
+ * @deprecated 3.2..4.0
+ */
+class SideReport_BrokenLinks extends BrokenLinksReport {
+	public function __construct() {
+		Deprecation::notice('4.0', 'Use BrokenLinksReport instead');
+		parent::__construct();
 	}
 }

@@ -2,10 +2,10 @@
 /**
  * A basic HTML wrapper for stylish rendering of a developement info view.
  * Used to output error messages, and test results.
- * 
+ *
  * @package framework
  * @subpackage dev
- * 
+ *
  * @todo Perhaps DebugView should be an interface / ABC, implemented by HTMLDebugView and CliDebugView?
  */
 
@@ -16,12 +16,12 @@ class CliDebugView extends DebugView {
 	 */
 	public function writeHeader($httpRequest = null) {
 	}
-	
+
 	/**
 	 * Render HTML footer for development views
 	 */
 	public function writeFooter() {
-	}	
+	}
 
 	/**
 	 * Write information about the error to the screen
@@ -41,11 +41,11 @@ class CliDebugView extends DebugView {
 		foreach($lines as $offset => $line) {
 			echo ($offset == $errline) ? "* " : "  ";
 			echo str_pad("$offset:",5);
-			echo wordwrap($line, 100, "\n       ");
+			echo wordwrap($line, self::config()->columns, "\n       ");
 		}
 		echo "\n";
 	}
-	
+
 	/**
 	 * Write a backtrace
 	 */
@@ -56,16 +56,30 @@ class CliDebugView extends DebugView {
 
 	/**
 	 * Render the information header for the view
-	 * 
+	 *
 	 * @param string $title
 	 * @param string $title
 	 */
 	public function writeInfo($title, $subtitle, $description=false) {
-		echo wordwrap(strtoupper($title),100) . "\n";
-		echo wordwrap($subtitle,100) . "\n";
-		echo str_repeat('-',min(100,max(strlen($title),strlen($subtitle)))) . "\n";
-		echo wordwrap($description,100) . "\n\n";
+		echo wordwrap(strtoupper($title),self::config()->columns) . "\n";
+		echo wordwrap($subtitle,self::config()->columns) . "\n";
+		echo str_repeat('-',min(self::config()->columns,max(strlen($title),strlen($subtitle)))) . "\n";
+		echo wordwrap($description,self::config()->columns) . "\n\n";
 	}
-	
-}
 
+	public function writeVariable($val, $caller) {
+		echo PHP_EOL;
+		echo SS_Cli::text(str_repeat('=', self::config()->columns), 'green');
+		echo PHP_EOL;
+		echo SS_Cli::text($this->formatCaller($caller), 'blue', null, true);
+		echo PHP_EOL.PHP_EOL;
+		if (is_string($val)) {
+			print_r(wordwrap($val, self::config()->columns));
+		} else {
+			print_r($val);
+		}
+		echo PHP_EOL;
+		echo SS_Cli::text(str_repeat('=', self::config()->columns), 'green');
+		echo PHP_EOL;
+	}
+}

@@ -19,12 +19,12 @@ pl:
     FROMYOURCOMPUTER: 'Z komputera'
     Filetype: 'Typ pliku'
     ListView: 'Widok listy'
-    NEWFOLDER: NowyKatalog
+    MENUTITLE: Pliki
+    NEWFOLDER: Nowy katalog
     SIZE: Rozmiar
     THUMBSDELETED: '{count} nieuzywane miniatury zostały usunięte'
     TreeView: 'Widok drzewa'
     Upload: Prześlij
-    MENUTITLE: Pliki
   AssetAdmin_DeleteBatchAction:
     TITLE: 'Usuń foldery'
   AssetAdmin_Tools:
@@ -61,20 +61,26 @@ pl:
   CMSAddPageController:
     Title: 'Dodaj stronę'
   CMSBatchActions:
+    ARCHIVE: Archiwizuj
+    ARCHIVED_PAGES: 'Zarchiwizowano %d stron'
     DELETED_DRAFT_PAGES: 'Usunięto %d stron ze szkiców, %d nie powiodło się'
     DELETED_PAGES: 'Usunięto %d stron z opublikowanych, %d nie powiodło się'
     DELETE_DRAFT_PAGES: 'Usuń ze szkicu witryny'
     DELETE_PAGES: 'Usuń z opublikowanej witryny'
     PUBLISHED_PAGES: 'Opublikowano %d stron, %d się nie powiodło'
     PUBLISH_PAGES: Opublikuj
-    UNPUBLISHED_PAGES: 'Usunięto z opublikowanych %d stron'
-    UNPUBLISH_PAGES: Cofnij publikację
+    RESTORE: Przywróć
+    RESTORED_PAGES: 'Przywrócono %d stron'
+  CMSFileAddController:
+    MENUTITLE: Pliki
   CMSMain:
     ACCESS: 'Dostęp do sekcji ''{title}'''
     ACCESS_HELP: 'Zezwala na oglądanie sekcji zawierających drzewo stron oraz treść. Prawo Przeglądaj i edytuj może być obsługiwane przez pola wyboru dostępne na stronach oraz poprzez zakładkę uprawnień.'
+    ARCHIVE: Archiwizuj
     AddNew: 'Dodaj nową stronę'
-    AddNewButton: 'Dodaj nowy'
+    AddNewButton: 'Dodaj nową'
     AddPageRestriction: 'Uwaga: Niektóre typy stron nie są dozwolone dla tego wyboru'
+    Cancel: Anuluj
     ChoosePageParentMode: 'Wybierz gdzie chcesz utworzyć tę stronę'
     ChoosePageType: 'Wybierz rodzaj strony'
     Create: Utwórz
@@ -85,7 +91,7 @@ pl:
     DUPLICATEDWITHCHILDREN: 'Duplikowanie ''{title}'' oraz podstron zakończone powodzeniem'
     EMAIL: Email
     EditTree: 'Edytuj drzewko'
-    ListFiltered: 'Filtrowana lista.'
+    MENUTITLE: 'Edytuj stronę'
     NEWPAGE: 'Nowa {pagetype}'
     PAGENOTEXISTS: 'Ta strona nie istnieje'
     PAGES: Strony
@@ -99,8 +105,8 @@ pl:
     REMOVED: 'Usunięto ''{title}''{description} z witryny'
     REMOVEDPAGE: 'Usunięto ''{title}'' z opublikowanej witryny'
     REMOVEDPAGEFROMDRAFT: '''%s'' usunięto ze szkiców'
-    RESTORE: Przywróć
     RESTORED: 'Pomyślnie przywrócono ''{title}'''
+    RESTORE_DESC: 'Przywróć jako szkic'
     ROLLBACK: 'Wróć do tej wersji'
     ROLLEDBACKPUBv2: 'Przywrócono opublikowaną wersję'
     ROLLEDBACKVERSIONv2: 'Przywrócono wersję #%d.'
@@ -109,33 +115,36 @@ pl:
     TabContent: Zawartość
     TabHistory: Historia
     TabSettings: Opcje
-    TreeFiltered: 'Filtruj drzewko'
-    TreeFilteredClear: 'Wyczyść filtr'
-    MENUTITLE: 'Edytuj stronę'
+    TreeFilteredClear: 'Usuń filtr'
   CMSMain_left_ss:
     APPLY_FILTER: 'Zastosuj filtr'
+    CLEAR_FILTER: 'Usuń filtr'
     RESET: Resetuj
   CMSPageAddController:
+    MENUTITLE: 'Dodaj stronę'
     ParentMode_child: 'Pod inną stroną'
     ParentMode_top: 'Główny poziom'
-    MENUTITLE: 'Dodaj stronę'
+  CMSPageEditController:
+    MENUTITLE: 'Edytuj stronę'
   CMSPageHistoryController:
     COMPAREMODE: 'Tryb porównywania (wybierz dwie)'
     COMPAREVERSIONS: 'Porównaj wersje'
     COMPARINGVERSION: 'Porównanie wersji {version1} i {version2}.'
+    MENUTITLE: Historia
     REVERTTOTHISVERSION: 'Wróć do tej wersji'
     SHOWUNPUBLISHED: 'Pokaż nieopublikowane wersje'
     SHOWVERSION: 'Pokaż wersję'
     VIEW: zobacz
     VIEWINGLATEST: 'Obecnie oglądasz najnowszą wersję'
     VIEWINGVERSION: 'Obecnie oglądasz wersję {version}.'
-    MENUTITLE: Historia
   CMSPageHistoryController_versions_ss:
     AUTHOR: Autor
     NOTPUBLISHED: 'Nieopublikowana'
     PUBLISHER: Edytor
     UNKNOWN: Nieznany
     WHEN: Kiedy
+  CMSPageSettingsController:
+    MENUTITLE: 'Edytuj stronę'
   CMSPagesController:
     GalleryView: 'Tryb galerii'
     ListView: 'Widok listy'
@@ -145,15 +154,16 @@ pl:
     MULTISELECT: Multi wybór
   CMSPagesController_Tools_ss:
     FILTER: Filtr
+  CMSSIteTreeFilter_PublishedPages:
+    Title: 'Opublikowane strony'
   CMSSearch:
     FILTERDATEFROM: Od
     FILTERDATEHEADING: Data
     FILTERDATETO: Do
     FILTERLABELTEXT: Zawartość
-  CMSSiteTreeFilter_ChangedPages:
-    Title: 'Zmienione strony'
-  CMSSiteTreeFilter_DeletedPages:
-    Title: 'Wszystkie strony włącznie z usuniętymi'
+    PAGEFILTERDATEHEADING: 'Ostatnio edytowane'
+  CMSSettingsController:
+    MENUTITLE: Ustawienia
   CMSSiteTreeFilter_Search:
     Title: 'Wszystkie strony'
   ContentControl:
@@ -178,7 +188,7 @@ pl:
     PUBLISHEDSITE: 'Opublikowana witryna'
     Password: Hasło
     PostInstallTutorialIntro: 'Ta strona jest uproszczoną wersją witryny SilverStripe 3. Aby ją rozszerzyć, zajrzyj proszę na stronę: {link}'
-    StartEditing: 'Możesz zacząć edytować Twoją stronę otwierając <a href=\\"{link}\\">CMS</a>.'
+    StartEditing: 'Możesz zacząć edytować Twoją stronę otwierając <a href="{link}">CMS</a>.'
     UnableDeleteInstall: 'Nie można usunąć plików instalacyjnych. Proszę usunąć je ręcznie'
     VIEWPAGEIN: 'Zobacz stronę w:'
   ErrorPage:
@@ -199,6 +209,8 @@ pl:
     415: '415 - Nieznany sposób żądania'
     416: '416 - Zakres bajtowy podany w zapytaniu nie do obsłużenia'
     417: '417 - Oczekiwana wartość nie do zwrócenia'
+    422: '422 - Niewłaściwe dane'
+    429: '429 - Zbyt wiele żądań'
     500: '500 - Wewnętrzny błąd serwera'
     501: '501 - Nie zaimplementowano'
     502: '502 - Błąd bramy'
@@ -214,6 +226,8 @@ pl:
     ERRORFILEPROBLEM: 'Błąd podczas otwierania pliku "{filename}". Proszę sprawdzić uprawnienia do plików.'
     PLURALNAME: 'Strony błędów'
     SINGULARNAME: 'Strona błędów'
+  File:
+    Title: Tytuł
   Folder:
     AddFolderButton: 'Dodaj katalog'
     DELETEUNUSEDTHUMBNAILS: 'Usuń nieużywane miniatury'
@@ -242,8 +256,8 @@ pl:
     SINGULARNAME: 'Strona przekierowująca'
     YOURPAGE: 'Strona na Twojej witrynie'
   ReportAdmin:
-    ReportTitle: Tytuł
     MENUTITLE: Raporty
+    ReportTitle: Tytuł
   ReportAdminForm:
     FILTERBY: 'Filtruj po'
   SITETREE:
@@ -269,7 +283,6 @@ pl:
   SilverStripeNavigator:
     ARCHIVED: Zarchiwizowane
   SilverStripeNavigatorLink:
-    ShareInstructions: 'Aby podzielić się tą stroną, skopiuj i wklej poniższy link.'
     ShareLink: 'Podziel się linkiem'
   SilverStripeNavigatorLinkl:
     CloseLink: Zamknij
@@ -285,7 +298,7 @@ pl:
     SITETITLE: 'Tytuł serwisu'
     TABACCESS: Dostęp
     TABMAIN: Główny
-    TAGLINEDEFAULT: 'napisz swój slogan tutaj'
+    TAGLINEDEFAULT: 'wpisz swój slogan'
     THEME: Szablon
     TOPLEVELCREATE: 'Kto może tworzyć strony w korzeniu serwisu?'
     VIEWHEADER: 'Kto może oglądać strony serwisu?'
@@ -298,6 +311,7 @@ pl:
     ADDEDTODRAFTSHORT: Szkic
     ALLOWCOMMENTS: 'Zezwolić na komentarze na stronie?'
     APPEARSVIRTUALPAGES: 'Ta treść pojawia się również na wirtualnej stronie w sekcji {title}.'
+    ARCHIVEDPAGESHORT: Zarchiwizowane
     BUTTONCANCELDRAFT: 'Anuluj wprowadzone zmiany'
     BUTTONCANCELDRAFTDESC: 'Usuń zmiany i wróć do istniejącej wersji opublikowanej strony'
     BUTTONPUBLISHED: Opublikowano
@@ -311,7 +325,6 @@ pl:
     DEFAULTABOUTTITLE: 'O nas'
     DEFAULTCONTACTCONTENT: '<p>Możesz wypełnić tę stronę własną treścią, usunąć ją i tworzyć własne strony.<br /></p>'
     DEFAULTCONTACTTITLE: 'Kontakt'
-    DEFAULTHOMECONTENT: '<p>Witaj w SilverStripe! To jest domyślna strona główna. Możesz ją edytować, otwierając <a href="admin/">CMS</a>. Możesz również otworzyć <a href="http://doc.silverstripe.com">dokumentację dla developerów</a>, lub rozpocząć <a href="http://doc.silverstripe.com/doku.php?id=tutorials">jeden z samouczków.</a></p>'
     DEFAULTHOMETITLE: Strona główna
     DELETEDPAGEHELP: 'Strona nie jest już opublikowana'
     DELETEDPAGESHORT: Usunięty
@@ -382,6 +395,8 @@ pl:
     many_many_BackLinkTracking: 'Śledzenie backlinków'
     many_many_ImageTracking: 'Śledzenie obrazków'
     many_many_LinkTracking: 'Śledzenie linków'
+  SiteTreeFileExtension:
+    EDIT: Edytuj
   SiteTreeURLSegmentField:
     EMPTY: 'Proszę podać część adresu lub kliknąć anuluj'
     HelpChars: 'Znaki specjalne są automatycznie konwertowane lub usuwane.'
@@ -398,14 +413,6 @@ pl:
     EditLink: edytuj
     HEADER: 'To jest wirtualna strona'
     HEADERWITHLINK: 'Strona wirtualna odzwierciedlająca treść "{title}" ({link})'
-    PLURALNAME: 'Wirtualne Strony'
+    PLURALNAME: 'Strony wirtualne'
     PageTypNotAllowedOnRoot: '"{type}" nie jest dozwolona dla głównego poziomu wirtualnej strony'
     SINGULARNAME: 'Wirtualna Strona'
-  CMSFileAddController:
-    MENUTITLE: Pliki
-  CMSPageEditController:
-    MENUTITLE: 'Edytuj stronę'
-  CMSPageSettingsController:
-    MENUTITLE: 'Edytuj stronę'
-  CMSSettingsController:
-    MENUTITLE: Ustawienia

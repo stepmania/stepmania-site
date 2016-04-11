@@ -25,7 +25,10 @@ class SilverStripeNavigator extends ViewableData {
 	 */
 	public function __construct($record) {
 		if(!in_array('CMSPreviewable', class_implements($record))) {
-			throw new InvalidArgumentException('SilverStripeNavigator: Record of type %s doesn\'t implement CMSPreviewable', get_class($record));
+			throw new InvalidArgumentException(sprintf(
+				'SilverStripeNavigator: Record of type %s doesn\'t implement CMSPreviewable',
+				get_class($record)
+			));
 		}
 		
 		$this->record = $record;
@@ -117,13 +120,13 @@ class SilverStripeNavigatorItem extends ViewableData {
 	}
 	
 	/**
-	 * @return String HTML, mostly a link - but can be more complex as well.
+	 * @return string HTML, mostly a link - but can be more complex as well.
 	 * For example, a "future state" item might show a date selector.
 	 */
 	public function getHTML() {}
 
 	/**
-	* @return String
+	* @return string
 	* Get the Title of an item
 	*/
 	public function getTitle() {}
@@ -140,12 +143,12 @@ class SilverStripeNavigatorItem extends ViewableData {
 	 * Not all items are simple links, please use {@link getHTML()}
 	 * to represent an item in markup unless you know what you're doing.
 	 * 
-	 * @return String
+	 * @return string
 	 */
 	public function getLink() {}
 	
 	/**
-	 * @return String
+	 * @return string
 	 */
 	public function getMessage() {}
 	
@@ -157,7 +160,7 @@ class SilverStripeNavigatorItem extends ViewableData {
 	} 
 	
 	/**
-	 * @return Int
+	 * @return int
 	 */
 	public function getPriority() {
 		return $this->stat('priority');
@@ -194,16 +197,12 @@ class SilverStripeNavigatorItem extends ViewableData {
 		
 		if(!isset($this->record->_cached_isArchived)) {
 			$baseTable = ClassInfo::baseDataClass($this->record->class);
-			$currentDraft = Versioned::get_one_by_stage(
-				$baseTable, 
-				'Stage', 
-				sprintf('"%s"."ID" = %d', $baseTable, $this->record->ID)
-			);
-			$currentLive = Versioned::get_one_by_stage(
-				$baseTable, 
-				'Live', 
-				sprintf('"%s"."ID" = %d', $baseTable, $this->record->ID)
-			);
+			$currentDraft = Versioned::get_one_by_stage($baseTable, 'Stage', array(
+				"\"$baseTable\".\"ID\"" => $this->record->ID
+			));
+			$currentLive = Versioned::get_one_by_stage($baseTable, 'Live', array(
+				"\"$baseTable\".\"ID\"" => $this->record->ID
+			));
 			
 			$this->record->_cached_isArchived = (
 				(!$currentDraft || ($currentDraft && $this->record->Version != $currentDraft->Version)) 
@@ -306,11 +305,9 @@ class SilverStripeNavigatorItem_StageLink extends SilverStripeNavigatorItem {
 	
 	protected function getDraftPage() {
 		$baseTable = ClassInfo::baseDataClass($this->record->class);
-		return Versioned::get_one_by_stage(
-			$baseTable, 
-			'Stage', 
-			sprintf('"%s"."ID" = %d', $baseTable, $this->record->ID)
-		);
+		return Versioned::get_one_by_stage($baseTable, 'Stage', array(
+			"\"$baseTable\".\"ID\"" => $this->record->ID
+		));
 	}
 }
 
@@ -360,11 +357,9 @@ class SilverStripeNavigatorItem_LiveLink extends SilverStripeNavigatorItem {
 	
 	protected function getLivePage() {
 		$baseTable = ClassInfo::baseDataClass($this->record->class);
-		return Versioned::get_one_by_stage(
-			$baseTable, 
-			'Live', 
-			sprintf('"%s"."ID" = %d', $baseTable, $this->record->ID)
-		);
+		return Versioned::get_one_by_stage($baseTable, 'Live', array(
+			"\"$baseTable\".\"ID\"" => $this->record->ID
+		));
 	}
 }
 

@@ -17,8 +17,8 @@ class ContentControllerSearchExtension extends Extension {
 	public function SearchForm() {
 		$searchText =  _t('SearchForm.SEARCH', 'Search');
 
-		if($this->owner->request && $this->owner->request->getVar('Search')) {
-			$searchText = $this->owner->request->getVar('Search');
+		if($this->owner->getRequest() && $this->owner->getRequest()->getVar('Search')) {
+			$searchText = $this->owner->getRequest()->getVar('Search');
 		}
 
 		$fields = new FieldList(
@@ -27,7 +27,7 @@ class ContentControllerSearchExtension extends Extension {
 		$actions = new FieldList(
 			new FormAction('results', _t('SearchForm.GO', 'Go'))
 		);
-		$form = new SearchForm($this->owner, 'SearchForm', $fields, $actions);
+		$form = SearchForm::create($this->owner, 'SearchForm', $fields, $actions);
 		$form->classesToSearch(FulltextSearchable::get_searchable_classes());
 		return $form;
 	}
@@ -42,7 +42,7 @@ class ContentControllerSearchExtension extends Extension {
 	public function results($data, $form, $request) {
 		$data = array(
 			'Results' => $form->getResults(),
-			'Query' => $form->getSearchQuery(),
+			'Query' => DBField::create_field('Text', $form->getSearchQuery()),
 			'Title' => _t('SearchForm.SearchResults', 'Search Results')
 		);
 		return $this->owner->customise($data)->renderWith(array('Page_results', 'Page'));

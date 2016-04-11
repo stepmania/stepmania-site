@@ -16,7 +16,6 @@ class SS_TemplateManifest {
 	protected $cacheKey;
 	protected $project;
 	protected $inited;
-	protected $forceRegen;
 	protected $templates = array();
 
 	/**
@@ -38,9 +37,35 @@ class SS_TemplateManifest {
 		$cacheClass = defined('SS_MANIFESTCACHE') ? SS_MANIFESTCACHE : 'ManifestCache_File';
 
 		$this->cache = new $cacheClass('templatemanifest'.($includeTests ? '_tests' : ''));
-		$this->cacheKey = 'manifest';
+		$this->cacheKey = $this->getCacheKey($includeTests);
+		
+		if ($forceRegen) {
+			$this->regenerate();
+		}
+	}
 
-		$this->forceRegen = $forceRegen;
+	/**
+	 * @return string
+	 */
+	public function getBase() {
+		return $this->base;
+	}
+
+	/**
+	 * Generate a unique cache key to avoid manifest cache collisions.
+	 * We compartmentalise based on the base path, the given project, and whether
+	 * or not we intend to include tests.
+	 * @param boolean $includeTests
+	 * @return string
+	 */
+	public function getCacheKey($includeTests = false) {
+		return sha1(sprintf(
+			"manifest-%s-%s-%s",
+				$this->base,
+				$this->project,
+				(int) $includeTests // cast true to 1, false to 0
+			)
+		);
 	}
 
 	/**
@@ -110,16 +135,22 @@ class SS_TemplateManifest {
 	 * @return array
 	 */
 	public function getCandidateTemplate($name, $theme = null) {
+		$found = array();
 		$candidates = $this->getTemplate($name);
 
-		if ($this->project && isset($candidates[$this->project])) {
-			$found = $candidates[$this->project];
-		} else if ($theme && isset($candidates['themes'][$theme])) {
+		// theme overrides modules
+		if ($theme && isset($candidates['themes'][$theme])) {
 			$found = array_merge($candidates, $candidates['themes'][$theme]);
-		} else {
-			$found = $candidates;
 		}
-		if(isset($found['themes'])) unset($found['themes']);
+		// project overrides theme
+		if ($this->project && isset($candidates[$this->project])) {
+			$found = array_merge($found, $candidates[$this->project]);
+		}
+
+		$found = ($found) ? $found : $candidates;
+
+		if (isset($found['themes'])) unset($found['themes']);
+		if (isset($found[$this->project])) unset($found[$this->project]);
 
 		return $found;
 	}
@@ -156,7 +187,7 @@ class SS_TemplateManifest {
 			$theme = substr($pathname, $start);
 			$theme = substr($theme, 0, strpos($theme, '/'));
 			$theme = strtok($theme, '_');
-		} else if($this->project && (strpos($pathname, $this->base . '/' . $this->project .'/') === 0)) { 
+		} else if($this->project && (strpos($pathname, $this->base . '/' . $this->project .'/') === 0)) {
 			$projectFile = true;
 		}
 
@@ -178,7 +209,7 @@ class SS_TemplateManifest {
 	}
 
 	protected function init() {
-		if (!$this->forceRegen && $data = $this->cache->load($this->cacheKey)) {
+		if ($data = $this->cache->load($this->cacheKey)) {
 			$this->templates = $data;
 			$this->inited    = true;
 		} else {

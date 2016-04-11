@@ -4,7 +4,10 @@ da:
     ActionAdd: 'Tilføj mappe'
     AppCategoryArchive: Arkiv
     AppCategoryAudio: Lyd
+    AppCategoryDocument: Dokument
+    AppCategoryFlash: Flash
     AppCategoryImage: Billeder
+    AppCategoryVideo: Video
     BackToFolder: 'Tilbage til mappen'
     CREATED: Dato
     CurrentFolderOnly: 'Begræns til den nuværende mappe'
@@ -16,14 +19,16 @@ da:
     FROMYOURCOMPUTER: 'Fra din computer'
     Filetype: 'Filtype'
     ListView: 'Listevisning'
+    MENUTITLE: Filer
     NEWFOLDER: Ny mappe
     SIZE: Størrelse
     THUMBSDELETED: '{count} ubrugte miniaturer er blevet slettet'
     TreeView: 'Trævisning'
     Upload: Overfør
-    MENUTITLE: Filer
   AssetAdmin_DeleteBatchAction:
     TITLE: 'Slet mapper'
+  AssetAdmin_Tools:
+    FILTER: Filter
   AssetTableField:
     BACKLINKCOUNT: 'Brugt på:'
     PAGES: side(r)
@@ -53,17 +58,20 @@ da:
   CMSAddPageController:
     Title: 'Tilføj side'
   CMSBatchActions:
+    ARCHIVE: Arkiv
+    ARCHIVED_PAGES: 'Arkiverede %d sider'
     DELETED_DRAFT_PAGES: 'Slettede %d sider fra kladdesiden, %d fejl'
     DELETED_PAGES: 'Slettede %d sider fra udgivet webside, %d fejl'
     DELETE_DRAFT_PAGES: 'Slet fra kladder'
     DELETE_PAGES: 'Slet fra publiseret side'
     PUBLISHED_PAGES: 'Publiserede %d sider'
     PUBLISH_PAGES: Publisér
-    UNPUBLISHED_PAGES: 'U-publiserede %d sider'
-    UNPUBLISH_PAGES: U-publisér
+  CMSFileAddController:
+    MENUTITLE: Filer
   CMSMain:
     ACCESS: 'Adgang til ''{title}'' sektionen'
     ACCESS_HELP: 'Tillad visning af den sektion, som indeholder sidetræet og indhold. Visnings- og redigeringstilladelser kan håndteres gennem sidespecifikke rullemenuer, såvel som de enkelte "Inholdstilladelser".'
+    ARCHIVE: Arkiv
     AddNew: 'Tilføj ny side'
     AddNewButton: 'Tilføj ny'
     ChoosePageParentMode: 'Vælg hvor denne side skal oprettes'
@@ -73,12 +81,10 @@ da:
     DELETEFP: Slet
     DESCREMOVED: 'og {count} efterkommere'
     EditTree: 'Rediger sidetræ'
-    ListFiltered: 'Filtreret liste.'
+    MENUTITLE: 'Rediger side'
     NEWPAGE: 'Ny {pagetype}'
     PAGENOTEXISTS: 'Denne side eksisterer ikke'
-    PAGES: Sider
     PAGETYPEANYOPT: Enhver
-    PAGETYPEOPT: 'Sidetype'
     PUBALLCONFIRM: 'Udgiv alle sider på sitet. Kopierer indhold fra kladde til offentlig'
     PUBALLFUN: '"Udgiv alle" funktionalitet'
     PUBALLFUN2: "Hvis du trykker på denne knap, svarer det til at gå til hver enkel side og vælge udgiv. Det er hensigten at denne funktion benyttes når der er blevet lavet mange ændringer på flere sider, som f.eks da websitet blev påbegyndt."
@@ -86,57 +92,51 @@ da:
     PageAdded: 'Siden blev oprettet med succes'
     REMOVEDPAGE: 'Fjernede ''{title}'' fra den udgivne side'
     REMOVEDPAGEFROMDRAFT: '''%s''  fjernet fra udkast-sitet'
-    RESTORE: Genskab
     RESTORED: 'Genskabte ''{title}'' korrekt'
     ROLLBACK: 'Rul tilbage til denne version'
     SAVE: Gem
     TabContent: Indhold
     TabHistory: Historik
     TabSettings: Indstillinger
-    TreeFiltered: 'Filtreret sidetræ.'
-    TreeFilteredClear: 'Nulstil filter'
-    MENUTITLE: 'Rediger side'
   CMSMain_left_ss:
-    APPLY_FILTER: 'Anvend filter'
     RESET: Nulstil
   CMSPageAddController:
+    MENUTITLE: 'Tilføj side'
     ParentMode_child: 'Under en anden side'
     ParentMode_top: 'Højeste niveau'
-    MENUTITLE: 'Tilføj side'
+  CMSPageEditController:
+    MENUTITLE: 'Rediger side'
   CMSPageHistoryController:
     COMPAREMODE: 'Sammenligningstilstand (vælg to)'
     COMPAREVERSIONS: 'Sammenlign versioner'
     COMPARINGVERSION: 'Sammenligner versionerne {version1} og {version2}.'
+    MENUTITLE: Historik
     REVERTTOTHISVERSION: 'Genskab denne version'
     SHOWUNPUBLISHED: 'Vis versioner der ikke er udgivne'
     SHOWVERSION: 'Vis version'
     VIEW: Visning
     VIEWINGVERSION: 'Lige nu vises version {version}.'
-    MENUTITLE: Historik
   CMSPageHistoryController_versions_ss:
     AUTHOR: Forfatter
     NOTPUBLISHED: 'Ikke udgivet'
     PUBLISHER: Udgiver
     UNKNOWN: Ukendt
     WHEN: Hvornår
+  CMSPageSettingsController:
+    MENUTITLE: 'Rediger side'
   CMSPagesController:
     GalleryView: 'Gallerivisning'
     ListView: 'Listevisning'
     MENUTITLE: Sider
     TreeView: 'Trævisning'
-  CMSPagesController_ContentToolbar_ss:
-    MULTISELECT: Multivalg
   CMSPagesController_Tools_ss:
     FILTER: Filtre
   CMSSearch:
     FILTERDATEFROM: Fra
     FILTERDATEHEADING: Dato
     FILTERDATETO: Til
-    FILTERLABELTEXT: Indhold
-  CMSSiteTreeFilter_ChangedPages:
-    Title: 'Ændrede sider'
-  CMSSiteTreeFilter_DeletedPages:
-    Title: 'Alle sider, inklusive slettede'
+  CMSSettingsController:
+    MENUTITLE: Indstillinger
   CMSSiteTreeFilter_Search:
     Title: 'Alle sider'
   ContentControl:
@@ -151,6 +151,7 @@ da:
     LOGIN: Log ind
     LOGOUT: 'Log ud'
     NOTLOGGEDIN: 'Ikke logget ind'
+    PUBLISHED: Udgivet
     PUBLISHEDSITE: 'Udgivet side'
     Password: Adgangskode
     UnableDeleteInstall: 'Var ikke i stand til at slette installationsfilerne. Slet venligst filerne herunder manuelt.'
@@ -184,15 +185,14 @@ da:
     HASBEENSETUP: 'En omdirigeringsside er blevet sat op, uden et sted at omdirigere til.'
     HEADER: 'Denne side omdirigerer besøgende til en anden side'
     OTHERURL: 'Andet websteds URL'
-    PLURALNAME: 'Videresendende sider'
     REDIRECTTO: 'Omdiriger til'
     REDIRECTTOEXTERNAL: 'Et andet websted'
     REDIRECTTOPAGE: 'En side på dit websted'
     SINGULARNAME: 'Viderestillende side'
     YOURPAGE: 'Side på dit websted'
   ReportAdmin:
-    ReportTitle: Titel
     MENUTITLE: Rapporter
+    ReportTitle: Titel
   ReportAdminForm:
     FILTERBY: 'Filtrer ved'
   SearchForm:
@@ -240,6 +240,9 @@ da:
     APPEARSVIRTUALPAGES: 'Dette indhold er også på de virtuelle sider i {title}sektionerne'
     BUTTONCANCELDRAFT: 'Annuller ændringer i kladden '
     BUTTONCANCELDRAFTDESC: 'Slet kladden og benyt istedet den nuværende side'
+    BUTTONPUBLISHED: Udgivet
+    BUTTONSAVED: Gemt
+    BUTTONSAVEPUBLISH: 'Gem & udgiv'
     BUTTONUNPUBLISH: Annuller udgivelse
     BUTTONUNPUBLISHDESC: 'Fjern denne side fra det udgivne websted'
     Comments: Kommentarer
@@ -248,7 +251,6 @@ da:
     DEFAULTABOUTTITLE: 'Om os'
     DEFAULTCONTACTCONTENT: '<p>Du kan udfylde denne side med dit eget indhold, eller slette den og oprette dine egne sider.<br /></p>'
     DEFAULTCONTACTTITLE: 'Kontakt os'
-    DEFAULTHOMECONTENT: '<p>Velkommen til  SilverStripe! Dette er en standard forside. Du kan redigere den ved at åbne <a href="admin/">CMS</a>. Du kan læse <a href="http://doc.silverstripe.org">udviklerdokumentationen</a>, eller påbegynde en af  <a href="http://doc.silverstripe.org/doku.php?id=tutorials">selvstudierne.</a></p>\n'
     DEFAULTHOMETITLE: Forside
     DELETEDPAGEHELP: 'Siden er ikke længere udgiven'
     DELETEDPAGESHORT: Slettet
@@ -310,14 +312,5 @@ da:
   VirtualPage:
     DESCRIPTION: 'Viser indholdet fra en anden side'
     HEADER: 'Dette er en virtuel side'
-    PLURALNAME: 'Virtuelle sider'
     PageTypNotAllowedOnRoot: 'Original side type "{type}" er ikke tilladt på rodniveau for denne virtuelle side'
     SINGULARNAME: 'Virtuel side'
-  CMSFileAddController:
-    MENUTITLE: Filer
-  CMSPageEditController:
-    MENUTITLE: 'Rediger side'
-  CMSPageSettingsController:
-    MENUTITLE: 'Rediger side'
-  CMSSettingsController:
-    MENUTITLE: Indstillinger

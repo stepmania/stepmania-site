@@ -166,7 +166,7 @@ class SecurityAdmin extends LeftAndMain implements PermissionProvider {
 			$rolesTab->push($rolesField);
 		}
 
-		$actionParam = $this->request->param('Action');
+		$actionParam = $this->getRequest()->param('Action');
 		if($actionParam == 'groups') {
 			$groupsTab->addExtraClass('ui-state-active');
 		} elseif($actionParam == 'users') {
@@ -273,7 +273,7 @@ class SecurityAdmin extends LeftAndMain implements PermissionProvider {
 		// Name root breadcrumb based on which record is edited,
 		// which can only be determined by looking for the fieldname of the GridField.
 		// Note: Titles should be same titles as tabs in RootForm().
-		$params = $this->request->allParams();
+		$params = $this->getRequest()->allParams();
 		if(isset($params['FieldName'])) {
 			// TODO FieldName param gets overwritten by nested GridFields,
 			// so shows "Members" rather than "Groups" for the following URL:
@@ -281,7 +281,7 @@ class SecurityAdmin extends LeftAndMain implements PermissionProvider {
 			$firstCrumb = $crumbs->shift();
 			if($params['FieldName'] == 'Groups') {
 				$crumbs->unshift(new ArrayData(array(
-					'Title' => singleton('Group')->plural_name(),
+					'Title' => singleton('Group')->i18n_plural_name(),
 					'Link' => $this->Link('groups')
 				)));
 			} elseif($params['FieldName'] == 'Users') {
@@ -334,41 +334,41 @@ class SecurityAdmin extends LeftAndMain implements PermissionProvider {
 	 * The permissions represented in the $codes will not appearing in the form
 	 * containing {@link PermissionCheckboxSetField} so as not to be checked / unchecked.
 	 * 
-	 * @deprecated 3.1 Use "Permission.hidden_permissions" config setting instead
+	 * @deprecated 4.0 Use "Permission.hidden_permissions" config setting instead
 	 * @param $codes String|Array
 	 */
 	public static function add_hidden_permission($codes){
 		if(is_string($codes)) $codes = array($codes);
-		Deprecation::notice('3.2', 'Use "Permission.hidden_permissions" config setting instead');
+		Deprecation::notice('4.0', 'Use "Permission.hidden_permissions" config setting instead');
 		Config::inst()->update('Permission', 'hidden_permissions', $codes);
 	}
 	
 	/**
-	 * @deprecated 3.1 Use "Permission.hidden_permissions" config setting instead
+	 * @deprecated 4.0 Use "Permission.hidden_permissions" config setting instead
 	 * @param $codes String|Array
 	 */
 	public static function remove_hidden_permission($codes){
 		if(is_string($codes)) $codes = array($codes);
-		Deprecation::notice('3.2', 'Use "Permission.hidden_permissions" config setting instead');
+		Deprecation::notice('4.0', 'Use "Permission.hidden_permissions" config setting instead');
 		Config::inst()->remove('Permission', 'hidden_permissions', $codes);
 	}
 	
 	/**
-	 * @deprecated 3.1 Use "Permission.hidden_permissions" config setting instead
+	 * @deprecated 4.0 Use "Permission.hidden_permissions" config setting instead
 	 * @return Array
 	 */
 	public static function get_hidden_permissions(){
-		Deprecation::notice('3.2', 'Use "Permission.hidden_permissions" config setting instead');
+		Deprecation::notice('4.0', 'Use "Permission.hidden_permissions" config setting instead');
 		Config::inst()->get('Permission', 'hidden_permissions', Config::FIRST_SET);
 	}
 	
 	/**
 	 * Clear all permissions previously hidden with {@link add_hidden_permission}
 	 * 
-	 * @deprecated 3.1 Use "Permission.hidden_permissions" config setting instead
+	 * @deprecated 4.0 Use "Permission.hidden_permissions" config setting instead
 	 */
 	public static function clear_hidden_permissions(){
-		Deprecation::notice('3.2', 'Use "Permission.hidden_permissions" config setting instead');
+		Deprecation::notice('4.0', 'Use "Permission.hidden_permissions" config setting instead');
 		Config::inst()->remove('Permission', 'hidden_permissions', Config::anything());
 	}
 }

@@ -71,7 +71,7 @@ class ContentController extends Controller {
 		$parent = SiteTree::get_by_link($parentRef);
 		
 		if(!$parent && is_numeric($parentRef)) {
-			$parent = DataObject::get_by_id('SiteTree', Convert::raw2sql($parentRef));
+			$parent = DataObject::get_by_id('SiteTree', $parentRef);
 		}
 		
 		if($parent) return $parent->Children();
@@ -110,39 +110,6 @@ class ContentController extends Controller {
 			return Security::permissionFailure($this);
 		}
 
-		// Draft/Archive security check - only CMS users should be able to look at stage/archived content
-		if(
-			$this->URLSegment != 'Security' 
-			&& !Session::get('unsecuredDraftSite') 
-			&& (
-				Versioned::current_archived_date() 
-				|| (Versioned::current_stage() && Versioned::current_stage() != 'Live')
-			)
-		) {
-			if(!$this->dataRecord->canViewStage(Versioned::current_archived_date() ? 'Stage' : Versioned::current_stage())) {
-				$link = $this->Link();
-				$message = _t(
-					"ContentController.DRAFT_SITE_ACCESS_RESTRICTION", 
-					'You must log in with your CMS password in order to view the draft or archived content. ' .
-					'<a href="%s">Click here to go back to the published site.</a>'
-				);
-				Session::clear('currentStage');
-				Session::clear('archiveDate');
-				
-				$permissionMessage = sprintf(
-					_t(
-						"ContentController.DRAFT_SITE_ACCESS_RESTRICTION",
-						'You must log in with your CMS password in order to view the draft or archived content. '.
-						'<a href="%s">Click here to go back to the published site.</a>'
-					),
-					Controller::join_links($this->Link(), "?stage=Live")
-				);
-
-				return Security::permissionFailure($this, $permissionMessage);
-			}
-
-		}
-		
 		// Use theme from the site config
 		if(($config = SiteConfig::current_site_config()) && $config->Theme) {
 			Config::inst()->update('SSViewer', 'theme', $config->Theme);
@@ -188,8 +155,9 @@ class ContentController extends Controller {
 			// look for a translation and redirect (see #5001). Only happens on the last child in
 			// a potentially nested URL chain.
 			if(class_exists('Translatable')) {
-				if($request->getVar('locale') && $this->dataRecord && $this->dataRecord->Locale != $request->getVar('locale')) {
-					$translation = $this->dataRecord->getTranslation($request->getVar('locale'));
+				$locale = $request->getVar('locale');
+				if($locale && i18n::validate_locale($locale) && $this->dataRecord && $this->dataRecord->Locale != $locale) {
+					$translation = $this->dataRecord->getTranslation($locale);
 					if($translation) {
 						$response = new SS_HTTPResponse();
 						$response->redirect($translation->Link(), 301);
@@ -199,8 +167,18 @@ class ContentController extends Controller {
 			}
 			
 			Director::set_current_page($this->data());
-			$response = parent::handleRequest($request, $model);
-			Director::set_current_page(null);
+
+			try {
+				$response = parent::handleRequest($request, $model);
+
+				Director::set_current_page(null);
+			} catch(SS_HTTPResponse_Exception $e) {
+				$this->popCurrent();
+				
+				Director::set_current_page(null);
+
+				throw $e;
+			}
 		}
 		
 		return $response;
@@ -211,10 +189,10 @@ class ContentController extends Controller {
 	 */
 	public function httpError($code, $message = null) {
 		// Don't use the HTML response for media requests
-		$response = $this->request->isMedia() ? null : ErrorPage::response_for($code);
+		$response = $this->getRequest()->isMedia() ? null : ErrorPage::response_for($code);
 		// Failover to $message if the HTML response is unavailable / inappropriate
 		parent::httpError($code, $response ? $response : $message);
-		}
+	}
 
 	/**
 	 * Get the project name
@@ -375,7 +353,42 @@ HTML;
 		}
 		
 		return i18n::convert_rfc1766($locale);
+	}	
+
+
+	/**
+	 * Return an SSViewer object to render the template for the current page.
+	 *
+	 * @param $action string
+	 *
+	 * @return SSViewer
+	 */
+	public function getViewer($action) {
+		// Manually set templates should be dealt with by Controller::getViewer()
+		if(isset($this->templates[$action]) && $this->templates[$action]
+			|| (isset($this->templates['index']) && $this->templates['index'])
+			|| $this->template
+		) {
+			return parent::getViewer($action);
+		}
+
+		// Prepare action for template search
+		if($action == "index") $action = "";
+		else $action = '_' . $action;
+
+		$templates = array_merge(
+			// Find templates by dataRecord
+			SSViewer::get_templates_by_class(get_class($this->dataRecord), $action, "SiteTree"),
+			// Next, we need to add templates for all controllers
+			SSViewer::get_templates_by_class(get_class($this), $action, "Controller"),
+			// Fail-over to the same for the "index" action
+			SSViewer::get_templates_by_class(get_class($this->dataRecord), "", "SiteTree"),
+			SSViewer::get_templates_by_class(get_class($this), "", "Controller")
+		);
+
+		return new SSViewer($templates);
 	}
+
 
 	/**
 	 * This action is called by the installation system

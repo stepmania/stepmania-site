@@ -1,0 +1,17 @@
+da:
+  CMSSettingsController:
+    MENUTITLE: Indstillinger
+  SiteConfig:
+    DEFAULTTHEME: '(Brug standard tema)'
+    EDITHEADER: 'Hvem kan redigere sider på dette websted ?'
+    EDIT_PERMISSION: 'Administrer sideopsætningen'
+    EDIT_PERMISSION_HELP: 'Mulighed for at ændre indstillingerne for global adgang / topniveauside tilladelser.'
+    SITENAMEDEFAULT: 'Dit sidenavn'
+    SITETAGLINE: 'Webstedets Tagline/Slogan'
+    SITETITLE: 'Sidetitel'
+    TABACCESS: Adgang
+    TABMAIN: Primær
+    TAGLINEDEFAULT: 'din tagline her'
+    THEME: Tema
+    TOPLEVELCREATE: 'Hvem kan oprette sider i roden af dette websted ?'
+    VIEWHEADER: 'Hvem kan se sider på dette websted?'

@@ -29,16 +29,6 @@
 			&.jstree-closed > ul {
 				display: none;
 			}
-			&.disabled > a {
-				color: #aaaaaa;
-				&:hover {
-					background: transparent;
-					cursor: default;
-				}
-			}
-			&.edit-disabled > a {
-				color: #aaaaaa;
-			}
 			// Expand/collapse arrows
 			& > .jstree-icon {
 				cursor: pointer;
@@ -62,24 +52,30 @@
 			text-decoration: none;
 			padding: 1px 2px;
 			margin: 0;
-			border: 1px solid #fff;	
+			border: 1px solid #fff;
 			&:focus,
 			&:active,
 			&:hover {
 				text-decoration: none;
 				cursor: pointer;
-				text-shadow: none;
 			}
-			> {
-				ins {
-					height: 16px;
+			ins {
+				height: 16px;
+				width: 12px;
+				&.jstree-checkbox {
 					width: 16px;
-					&.jstree-checkbox{
-						height:19px; //Larger to help avoid accidental page loads when trying to click checkboxes
-       				}
-				}
-				.jstree-icon {
-					margin-right: 3px;
+					position: relative;
+					//Larger to help avoid accidental page loads when trying to click checkboxes
+					&:before {
+						content: '';
+						display: block;
+						position: absolute;
+						z-index: 1;
+						left: -3px;
+						top: -3px;
+						height: 22px;
+						width: 25px;
+					}
 				}
 			}
 		}
@@ -111,7 +107,7 @@
 				background: transparent !important;
 				width: 100%;
 			}
-			a, a:hover{
+			a, a:hover {
 				margin: 0 !important;
 				padding: 0 !important;
 				text-indent: -9999px !important;
@@ -138,9 +134,9 @@
 	}
 
 	// Custom styles
-	.jstree-apple.jstree-focused {
+	.jstree.jstree-focused {
 		background: none;	
-		.jstree-apple > ul {
+		.jstree > ul {
 			background: none;
 		}
 	}
@@ -153,7 +149,17 @@
 
 	// Show drag icons when draggable class is applied
 	.draggable a > .jstree-icon {
-		display: block;
+		display: none;
+		cursor: move; // Fallback for IE users
+		cursor: -moz-grab;
+		cursor: -webkit-grab;
+		cursor: grab;
+
+		&:active {
+			cursor: -moz-grabbing;
+			cursor: -webkit-grabbing;
+			cursor: grabbing;
+		}
 	}
 
 
@@ -182,7 +188,7 @@
 		}
 	}
 
-	.jstree-themeroller{
+	.jstree-themeroller {
 		a {
 			padding: 0 2px;
 		}
@@ -208,7 +214,6 @@
 		width: 8px;		
 		z-index: 10001;		
 		background-color: transparent;
-		text-shadow: 1px 1px 1px white;
 		color: black;		
 	}
 	#jstree-marker-line {
@@ -276,7 +281,7 @@
 			min-width: 180px; 
 			*width:180px;
 		}
-		ul,li{
+		ul,li {
 			margin: 0;
 			padding: 0 ;
 			list-style-type: none;
@@ -316,7 +321,7 @@
 				margin-top: 3px;
 				margin-right: 5px;
 			}
-			&.vakata-hover > a{
+			&.vakata-hover > a {
 				padding: 1px 10px;
 				background: #3875d7;
 				@include background-image(linear-gradient(top, #3875d7 20%, #2a62bc 90%));
@@ -326,7 +331,7 @@
 		}
 	}
 	
-	#vakata-contextmenu{
+	#vakata-contextmenu {
 		.right {
 			right: 100%;
 			left: auto;
@@ -345,25 +350,25 @@
 			@include box-shadow(0 0 10px #CCC);
 			&.col-2{
 				width:180px * 2; // 2x the size of the original ul
-				li{
+				li {
 					width:50%;
 				}
 			}
 			&.col-3{
 				width:180px * 3; // 3x the size of the original ul
-				li{
+				li {
 					width:33%;
 				}
 			}
-			li{
+			li {
 				min-width:180px; 
 				float:left;
-				a{
+				a {
 					@include hide-text-overflow;
 				}
 			}
 		}
-		li{
+		li {
 			&.vakata-separator {
 				min-height: 0;
 				height: 1px;
@@ -409,8 +414,8 @@
 
 }
 
-.jstree-apple {
-	li, .jstree-apple ins {
+.jstree {
+	li, .jstree ins {
 		background:none;
 	}
 	.jstree-unchecked, .jstree-checked, .jstree-undetermined {
@@ -420,9 +425,9 @@
 	}
 }
 
-.tree-holder, .cms-tree{
-	&.jstree-apple{
-		li{
+.tree-holder, .cms-tree {
+	&.jstree {
+		li {
 			padding: 0px;
 			clear:  left;
 			&.Root {
@@ -435,19 +440,29 @@
 					background-position: -56px -36px;
 				}
 			}
-			&.status-deletedonlive {
-				.text {
-					text-decoration: line-through;
+			&.status-deletedonlive,
+			&.status-archived {
+				> a, > a:link {
+					.text {
+						text-decoration: line-through;
+					}
 				}
 			}
-			&.jstree-checked{
-				> a, > a:link{
+			&.jstree-checked {
+				> a, > a:link {
 					background-color: $color-cms-batchactions-menu-selected-background;
 				}
 			}
-			&.disabled {
-				> a > .jstree-checkbox {
-					background-position: -57px -54px;
+			&.disabled,
+			&.edit-disabled {
+				> a, > a:link {
+					color: $color-text-disabled;
+					background-color: transparent;
+					cursor: default;
+					
+					> .jstree-checkbox {
+						background-position: -57px -54px;
+					}
 				}
 			}
 			&.readonly {
@@ -466,7 +481,7 @@
 		}	
 		a, a:link {
 			color:  $color-text-blue-link;
-			padding: 3px 6px 3px 3px;
+			padding: 3px 6px 3px 6px;
 			border: none;
 			display:  inline-block;
 			margin-right: 5px;
@@ -478,30 +493,15 @@
 		span.badge {
 			clear: both;
 			text-transform: uppercase;
+			text-shadow: none;
 			display: inline-block;
-			padding: 0px 3px;
+			position: relative;
+			padding: 3px 3px 1px;
 			font-size: 0.75em;
 			line-height: 1em;
 			margin-left: 3px;
-			margin-right: 6px;
 			margin-top:  -1px;
 			@include border-radius(2px, 2px);
-	
-			&.status-modified, &.status-addedtodraft  {
-				color:  #7E7470;
-				border: 1px solid #C9B800;
-				background-color: #FFF0BC;
-			}
-			&.status-deletedonlive, &.status-removedfromdraft {
-				color:  #636363;
-				border: 1px solid #E49393;
-				background-color: #F2DADB;
-			}
-			&.status-workflow-approval {
-				color:  #56660C;
-				border: 1px solid #7C8816;
-				background-color: #DAE79A;
-			}
 		}
 
 		/* comment speech bubble - ccs3 only - source: http://nicolasgallagher.com/pure-css-speech-bubbles/demo/ */
@@ -545,24 +545,103 @@
 			    border-color:#FFF0BC transparent;			    
 			}		
 		}
-		
+
 		.jstree-hovered {
 			text-shadow: none;
-			text-decoration: none;    
+			text-decoration: none;
 		}	
 		.jstree-closed > ins { 
-			background-position:0 0; 
+			background-position:2px -1px;
 		}
 		.jstree-open > ins { 
-			background-position:-20px 0;
+			background-position:-18px -1px;
 		}
 	}
-} 
 
+	// Applied to trees when displaying filter / search results.
+	&.filtered-list {
+		margin-top: $grid-y;
+		
+		li:not(.filtered-item) > a {
+			color: $color-text-disabled;
+		}
+	}
+}
+
+
+// For drag and drop icons to not appear whilst in multi-selection
+.cms-tree {
+	&.jstree.draggable {
+		.jstree-no-checkboxes {
+			li {
+				a {
+					padding-left: 12px;
+				}
+
+				.jstree-hovered,
+				.jstree-clicked,
+				a:focus {
+					padding-left: 0;
+				}
+
+				.jstree-hovered,
+				.jstree-clicked,
+				a:focus {
+					.jstree-icon {
+						display: block;
+					}
+				}
+			}
+		}
+	}
+}
+
+// Override thirdparty themes
+.jstree-default a .jstree-icon,
+.jstree-default-rtl a .jstree-icon,
+.jstree-classic a .jstree-icon,
+.jstree-apple a .jstree-icon { 
+	background-position:-60px -19px;
+}
+.jstree-apple a {
+	border-radius: 3px;
+}
+
+/**
+ * DEPRECATED:
+ * .cms-content-tools will be removed in 4.0
+ * Use .cms-content-filters instead.
+ *
+ * Ensure status is visible in sidebar
+ */
+.cms-content-tools .cms-tree.jstree {
+	li {
+		min-width: 187px;
+	}
+	a {
+		overflow: hidden;
+		text-overflow: ellipsis;
+		display: block;
+		position: relative;
+	}
+	span.badge {
+		position: absolute;
+		top: 0;
+		right: 0;
+		padding: 7px 9px 6px 5px;
+		margin: 0;
+		max-width: 40%;
+		@include transition(max-width .75s linear);
+	}
+	span.badge:hover {
+		max-width: 150px;
+	}
+}
 
 a .jstree-pageicon {
 	float: left;
 	margin-right: 4px;
+	position: relative;
 	li.class-HomePage > &{
 		background-position: 0 -48px;
 	}
@@ -577,6 +656,52 @@ a .jstree-pageicon {
 	}
 }
 
+/* Tree status labels and dots */
+.jstree-apple .jstree-clicked,
+.jstree-apple .jstree-hovered {
+	background: #ebfbff;
+}
+%tree-status-icon-before {
+	content:"";
+	display: block;
+	width:6px;
+	height: 6px;
+	position: absolute;
+	bottom: 0;
+	right: 0;
+	background: #fce2d0;
+	border: 1px solid #fff;
+	border-radius: 100px;
+}
+@mixin tree-status-icon($label, $dotColor, $textColor, $bgColor) {
+	.cms-tree.jstree .status-#{$label} > a .jstree-pageicon:before {
+		@extend %tree-status-icon-before;
+	}
+	// Labels
+	.jstree .status-#{$label} > .jstree-hovered,
+	.jstree .status-#{$label} > .jstree-clicked,
+	.cms-tree.jstree span.badge.status-#{$label}  {
+		background-color:$bgColor;
+		border-color:$textColor;
+	}
+	.cms-tree.jstree span.badge.status-#{$label}  {
+		color: $textColor;
+	}
+	// Dots
+	.cms-tree.jstree .status-#{$label} > a .jstree-pageicon:before  {
+		background-color:$dotColor;
+		@include box-shadow(0px 1px 1px rgba(0, 0, 0, 0.3), inset 0 0 0 1px $textColor);
+	}
+	#cms-content-tools-CMSMain .cms-tree.jstree span.badge.status-#{$label}  {
+		@include box-shadow(0px 0px 6px 2px $bgColor);
+	}
+}
+@include tree-status-icon('addedtodraft', #ff7f22, #F46B00, #fff7f2);
+@include tree-status-icon('modified', #fff2e8, #F46B00, #fff7f2);
+@include tree-status-icon('archived', #5F7688, #455b6c, #f7f7f7);
+@include tree-status-icon('deletedonlive', #f7f7f7, #455b6c, #f7f7f7);
+@include tree-status-icon('removedfromdraft', #f7f7f7, #455b6c, #f7f7f7);
+@include tree-status-icon('workflow-approval', #0070B4, #0070B4, #E8FAFF);
 
 .cms-tree {
 	visibility: hidden; // enabled by JS to avoid layout glitches
@@ -608,7 +733,7 @@ a .jstree-pageicon {
 
 	// Show the loading indicator on the page icon rather than the default
 	// jstree icon (which is only used for its dragging handles)
-	a.jstree-loading{
+	a.jstree-loading {
 		.jstree-icon {
 			background-image: none !important;
 		}

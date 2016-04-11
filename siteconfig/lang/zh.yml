@@ -1,0 +1,19 @@
+zh:
+  CMSSettingsController:
+    MENUTITLE: 设置
+  SiteConfig:
+    DEFAULTTHEME: '（使用默认主题）'
+    EDITHEADER: '谁可以修改该站点的页面？'
+    EDIT_PERMISSION: '管理站点配置'
+    EDIT_PERMISSION_HELP: '能够编辑全局访问设置/顶层页面权限。'
+    PLURALNAME: '站点设置'
+    SINGULARNAME: '站点设置'
+    SITENAMEDEFAULT: '您的站点名称'
+    SITETAGLINE: '站点标语/口号'
+    SITETITLE: '站点标题'
+    TABACCESS: 读取
+    TABMAIN: 主要
+    TAGLINEDEFAULT: '这里是您的标语'
+    THEME: 主题
+    TOPLEVELCREATE: '谁可以在站点的根路径创建页面？'
+    VIEWHEADER: '谁可以查看该站点的页面？'

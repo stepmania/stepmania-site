@@ -1,0 +1,13 @@
+es_MX:
+  SiteConfig:
+    DEFAULTTHEME: '(Usar tema predeterminado)'
+    EDITHEADER: '¿Quién puede editar páginas en este sitio?'
+    EDIT_PERMISSION: 'Administrar la configuración del sitio'
+    SITENAMEDEFAULT: 'Nombre de su sitio'
+    SITETAGLINE: 'Lema/Slogan del Sitio'
+    SITETITLE: 'Título del sitio'
+    TABACCESS: Acceso
+    TABMAIN: Principal
+    TAGLINEDEFAULT: 'su lema aquí'
+    THEME: Tema
+    VIEWHEADER: '¿Quién puede ver las páginas en este sitio?'

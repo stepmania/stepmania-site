@@ -36,8 +36,8 @@ class CMSFileAddController extends LeftAndMain {
 	 * Return fake-ID "root" if no ID is found (needed to upload files into the root-folder)
 	 */
 	public function currentPageID() {
-		if(is_numeric($this->request->requestVar('ID')))	{
-			return $this->request->requestVar('ID');
+		if(is_numeric($this->getRequest()->requestVar('ID')))	{
+			return $this->getRequest()->requestVar('ID');
 		} elseif (is_numeric($this->urlParams['ID'])) {
 			return $this->urlParams['ID'];
 		} elseif(Session::get("{$this->class}.currentPage")) {
@@ -57,6 +57,10 @@ class CMSFileAddController extends LeftAndMain {
 		Requirements::javascript(FRAMEWORK_DIR . '/javascript/AssetUploadField.js');
 		Requirements::css(FRAMEWORK_DIR . '/css/AssetUploadField.css');
 
+		if($currentPageID = $this->currentPageID()){
+			Session::set("{$this->class}.currentPage", $currentPageID);	
+		}
+		
 		$folder = $this->currentPage();
 
 		$uploadField = UploadField::create('AssetUploadField', '');
@@ -103,6 +107,8 @@ class CMSFileAddController extends LeftAndMain {
 			)
 		);
 		$form->loadDataFrom($folder);
+
+		$this->extend('updateEditForm', $form);
 
 		return $form;
 	}

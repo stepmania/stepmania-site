@@ -1,0 +1,19 @@
+ja:
+  CMSSettingsController:
+    MENUTITLE: 設定
+  SiteConfig:
+    DEFAULTTHEME: '(デフォルトのテーマを利用)'
+    EDITHEADER: 'このサイト上でページを編集できる人'
+    EDIT_PERMISSION: 'サイト設定の管理'
+    EDIT_PERMISSION_HELP: 'グローバルアクセスの設定/トップレベルのページのアクセス許可を編集する機能。'
+    PLURALNAME: 'サイトの設定'
+    SINGULARNAME: 'サイトの設定'
+    SITENAMEDEFAULT: 'サイト名'
+    SITETAGLINE: 'サイトのキャッチコピー'
+    SITETITLE: 'サイトタイトル'
+    TABACCESS: アクセス権限
+    TABMAIN: メイン
+    TAGLINEDEFAULT: 'サイトのキャッチフレーズをここに入力'
+    THEME: テーマ
+    TOPLEVELCREATE: 'サイトのルートにおいてページを作成できる人'
+    VIEWHEADER: 'このサイト上でページを閲覧できる人'

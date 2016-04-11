@@ -12,14 +12,14 @@
 $frameworkPath = rtrim(dirname(dirname(dirname(__FILE__))), DIRECTORY_SEPARATOR);
 $basePath = rtrim(dirname($frameworkPath), DIRECTORY_SEPARATOR);
 
-require_once $frameworkPath . '/core/TempPath.php';
+require_once $frameworkPath . '/core/Constants.php';
 
 // Handle incoming request if it's a script call
 if (TinyMCE_Compressor::getParam("js")) {
 	// Default settings
 	$tinyMCECompressor = new TinyMCE_Compressor(array(
 		// CUSTOM SilverStripe
-		'cache_dir' => getTempFolder($basePath)
+		'cache_dir' => TEMP_FOLDER
 		// CUSTOM END
 	));
 
@@ -94,17 +94,17 @@ class TinyMCE_Compressor {
 		$plugins = self::getParam("plugins");
 		if ($plugins)
 			$this->settings["plugins"] = $plugins;
-		$plugins = explode(',', $this->settings["plugins"]);
+		$plugins = array_unique(explode(',', $this->settings["plugins"]));
 
 		$themes = self::getParam("themes");
 		if ($themes)
 			$this->settings["themes"] = $themes;
-		$themes = explode(',', $this->settings["themes"]);
+		$themes = array_unique(explode(',', $this->settings["themes"]));
 
 		$languages = self::getParam("languages");
 		if ($languages)
 			$this->settings["languages"] = $languages;
-		$languages = explode(',', $this->settings["languages"]);
+		$languages = array_unique(explode(',', $this->settings["languages"]));
 
 		$tagFiles = self::getParam("files");
 		if ($tagFiles)
@@ -140,7 +140,7 @@ class TinyMCE_Compressor {
 		}
 
 		// Add any specified files.
-		$allFiles = array_merge($files, explode(',', $this->settings['files']));
+		$allFiles = array_merge($files, array_unique(explode(',', $this->settings['files'])));
 
 		// Process source files
 		for ($i = 0; $i < count($allFiles); $i++) {

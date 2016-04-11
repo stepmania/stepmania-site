@@ -1,0 +1,19 @@
+ar:
+  CMSSettingsController:
+    MENUTITLE: الإعدادات
+  SiteConfig:
+    DEFAULTTHEME: '( استخدام الثيم الافتراضي )'
+    EDITHEADER: 'من يستطيع تحرير الصفحات الموجودة على هذا الموقع؟'
+    EDIT_PERMISSION: 'إدارة إعدادات الموقع'
+    EDIT_PERMISSION_HELP: 'القدرة على تحرير إعدادات الوصول العالمي / أذونات صفحة المستوى الأعلى.'
+    PLURALNAME: 'تكوينات الموقع'
+    SINGULARNAME: 'تهيئة الموقع'
+    SITENAMEDEFAULT: 'اسم عنوان موقعك'
+    SITETAGLINE: 'علامة / شعار الموقع'
+    SITETITLE: 'عنوان الموقع'
+    TABACCESS: الوصول
+    TABMAIN: الرئيسي
+    TAGLINEDEFAULT: 'علامتك هنا'
+    THEME: الثيم
+    TOPLEVELCREATE: 'من يستطيع إنشاء صفحات في جذر الموقع؟'
+    VIEWHEADER: 'من يستطيع عرض الصفحات على هذا الموقع؟...'

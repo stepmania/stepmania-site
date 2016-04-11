@@ -1,0 +1,19 @@
+fr:
+  CMSSettingsController:
+    MENUTITLE: Paramètres
+  SiteConfig:
+    DEFAULTTHEME: '(Utiliser le thème par défaut)'
+    EDITHEADER: 'Qui peut modifier les pages sur ce site?'
+    EDIT_PERMISSION: 'Configuration du site'
+    EDIT_PERMISSION_HELP: 'Capacité d''édition des accès globales et permission des pages de premier niveau.'
+    PLURALNAME: 'Configurations du site'
+    SINGULARNAME: 'Configuration du site'
+    SITENAMEDEFAULT: 'Nom du site'
+    SITETAGLINE: 'Slogan ou devise du site'
+    SITETITLE: 'Titre du site'
+    TABACCESS: Accès
+    TABMAIN: Principal
+    TAGLINEDEFAULT: 'Votre slogan ici'
+    THEME: Thème
+    TOPLEVELCREATE: 'Qui peut créer des pages à la racine de ce site ?'
+    VIEWHEADER: 'Qui peut consulter les pages sur ce site?'

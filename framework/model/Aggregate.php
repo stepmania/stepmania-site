@@ -43,19 +43,24 @@ class Aggregate extends ViewableData {
 	protected static function cache() {
 		return self::$cache ? self::$cache : (self::$cache = SS_Cache::factory('aggregate'));
 	}
-	
-	/** Clear the aggregate cache for a given type, or pass nothing to clear all aggregate caches */
+
+	/** 
+	 * Clear the aggregate cache for a given type, or pass nothing to clear all aggregate caches.
+	 * {@link $class} is just effective if the cache backend supports tags.
+	 */
 	public static function flushCache($class=null) {
 		$cache = self::cache();
-		
-		if (!$class || $class == 'DataObject') {
+		$capabilities = $cache->getBackend()->getCapabilities();
+		if($capabilities['tags'] && (!$class || $class == 'DataObject')) {
 			$cache->clean(Zend_Cache::CLEANING_MODE_MATCHING_TAG, array('aggregate'));
-		} else {
+		} elseif($capabilities['tags']) {
 			$tags = ClassInfo::ancestry($class);
 			foreach($tags as &$tag) {
 				$tag = preg_replace('/[^a-zA-Z0-9_]/', '_', $tag);
 			}
 			$cache->clean(Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG, $tags);
+		} else {
+			$cache->clean(Zend_Cache::CLEANING_MODE_ALL);
 		}
 	}
 	
@@ -68,7 +73,7 @@ class Aggregate extends ViewableData {
 	 * @param string $filter (optional) An SQL filter to apply to the selected rows before calculating the aggregate
 	 */
 	public function __construct($type, $filter = '') {
-		Deprecation::notice('3.1', 'Call aggregate methods on a DataList directly instead. In templates'
+		Deprecation::notice('4.0', 'Call aggregate methods on a DataList directly instead. In templates'
 			. ' an example of the new syntax is &lt% cached List(Member).max(LastEdited) %&gt instead'
 			. ' (check partial-caching.md documentation for more details.)');
 		$this->type = $type;
@@ -77,10 +82,10 @@ class Aggregate extends ViewableData {
 	}
 
 	/**
-	 * Build the SQLQuery to calculate the aggregate
+	 * Build the SQLSelect to calculate the aggregate
 	 * This is a seperate function so that subtypes of Aggregate can change just this bit
 	 * @param string $attr - the SQL field statement for selection (i.e. "MAX(LastUpdated)")
-	 * @return SQLQuery
+	 * @return SQLSelect
 	 */
 	protected function query($attr) {
 		$query = DataList::create($this->type)->where($this->filter);
@@ -103,7 +108,7 @@ class Aggregate extends ViewableData {
 		$table = null;
 		
 		foreach (ClassInfo::ancestry($this->type, true) as $class) {
-			$fields = DataObject::database_fields($class);
+			$fields = DataObject::database_fields($class, false);
 			if (array_key_exists($attribute, $fields)) { $table = $class; break; }
 		}
 		
@@ -112,7 +117,8 @@ class Aggregate extends ViewableData {
 		$query = $this->query("$func(\"$table\".\"$attribute\")");
 		
 		// Cache results of this specific SQL query until flushCache() is triggered.
-		$cachekey = sha1($query->sql());
+		$sql = $query->sql($parameters);
+		$cachekey = sha1($sql.'-'.var_export($parameters, true));
 		$cache = self::cache();
 		
 		if (!($result = $cache->load($cachekey))) {
@@ -133,6 +139,8 @@ class Aggregate extends ViewableData {
 
 /**
  * A subclass of Aggregate that calculates aggregates for the result of a has_many query.
+ *
+ * @deprecated
  * 
  * @author hfried
  * @package framework

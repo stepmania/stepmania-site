@@ -1,0 +1,23 @@
+fa_IR:
+  CMSSettingsController:
+    MENUTITLE: تنظیمات
+  SiteConfig:
+    DEFAULTTHEME: '(استفاده از پوسته پیشفرض)'
+    EDITHEADER: 'چه کسی میتواند صفحات را در این سایت ویرایش کند؟'
+    EDIT_PERMISSION: 'مدیریت پیکربندی سایت'
+    EDIT_PERMISSION_HELP: 'توانایی در ویرایش تنظیمات دسترسی‌های سراسری/مجوزهای بالاترین سطح صفحه'
+    PLURALNAME: 'تنظیمات سایت'
+    SINGULARNAME: 'تنظیم سایت'
+    SITENAMEDEFAULT: 'نام سایت شما'
+    SITETAGLINE: 'شعار سایت'
+    SITETITLE: 'عنوان سایت'
+    TABACCESS: دسترسی
+    TABMAIN: اصلی
+    TAGLINEDEFAULT: 'شعار شما در اینجا'
+    THEME: پوسته
+    TOPLEVELCREATE: 'چه کسی میتواند صفحه جدیدی در ریشه(root) سایت ایجاد کند؟'
+    VIEWHEADER: 'چه کسی میتواند صفحات سایت را مشاهده کند؟'
+  SiteConfigLeftAndMain:
+    MENUTITLE: تنظیمات
+  SiteTree:
+    TOPLEVELCREATORGROUPS: 'خالقین بالاترین سطح'
