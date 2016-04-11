@@ -1,6 +1,10 @@
 ---
 Name: forum
 ---
+
+Director:
+  rules:
+    'ForumMemberProfile//$Action/$ID/$OtherID': 'ForumMemberProfile'
 Member:
   extensions:
     ForumRole:
