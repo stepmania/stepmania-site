@@ -5,7 +5,7 @@
 		<% if NewsForum %>
 		<% with NewsForum %>
 			<% if Topics %>
-			<% loop Topics.Limit(15) %>
+			<% loop Topics.Sort(Created, DESC).Limit(15) %>
 				<% with FirstPost %>
 		<div id="post{$ID}" class="forum-post">
 			<header>
@@ -23,7 +23,7 @@
 
 					<% if Attachments %>
 					<div class="attachments">
-						<strong><% _t('SinglePost_ss.ATTACHED','Attached Files') %></strong> 
+						<strong><% _t('SinglePost_ss.ATTACHED','Attached Files') %></strong>
 						<ul class="post-attachments">
 						<% loop Attachments %>
 							<li>
