@@ -238,12 +238,12 @@ body {
   background-size: 1500px 1500px; }
 
 a {
-  color: #9d201f;
+  color: #9d211f;
   text-decoration: none;
   transition: color ease-in 0.25s; }
 
 a:hover {
-  color: #54201f;
+  color: #551f1f;
   text-decoration: underline;
   transition: color ease-out 0.125s; }
 
@@ -437,7 +437,7 @@ footer p {
     background: #21201f url("../images/windows.png") no-repeat 32px -16px; }
   .downloads .download.download-mac h2 a {
     background: #21201f url("../images/mac.png") no-repeat 32px -16px; }
-  .downloads .download.download-source h2 a {
+  .downloads .download.download-linux h2 a {
     background: #21201f url("../images/linux.png") no-repeat 32px -16px; }
   .downloads .download h2 a {
     display: block;
@@ -594,7 +594,7 @@ footer p {
   .forum-topic p {
     margin-bottom: 3.5px !important; }
   .forum-topic .icon {
-    color: #3c3407;
+    color: #3c3408;
     padding-right: 14px; }
   .forum-topic .topic-title {
     font-size: 120%;
@@ -643,14 +643,14 @@ footer p {
     background-image: linear-gradient(top, #464646, #6d6d6d 50px);
     color: white; }
   .button a.label, .page-numbers .current.label, .page-numbers .label.label, .button .locked.label {
-    background: #393939;
-    background-image: -webkit-gradient(linear, top, from(#393939), to(#393939 50px));
-    background-image: -webkit-linear-gradient(top, #393939, #393939 50px);
-    background-image: -moz-linear-gradient(top, #393939, #393939 50px);
-    background-image: -ms-linear-gradient(top, #393939, #393939 50px);
-    background-image: -o-linear-gradient(top, #393939, #393939 50px);
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#393939', endColorstr='#393939 50px',GradientType=0);
-    background-image: linear-gradient(top, #393939, #393939 50px);
+    background: #3a3a3a;
+    background-image: -webkit-gradient(linear, top, from(#3a3a3a), to(#3a3a3a 50px));
+    background-image: -webkit-linear-gradient(top, #3a3a3a, #3a3a3a 50px);
+    background-image: -moz-linear-gradient(top, #3a3a3a, #3a3a3a 50px);
+    background-image: -ms-linear-gradient(top, #3a3a3a, #3a3a3a 50px);
+    background-image: -o-linear-gradient(top, #3a3a3a, #3a3a3a 50px);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#3a3a3a', endColorstr='#3a3a3a 50px',GradientType=0);
+    background-image: linear-gradient(top, #3a3a3a, #3a3a3a 50px);
     color: white; }
 
 .category {
@@ -848,12 +848,12 @@ footer p {
       float: right;
       color: #4d4d4d; }
       .forum-post footer .quick-reply a.deleteLink, .forum-post footer .deleteLink.deleteLink {
-        background: #f3d9d9; }
+        background: #f3dada; }
       .forum-post footer .quick-reply a:hover, .forum-post footer .deleteLink:hover {
         background: #f2f2f2;
         text-decoration: none; }
         .forum-post footer .quick-reply a:hover.deleteLink, .forum-post footer .deleteLink:hover.deleteLink {
-          background: #f4c1c1; }
+          background: #f5c2c2; }
     .forum-post footer .quick-reply {
       margin-left: 14px; }
 
@@ -996,7 +996,7 @@ footer p {
 
 .bad {
   border: 1px solid #ffb3b3;
-  background: #ffe5e5; }
+  background: #ffe6e6; }
 
 #Form_AdminFormFeatures {
   margin: 9.33333px; }
@@ -1054,13 +1054,13 @@ form .field {
   form .field input, form .field textarea {
     padding: 7px;
     padding-bottom: 9px;
-    background-image: -webkit-gradient(linear, top, from(#fff7e5), to(white 15px));
-    background-image: -webkit-linear-gradient(top, #fff7e5, white 15px);
-    background-image: -moz-linear-gradient(top, #fff7e5, white 15px);
-    background-image: -ms-linear-gradient(top, #fff7e5, white 15px);
-    background-image: -o-linear-gradient(top, #fff7e5, white 15px);
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fff7e5', endColorstr='white 15px',GradientType=0);
-    background-image: linear-gradient(top, #fff7e5, white 15px);
+    background-image: -webkit-gradient(linear, top, from(#fff7e6), to(white 15px));
+    background-image: -webkit-linear-gradient(top, #fff7e6, white 15px);
+    background-image: -moz-linear-gradient(top, #fff7e6, white 15px);
+    background-image: -ms-linear-gradient(top, #fff7e6, white 15px);
+    background-image: -o-linear-gradient(top, #fff7e6, white 15px);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fff7e6', endColorstr='white 15px',GradientType=0);
+    background-image: linear-gradient(top, #fff7e6, white 15px);
     box-shadow: 0 -2px 0 #f3da4f inset;
     border: 1px solid #f8e996;
     border-radius: 3px;

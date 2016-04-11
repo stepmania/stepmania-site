@@ -54,12 +54,14 @@ class DownloadPage extends Page {
 class DownloadPage_Controller extends Page_Controller {
 	static function mime2platform($mime) {
 		$types = array(
-			"application/octet-stream" => "Windows",
+			"application/octet-stream" => "Mac",
+			"application/x-ms-dos-executable" => "Windows",
+			"application/x-msdownload" => "Windows",
 			"application/x-apple-diskimage" => "Mac"
 		);
 		if (array_key_exists($mime, $types))
 			return $types[$mime];
-		return "Any";
+		return "Linux";
 	}
 
 	static function munge($thing) {
@@ -98,6 +100,7 @@ class DownloadPage_Controller extends Page_Controller {
 				)));
 			}
 
+			/*
 			$downloads->add(new ArrayData(array(
 				"Name" => $release->name . " Source (tar.gz)",
 				"Link" => $release->tarball_url,
@@ -107,6 +110,7 @@ class DownloadPage_Controller extends Page_Controller {
 				"ContentType" => false,
 				"PublishedAt" => date_format($date, "Y-m-d")
 			)));
+			*/
 
 			// TODO: n>1 of these things, sorting, etc.
 			break;
@@ -115,4 +119,3 @@ class DownloadPage_Controller extends Page_Controller {
 		return $downloads;
 	}
 }
-
