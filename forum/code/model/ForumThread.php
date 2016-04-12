@@ -203,17 +203,17 @@ class ForumThread extends DataObject {
 	 * @return String
 	 */
 	function Link($action = "show", $showID = true) {
-		$forum =  DataObject::get_by_id("Forum", (int)$this->ForumID);
-
-		// Prevents a crash and burn if you're subscribed to an impossible thread...
-		// Happened to my profile after one of SoonDead's CSRF tests. -Colby
-		if (!$forum)
+		$forum = DataObject::get_by_id("Forum", (int)$this->ForumID);
+		if ($forum) {
+			$baseLink = $forum->Link();
+			$extra = ($showID) ? '/'.$this->ID : '';
+			return ($action) ? $baseLink . $action . $extra : $baseLink;
+		} else {
+			// user_error("Bad ForumID '$this->ForumID'", E_USER_WARNING);
+			// Prevents a crash and burn if you're subscribed to an impossible thread...
+			// Happened to my profile after one of SoonDead's CSRF tests. -Colby
 			return "#";
-
-		$baseLink = $forum->Link();
-		$extra = ($showID) ? '/'.$this->ID : '';
-
-		return ($action) ? $baseLink . $action . $extra : $baseLink;
+		}
 	}
 
 	/**

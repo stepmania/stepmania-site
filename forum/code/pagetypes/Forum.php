@@ -395,9 +395,9 @@ class Forum extends Page {
 
 		// If we're a moderater, awaiting & approved posts. Otherwise just approved
 		if(Member::currentUser()==$this->Moderator() && is_numeric($this->ID)) {
-			$posts = $posts->filter('Status', array('Moderated', 'Awaiting'));
+			// $posts = $posts->filter('Status', array('Moderated', 'Awaiting'));
 		} else {
-			$posts = $posts->filter('Status', 'Moderated');
+			// $posts = $posts->filter('Status', 'Moderated');
 		}
 
 		// Get the underlying query and change it to return the ThreadID and Max(Created) and Max(ID) for each thread
@@ -700,8 +700,11 @@ class Forum_Controller extends Page_Controller {
 
 		$thread = false;
 
-		if($post) $thread = $post->Thread();
-		else if(isset($this->urlParams['ID'])) $thread = DataObject::get_by_id('ForumThread', $this->urlParams['ID']);
+		if ($post) {
+			$thread = $post->Thread();
+		} else if(isset($this->urlParams['ID']) && is_numeric($this->urlParams['ID'])) {
+			$thread = DataObject::get_by_id('ForumThread', $this->urlParams['ID']);
+		}
 
 		// Check permissions
 		$messageSet = array(
@@ -786,6 +789,8 @@ class Forum_Controller extends Page_Controller {
 		$required = $addMode === true ? new RequiredFields("Title", "Content") : new RequiredFields("Content");
 
 		$form = new Form($this, 'PostMessageForm', $fields, $actions, $required);
+
+		$this->extend('updatePostMessageForm', $form, $post);
 
 		Requirements::customScript(<<<EX
 (function($) {

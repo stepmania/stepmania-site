@@ -179,8 +179,7 @@ class ForumHolder extends Page {
 		return DB::query("
 			SELECT COUNT(\"Post\".\"ID\")
 			FROM \"Post\"
-			JOIN \"ForumThread\" ON \"Post\".\"ThreadID\" = \"ForumThread\".\"ID\"
-			JOIN \"" . ForumHolder::baseForumTable() . "\" AS \"ForumPage\" ON \"ForumThread\".\"ForumID\" = \"ForumPage\".\"ID\"
+			JOIN \"" . ForumHolder::baseForumTable() . "\" AS \"ForumPage\" ON \"Post\".\"ForumID\" = \"ForumPage\".\"ID\"
 			WHERE \"ForumPage\".\"ParentID\" = '" . $this->ID . "'")->value();
 	}
 
@@ -208,8 +207,7 @@ class ForumHolder extends Page {
 		return DB::query("
 			SELECT COUNT(DISTINCT \"Post\".\"AuthorID\")
 			FROM \"Post\"
-			JOIN \"ForumThread\" ON \"Post\".\"ThreadID\" = \"ForumThread\".\"ID\"
-			JOIN \"" . ForumHolder::baseForumTable() . "\" AS \"ForumPage\" ON \"ForumThread\".\"ForumID\"=\"ForumPage\".\"ID\"
+			JOIN \"" . ForumHolder::baseForumTable() . "\" AS \"ForumPage\" ON \"Post\".\"ForumID\"=\"ForumPage\".\"ID\"
 			AND \"ForumPage\".\"ParentID\" = '" . $this->ID . "'")->value();
 	}
 
@@ -391,7 +389,7 @@ class ForumHolder extends Page {
 		if($lastVisit) $filter[] = "\"Post\".\"Created\" > '". Convert::raw2sql($lastVisit) ."'";
 
 		// limit to a forum
-		if($forumID) $filter[] = "\"ForumThread\".\"ForumID\" = '". Convert::raw2sql($forumID) ."'";
+		if($forumID) $filter[] = "\"Post\".\"ForumID\" = '". Convert::raw2sql($forumID) ."'";
 
 		// limit to a thread
 		if($threadID) $filter[] = "\"Post\".\"ThreadID\" = '". Convert::raw2sql($threadID) ."'";
@@ -401,9 +399,10 @@ class ForumHolder extends Page {
 
 		$posts = Post::get()
 			->leftJoin('ForumThread', 'Post.ThreadID = ForumThread.ID')
-			->leftJoin(ForumHolder::baseForumTable(), 'ForumPage.ID = ForumThread.ForumID', 'ForumPage')
+			->leftJoin(ForumHolder::baseForumTable(), '"ForumPage"."ID" = "Post"."ForumID"', 'ForumPage')
 			->limit($limit)
 			->sort('Post.ID', 'DESC');
+
 		foreach ($filter as $value) {
 			$posts->where($value);
 		}
@@ -440,7 +439,7 @@ class ForumHolder extends Page {
 		$filter[] = "\"ForumPage\".\"ParentID\" = '". Convert::raw2sql($id) ."'";
 		if($lastPostID) $filter[] = "\"Post\".\"ID\" > '". Convert::raw2sql($lastPostID) ."'";
 		if($lastVisit) $filter[] = "\"Post\".\"Created\" > '". Convert::raw2sql($lastVisit) ."'";
-		if($forumID) $filter[] = "\"ForumThread\".\"ForumID\" = '". Convert::raw2sql($forumID) ."'";
+		if($forumID) $filter[] = "\"Post\".\"ForumID\" = '". Convert::raw2sql($forumID) ."'";
 		if($threadID) $filter[] = "\"ThreadID\" = '". Convert::raw2sql($threadID) ."'";
 
 		$filter = implode(" AND ", $filter);
@@ -448,8 +447,7 @@ class ForumHolder extends Page {
 		$version = DB::query("
 			SELECT MAX(\"Post\".\"ID\") AS \"LastID\", MAX(\"Post\".\"Created\") AS \"LastCreated\"
 			FROM \"Post\"
-			JOIN \"ForumThread\" ON \"Post\".\"ThreadID\" = \"ForumThread\".\"ID\"
-			JOIN \"" . ForumHolder::baseForumTable() . "\" AS \"ForumPage\" ON \"ForumThread\".\"ForumID\"=\"ForumPage\".\"ID\"
+			JOIN \"" . ForumHolder::baseForumTable() . "\" AS \"ForumPage\" ON \"Post\".\"ForumID\"=\"ForumPage\".\"ID\"
 			WHERE $filter" )->first();
 
 		if($version == false) return false;
