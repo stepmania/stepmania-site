@@ -252,10 +252,10 @@ class ForumHolder extends Page {
 	 * @param int $limit Number of members to return
 	 * @return ArrayList
 	 */
-	function getLatestMembers($limit = null) {
-		if (!is_null($limit)) {
-			Deprecation::notice('1.0', '$limit parameter is deprecated, please chain the limit clause');
-		}
+	function getLatestMembers($limit = 1) {
+		// if (!is_null($limit)) {
+			// Deprecation::notice('1.0', '$limit parameter is deprecated, please chain the limit clause');
+		// }
 		$groupIDs = array();
 
 		if($forumGroup = Group::get()->filter('Code', 'forum-members')->first()) {
