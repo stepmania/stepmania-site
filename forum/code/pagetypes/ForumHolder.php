@@ -254,7 +254,10 @@ class ForumHolder extends Page {
 	 * @param int $limit Number of members to return
 	 * @return ArrayList
 	 */
-	function getLatestMembers($limit = 1) {
+	function getLatestMembers($limit = null) {
+		if (!is_null($limit)) {
+			Deprecation::notice('1.0', '$limit parameter is deprecated, please chain the limit clause');
+		}
 		$groupIDs = array();
 
 		if($forumGroup = Group::get()->filter('Code', 'forum-members')->first()) {
@@ -267,9 +270,10 @@ class ForumHolder extends Page {
 		$latestMembers = Member::get()
 			->leftJoin('Group_Members', 'Member.ID = Group_Members.MemberID')
 			->filter('GroupID', $groupIDs)
-			->sort('Member.ID DESC')
-			->limit($limit);
-
+				->sort('"Member"."ID" DESC');
+			if ($limit) {
+				$latestMembers = $latestMembers->limit($limit);
+			}
 		return $latestMembers;
 	}
 
@@ -748,8 +752,8 @@ class ForumHolder_Controller extends Page_Controller {
 				$data['last_created'],
 				$data['last_id']
 			);
-			$rss->outputToBrowser();
-    	} else {
+			return $rss->outputToBrowser();
+		} else {
 
 			// Return only new posts, check the request headers!
 			$since = null;
@@ -779,7 +783,7 @@ class ForumHolder_Controller extends Page_Controller {
 					$data['last_created'],
 					$data['last_id']
 				);
-				$rss->outputToBrowser();
+				return $rss->outputToBrowser();
 			} else {
 				if($data['last_created'])
 					HTTP::register_modification_timestamp($data['last_created']);

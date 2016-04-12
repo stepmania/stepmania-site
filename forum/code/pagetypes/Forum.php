@@ -109,7 +109,7 @@ class Forum extends Page {
 		if(!$member) return false;
 
 		// Admins
-		if ($this->canEdit($member)) return true;
+		if (Permission::checkMember($member, 'ADMIN')) return true;
 
 		// Moderators
 		if ($member->isModeratingForum($this)) return true;
@@ -364,7 +364,7 @@ class Forum extends Page {
 	 * @return int Returns the number of topics (threads)
 	 */
 	function getNumTopics() {
-		return ForumThread::get()->filter('ForumID', $this->ID)->count();
+		return DB::query(sprintf('SELECT COUNT("ID") FROM "ForumThread" WHERE "ForumID" = \'%s\'', $this->ID))->value();
 	}
 
 	/**
@@ -373,7 +373,7 @@ class Forum extends Page {
 	 * @return int
 	 */
 	function getNumPosts() {
-		return Post::get()->filter('ForumID', $this->ID)->count();
+		return DB::query(sprintf('SELECT COUNT("ID") FROM "Post" WHERE "ForumID" = \'%s\'', $this->ID))->value();
 	}
 
 	/**
@@ -382,8 +382,7 @@ class Forum extends Page {
 	 * @return int
 	 */
 	function getNumAuthors() {
-		$query = Post::get()->filter('ForumID', $this->ID)->dataQuery()->query();
-		return $query->count('DISTINCT "Post"."AuthorID"');
+		return DB::query(sprintf('SELECT COUNT(DISTINCT "AuthorID") FROM "Post" WHERE "ForumID" = \'%s\'', $this->ID))->value();
 	}
 
 	/**
@@ -409,10 +408,15 @@ class Forum extends Page {
 			->selectField('MAX(Created)', 'PostCreatedMax')
 			->selectField('MAX(ID)', 'PostIDMax')
 			->selectField('ThreadID')
-			->setGroupBy('ThreadID');
+			->setGroupBy('ThreadID')
+			->setDistinct(false);
 
 		// Get a list of forum threads inside this forum that aren't sticky
-		$threads = DataList::create('ForumThread')->filter(array("ForumID"=>$this->ID, 'IsGlobalSticky'=>0, 'IsSticky'=>0));
+		$threads = DataList::create('ForumThread')->filter(array(
+			"ForumID" => $this->ID,
+			'IsGlobalSticky' => 0,
+			'IsSticky' => 0
+		));
 
 		// Get the underlying query and change it to inner join on the posts list to just show threads that
 		// have approved (and maybe awaiting) posts, and sort the threads by the most recent post
@@ -420,7 +424,8 @@ class Forum extends Page {
 		$threadQuery
 			->addSelect(array('"PostMax"."PostCreatedMax", "PostMax"."PostIDMax"'))
 			->addFrom('INNER JOIN ('.$postQuery->sql().') AS PostMax ON (PostMax.ThreadID = ForumThread.ID)')
-			->addOrderBy(array('"PostMax"."PostCreatedMax" DESC', '"PostMax"."PostIDMax" DESC'));
+			->addOrderBy(array('"PostMax"."PostCreatedMax" DESC', '"PostMax"."PostIDMax" DESC'))
+			->setDistinct(false);
 
 		// Alter the forum threads list to use the new query
 		$threads = $threads->setDataQuery(new Forum_DataQuery('ForumThread', $threadQuery));
@@ -448,7 +453,8 @@ class Forum extends Page {
 			->addSelect('"PostMax"."PostMax"')
 			// TODO: Confirm this works in non-MySQL DBs
 			->addFrom('LEFT JOIN (SELECT MAX(Created) AS PostMax, ThreadID from Post group by ThreadID) AS PostMax ON (PostMax.ThreadID = ForumThread.ID)')
-		   ->addOrderBy('"PostMax"."PostMax" DESC');
+			->addOrderBy('"PostMax"."PostMax" DESC')
+			->setDistinct(false);
 
 		// Build result as ArrayList
 		$res = new ArrayList();
@@ -470,8 +476,6 @@ class Forum_Controller extends Page_Controller {
 		'AdminFormFeatures',
 		'deleteattachment',
 		'deletepost',
-		'doAdminFormFeatures',
-		'doPostMessageForm',
 		'editpost',
 		'markasspam',
 		'PostMessageForm',
@@ -824,6 +828,10 @@ EX
 	 */
 	function doPostMessageForm($data, $form) {
 		$member = Member::currentUser();
+
+		//Allows interception of a Member posting content to perform some action before the post is made.
+		$this->extend('beforePostMessage', $data, $member);
+
 		$content = (isset($data['Content'])) ? $this->filterLanguage($data["Content"]) : "";
 		$title = (isset($data['Title'])) ? $this->filterLanguage($data["Title"]) : false;
 
@@ -914,7 +922,7 @@ EX
 					}
 					catch(ValidationException $e) {
 						$message = _t('Forum.UPLOADVALIDATIONFAIL', 'Unallowed file uploaded. Please only upload files of the following: ');
-						$message .= implode(', ', File::$allowed_extensions);
+						$message .= implode(', ', Config::inst()->get('File', 'allowed_extensions'));
 						$form->addErrorMessage('Attachment', $message, 'bad');
 
 						Session::set("FormInfo.Form_PostMessageForm.data", $data);
@@ -1259,6 +1267,8 @@ EX
 			$thread = ForumThread::get()->byID($id);
 			$form->loadDataFrom($thread);
 		}
+
+		$this->extend('updateAdminFormFeatures', $form);
 
 		return $form;
 	}

@@ -5,17 +5,17 @@ class SMBBCodeParser extends TextParser {
 	private static $autolink_urls = true;
 	private static $allow_smilies = true;
 	private static $smilies_location = null;
-	
+
 	public static function set_icon_folder($path) {
 		Deprecation::notice('3.2', 'Use the "SMBBCodeParser.smilies_location" config setting instead');
 		static::config()->smilies_location = $path;
-	} 
+	}
 
 	public static function smiliesAllowed() {
 		Deprecation::notice('3.2', 'Use the "SMBBCodeParser.allow_smilies" config setting instead');
 		return static::config()->allow_smilies;
 	}
-	
+
 
 	public static function enable_smilies() {
 		Deprecation::notice('3.2', 'Use the "SMBBCodeParser.allow_smilies" config setting instead');
@@ -35,7 +35,7 @@ class SMBBCodeParser extends TextParser {
 		return static::config()->smilies_location;
 	}
 
-	
+
 	public static function usable_tags() {
 		return new ArrayList(
 			array(
@@ -82,7 +82,7 @@ class SMBBCodeParser extends TextParser {
 					"Title" => _t('SMBBCodeParser.UNORDERED', 'Unordered list'),
 					"Description" => _t('SMBBCodeParser.UNORDEREDDESCRIPTION', 'Unordered list'),
 					"Example" => '[ulist][*]'._t('SMBBCodeParser.UNORDEREDEXAMPLE1', 'unordered item 1').'[/ulist]'
-				)),			
+				)),
 				new ArrayData(array(
 					"Title" => _t('SMBBCodeParser.IMAGE', 'Image'),
 					"Description" => _t('SMBBCodeParser.IMAGEDESCRIPTION', 'Show an image in your post'),
@@ -101,7 +101,7 @@ class SMBBCodeParser extends TextParser {
 			)
 		);
 	}
-	
+
 	public function useable_tagsHTML(){
 		$useabletags = "<ul class='bbcodeExamples'>";
 		foreach($this->usable_tags()->toArray() as $tag){
@@ -109,7 +109,7 @@ class SMBBCodeParser extends TextParser {
 		}
 		return $useabletags."</ul>";
 	}
-	
+
 	/**
 	 * Main BBCode parser method. This takes plain jane content and filters it
 	 *
@@ -140,74 +140,75 @@ class SMBBCodeParser extends TextParser {
 		// make sure newlines aren't all wonky
 		$this->content = str_replace("\n", "<br />", $this->content);
 
-		// add smilies				
+		// add smilies
 		if($this->config()->allow_smilies) {
+			$path = Config::inst()->get("SMBBCodeParser", "smilies_location");
 			$smilies = array(
 				// arrows
-				'#(?<!\w):b:(?!\w)#i' => " <img src='".SMBBCodeParser::smilies_location(). "/arrows/blank.png'> ",
-				'#(?<!\w):l:(?!\w)#i' => " <img src='".SMBBCodeParser::smilies_location(). "/arrows/l4.png'> ",
-				'#(?<!\w):d:(?!\w)#i' => " <img src='".SMBBCodeParser::smilies_location(). "/arrows/d4.png'> ",
-				'#(?<!\w):u:(?!\w)#i' => " <img src='".SMBBCodeParser::smilies_location(). "/arrows/u4.png'> ",
-				'#(?<!\w):r:(?!\w)#i' => " <img src='".SMBBCodeParser::smilies_location(). "/arrows/r4.png'> ",
+				'#(?<!\w):b:(?!\w)#i' => " <img src='".$path."/arrows/blank.png'> ",
+				'#(?<!\w):l:(?!\w)#i' => " <img src='".$path."/arrows/l4.png'> ",
+				'#(?<!\w):d:(?!\w)#i' => " <img src='".$path."/arrows/d4.png'> ",
+				'#(?<!\w):u:(?!\w)#i' => " <img src='".$path."/arrows/u4.png'> ",
+				'#(?<!\w):r:(?!\w)#i' => " <img src='".$path."/arrows/r4.png'> ",
 
-				'#(?<!\w):l4:(?!\w)#i' => " <img src='".SMBBCodeParser::smilies_location(). "/arrows/l4.png'> ",
-				'#(?<!\w):d4:(?!\w)#i' => " <img src='".SMBBCodeParser::smilies_location(). "/arrows/d4.png'> ",
-				'#(?<!\w):u4:(?!\w)#i' => " <img src='".SMBBCodeParser::smilies_location(). "/arrows/u4.png'> ",
-				'#(?<!\w):r4:(?!\w)#i' => " <img src='".SMBBCodeParser::smilies_location(). "/arrows/r4.png'> ",
+				'#(?<!\w):l4:(?!\w)#i' => " <img src='".$path."/arrows/l4.png'> ",
+				'#(?<!\w):d4:(?!\w)#i' => " <img src='".$path."/arrows/d4.png'> ",
+				'#(?<!\w):u4:(?!\w)#i' => " <img src='".$path."/arrows/u4.png'> ",
+				'#(?<!\w):r4:(?!\w)#i' => " <img src='".$path."/arrows/r4.png'> ",
 
-				'#(?<!\w):l8:(?!\w)#i' => " <img src='".SMBBCodeParser::smilies_location(). "/arrows/l8.png'> ",
-				'#(?<!\w):d8:(?!\w)#i' => " <img src='".SMBBCodeParser::smilies_location(). "/arrows/d8.png'> ",
-				'#(?<!\w):u8:(?!\w)#i' => " <img src='".SMBBCodeParser::smilies_location(). "/arrows/u8.png'> ",
-				'#(?<!\w):r8:(?!\w)#i' => " <img src='".SMBBCodeParser::smilies_location(). "/arrows/r8.png'> ",
+				'#(?<!\w):l8:(?!\w)#i' => " <img src='".$path."/arrows/l8.png'> ",
+				'#(?<!\w):d8:(?!\w)#i' => " <img src='".$path."/arrows/d8.png'> ",
+				'#(?<!\w):u8:(?!\w)#i' => " <img src='".$path."/arrows/u8.png'> ",
+				'#(?<!\w):r8:(?!\w)#i' => " <img src='".$path."/arrows/r8.png'> ",
 
-				'#(?<!\w):l12:(?!\w)#i' => " <img src='".SMBBCodeParser::smilies_location(). "/arrows/l12.png'> ",
-				'#(?<!\w):d12:(?!\w)#i' => " <img src='".SMBBCodeParser::smilies_location(). "/arrows/d12.png'> ",
-				'#(?<!\w):u12:(?!\w)#i' => " <img src='".SMBBCodeParser::smilies_location(). "/arrows/u12.png'> ",
-				'#(?<!\w):r12:(?!\w)#i' => " <img src='".SMBBCodeParser::smilies_location(). "/arrows/r12.png'> ",
+				'#(?<!\w):l12:(?!\w)#i' => " <img src='".$path."/arrows/l12.png'> ",
+				'#(?<!\w):d12:(?!\w)#i' => " <img src='".$path."/arrows/d12.png'> ",
+				'#(?<!\w):u12:(?!\w)#i' => " <img src='".$path."/arrows/u12.png'> ",
+				'#(?<!\w):r12:(?!\w)#i' => " <img src='".$path."/arrows/r12.png'> ",
 
-				'#(?<!\w):l16:(?!\w)#i' => " <img src='".SMBBCodeParser::smilies_location(). "/arrows/l16.png'> ",
-				'#(?<!\w):d16:(?!\w)#i' => " <img src='".SMBBCodeParser::smilies_location(). "/arrows/d16.png'> ",
-				'#(?<!\w):u16:(?!\w)#i' => " <img src='".SMBBCodeParser::smilies_location(). "/arrows/u16.png'> ",
-				'#(?<!\w):r16:(?!\w)#i' => " <img src='".SMBBCodeParser::smilies_location(). "/arrows/r16.png'> ",
+				'#(?<!\w):l16:(?!\w)#i' => " <img src='".$path."/arrows/l16.png'> ",
+				'#(?<!\w):d16:(?!\w)#i' => " <img src='".$path."/arrows/d16.png'> ",
+				'#(?<!\w):u16:(?!\w)#i' => " <img src='".$path."/arrows/u16.png'> ",
+				'#(?<!\w):r16:(?!\w)#i' => " <img src='".$path."/arrows/r16.png'> ",
 
-				'#(?<!\w):l32:(?!\w)#i' => " <img src='".SMBBCodeParser::smilies_location(). "/arrows/l32.png'> ",
-				'#(?<!\w):d32:(?!\w)#i' => " <img src='".SMBBCodeParser::smilies_location(). "/arrows/d32.png'> ",
-				'#(?<!\w):u32:(?!\w)#i' => " <img src='".SMBBCodeParser::smilies_location(). "/arrows/u32.png'> ",
-				'#(?<!\w):r32:(?!\w)#i' => " <img src='".SMBBCodeParser::smilies_location(). "/arrows/r32.png'> ",
+				'#(?<!\w):l32:(?!\w)#i' => " <img src='".$path."/arrows/l32.png'> ",
+				'#(?<!\w):d32:(?!\w)#i' => " <img src='".$path."/arrows/d32.png'> ",
+				'#(?<!\w):u32:(?!\w)#i' => " <img src='".$path."/arrows/u32.png'> ",
+				'#(?<!\w):r32:(?!\w)#i' => " <img src='".$path."/arrows/r32.png'> ",
 
 				// holds
-				'#(?<!\w):hb:(?!\w)#i' => " <img src='".SMBBCodeParser::smilies_location(). "/arrows/hb.png'> ",
-				'#(?<!\w):he:(?!\w)#i' => " <img src='".SMBBCodeParser::smilies_location(). "/arrows/he.png'> ",
+				'#(?<!\w):hb:(?!\w)#i' => " <img src='".$path."/arrows/hb.png'> ",
+				'#(?<!\w):he:(?!\w)#i' => " <img src='".$path."/arrows/he.png'> ",
 
 				// rolls
-				'#(?<!\w):rb:(?!\w)#i' => " <img src='".SMBBCodeParser::smilies_location(). "/arrows/rb.png'> ",
-				'#(?<!\w):re:(?!\w)#i' => " <img src='".SMBBCodeParser::smilies_location(). "/arrows/re.png'> ",
+				'#(?<!\w):rb:(?!\w)#i' => " <img src='".$path."/arrows/rb.png'> ",
+				'#(?<!\w):re:(?!\w)#i' => " <img src='".$path."/arrows/re.png'> ",
 
 				// mine
-				'#(?<!\w):m:(?!\w)#i' => " <img src='".SMBBCodeParser::smilies_location(). "/arrows/re.png'> ",
+				'#(?<!\w):m:(?!\w)#i' => " <img src='".$path."/arrows/re.png'> ",
 
 				// machine buttons
-				'#(?<!\w):ml:(?!\w)#i' => " <img src='".SMBBCodeParser::smilies_location(). "/arrows/ml.png'> ",
-				'#(?<!\w):ms:(?!\w)#i' => " <img src='".SMBBCodeParser::smilies_location(). "/arrows/ms.png'> ",
-				'#(?<!\w):mr:(?!\w)#i' => " <img src='".SMBBCodeParser::smilies_location(). "/arrows/mr.png'> ",
+				'#(?<!\w):ml:(?!\w)#i' => " <img src='".$path."/arrows/ml.png'> ",
+				'#(?<!\w):ms:(?!\w)#i' => " <img src='".$path."/arrows/ms.png'> ",
+				'#(?<!\w):mr:(?!\w)#i' => " <img src='".$path."/arrows/mr.png'> ",
 
 				// pump buttons
-				'#(?<!\w):pc:(?!\w)#i' => " <img src='".SMBBCodeParser::smilies_location(). "/arrows/pc.png'> ",
-				'#(?<!\w):ul:(?!\w)#i' => " <img src='".SMBBCodeParser::smilies_location(). "/arrows/ul.png'> ",
-				'#(?<!\w):ur:(?!\w)#i' => " <img src='".SMBBCodeParser::smilies_location(). "/arrows/ur.png'> ",
-				'#(?<!\w):dl:(?!\w)#i' => " <img src='".SMBBCodeParser::smilies_location(). "/arrows/dl.png'> ",
-				'#(?<!\w):dr:(?!\w)#i' => " <img src='".SMBBCodeParser::smilies_location(). "/arrows/dr.png'> ",
+				'#(?<!\w):pc:(?!\w)#i' => " <img src='".$path."/arrows/pc.png'> ",
+				'#(?<!\w):ul:(?!\w)#i' => " <img src='".$path."/arrows/ul.png'> ",
+				'#(?<!\w):ur:(?!\w)#i' => " <img src='".$path."/arrows/ur.png'> ",
+				'#(?<!\w):dl:(?!\w)#i' => " <img src='".$path."/arrows/dl.png'> ",
+				'#(?<!\w):dr:(?!\w)#i' => " <img src='".$path."/arrows/dr.png'> ",
 
 
 				/*
-				'#(?<!\w):D(?!\w)#i'         => " <img src='".SMBBCodeParser::smilies_location(). "/grin.gif'> ", // :D
-				'#(?<!\w):\)(?!\w)#i'        => " <img src='".SMBBCodeParser::smilies_location(). "/smile.gif'> ", // :)
-				'#(?<!\w):-\)(?!\w)#i'        => " <img src='".SMBBCodeParser::smilies_location(). "/smile.gif'> ", // :-)
-				'#(?<!\w):\((?!\w)#i'        => " <img src='".SMBBCodeParser::smilies_location(). "/sad.gif'> ", // :(
-				'#(?<!\w):-\((?!\w)#i'        => " <img src='".SMBBCodeParser::smilies_location(). "/sad.gif'> ", // :-(
-				'#(?<!\w):p(?!\w)#i'         => " <img src='".SMBBCodeParser::smilies_location(). "/tongue.gif'> ", // :p
-				'#(?<!\w)8-\)(?!\w)#i'     => " <img src='".SMBBCodeParser::smilies_location(). "/cool.gif'> ", // 8-)
-				'#(?<!\w):\^\)(?!\w)#i' => " <img src='".SMBBCodeParser::smilies_location(). "/confused.gif'> " // :^)
+				'#(?<!\w):D(?!\w)#i'         => " <img src='".$path."/grin.gif'> ", // :D
+				'#(?<!\w):\)(?!\w)#i'        => " <img src='".$path."/smile.gif'> ", // :)
+				'#(?<!\w):-\)(?!\w)#i'        => " <img src='".$path."/smile.gif'> ", // :-)
+				'#(?<!\w):\((?!\w)#i'        => " <img src='".$path."/sad.gif'> ", // :(
+				'#(?<!\w):-\((?!\w)#i'        => " <img src='".$path."/sad.gif'> ", // :-(
+				'#(?<!\w):p(?!\w)#i'         => " <img src='".$path."/tongue.gif'> ", // :p
+				'#(?<!\w)8-\)(?!\w)#i'     => " <img src='".$path."/cool.gif'> ", // 8-)
+				'#(?<!\w):\^\)(?!\w)#i' => " <img src='".$path."/confused.gif'> " // :^)
 				*/
 			);
 			$this->content = preg_replace(array_keys($smilies), array_values($smilies), $this->content);

@@ -1,14 +1,14 @@
 <?php
 
 /**
- * A representation of a forum thread. A forum thread is 1 topic on the forum 
+ * A representation of a forum thread. A forum thread is 1 topic on the forum
  * which has multiple posts underneath it.
  *
  * @package forum
  */
 
 class ForumThread extends DataObject {
-	
+
 	public static $db = array(
 		"Title" => "Varchar(255)",
 		"NumViews" => "Int",
@@ -16,23 +16,25 @@ class ForumThread extends DataObject {
 		"IsReadOnly" => "Boolean",
 		"IsGlobalSticky" => "Boolean"
 	);
-	
+
 	public static $has_one = array(
 		'Forum' => 'Forum',
 		'LastPost' => 'Post'
 	);
-	
+
 	public static $has_many = array(
 		'Posts' => 'Post'
 	);
-	
+
 	public static $defaults = array(
 		'NumViews' => 0,
 		'IsSticky' => false,
 		'IsReadOnly' => false,
 		'IsGlobalSticky' => false
 	);
-	
+
+	private static $_cache_displaysignatures = null;
+
 	/**
 	 * When rebuilding the database we need to ensure that all the threads have been assigned
 	 * a last post and when people upgrade to this version running the rebuild should fix the data
@@ -42,14 +44,14 @@ class ForumThread extends DataObject {
 	 */
 	function requireDefaultRecords() {
 		if(DB::query("SELECT COUNT(*) FROM \"ForumThread\" WHERE \"LastPostID\" = 0")->value() > 0) {
-			
+
 			$migrate = new ForumMigrationTask();
 			$migrate->attachLastPostIDs();
 		}
-		
+
 		parent::requireDefaultRecords();
 	}
-	
+
 	/**
 	 * Check if the user can create new threads and add responses
 	 */
@@ -57,7 +59,7 @@ class ForumThread extends DataObject {
 		if(!$member) $member = Member::currentUser();
 		return ($this->Forum()->canPost($member) && !$this->IsReadOnly);
 	}
-	
+
 	/**
 	 * Check if user can moderate this thread
 	 */
@@ -65,7 +67,7 @@ class ForumThread extends DataObject {
 		if(!$member) $member = Member::currentUser();
 		return $this->Forum()->canModerate($member);
 	}
-	
+
 	/**
 	 * Check if user can view the thread
 	 */
@@ -83,7 +85,7 @@ class ForumThread extends DataObject {
 	}
 
 	/**
-	 * Hook up into moderation - users cannot delete their own posts/threads because 
+	 * Hook up into moderation - users cannot delete their own posts/threads because
 	 * we will loose history this way.
 	 */
 	function canDelete($member = null) {
@@ -98,16 +100,22 @@ class ForumThread extends DataObject {
 		if(!$member) $member = Member::currentUser();
 		return $this->canPost($member);
 	}
-	
-	/** 
+
+	/**
 	 * Are Forum Signatures on Member profiles allowed
-	 * 
+	 *
 	 * @return bool
 	 */
-	 function getDisplaySignatures() {
-	 	return $this->Forum()->Parent()->DisplaySignatures;
+	function getDisplaySignatures() {
+		if(isset(self::$_cache_displaysignatures) && self::$_cache_displaysignatures !== null) {
+			return self::$_cache_displaysignatures;
+		}
+
+		$result = $this->Forum()->Parent()->DisplaySignatures;
+		self::$_cache_displaysignatures = $result;
+		return $result;
 	}
-	
+
 	/**
 	 * Get the latest post from this thread. Nicer way then using an control
 	 * from the template
@@ -120,7 +128,7 @@ class ForumThread extends DataObject {
 
 		return $this->updateLastPost();
 	}
-	
+
 	/**
 	 * Return the first post from the thread. Useful to working out the original author
 	 *
@@ -131,7 +139,7 @@ class ForumThread extends DataObject {
 	}
 
 	/**
-	 * Return the number of posts in this thread. We could use count on 
+	 * Return the number of posts in this thread. We could use count on
 	 * the dataobject set but that is slower and causes a performance overhead
 	 *
 	 * @return int
@@ -162,7 +170,7 @@ class ForumThread extends DataObject {
 		$start = $pages > $max_pages ? $pages - $max_pages : 0;
 		$end = $pages;
 
-		for ($i = $start; $i < $end; $i++) { 
+		for ($i = $start; $i < $end; $i++) {
 			$item = new DataObject();
 			$item->Offset = $i * Forum::$posts_per_page;
 			$item->Page = $i + 1;
@@ -173,7 +181,7 @@ class ForumThread extends DataObject {
 	}
 
 	/**
-	 * Check if they have visited this thread before. If they haven't increment 
+	 * Check if they have visited this thread before. If they haven't increment
 	 * the NumViews value by 1 and set visited to true.
 	 *
 	 * @return void
@@ -182,13 +190,13 @@ class ForumThread extends DataObject {
 		if(Session::get('ForumViewed-' . $this->ID)) return false;
 
 		Session::set('ForumViewed-' . $this->ID, 'true');
-		
+
 		$this->NumViews++;
 		$SQL_numViews = Convert::raw2sql($this->NumViews);
-		
+
 		DB::query("UPDATE \"ForumThread\" SET \"NumViews\" = '$SQL_numViews' WHERE \"ID\" = $this->ID");
 	}
-	
+
 	/**
 	 * Link to this forum thread
 	 *
@@ -204,10 +212,10 @@ class ForumThread extends DataObject {
 
 		$baseLink = $forum->Link();
 		$extra = ($showID) ? '/'.$this->ID : '';
-		
+
 		return ($action) ? $baseLink . $action . $extra : $baseLink;
 	}
-	
+
 	/**
 	 * Check to see if the user has subscribed to this thread
 	 *
@@ -222,7 +230,7 @@ class ForumThread extends DataObject {
 	function getSubscribeLink() {
 		return $this->Forum()->RelativeLink() . 'subscribe/' . $this->ID;
 	}
-	
+
 	function getUnsubscribeLink() {
 		return $this->Forum()->RelativeLink() . 'unsubscribe/' . $this->ID;
 	}
@@ -231,7 +239,7 @@ class ForumThread extends DataObject {
 	 * Before deleting the thread remove all the posts
 	 */
 	function onBeforeDelete() {
-		parent::onBeforeDelete(); 
+		parent::onBeforeDelete();
 
 		if($posts = $this->Posts()) {
 			foreach($posts as $post) {
@@ -240,7 +248,7 @@ class ForumThread extends DataObject {
 			}
 		}
 	}
-	
+
 	function onAfterWrite() {
 		if($this->isChanged('ForumID', 2)){
 			$posts = $this->Posts();
@@ -266,15 +274,15 @@ class ForumThread extends DataObject {
 	 */
 	function updateLastPost($post = null) {
 		if (!$post) $post = DataObject::get_one('Post', "\"ThreadID\" = '$this->ID'", true, "\"ID\" DESC");
-		
+
 		if ($post && $post->ID != $this->LastPostID) {
 			$this->LastPostID = $post->ID;
 			$this->write();
 		}
-		
+
 		return $post;
 	}
-	
+
 	/**
 	 * @return Text
 	 */
@@ -292,7 +300,7 @@ class ForumThread extends DataObject {
  * @package forum
  */
 class ForumThread_Subscription extends DataObject {
-	
+
 	public static $db = array(
 		"LastSent" => "SS_Datetime"
 	);
@@ -317,17 +325,17 @@ class ForumThread_Subscription extends DataObject {
 
 		if($SQL_threadID=='' || $SQL_memberID=='')
 			return false;
-			
+
 		return (DB::query("
-			SELECT COUNT(\"ID\") 
-			FROM \"ForumThread_Subscription\" 
+			SELECT COUNT(\"ID\")
+			FROM \"ForumThread_Subscription\"
 			WHERE \"ThreadID\" = '$SQL_threadID' AND \"MemberID\" = $SQL_memberID"
 		)->value() > 0) ? true : false;
 	}
 
 	/**
 	 * Notifies everybody that has subscribed to this topic that a new post has been added.
-	 * To get emailed, people subscribed to this topic must have visited the forum 
+	 * To get emailed, people subscribed to this topic must have visited the forum
 	 * since the last time they received an email
 	 *
 	 * @param Post $post The post that has just been added
@@ -337,14 +345,14 @@ class ForumThread_Subscription extends DataObject {
 			"ForumThread_Subscription",
 			"\"ThreadID\" = '". $post->ThreadID ."' AND \"MemberID\" != '$post->AuthorID'"
 		);
-		
+
 		if($list) {
 			foreach($list as $obj) {
 				$SQL_id = Convert::raw2sql((int)$obj->MemberID);
 
 				// Get the members details
 				$member = DataObject::get_one("Member", "\"Member\".\"ID\" = '$SQL_id'");
-				
+
 				if($member) {
 					$email = new Email();
 					$forumHolder = ForumHolder::get()->first();
