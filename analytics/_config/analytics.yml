@@ -1,6 +1,0 @@
----
-Name: analytics
----
-SiteConfig:
-  extensions:
-    - AnalyticsSiteConfig

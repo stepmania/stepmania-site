@@ -1,1 +1,0 @@
-The icons for Windows, Mac and Linux are from http://www.visualpharm.com/.

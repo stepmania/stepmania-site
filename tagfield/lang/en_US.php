@@ -1,6 +1,0 @@
-<?php
-
-global $lang;
-
-
-?>
