@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<title><%- string.format("%s &lsaquo; %s", page_title, site_title) %></title>
+	<link rel="shortcut icon" type="image/x-icon" href="favicon.ico?v=1" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0" />
+	<%- base_tag %>
+	<link rel="stylesheet" href="/static/css/style.css" />
+</head>
+<body>
+	<header>
+		<nav class="limit-width">
+			<a href="/"><img src="/static/images/logo-small.png" alt="StepMania"></img></a>
+			<ul>
+				<% for _, item in ipairs(menu) do %>
+				<li><a href="<%= item.link %>" class="<%= item.mode %>"><%= item.title %></a></li>
+				<% end %>
+			</ul>
+		</nav>
+	</header>
+	<div id="container" class="limit-width">
+		<div class="banner">
+			<% if banner then %><%= banner %><% else %><h1><%= page_title %></h1><% end %>
+			<% if user.can_edit then %><a href="admin/fixme" rel="edit" class="float-right edit-button li_pen"> <span>Edit</span></a><% end %>
+		</div>
+		<article class="<%= string.format("%s-article", page_type) %>">
+			<% require "views.forum-login" %>
+			<% content_for("inner") %>
+		</article>
+		<footer>
+			<p>StepMania and its website are open source software released under the MIT License. <a href="https://github.com/stepmania" class="github">GitHub</a>. <a href="policies">Privacy Policy</a></p>
+		</footer>
+	</div>
+	<% require "views.analytics" %>
+</body>
+</html>

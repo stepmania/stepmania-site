@@ -1,0 +1,15 @@
+# editorconfig.org
+root = true
+
+[*.lua]
+indent_style = tab
+insert_final_newline     = true
+trim_trailing_whitespace = true
+charset      = utf-8
+
+[nginx{.*}.conf]
+indent_style = space
+indent_size  = 2
+
+[Makefile]
+indent_style = tab

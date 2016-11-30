@@ -1,0 +1,528 @@
+// This file is a fucking MESS. It's partially (okay, mostly) my fault and
+// partially because the original HTML used in this module was really nasty.
+// 
+// I'd like to get it fixed up, but that will have to wait until it's more
+// or less fully functional and in prod. -Colby
+.forum-footer {
+	// margin-top: $spacing;
+}
+.forum-search-bar {
+	display: inline-block;
+	float: right;
+	margin-right: $spacing;
+}
+.signature {
+	margin-top: 1em;
+	&:before {
+		content: "---";
+		display: block;
+	}
+	img {
+		max-width: 500px;
+		max-height: 250px;
+	}
+}
+.user-profile {
+	.left {
+		display: inline-block;
+		width: 150px + $spacing;
+		float: left;
+		clear: left;
+		padding: $spacing/4 0;
+	}
+	p {
+		padding: $spacing/4 0;
+	}
+	.middleColumn {
+		display: inline-block;
+		float: left;
+	}
+}
+.forum-news {
+	// margin: $spacing 0;
+	.forum-post {
+		display: block;
+	}
+	footer {
+		margin: 0 !important;
+		p {
+			padding: $spacing 0 0 0;
+			color: black;
+		}
+		.post-modifiers {
+			float: right;
+			a {
+				margin: $spacing / 2;
+			}
+		}
+	}
+}
+.subforums, .forum-topics {
+	// margin-bottom: $spacing;
+	// box-shadow: 0 1px 1px rgba(0, 0, 0, 0.25);
+	// border-radius: $spacing / 4;
+}
+.forum-subforum {
+	$top: adjust-color($primary, $lightness: 40, $saturation: -40);
+	$bottom: adjust-color($primary, $lightness: 35, $saturation: -40);
+	// @include gradient($top, $bottom 50px);
+	&:nth-child(odd) {
+	background: lighten($bottom, 5%);
+	}
+	&:last-child {
+		// border-bottom-left-radius: $spacing / 4;
+		// border-bottom-right-radius: $spacing / 4;
+	}
+	padding: $spacing;
+	@include display-flex;
+	p:last-child {
+		margin-bottom: 0 !important;
+	}
+	.topic-title {
+		font-size: 120%;
+		font-weight: 600;
+		line-height: 1.5em;
+	}
+	p {
+		margin-bottom: $spacing/4 !important;
+	}
+	.subforum-stats {
+		padding: 0 $spacing;
+	}
+}
+.forum-flex {
+	@include display-flex;
+}
+.forum-flex-left {
+	@include flex(1);
+}
+.forum-flex-mid {
+	@include flex(1);
+	max-width: 150px;
+}
+.forum-flex-right {
+	@include flex(1 0 0);
+	max-width: 250px;
+}
+.forum-topics {
+	overflow: auto;
+	.message {
+		margin: $spacing;
+	}
+}
+.forum-header {
+	margin-bottom: $spacing;
+	&.forum-header-toplevel {
+		margin-bottom: 0;
+	}
+}
+.topic-footer {
+	margin-top: $spacing;
+	.topic-stats {
+		margin-top: $spacing;
+	}
+	.current {
+		display: inline-block;
+		padding: $spacing;
+	}
+}
+.forum-breadcrumbs {
+	padding: $spacing;
+	padding-bottom: 0;
+}
+.forum-topic {
+	$top: adjust-color($primary, $lightness: 40, $saturation: -40);
+	$bottom: adjust-color($primary, $lightness: 35, $saturation: -40);
+	background: lighten($bottom, 10%);
+	&:nth-child(even) {
+		background: lighten($bottom, 5%);
+	}
+	// @include gradient($top, $bottom 50px);
+	padding: $spacing;
+	&.sticky {
+		$top: adjust-color($primary, $lightness: 35, $saturation: -25);
+		$bottom: adjust-color($primary, $lightness: 25, $saturation: -25);
+		background: lighten($bottom, 10%);
+		// @include gradient($top, $bottom 50px);
+	}
+	&.locked {
+		$top: adjust-color($primary, $lightness: 30, $saturation: -45, $hue: -20);
+		$bottom: adjust-color($primary, $lightness: 25, $saturation: -45, $hue: -20);
+		background: lighten($bottom, 10%);
+		// @include gradient($top, $bottom 50px);
+	}
+	p:last-child {
+		margin-bottom: 0 !important;
+	}
+	p {
+		margin-bottom: $spacing/4 !important;
+	}
+	.icon {
+		//font-size: 150%;
+		color: mix($primary, black, 25%);
+		padding-right: $spacing;
+	}
+	.topic-title {
+		//margin-left: $spacing * 2;
+		font-size: 120%;
+		font-weight: 600;
+	}
+}
+// TODO: Limit number of pages displayed for a given topic (latest n? first few + last few?)
+.forum-topic {
+	overflow: hidden;
+}
+.forum-pages {
+	padding: $spacing;
+	padding-bottom: 0;
+	a {
+		padding: 0 $spacing;
+	}
+}
+.forum-topic .pages a {
+	margin-top: $spacing / 2;
+	display: inline-block;
+	border-radius: $spacing / 4;
+	font-weight: 600;
+}
+.button a, .page-numbers .current, .page-numbers .label, .button .locked {
+	display: inline-block;
+	padding: $spacing / 2 $spacing;
+	$top: adjust-color($secondary, $lightness: 15, $saturation: -40);
+	$bottom: adjust-color($secondary, $lightness: 5, $saturation: -40);
+	background: $bottom;
+	@include gradient($top, $bottom 50px);
+	&.locked {
+		color: desaturate($primary, 65%);
+	}
+	&.current {
+		$top: adjust-color($secondary, $lightness: 30, $saturation: -40);
+		$bottom: adjust-color($secondary, $lightness: 15, $saturation: -40);
+		background: $top;
+		@include gradient($bottom, $top 50px);
+		color: white;
+	}
+	&.label {
+		$top: adjust-color($secondary, $lightness: 10, $saturation: -40);
+		$bottom: adjust-color($secondary, $lightness: 10, $saturation: -40);
+		background: $top;
+		@include gradient($bottom, $top 50px);
+		color: white;
+	}
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.25);
+	border-radius: $spacing / 4;
+	color: $primary;
+	font-weight: 600;
+}
+.category {
+	// border-top-left-radius: $spacing / 4;
+	// border-top-right-radius: $spacing / 4;
+	font-size: 110%;
+	font-weight: bold;
+	padding: $spacing;
+	background: $secondary;
+	color: $primary;
+}
+.forum-admin-features, .forum-quick-reply {
+	margin-top: $spacing;
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.25);
+	// border-radius: $spacing / 4;
+	h3 {
+		// border-top-left-radius: $spacing / 4;
+		// border-top-right-radius: $spacing / 4;
+		background: $secondary;
+		color: $primary;
+		font-size: 120%;
+		font-weight: 600;
+		padding: $spacing;
+		margin-bottom: $spacing;
+	}
+	#Form_AdminFormFeatures {
+		padding-bottom: $spacing / 2;
+	}
+	#ForumID {
+		.left {
+			width: auto;
+			font-size: 100%;
+		}
+	}
+}
+#UserNavigation {
+	overflow: auto;
+	.button {
+		margin-bottom: $spacing;
+	}
+	.float-left {
+		margin-right: $spacing;
+	}
+}
+.forum-profile-post {
+	margin-bottom: 3px;
+	vertical-align: top;
+	// border-radius: $spacing / 4;
+	$top: adjust-color($primary, $lightness: 45, $saturation: -35);
+	$bottom: adjust-color($primary, $lightness: 40, $saturation: -35);
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.25);
+	header {
+		$top: lighten(desaturate($primary, 60%), 40%);
+		$bottom: $top;
+		background: $bottom !important;
+		// @include gradient($top, $bottom);
+		// background: -moz-linear-gradient(top, $top, $bottom)  !important;
+		// background: -webkit-linear-gradient(top, $top, $bottom)  !important;
+		// border-top-left-radius: $spacing / 4;
+		// border-top-right-radius: $spacing / 4;
+		padding: $spacing;
+		margin-bottom: 0 !important;
+		.post-date {
+			display: block;
+		}
+	}
+}
+.forum-post {
+	vertical-align: top;
+	margin-bottom: 3px;
+	$top: adjust-color($primary, $lightness: 45, $saturation: -35);
+	$bottom: adjust-color($primary, $lightness: 40, $saturation: -35);
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+	&:nth-child(even) .user-info {
+		background: darken($bottom, 5%);
+	}
+	.user-info {
+		padding: $spacing;
+		background: $bottom;
+		border-right: 1px solid darken($bottom, 10%);
+		overflow: hidden;
+		@include flex(0 0 main-size);
+		vertical-align: top;
+		width: 150px;
+		max-width: 150px;
+		.author-link {
+			font-weight: 600;
+			font-size: 110%;
+		}
+		.custom-title {
+			display: block;
+		}
+		.avatar {
+			margin: $spacing 0;
+			max-width: 100%;
+		}
+	}
+	.user-content {
+		@include box-sizing(border-box);
+		@include display-flex;
+		@include flex-direction(row);
+		width: 100%;
+		padding: $spacing;
+		line-height: 1.4em;
+		overflow: hidden; // damn you, Jousway!
+		vertical-align: top;
+		overflow: hidden;
+		img {
+			max-width: 100%;
+		}
+		ul {
+			margin-top: -1em;
+			margin-left: $spacing * 2;
+			list-style-type: disc;
+		}
+		.small {
+			font-size: 75%;
+		}
+		.large {
+			font-size: 125%;
+		}
+		.stepsblock {
+			line-height: 0;
+			overflow: auto;
+			display: inline-block;
+			br {
+				clear: both;
+			}
+			img {
+				float: left;
+			}
+		}
+		// I need to make these boxes into a mixin or something.
+		q:before {
+			display: block;
+			color: $primary;
+			font-weight: 600;
+			content: attr(cite);
+			margin: -$spacing / 2;
+			padding: $spacing / 2;
+			margin-bottom: $spacing / 2;
+			background: $secondary;
+			border-top-left-radius: $spacing / 4;
+			border-top-right-radius: $spacing / 4;
+		}
+		q {
+			display: block;
+			padding: $spacing / 2;
+			border-radius: $spacing / 4;
+			box-shadow: 0 1px 1px rgba(0, 0, 0, 0.25);
+			background: rgba(lighten($secondary, 80%), 0.25);
+		}
+		// Most of this is copied from q, might be a good idea
+		// to really refactor this to mixins.
+		.spoiler-trigger {
+			display: block;
+			color: $primary;
+			font-weight: 600;
+			padding: $spacing / 2;
+			background: $secondary;
+			border-top-left-radius: $spacing / 4;
+			border-top-right-radius: $spacing / 4;
+			margin: 0;
+			cursor: pointer;
+		}
+		.spoiler {
+			display: block;
+			height: 4px;
+			overflow: hidden;
+			border-bottom-left-radius: $spacing / 4;
+			border-bottom-right-radius: $spacing / 4;
+			box-shadow: 0 1px 1px rgba(0, 0, 0, 0.25);
+			background: $secondary;
+			margin-bottom: $spacing;
+			transition: height 0.1s ease-out, padding 0.1s ease-out, background 0.1s ease-out;
+			&.open {
+				background: rgba(lighten($secondary, 80%), 0.25);
+				padding: $spacing / 2;
+				height: auto;
+				overflow: auto;
+				// display: block;
+			}
+		}
+		.center {
+			display: block;
+			text-align: center;
+		}
+		.right {
+			display: block;
+			text-align: right;
+		}
+		.code {
+			overflow: auto;
+			font-family: monospace;
+			white-space: pre;
+			br { display: none; }
+		}
+		.post-edited {
+			margin-top: 1em;
+			color: #555;
+			font-style: italic;
+		}
+		.post-type {
+			display: block;
+			@include flex(1 0 auto);
+		}
+		.signature {
+			@include flex(1 0 auto);
+		}
+		.attachments {}
+	}
+	footer {
+		$top: white;//lighten($secondary, 75%);
+		$bottom: darken($top, 5%);
+		background: $bottom;
+		@include gradient($top, $bottom);
+		overflow: auto;
+		margin: -$spacing;
+		margin-top: 0;
+		.post-date {
+			padding: $spacing;
+			display: inline-block;
+		}
+		.quick-reply a, .deleteLink {
+			&.deleteLink {
+				background: mix(#f00, $bottom, 10%);
+			}
+			&:hover {
+				&.deleteLink {
+					background: mix(#f00, $bottom, 20%);
+				}
+				background: $bottom;
+				text-decoration: none;
+			}
+			background: rgba(255, 255, 255, 0);
+			border-left: 1px solid darken($bottom, 5%);
+			padding: $spacing;
+			font-weight: 600;
+			float: right;
+			color: darken($bottom, 65%);
+		}
+		.quick-reply {
+			margin-left: $spacing;
+		}
+	}
+}
+
+@media only screen and (max-width: 800px) {
+	.forum-post {
+		.user-info {
+			width: 80px + $spacing * 2;
+		}
+	}
+	.subforum-stats, .topic-stats {
+		display: none;
+	}
+}
+
+@media only screen and (max-width: 600px) {
+	.forum-topic .pages a {
+		margin-top: $spacing / 2;
+		padding: $spacing / 3;
+	}
+	.forum-flex-left {
+		@include flex(1 0 auto);
+	}
+	.forum-flex-mid {
+		@include flex(1 0 auto);
+	}
+	.forum-flex-right {
+		@include flex(1 0 auto);
+	}
+	.post-body {
+		@include flex-direction(column);
+		.user-content {
+			width: auto;
+			min-height: 0;
+			.signature {
+				display: none;
+			}
+		}
+		.user-info {
+			width: auto;
+			max-width: none;
+			border: none;
+			position: relative;
+			height: 70px - $spacing * 2;
+			.avatar {
+				float: right;
+				width: auto;
+				height: 70px;
+				top: -$spacing;
+				right: 0;
+				position: absolute;
+			}
+			.forum-rank {
+				display: none;
+			}
+			.join-date {
+				display: none;
+			}
+			.author-link, .custom-title {
+				display: inline-block;
+			}
+		}
+	}
+	.forum-subforum, .forum-topic {
+		height: auto;
+		@include flex-direction(column);
+		.subforum-latest, .topic-latest {
+			margin-top: $spacing;
+		}
+	}
+}
