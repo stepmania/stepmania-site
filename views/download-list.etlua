@@ -1,0 +1,17 @@
+
+<% if all_downloads then %>
+<div class="downloads-container forum-flex pad">
+	<div class="downloads forum-flex-left">
+		<% for _, download in ipairs(all_downloads) do %>
+			<p><a href="<%= download.html_url %>"><%= download.name %></a><% if download.prerelease then %> (beta)<% end %><br />
+		<% end %>
+	</div>
+</div>
+
+<% else %>
+
+<div class="pad">
+	<div class="message bad">shakesoda screwed up and you should go check github releases.</div>
+</div>
+
+<% end %>
