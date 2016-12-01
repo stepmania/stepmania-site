@@ -128,11 +128,6 @@ class ForumMemberProfile extends Page_Controller {
 		// can direct to it.
 		if (isset($_REQUEST['BackURL'])) $fields->push(new HiddenField('BackURL', 'BackURL', $_REQUEST['BackURL']));
 
-
-		$recaptchaField = new RecaptchaField('Captcha');
-		$recaptchaField->jsOptions = array('theme' => 'clean'); // optional
-		$fields->push($recaptchaField);
-
 		$validator = singleton('Member')->getForumValidator(!$use_openid);
 		$form = new Form($this, 'RegistrationForm', $fields,
 			new FieldList(new FormAction("doregister", _t('ForumMemberProfile.REGISTER','Register'))),
@@ -165,9 +160,8 @@ class ForumMemberProfile extends Page_Controller {
 		}
 
 		// Optional spam protection
-		if(class_exists('SpamProtectorManager') && ForumHolder::$use_spamprotection_on_register) {
-			$form->enableSpamProtection();
-		}
+		$form->enableSpamProtection();
+
 		return $form;
 	}
 
