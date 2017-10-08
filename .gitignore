@@ -12,3 +12,4 @@ _resampled
 assets/Uploads/
 *.compiled
 /logs
+.DS_Store
