@@ -1,0 +1,32 @@
+.scores-article {
+	section {
+		@include display-flex;
+		margin-bottom: $spacing;
+		&:last-child {
+			margin-bottom: 0;
+		}
+	}
+	.song-banner {
+		font-weight: 800;
+		width: 256px;
+		height: 80px;
+		margin-right: $spacing;
+		background: hsl(0, 0, 75%);
+		text-align: center;
+		line-height: 80px;
+	}
+	.space {
+		@include flex(1);
+	}
+	.song-info {
+		max-width: 150px;
+		@include flex(1);
+	}
+	.user-info {
+		@include flex(1);
+	}
+	.play-info {
+		max-width: 200px;
+		@include flex(1);
+	}
+}

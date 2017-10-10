@@ -1,0 +1,24 @@
+<div class="pad">
+	<% for i, score in ipairs(scores) do %>
+	<% local song = score.song %>
+	<% local player = score.user %>
+	<% local stats = score.stats %>
+	<section class="score-entry">
+		<div class="song-banner">
+			<%= song.artist %> - <%= song.title %>
+		</div>
+		<div class="song-info">
+			clear rate: <%= math.floor(song.clear_rate*1000+.5)/10 %>%<br />
+			steps: <%= song.steps %><br />
+			length: <%= format_time(song.length) %>
+		</div>
+		<div class="play-info">
+			<%= player.name %><br />
+			<%= stats.grade %><br />
+			<%= stats.w1 %> / <%= stats.w2 %> / <%= stats.w3 %> / <%= stats.w4 %> / <%= stats.w5 %>
+			<!-- <%= score.date %> -->
+		</div>
+		<div class="space"></div>
+	</section>
+	<% end %>
+</div>

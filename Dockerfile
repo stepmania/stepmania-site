@@ -6,7 +6,8 @@ RUN luarocks install luasec && \
 	luarocks install markdown && \
 	luarocks install mailgun && \
 	luarocks install i18n && \
-	luarocks install lapis
+	luarocks install lapis && \
+	luarocks install luafilesystem
 
 VOLUME /var/www
 WORKDIR /var/www

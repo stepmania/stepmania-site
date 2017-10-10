@@ -866,7 +866,7 @@ footer p {
 @media only screen and (max-width: 600px) {
   .forum-topic .pages a {
     margin-top: 7px;
-    padding: 4.66667px; }
+    padding: 4.6666666667px; }
 
   .forum-flex-left {
     -webkit-flex: 1 0 auto;
@@ -921,6 +921,42 @@ footer p {
     flex-direction: column; }
     .forum-subforum .subforum-latest, .forum-subforum .topic-latest, .forum-topic .subforum-latest, .forum-topic .topic-latest {
       margin-top: 14px; } }
+.scores-article section {
+  display: -webkit-box-flex;
+  display: -webkit-flexbox;
+  display: -ms-flexbox;
+  display: -webkit-box;
+  display: flex;
+  margin-bottom: 14px; }
+  .scores-article section:last-child {
+    margin-bottom: 0; }
+.scores-article .song-banner {
+  font-weight: 800;
+  width: 256px;
+  height: 80px;
+  margin-right: 14px;
+  background: #bfbfbf;
+  text-align: center;
+  line-height: 80px; }
+.scores-article .space {
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1; }
+.scores-article .song-info {
+  max-width: 150px;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1; }
+.scores-article .user-info {
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1; }
+.scores-article .play-info {
+  max-width: 200px;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1; }
+
 #MemberList {
   width: 100%;
   margin-top: 14px; }
@@ -999,7 +1035,7 @@ footer p {
   background: #ffe6e6; }
 
 #Form_AdminFormFeatures {
-  margin: 9.33333px; }
+  margin: 9.3333333333px; }
 
 #Form_EditProfileForm {
   max-width: 800px; }

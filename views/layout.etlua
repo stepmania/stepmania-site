@@ -3,10 +3,10 @@
 <head>
 	<meta charset="UTF-8" />
 	<title><%- string.format("%s &lsaquo; %s", page_title, site_title) %></title>
-	<link rel="shortcut icon" type="image/x-icon" href="favicon.ico?v=1" />
+	<link rel="shortcut icon" type="image/x-icon" href="<%= dodge_cache('favicon.ico') %>" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0" />
 	<%- base_tag %>
-	<link rel="stylesheet" href="/static/css/style.css" />
+	<link rel="stylesheet" href="<%= dodge_cache('css/style.css')  %>" />
 </head>
 <body>
 	<header>

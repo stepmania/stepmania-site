@@ -6,6 +6,15 @@ app.layout = require "views.layout"
 local function prepare_page(self, app)
 	self.base_tag = "<base href=\"/\">"
 	self.site_title = "StepMania"
+	local function last_mod(filename)
+		local lfs = require "lfs"
+		local full = "./static/" .. filename
+		local stat = lfs.attributes(full)
+		return stat.modification
+	end
+	self.dodge_cache = function(_, filename)
+		return string.format("/static/%s?%s", filename, last_mod(filename))
+	end
 	self.user = {
 		can_edit = true
 	}
@@ -132,12 +141,57 @@ app:get("/profile", function(self)
 	}
 end)
 
+local function clock_fmt(seconds)
+	if seconds <= 0 then
+		return "00:00:00";
+	end
+	local hours =("%02.f"):format(math.floor(seconds/3600));
+	local mins = ("%02.f"):format(math.floor(seconds/60-(hours*60)));
+	local secs = ("%02.f"):format(math.floor(seconds-hours*3600-mins*60));
+	if seconds >= 3600 then
+		return ("%s:%s:%s"):format(hours, mins, secs)
+	end
+	return ("%s:%s"):format(mins, secs)
+end
+
 app:get("/scores", function(self)
 	prepare_page(self, app)
 	self.page_title = "Scores"
 	self.page_type = "scores"
+	local mirror_force = {
+		title = "Mirror Force",
+		artist = "Kyle Snyder",
+		difficulty = "Beginner",
+		style = "dance-double",
+		length = 134.4,
+		steps = 573,
+		clear_rate = 0.125
+	}
+	self.format_time = function(_, seconds)
+		return clock_fmt(seconds)
+	end
+	self.scores = {
+		{
+			user = { name = "shakesoda" },
+			song = mirror_force,
+			date = "2008-02-11",
+			stats = { grade = "AAA", w1 = 999, w2 = 99, w3 = 0, w4 = 0, w5 = 0, ok = 555, ng = 0, score = 100000 }
+		},
+		{
+			user = { name = "cube" },
+			song = mirror_force,
+			date = "2016-10-24",
+			stats = { grade = "AA", w1 = 998, w2 = 99, w3 = 1, w4 = 0, w5 = 0, ok = 555, ng = 0, score = 100000 }
+		},
+		{
+			user = { name = "not freem" },
+			song = mirror_force,
+			date = "2010-01-10",
+			stats = { grade = "Q", w1 = 9001, w2 = 1, w3 = 2, w4 = 9, w5 = 0, ok = 1120, ng = 573, score = 100000 }
+		}
+	}
 	return {
-		render = "index"
+		render = "scores"
 	}
 end)
 
